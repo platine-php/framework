@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<ruleset  name="Platine Framework Standards">
+    <description>The Platine Framework Coding Standards.</description>
+    <file>src</file>
+    <file>tests</file>
+    <exclude-pattern>*/vendor/*</exclude-pattern>
+   
+    <arg name="report" value="full"/>
+    <arg name="colors"/>
+    <arg value="p"/>
+    
+    <rule  ref="PSR12" />
+</ruleset>
