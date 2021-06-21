@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Platine\Test;
 
 use Platine\Application;
-use Platine\PlatineTestCase;
+use Platine\Dev\PlatineTestCase;
 
 /**
  * Application class tests

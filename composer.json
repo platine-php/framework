@@ -21,25 +21,37 @@
     "require": {
         "php": "^7.4 || ^8",
         "platine-php/cache": "1.0.x-dev",
+        "platine-php/collection": "1.0.x-dev",
         "platine-php/config": "1.0.x-dev",
+        "platine-php/console": "1.0.x-dev",
         "platine-php/container": "1.0.x-dev",
         "platine-php/cookie": "1.0.x-dev",
         "platine-php/database": "1.0.x-dev",
         "platine-php/event-dispatcher": "1.0.x-dev",
+        "platine-php/filesystem": "1.0.x-dev",
         "platine-php/http": "1.0.x-dev",
+        "platine-php/lang": "1.0.x-dev",
         "platine-php/logger": "1.0.x-dev",
+        "platine-php/mail": "1.0.x-dev",
+        "platine-php/orm": "1.0.x-dev",
+        "platine-php/pagination": "1.0.x-dev",
         "platine-php/request-handler": "1.0.x-dev",
         "platine-php/router": "1.0.x-dev",
+        "platine-php/security": "1.0.x-dev",
         "platine-php/session": "1.0.x-dev",
+        "platine-php/stdlib": "1.0.x-dev",
+        "platine-php/template": "1.0.x-dev",
+        "platine-php/upload": "1.0.x-dev",
+        "platine-php/user-agent": "1.0.x-dev",
         "platine-php/validator": "1.0.x-dev"
     },
 	
     "require-dev": {
         "phpmd/phpmd": "@stable",
-        "phpunit/phpunit": "^9",
-        "platine-php/test-tools": "1.0.x-dev",
+        "phpunit/phpunit": "^9.5",
+        "platine-php/dev": "1.0.x-dev",
         "squizlabs/php_codesniffer": "3.*",
-        "vimeo/psalm": "4.x-dev"
+        "phpstan/phpstan": "0.12.x-dev"
     },
 
     "autoload": {
@@ -66,11 +78,12 @@
 
     "scripts": {
         "test": "phpunit --colors=always",
-        "static": "psalm",
+        "static": "phpstan analyze",
         "check": "phpcs",
         "check-fix": "phpcbf",
         "analyze": "phpmd src xml phpmd.xml"
     },
 	
-    "minimum-stability": "dev"
+    "minimum-stability": "dev",
+    "prefer-stable": true
 }

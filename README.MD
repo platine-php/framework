@@ -18,24 +18,15 @@ You can use **Platine Framework** for web or command line application. For web a
 For CLI application just PHP executable is enough. 
 
 ### Why another PHP Framework?
-Well, I created TNH Framework for my own project, but decided to share with everyone.  
+Well, I created Platine Framework for my own project, but decided to share with everyone.  
 I was also tired of all those bloated PHP Framework, with steep learning curve that create another language on top of PHP. Really?!  
 So this one is smaller. It is not bloated and contains some useful libraries, functions and tricks. And above all, it's damn simple.
 
 ### Installation
-#### Using composer (recommended)
+Platine Framework can be installed using composer
 ```bash
 composer require platine-php/framework
 ```
-#### Using GitHub releases
-- Download the framework using the following link [https://github.com/platine-php/framework/releases](https://github.com/platine-php/framework/releases)
-- Extract the downloaded file in your web directory (**www, htdocs, web, etc.)** for example **/www/platine** or using your application name **/www/my-apps**
-
-### Launch it
-Open your browser with the url like **http://localhost/platine** or **http://localhost/my-apps** change localhost with your real IP address or domain name.
-
-### Tests
-See [TESTING.MD](TESTING.MD)
 
 ### License
 MIT License See [LICENSE.MD](LICENSE.MD)

@@ -3,7 +3,7 @@
 /**
  * Platine Framework
  *
- * Platine is a lightweight, high-performance, simple and elegant PHP Web framework
+ * Platine Framework is a lightweight, high-performance, simple and elegant PHP Web framework
  *
  * This content is released under the MIT License (MIT)
  *
@@ -46,7 +46,124 @@ declare(strict_types=1);
 
 namespace Platine;
 
-class Application
+use Platine\Config\Config;
+use Platine\Config\FileLoader;
+use Platine\Config\LoaderInterface;
+use Platine\Container\ConstructorResolver;
+use Platine\Container\Container;
+use Platine\Container\ContainerInterface;
+use Platine\Container\ResolverInterface;
+use Platine\Http\Handler\CallableResolver;
+use Platine\Http\Handler\CallableResolverInterface;
+use Platine\Http\Handler\RequestHandler;
+use Platine\Http\Handler\RequestHandlerInterface;
+use Platine\Http\Response;
+use Platine\Http\ResponseInterface;
+use Platine\Http\ServerRequest;
+use Platine\Http\ServerRequestInterface;
+use Platine\Route\Middleware\RouteDispatcherMiddleware;
+use Platine\Route\Middleware\RouteMatchMiddleware;
+use Platine\Route\Route;
+use Platine\Route\RouteCollection;
+use Platine\Route\Router;
+
+class Application extends Container
 {
 
+    /**
+     * The application version
+     */
+    public const VERSION = '1.0.0-dev';
+
+    /**
+     * The base path for this application
+     * @var string
+     */
+    protected string $basePath = '/';
+
+    /**
+     * The router instance
+     * @var Router
+     */
+    protected Router $router;
+
+    /**
+     * The configuration instance
+     * @var Config
+     */
+    protected Config $config;
+
+    /**
+     * The request handler
+     * @var RequestHandlerInterface
+     */
+    protected RequestHandlerInterface $requestHandler;
+
+    /**
+     * Create new instance
+     * @param string $basePath
+     */
+    public function __construct(string $basePath = '/')
+    {
+        parent::__construct();
+        $this->basePath = $basePath;
+
+        $this->bindCoreClasses();
+
+        $this->config = new Config(
+            $this->get(LoaderInterface::class),
+            'dev'
+        );
+
+        $routes = [
+            new Route('/', MyRequestHandler::class, 'home', ['GET'])
+        ]; //come from config [routes.php]
+
+        $routeCollection = new RouteCollection($routes);
+
+        $router = new Router($routeCollection);
+        $router->setBasePath($basePath);
+
+        $this->router = $router;
+
+        $this->instance($this->router);
+
+        $this->requestHandler = $this->get(RequestHandlerInterface::class);
+    }
+
+    /**
+     * Bind core classes to container
+     * @return void
+     */
+    protected function bindCoreClasses(): void
+    {
+        $this->bind(ContainerInterface::class, $this);
+        $this->bind(ResolverInterface::class, ConstructorResolver::class);
+        $this->bind(CallableResolverInterface::class, CallableResolver::class);
+        $this->bind(RequestHandlerInterface::class, RequestHandler::class);
+        $this->bind(LoaderInterface::class, FileLoader::class, [
+            'path' => 'config'
+        ]);
+    }
+
+    /**
+     * Run the application
+     * @param ServerRequestInterface|null $request
+     * @return ResponseInterface
+     */
+    public function run(?ServerRequestInterface $request = null): ResponseInterface
+    {
+        $request = $request ?? ServerRequest::createFromGlobals();
+
+        $resolver = $this->get(CallableResolverInterface::class);
+        $routeMatcher = $this->make(RouteMatchMiddleware::class);
+        $routeDispatcher = $this->make(RouteDispatcherMiddleware::class);
+
+        if ($this->requestHandler instanceof RequestHandler) {
+            $this->requestHandler->use($routeMatcher);
+            $this->requestHandler->use($routeDispatcher);
+        }
+
+        return $this->requestHandler->handle($request);
+    }
 }
