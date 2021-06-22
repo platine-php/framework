@@ -56,7 +56,7 @@
 
     "autoload": {
         "psr-4":{
-            "Platine\\": "src/"
+            "Platine\\Framework\\": "src/"
         }
     },
 

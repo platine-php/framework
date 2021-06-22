@@ -6,7 +6,7 @@
  * and open the template in the editor.
  */
 
-namespace Platine;
+namespace Platine\Framework;
 
 use Platine\Framework\Http\RequestData;
 use Platine\Http\Handler\RequestHandlerInterface;

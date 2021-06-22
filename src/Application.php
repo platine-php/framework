@@ -47,62 +47,31 @@ declare(strict_types=1);
 
 namespace Platine\Framework;
 
-use Platine\Config\Config;
-use Platine\Config\FileLoader;
-use Platine\Config\LoaderInterface;
-use Platine\Container\ConstructorResolver;
-use Platine\Container\Container;
-use Platine\Container\ContainerInterface;
-use Platine\Container\ResolverInterface;
-use Platine\Event\Dispatcher;
-use Platine\Event\DispatcherInterface;
 use Platine\Framework\Http\Emitter\EmitterInterface;
-use Platine\Framework\Http\Emitter\ResponseEmitter;
 use Platine\Framework\Http\Exception\HttpNotFoundException;
-use Platine\Http\Handler\CallableResolver;
 use Platine\Http\Handler\CallableResolverInterface;
 use Platine\Http\Handler\MiddlewareInterface;
 use Platine\Http\Handler\RequestHandlerInterface;
 use Platine\Http\ResponseInterface;
 use Platine\Http\ServerRequest;
 use Platine\Http\ServerRequestInterface;
-use Platine\MyRequestHandler;
 use Platine\Route\Middleware\RouteDispatcherMiddleware;
 use Platine\Route\Middleware\RouteMatchMiddleware;
-use Platine\Route\Route;
-use Platine\Route\RouteCollection;
 use Platine\Route\Router;
 
 /**
  * class Application
  * @package Platine\Framework
  */
-class Application extends Container implements RequestHandlerInterface
+class Application extends AbstractApplication implements RequestHandlerInterface
 {
-
-    /**
-     * The application version
-     */
-    public const VERSION = '1.0.0-dev';
-
-    /**
-     * The base path for this application
-     * @var string
-     */
-    protected string $basePath;
 
     /**
      * The router instance
      * @var Router
      */
     protected Router $router;
-
-    /**
-     * The configuration instance
-     * @var Config
-     */
-    protected Config $config;
-
+    
     /**
      * The list of middlewares
      * @var MiddlewareInterface[]
@@ -115,21 +84,10 @@ class Application extends Container implements RequestHandlerInterface
      */
     public function __construct(?string $basePath = null)
     {
-        parent::__construct();
-        $this->bindCoreClasses();
-
-        $this->config = new Config(
-            $this->get(LoaderInterface::class),
-            'dev'
-        );
-
-        $this->basePath = $basePath ?? $this->config->get('app.base_path', '/');
-
-        $this->instance($this->config);
-
+        parent::__construct($basePath);
         $this->setRouting();
     }
-
+    
     /**
      * Add new middleware in the list
      * @param  mixed $middleware
@@ -145,6 +103,18 @@ class Application extends Container implements RequestHandlerInterface
     }
 
     /**
+     * Add new middleware in the list
+     * @param  MiddlewareInterface $middleware
+     * @return self
+     */
+    public function addMiddlerware(MiddlewareInterface $middleware): self
+    {
+        $this->middlewares[] = $middleware;
+
+        return $this;
+    }
+
+    /**
      * Run the application
      * @param ServerRequestInterface|null $request
      * @return void
@@ -152,9 +122,17 @@ class Application extends Container implements RequestHandlerInterface
     public function run(?ServerRequestInterface $request = null): void
     {
         $req = $request ?? ServerRequest::createFromGlobals();
+
+        $routeMatcher = $this->make(RouteMatchMiddleware::class);
+        $routeDispatcher = $this->make(RouteDispatcherMiddleware::class);
+
+        $this->addMiddlerware($routeMatcher);
+        $this->addMiddlerware($routeDispatcher);
+
         /** @var EmitterInterface $emitter */
         $emitter = $this->get(EmitterInterface::class);
         $response = $this->handle($req);
+
         $emitter->emit(
             $response,
             !$this->isEmptyResponse(
@@ -171,14 +149,7 @@ class Application extends Container implements RequestHandlerInterface
      */
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
-        $routeMatcher = $this->make(RouteMatchMiddleware::class);
-        $routeDispatcher = $this->make(RouteDispatcherMiddleware::class);
-
-        $this->use($routeMatcher);
-        $this->use($routeDispatcher);
-
         $handler = clone $this;
-
         if (key($handler->middlewares) === null) {
             throw new HttpNotFoundException($request);
         }
@@ -190,24 +161,11 @@ class Application extends Container implements RequestHandlerInterface
     }
 
     /**
-     * Bind core classes to container
-     * @return void
+     * {@inheritdoc}
      */
-    protected function bindCoreClasses(): void
+    public function execute(): void
     {
-        $this->bind(ContainerInterface::class, $this);
-        $this->bind(ResolverInterface::class, ConstructorResolver::class);
-        $this->bind(CallableResolverInterface::class, CallableResolver::class);
-        $this->bind(RequestHandlerInterface::class, $this);
-        $this->bind(EmitterInterface::class, function (ContainerInterface $app) {
-            return new ResponseEmitter(
-                $app->get(Config::class)->get('app.response_length', null)
-            );
-        });
-        $this->bind(DispatcherInterface::class, Dispatcher::class);
-        $this->bind(LoaderInterface::class, FileLoader::class, [
-            'path' => 'config'
-        ]);
+        $this->run();
     }
 
     /**
@@ -216,14 +174,14 @@ class Application extends Container implements RequestHandlerInterface
      */
     protected function setRouting(): void
     {
-        $routes = [
-            new Route('/tnh', MyRequestHandler::class, 'home', ['GET', 'POST'])
-        ]; //come from config [routes.php]
-
-        $routeCollection = new RouteCollection($routes);
-
-        $router = new Router($routeCollection);
+        $router = new Router();
         $router->setBasePath($this->basePath);
+
+        $routes = static function (Router $router): void {
+            $router->get('/tnh', MyRequestHandler::class, 'home');
+        }; //Come from config [routes.php]
+
+        $routes($router);
 
         $this->router = $router;
         $this->instance($this->router);
