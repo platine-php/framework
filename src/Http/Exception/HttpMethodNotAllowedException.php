@@ -34,31 +34,62 @@ declare(strict_types=1);
 namespace Platine\Framework\Http\Exception;
 
 /**
- * HttpNotFoundException
+ * HttpMethodNotAllowedException
  * @package Platine\Framework\Http\Exception
  */
-class HttpNotFoundException extends HttpSpecialException
+class HttpMethodNotAllowedException extends HttpSpecialException
 {
     /**
      *
      * @var int
      */
-    protected $code = 404;
+    protected $code = 405;
 
     /**
      *
      * @var string
      */
-    protected $message = 'Not found';
+    protected $message = 'Method not allowed.';
 
     /**
      * {@inheritdoc}
      */
-    protected string $title = '404 Not found';
+    protected string $title = '405 Method Not Allowed';
 
     /**
      * {@inheritdoc}
      */
-    protected string $description = 'The requested resource could not be found.'
-            . ' Please verify the URI and try again';
+    protected string $description = 'The request method is not supported '
+            . 'for the requested resource.';
+
+    /**
+     * The list of allowed methods
+     * @var string[]
+     */
+    protected array $allowedMethods = [];
+
+    /**
+     * Return the list of allowed methods
+     * @return string[]
+     */
+    public function getAllowedMethods(): array
+    {
+        return [];
+    }
+
+    /**
+     * Set allowed methods
+     * @param string[] $methods
+     * @return $this
+     */
+    public function setAllowedMethods(array $methods): self
+    {
+        $this->allowedMethods = $methods;
+        $this->message = sprintf(
+            'Method not allowed. Must be one of: %s',
+            implode(', ', $methods)
+        );
+
+        return $this;
+    }
 }

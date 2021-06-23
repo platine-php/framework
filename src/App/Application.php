@@ -34,7 +34,7 @@
  *
  *  The Platine Application class
  *
- *  @package    Platine\Framework
+ *  @package    Platine\Framework\App
  *  @author Platine Developers team
  *  @copyright  Copyright (c) 2020
  *  @license    http://opensource.org/licenses/MIT  MIT License
@@ -45,8 +45,9 @@
 
 declare(strict_types=1);
 
-namespace Platine\Framework;
+namespace Platine\Framework\App;
 
+use Platine\Config\Config;
 use Platine\Framework\Http\Emitter\EmitterInterface;
 use Platine\Framework\Http\Exception\HttpNotFoundException;
 use Platine\Http\Handler\CallableResolverInterface;
@@ -55,13 +56,11 @@ use Platine\Http\Handler\RequestHandlerInterface;
 use Platine\Http\ResponseInterface;
 use Platine\Http\ServerRequest;
 use Platine\Http\ServerRequestInterface;
-use Platine\Route\Middleware\RouteDispatcherMiddleware;
-use Platine\Route\Middleware\RouteMatchMiddleware;
 use Platine\Route\Router;
 
 /**
  * class Application
- * @package Platine\Framework
+ * @package Platine\Framework\App
  */
 class Application extends AbstractApplication implements RequestHandlerInterface
 {
@@ -71,7 +70,7 @@ class Application extends AbstractApplication implements RequestHandlerInterface
      * @var Router
      */
     protected Router $router;
-    
+
     /**
      * The list of middlewares
      * @var MiddlewareInterface[]
@@ -85,9 +84,10 @@ class Application extends AbstractApplication implements RequestHandlerInterface
     public function __construct(?string $basePath = null)
     {
         parent::__construct($basePath);
+        $this->loadConfiguredMiddlewares();
         $this->setRouting();
     }
-    
+
     /**
      * Add new middleware in the list
      * @param  mixed $middleware
@@ -122,13 +122,6 @@ class Application extends AbstractApplication implements RequestHandlerInterface
     public function run(?ServerRequestInterface $request = null): void
     {
         $req = $request ?? ServerRequest::createFromGlobals();
-
-        $routeMatcher = $this->make(RouteMatchMiddleware::class);
-        $routeDispatcher = $this->make(RouteDispatcherMiddleware::class);
-
-        $this->addMiddlerware($routeMatcher);
-        $this->addMiddlerware($routeDispatcher);
-
         /** @var EmitterInterface $emitter */
         $emitter = $this->get(EmitterInterface::class);
         $response = $this->handle($req);
@@ -177,14 +170,29 @@ class Application extends AbstractApplication implements RequestHandlerInterface
         $router = new Router();
         $router->setBasePath($this->basePath);
 
-        $routes = static function (Router $router): void {
-            $router->get('/tnh', MyRequestHandler::class, 'home');
-        }; //Come from config [routes.php]
-
-        $routes($router);
+        $routes = $this->config->get('routes', []);
+        //TODO find a way to remove return of array for
+        //routes configuration
+        $routes[0]($router);
 
         $this->router = $router;
         $this->instance($this->router);
+    }
+
+    /**
+     * Load configured middlewares
+     * @return void
+     */
+    protected function loadConfiguredMiddlewares(): void
+    {
+        /** @var Config $config */
+        $config = $this->get(Config::class);
+
+        /** @var string[] $middlewares */
+        $middlewares = $config->get('middlewares', []);
+        foreach ($middlewares as $middleware) {
+            $this->use($middleware);
+        }
     }
 
     /**

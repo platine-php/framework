@@ -3,13 +3,12 @@
 /**
  * Platine Framework
  *
- * Platine Framework is a lightweight, high-performance, simple and elegant PHP
- * Web framework
+ * Platine Framework is a lightweight, high-performance, simple and elegant
+ * PHP Web framework
  *
  * This content is released under the MIT License (MIT)
  *
  * Copyright (c) 2020 Platine Framework
- * Copyright (c) 2020 Evgeniy Zyubin
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -31,11 +30,11 @@
  */
 
 /**
- *  @file EmitterInterface.php
+ *  @file RoutingServiceProvider.php
  *
- *  The Response emitter interface
+ *  The Framework routing service provider class
  *
- *  @package    Platine\Framework\Http\Emitter
+ *  @package    Platine\Framework\Service\Provider
  *  @author Platine Developers team
  *  @copyright  Copyright (c) 2020
  *  @license    http://opensource.org/licenses/MIT  MIT License
@@ -46,28 +45,25 @@
 
 declare(strict_types=1);
 
-namespace Platine\Framework\Http\Emitter;
+namespace Platine\Framework\Service\Provider;
 
-use Platine\Http\ResponseInterface;
+use Platine\Framework\Http\Middleware\RouteDispatcherMiddleware;
+use Platine\Framework\Http\Middleware\RouteMatchMiddleware;
+use Platine\Framework\Service\ServiceProvider;
 
 /**
- * class EmitterInterface
- * @package Platine\Framework\Http\Emitter
+ * class RoutingServiceProvider
+ * @package Platine\Framework\Service\Provider
  */
-interface EmitterInterface
+class RoutingServiceProvider extends ServiceProvider
 {
 
     /**
-     * Emits a HTTP response, that including status line, headers and message
-     * body, according to the environment.
-     *
-     * When implementing this method, MAY use `header()` and the output buffer.
-     * Also implementations MAY throw exceptions if cannot emit a response,
-     * e.g., if headers already sent or output has been emitted previously.
-     *
-     * @param ResponseInterface $response
-     * @param bool $body
-     * @return void
+     * {@inheritdoc}
      */
-    public function emit(ResponseInterface $response, bool $body = true): void;
+    public function register(): void
+    {
+        $this->app->bind(RouteMatchMiddleware::class);
+        $this->app->bind(RouteDispatcherMiddleware::class);
+    }
 }

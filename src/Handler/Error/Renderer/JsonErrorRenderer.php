@@ -9,7 +9,6 @@
  * This content is released under the MIT License (MIT)
  *
  * Copyright (c) 2020 Platine Framework
- * Copyright (c) 2020 Evgeniy Zyubin
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -31,11 +30,12 @@
  */
 
 /**
- *  @file EmitterInterface.php
+ *  @file JsonErrorRenderer.php
  *
- *  The Response emitter interface
+ *  The JSON error renderer class used to render the errors
+ * for json content type
  *
- *  @package    Platine\Framework\Http\Emitter
+ *  @package    Platine\Framework\Handler\Error\Renderer
  *  @author Platine Developers team
  *  @copyright  Copyright (c) 2020
  *  @license    http://opensource.org/licenses/MIT  MIT License
@@ -46,28 +46,50 @@
 
 declare(strict_types=1);
 
-namespace Platine\Framework\Http\Emitter;
+namespace Platine\Framework\Handler\Error\Renderer;
 
-use Platine\Http\ResponseInterface;
+use Platine\Stdlib\Helper\Json;
+use Throwable;
 
 /**
- * class EmitterInterface
- * @package Platine\Framework\Http\Emitter
+ * class JsonErrorRenderer
+ * @package Platine\Framework\Handler\Error\Renderer
  */
-interface EmitterInterface
+class JsonErrorRenderer extends AbstractErrorRenderer
 {
 
     /**
-     * Emits a HTTP response, that including status line, headers and message
-     * body, according to the environment.
-     *
-     * When implementing this method, MAY use `header()` and the output buffer.
-     * Also implementations MAY throw exceptions if cannot emit a response,
-     * e.g., if headers already sent or output has been emitted previously.
-     *
-     * @param ResponseInterface $response
-     * @param bool $body
-     * @return void
+     * {@inheritdoc}
      */
-    public function emit(ResponseInterface $response, bool $body = true): void;
+    public function render(Throwable $exception, bool $detail, bool $isLog = false): string
+    {
+        $error = [
+            'message' => $this->getErrorTitle($exception)
+        ];
+
+        if ($detail) {
+            $error['exception'] = [];
+            do {
+                $error['exception'][] = $this->getExceptionData($exception);
+            } while ($exception = $exception->getPrevious());
+        }
+
+        return Json::encode($error, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
+    }
+
+    /**
+     * Render exception data
+     * @param Throwable $exception
+     * @return array<string, mixed>
+     */
+    protected function getExceptionData(Throwable $exception): array
+    {
+        return [
+            'type' => get_class($exception),
+            'code' => $exception->getCode(),
+            'message' => $exception->getMessage(),
+            'file' => $exception->getFile(),
+            'line' => $exception->getLine(),
+        ];
+    }
 }

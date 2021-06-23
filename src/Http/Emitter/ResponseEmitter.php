@@ -55,7 +55,7 @@ use Platine\Http\ResponseInterface;
 use Platine\Http\StreamInterface;
 
 /**
- * ResponseEmitter
+ * class ResponseEmitter
  * @package Platine\Framework\Http\Emitter
  */
 class ResponseEmitter implements EmitterInterface
