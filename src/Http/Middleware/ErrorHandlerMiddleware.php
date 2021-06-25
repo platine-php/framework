@@ -148,7 +148,12 @@ class ErrorHandlerMiddleware implements MiddlewareInterface
         ServerRequestInterface $request,
         RequestHandlerInterface $handler
     ): ResponseInterface {
-        set_error_handler(static function (int $severity, string $message, string $file, int $line): bool {
+        set_error_handler(static function (
+            int $severity,
+            string $message,
+            string $file,
+            int $line
+        ): bool {
             // https://www.php.net/manual/en/function.error-reporting.php#8866
             // Usages the defined levels of `error_reporting()`.
             if (!(error_reporting() & $severity)) {
@@ -185,7 +190,7 @@ class ErrorHandlerMiddleware implements MiddlewareInterface
 
         $type = get_class($exception);
 
-        $handler = $this->getExceptionErrorHanlder($type);
+        $handler = $this->getExceptionErrorHandler($type);
 
         return $handler->handle($request, $exception, $this->detail);
     }
@@ -195,7 +200,7 @@ class ErrorHandlerMiddleware implements MiddlewareInterface
      * @param string $type
      * @return ErrorHandlerInterface
      */
-    protected function getExceptionErrorHanlder(string $type): ErrorHandlerInterface
+    protected function getExceptionErrorHandler(string $type): ErrorHandlerInterface
     {
         if (isset($this->handlers[$type])) {
             return $this->handlers[$type];

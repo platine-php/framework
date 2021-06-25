@@ -30,11 +30,11 @@
  */
 
 /**
- *  @file ServiceProvider.php
+ *  @file SessionServiceProvider.php
  *
- *  The Service provider base class
+ *  The Framework session service provider class
  *
- *  @package    Platine\Framework\Service
+ *  @package    Platine\Framework\Service\Provider
  *  @author Platine Developers team
  *  @copyright  Copyright (c) 2020
  *  @license    http://opensource.org/licenses/MIT  MIT License
@@ -45,45 +45,31 @@
 
 declare(strict_types=1);
 
-namespace Platine\Framework\Service;
+namespace Platine\Framework\Service\Provider;
 
-use Platine\Framework\App\Application;
+use Platine\Config\Config;
+use Platine\Container\ContainerInterface;
+use Platine\Framework\Http\Middleware\SessionMiddleware;
+use Platine\Framework\Service\ServiceProvider;
+use Platine\Session\Configuration;
+use Platine\Session\Session;
 
 /**
- * class ServiceProvider
- * @package Platine\Framework\Service
+ * class SessionServiceProvider
+ * @package Platine\Framework\Service\Provider
  */
-class ServiceProvider
+class SessionServiceProvider extends ServiceProvider
 {
 
     /**
-     * The Application instance
-     * @var Application
-     */
-    protected Application $app;
-
-    /**
-     * Create new instance
-     * @param Application $app
-     */
-    public function __construct(Application $app)
-    {
-        $this->app = $app;
-    }
-
-    /**
-     * Register all the services needed
-     * @return void
+     * {@inheritdoc}
      */
     public function register(): void
     {
-    }
-
-    /**
-     * Action to run when the application is booted
-     * @return void
-     */
-    public function boot(): void
-    {
+        $this->app->bind(Configuration::class, function (ContainerInterface $app) {
+            return new Configuration($app->get(Config::class)->get('session', []));
+        });
+        $this->app->bind(Session::class);
+        $this->app->bind(SessionMiddleware::class);
     }
 }

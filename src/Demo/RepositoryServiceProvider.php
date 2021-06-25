@@ -30,11 +30,11 @@
  */
 
 /**
- *  @file ServiceProvider.php
+ *  @file RepositoryServiceProvider.php
  *
- *  The Service provider base class
+ *  The repository provider class
  *
- *  @package    Platine\Framework\Service
+ *  @package    Platine\Framework\Service\Provider
  *  @author Platine Developers team
  *  @copyright  Copyright (c) 2020
  *  @license    http://opensource.org/licenses/MIT  MIT License
@@ -45,45 +45,23 @@
 
 declare(strict_types=1);
 
-namespace Platine\Framework\Service;
+namespace Platine\Framework\Demo;
 
-use Platine\Framework\App\Application;
+use Platine\Framework\Demo\Repository\UserRepository;
+use Platine\Framework\Service\ServiceProvider;
 
 /**
- * class ServiceProvider
- * @package Platine\Framework\Service
+ * class RepositoryServiceProvider
+ * @package Platine\Framework
  */
-class ServiceProvider
+class RepositoryServiceProvider extends ServiceProvider
 {
 
     /**
-     * The Application instance
-     * @var Application
-     */
-    protected Application $app;
-
-    /**
-     * Create new instance
-     * @param Application $app
-     */
-    public function __construct(Application $app)
-    {
-        $this->app = $app;
-    }
-
-    /**
-     * Register all the services needed
-     * @return void
+     * {@inheritdoc}
      */
     public function register(): void
     {
-    }
-
-    /**
-     * Action to run when the application is booted
-     * @return void
-     */
-    public function boot(): void
-    {
+        $this->app->bind(UserRepository::class);
     }
 }

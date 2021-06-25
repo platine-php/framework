@@ -48,7 +48,7 @@ declare(strict_types=1);
 
 namespace Platine\Framework\Http\Middleware;
 
-use Platine\Http\Handler\CallableResolverInterface;
+use Platine\Http\Handler\MiddlewareResolverInterface;
 use Platine\Http\Handler\MiddlewareInterface;
 use Platine\Http\Handler\RequestHandlerInterface;
 use Platine\Http\ResponseInterface;
@@ -64,15 +64,15 @@ class RouteDispatcherMiddleware implements MiddlewareInterface
 
     /**
      * The Middleware resolver instance
-     * @var CallableResolverInterface
+     * @var MiddlewareResolverInterface
      */
-    protected CallableResolverInterface $resolver;
+    protected MiddlewareResolverInterface $resolver;
 
     /**
      * Create new instance
-     * @param CallableResolverInterface $resolver
+     * @param MiddlewareResolverInterface $resolver
      */
-    public function __construct(CallableResolverInterface $resolver)
+    public function __construct(MiddlewareResolverInterface $resolver)
     {
         $this->resolver = $resolver;
     }
@@ -80,8 +80,10 @@ class RouteDispatcherMiddleware implements MiddlewareInterface
     /**
      * {@inheritdoc}
      */
-    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
-    {
+    public function process(
+        ServerRequestInterface $request,
+        RequestHandlerInterface $handler
+    ): ResponseInterface {
         if (!$result = $request->getAttribute(Route::class)) {
             return $handler->handle($request);
         }

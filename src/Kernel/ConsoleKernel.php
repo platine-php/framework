@@ -30,11 +30,11 @@
  */
 
 /**
- *  @file ServiceProvider.php
+ *  @file ConsoleKernel.php
  *
- *  The Service provider base class
+ *  The Console Kernel class
  *
- *  @package    Platine\Framework\Service
+ *  @package    Platine\Framework\Kernel
  *  @author Platine Developers team
  *  @copyright  Copyright (c) 2020
  *  @license    http://opensource.org/licenses/MIT  MIT License
@@ -45,45 +45,29 @@
 
 declare(strict_types=1);
 
-namespace Platine\Framework\Service;
+namespace Platine\Framework\Kernel;
 
+use Platine\Console\Application as ConsoleApp;
 use Platine\Framework\App\Application;
 
 /**
- * class ServiceProvider
- * @package Platine\Framework\Service
+ * class ConsoleKernel
+ * @package Platine\Framework\Kernel
  */
-class ServiceProvider
+class ConsoleKernel
 {
 
-    /**
-     * The Application instance
-     * @var Application
-     */
+    protected ConsoleApp $console;
     protected Application $app;
 
-    /**
-     * Create new instance
-     * @param Application $app
-     */
-    public function __construct(Application $app)
+    public function __construct(Application $app, ConsoleApp $console)
     {
         $this->app = $app;
+        $this->console = $console;
     }
 
-    /**
-     * Register all the services needed
-     * @return void
-     */
-    public function register(): void
+    public function run(array $argv): void
     {
-    }
-
-    /**
-     * Action to run when the application is booted
-     * @return void
-     */
-    public function boot(): void
-    {
+        $this->console->handle($argv);
     }
 }

@@ -6,7 +6,7 @@ namespace Platine\Test\Route\Middleware;
 
 use Platine\Container\Container;
 use Platine\Dev\PlatineTestCase;
-use Platine\Http\Handler\CallableResolver;
+use Platine\Http\Handler\MiddlewareResolver;
 use Platine\Http\Handler\RequestHandler;
 use Platine\Http\Response;
 use Platine\Http\ResponseInterface;
@@ -29,7 +29,7 @@ class RouteDispatcherMiddlewareTest extends PlatineTestCase
         $container = $this->getMockBuilder(Container::class)
                 ->getMock();
 
-        $resolver = new CallableResolver($container);
+        $resolver = new MiddlewareResolver($container);
 
         $m = new RouteDispatcherMiddleware($resolver);
 
@@ -71,7 +71,7 @@ class RouteDispatcherMiddlewareTest extends PlatineTestCase
         $container = $this->getMockBuilder(Container::class)
                 ->getMock();
 
-        $resolver = new CallableResolver($container);
+        $resolver = new MiddlewareResolver($container);
 
         $m = new RouteDispatcherMiddleware($resolver);
 
@@ -118,7 +118,7 @@ class RouteDispatcherMiddlewareTest extends PlatineTestCase
         $container = $this->getMockBuilder(Container::class)
                 ->getMock();
 
-        $resolver = new CallableResolver($container);
+        $resolver = new MiddlewareResolver($container);
 
         $m = new RouteDispatcherMiddleware($resolver);
 

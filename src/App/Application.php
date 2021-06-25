@@ -48,162 +48,246 @@ declare(strict_types=1);
 namespace Platine\Framework\App;
 
 use Platine\Config\Config;
-use Platine\Framework\Http\Emitter\EmitterInterface;
-use Platine\Framework\Http\Exception\HttpNotFoundException;
-use Platine\Http\Handler\CallableResolverInterface;
-use Platine\Http\Handler\MiddlewareInterface;
-use Platine\Http\Handler\RequestHandlerInterface;
-use Platine\Http\ResponseInterface;
-use Platine\Http\ServerRequest;
-use Platine\Http\ServerRequestInterface;
-use Platine\Route\Router;
+use Platine\Config\FileLoader;
+use Platine\Container\Container;
+use Platine\Framework\Service\Provider\BaseServiceProvider;
+use Platine\Framework\Service\Provider\EventServiceProvider;
+use Platine\Framework\Service\Provider\LoggerServiceProvider;
+use Platine\Framework\Service\Provider\RoutingServiceProvider;
+use Platine\Framework\Service\ServiceProvider;
 
 /**
  * class Application
  * @package Platine\Framework\App
  */
-class Application extends AbstractApplication implements RequestHandlerInterface
+class Application extends Container
 {
 
     /**
-     * The router instance
-     * @var Router
+     * The application version
      */
-    protected Router $router;
+    public const VERSION = '1.0.0-dev';
 
     /**
-     * The list of middlewares
-     * @var MiddlewareInterface[]
+     * The base path for this application
+     * @var string
      */
-    protected array $middlewares = [];
+    protected string $basePath = '';
+
+    /**
+     * The application configuration path
+     * @var string
+     */
+    protected string $configPath = 'config';
+
+    /**
+     * The list of service providers
+     * @var array<string, ServiceProvider>
+     */
+    protected array $providers = [];
+
+    /**
+     * Whether the system already booted
+     * @var bool
+     */
+    protected bool $booted = false;
+
+    /**
+     * The application environment
+     * @var string
+     */
+    protected string $env = 'dev';
 
     /**
      * Create new instance
-     * @param string|null $basePath
+     * @param string $basePath
      */
-    public function __construct(?string $basePath = null)
+    public function __construct(string $basePath = '')
     {
-        parent::__construct($basePath);
-        $this->loadConfiguredMiddlewares();
-        $this->setRouting();
+        parent::__construct();
+        $this->basePath = $basePath;
+        $this->loadCoreServiceProviders();
     }
 
     /**
-     * Add new middleware in the list
-     * @param  mixed $middleware
-     * @return self
+     * Return the application version
+     * @return string
      */
-    public function use($middleware): self
+    public function version(): string
     {
-        /** @var CallableResolverInterface $resolver */
-        $resolver = $this->get(CallableResolverInterface::class);
-        $this->middlewares[] = $resolver->resolve($middleware);
+        return self::VERSION;
+    }
+
+    /**
+     * Return the application base path
+     * @return string
+     */
+    public function getBasePath(): string
+    {
+        return $this->basePath;
+    }
+
+    /**
+     * Return the application configuration path
+     * @return string
+     */
+    public function getConfigPath(): string
+    {
+        return $this->configPath;
+    }
+
+    /**
+     * Set the application base path
+     * @param string $basePath
+     * @return $this
+     */
+    public function setBasePath(string $basePath): self
+    {
+        $this->basePath = $basePath;
 
         return $this;
     }
 
     /**
-     * Add new middleware in the list
-     * @param  MiddlewareInterface $middleware
-     * @return self
+     * Set the application configuration path
+     * @param string $configPath
+     * @return $this
      */
-    public function addMiddlerware(MiddlewareInterface $middleware): self
+    public function setConfigPath(string $configPath): self
     {
-        $this->middlewares[] = $middleware;
+        $this->configPath = $configPath;
 
         return $this;
     }
 
-    /**
-     * Run the application
-     * @param ServerRequestInterface|null $request
+        /**
+     * Boot the application
      * @return void
      */
-    public function run(?ServerRequestInterface $request = null): void
+    public function boot(): void
     {
-        $req = $request ?? ServerRequest::createFromGlobals();
-        /** @var EmitterInterface $emitter */
-        $emitter = $this->get(EmitterInterface::class);
-        $response = $this->handle($req);
-
-        $emitter->emit(
-            $response,
-            !$this->isEmptyResponse(
-                $req->getMethod(),
-                $response->getStatusCode()
-            )
-        );
-    }
-
-    /**
-     * Handle the request and generate response
-     * @param ServerRequestInterface $request
-     * @return ResponseInterface
-     */
-    public function handle(ServerRequestInterface $request): ResponseInterface
-    {
-        $handler = clone $this;
-        if (key($handler->middlewares) === null) {
-            throw new HttpNotFoundException($request);
+        if ($this->booted) {
+            return;
         }
 
-        $middleware = current($handler->middlewares);
-        next($handler->middlewares);
+        foreach ($this->providers as $provider) {
+            $this->bootServiceProvider($provider);
+        }
 
-        return $middleware->process($request, $handler);
+        $this->booted = true;
     }
 
     /**
-     * {@inheritdoc}
+     * Register the service provider
+     * @param string|ServiceProvider $provider
+     * @param bool $force whether to force registration of provider
+     * if already loaded
+     * @return ServiceProvider
      */
-    public function execute(): void
-    {
-        $this->run();
+    public function registerServiceProvider(
+        $provider,
+        bool $force = false
+    ): ServiceProvider {
+        $registered = $this->getServiceProvider($provider);
+        if ($registered && !$force) {
+            return $registered;
+        }
+
+        if (is_string($provider)) {
+            $provider = $this->createServiceProvider($provider);
+        }
+
+        $provider->register();
+
+        $this->markProviderAsRegistered($provider);
+
+        if ($this->booted) {
+            $this->bootServiceProvider($provider);
+        }
+
+        return $provider;
     }
 
     /**
-     * Set routing information
+     * Return the registered service provider if exist
+     * @param string|ServiceProvider $provider
+     * @return ServiceProvider|null
+     */
+    public function getServiceProvider($provider): ?ServiceProvider
+    {
+        $name = is_string($provider)
+                ? $provider
+                : get_class($provider);
+
+        return $this->providers[$name] ?? null;
+    }
+
+    /**
+     * Load configured service providers
      * @return void
      */
-    protected function setRouting(): void
+    public function registerConfiguredServiceProviders(): void
     {
-        $router = new Router();
-        $router->setBasePath($this->basePath);
-
-        $routes = $this->config->get('routes', []);
-        //TODO find a way to remove return of array for
-        //routes configuration
-        $routes[0]($router);
-
-        $this->router = $router;
-        $this->instance($this->router);
-    }
-
-    /**
-     * Load configured middlewares
-     * @return void
-     */
-    protected function loadConfiguredMiddlewares(): void
-    {
-        /** @var Config $config */
+        /** @template T @var Config<T> $config */
         $config = $this->get(Config::class);
 
-        /** @var string[] $middlewares */
-        $middlewares = $config->get('middlewares', []);
-        foreach ($middlewares as $middleware) {
-            $this->use($middleware);
+        /** @var string[] $providers */
+        $providers = $config->get('providers', []);
+        foreach ($providers as $provider) {
+            $this->registerServiceProvider($provider);
         }
     }
 
     /**
-     * Whether is the response with no body
-     * @param string $method
-     * @param int $statusCode
-     * @return bool
+     * Load the application configuration
+     * @return void
      */
-    private function isEmptyResponse(string $method, int $statusCode): bool
+    public function registerConfiguration(): void
     {
-        return (strtoupper($method) === 'HEAD')
-                || (in_array($statusCode, [100, 101, 102, 204, 205, 304], true));
+        $loader = new FileLoader($this->getConfigPath());
+        $config = new Config($loader, $this->env);
+        $this->instance($loader);
+        $this->instance($config);
+    }
+
+    /**
+     * Create service provider
+     * @param string $provider
+     * @return ServiceProvider
+     */
+    protected function createServiceProvider(string $provider): ServiceProvider
+    {
+        return new $provider($this);
+    }
+
+    /**
+     * Boot the given service provider
+     * @param ServiceProvider $provider
+     * @return void
+     */
+    protected function bootServiceProvider(ServiceProvider $provider): void
+    {
+        $provider->boot();
+    }
+
+    /**
+     * Set the given service provider as registered
+     * @param ServiceProvider $provider
+     * @return void
+     */
+    protected function markProviderAsRegistered(ServiceProvider $provider): void
+    {
+        $this->providers[get_class($provider)] = $provider;
+    }
+
+    /**
+     * Load framework core service providers
+     * @return void
+     */
+    protected function loadCoreServiceProviders(): void
+    {
+        $this->registerServiceProvider(new BaseServiceProvider($this));
+        $this->registerServiceProvider(new LoggerServiceProvider($this));
+        $this->registerServiceProvider(new EventServiceProvider($this));
     }
 }

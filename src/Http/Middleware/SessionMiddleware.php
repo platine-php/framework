@@ -3,8 +3,8 @@
 /**
  * Platine Framework
  *
- * Platine Framework is a lightweight, high-performance, simple and elegant
- * PHP Web framework
+ * Platine Framework is a lightweight, high-performance, simple and elegant PHP
+ * Web framework
  *
  * This content is released under the MIT License (MIT)
  *
@@ -30,12 +30,12 @@
  */
 
 /**
- *  @file ServiceProvider.php
+ *  @file SessionMiddleware.php
  *
- *  The Service provider base class
+ *  The session middleware class
  *
- *  @package    Platine\Framework\Service
- *  @author Platine Developers team
+ *  @package    Platine\Framework\Http\Middleware
+ *  @author Platine Developers Team
  *  @copyright  Copyright (c) 2020
  *  @license    http://opensource.org/licenses/MIT  MIT License
  *  @link   http://www.iacademy.cf
@@ -45,19 +45,24 @@
 
 declare(strict_types=1);
 
-namespace Platine\Framework\Service;
+namespace Platine\Framework\Http\Middleware;
 
 use Platine\Framework\App\Application;
+use Platine\Http\Handler\MiddlewareInterface;
+use Platine\Http\Handler\RequestHandlerInterface;
+use Platine\Http\ResponseInterface;
+use Platine\Http\ServerRequestInterface;
+use Platine\Session\Session;
 
 /**
- * class ServiceProvider
- * @package Platine\Framework\Service
+ * class SessionMiddleware
+ * @package Platine\Framework\Http\Middleware
  */
-class ServiceProvider
+class SessionMiddleware implements MiddlewareInterface
 {
 
     /**
-     * The Application instance
+     * The application instance
      * @var Application
      */
     protected Application $app;
@@ -72,18 +77,18 @@ class ServiceProvider
     }
 
     /**
-     * Register all the services needed
-     * @return void
+     * {@inheritdoc}
      */
-    public function register(): void
-    {
-    }
+    public function process(
+        ServerRequestInterface $request,
+        RequestHandlerInterface $handler
+    ): ResponseInterface {
 
-    /**
-     * Action to run when the application is booted
-     * @return void
-     */
-    public function boot(): void
-    {
+        $request = $request->withAttribute(
+            Session::class,
+            $this->app->get(Session::class)
+        );
+
+        return $handler->handle($request);
     }
 }

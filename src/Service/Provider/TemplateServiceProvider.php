@@ -30,11 +30,11 @@
  */
 
 /**
- *  @file ServiceProvider.php
+ *  @file TemplateServiceProvider.php
  *
- *  The Service provider base class
+ *  The Framework template service provider class
  *
- *  @package    Platine\Framework\Service
+ *  @package    Platine\Framework\Service\Provider
  *  @author Platine Developers team
  *  @copyright  Copyright (c) 2020
  *  @license    http://opensource.org/licenses/MIT  MIT License
@@ -45,45 +45,35 @@
 
 declare(strict_types=1);
 
-namespace Platine\Framework\Service;
+namespace Platine\Framework\Service\Provider;
 
-use Platine\Framework\App\Application;
+use Platine\Config\Config;
+use Platine\Container\ContainerInterface;
+use Platine\Framework\Service\ServiceProvider;
+use Platine\Template\Cache\AbstractCache;
+use Platine\Template\Cache\NullCache;
+use Platine\Template\Configuration;
+use Platine\Template\Loader\FileLoader;
+use Platine\Template\Loader\LoaderInterface;
+use Platine\Template\Template;
 
 /**
- * class ServiceProvider
- * @package Platine\Framework\Service
+ * class TemplateServiceProvider
+ * @package Platine\Framework\Service\Provider
  */
-class ServiceProvider
+class TemplateServiceProvider extends ServiceProvider
 {
 
     /**
-     * The Application instance
-     * @var Application
-     */
-    protected Application $app;
-
-    /**
-     * Create new instance
-     * @param Application $app
-     */
-    public function __construct(Application $app)
-    {
-        $this->app = $app;
-    }
-
-    /**
-     * Register all the services needed
-     * @return void
+     * {@inheritdoc}
      */
     public function register(): void
     {
-    }
-
-    /**
-     * Action to run when the application is booted
-     * @return void
-     */
-    public function boot(): void
-    {
+        $this->app->bind(Configuration::class, function (ContainerInterface $app) {
+            return new Configuration($app->get(Config::class)->get('template', []));
+        });
+        $this->app->bind(AbstractCache::class, NullCache::class);
+        $this->app->bind(LoaderInterface::class, FileLoader::class);
+        $this->app->bind(Template::class);
     }
 }

@@ -48,17 +48,18 @@ declare(strict_types=1);
 namespace Platine\Framework\Service\Provider;
 
 use Platine\Config\Config;
-use Platine\Config\FileLoader;
-use Platine\Config\LoaderInterface;
+use Platine\Console\Application as ConsoleApp;
 use Platine\Container\ConstructorResolver;
 use Platine\Container\ContainerInterface;
 use Platine\Container\ResolverInterface;
 use Platine\Framework\Http\Emitter\EmitterInterface;
 use Platine\Framework\Http\Emitter\ResponseEmitter;
 use Platine\Framework\Service\ServiceProvider;
-use Platine\Http\Handler\CallableResolver;
-use Platine\Http\Handler\CallableResolverInterface;
-use Platine\Http\Handler\RequestHandlerInterface;
+use Platine\Http\Handler\MiddlewareResolver;
+use Platine\Http\Handler\MiddlewareResolverInterface;
+use Platine\Route\RouteCollection;
+use Platine\Route\RouteCollectionInterface;
+use Platine\Route\Router;
 
 /**
  * class BaseServiceProvider
@@ -72,15 +73,16 @@ class BaseServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        $this->app->bind(LoaderInterface::class, FileLoader::class, [
-            'path' => __DIR__ . '/../../../../../packages/app/config'
-        ]);
-        $this->app->share(Config::class);
-        $this->app->bind('app', $this->app);
+        $this->app->share('app', $this->app);
+        $this->app->share(ConsoleApp::class, function () {
+            return new ConsoleApp('PLATINE CONSOLE', '1.6.8');
+        });
+        $this->app->instance($this->app);
+        $this->app->bind(RouteCollectionInterface::class, RouteCollection::class);
+        $this->app->bind(Router::class);
         $this->app->bind(ContainerInterface::class, $this->app);
         $this->app->bind(ResolverInterface::class, ConstructorResolver::class);
-        $this->app->bind(CallableResolverInterface::class, CallableResolver::class);
-        $this->app->bind(RequestHandlerInterface::class, $this->app);
+        $this->app->bind(MiddlewareResolverInterface::class, MiddlewareResolver::class);
         $this->app->bind(EmitterInterface::class, function (ContainerInterface $app) {
             return new ResponseEmitter(
                 $app->get(Config::class)->get('app.response_length', null)

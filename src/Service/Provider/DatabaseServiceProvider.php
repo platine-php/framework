@@ -30,11 +30,11 @@
  */
 
 /**
- *  @file ServiceProvider.php
+ *  @file DatabaseServiceProvider.php
  *
- *  The Service provider base class
+ *  The Framework database service provider class
  *
- *  @package    Platine\Framework\Service
+ *  @package    Platine\Framework\Service\Provider
  *  @author Platine Developers team
  *  @copyright  Copyright (c) 2020
  *  @license    http://opensource.org/licenses/MIT  MIT License
@@ -45,45 +45,47 @@
 
 declare(strict_types=1);
 
-namespace Platine\Framework\Service;
+namespace Platine\Framework\Service\Provider;
 
-use Platine\Framework\App\Application;
+use Platine\Config\Config;
+use Platine\Container\ContainerInterface;
+use Platine\Database\Configuration;
+use Platine\Database\Connection;
+use Platine\Database\Pool;
+use Platine\Database\QueryBuilder;
+use Platine\Framework\Service\ServiceProvider;
+use Platine\Logger\LoggerInterface;
+use Platine\Orm\EntityManager;
 
 /**
- * class ServiceProvider
- * @package Platine\Framework\Service
+ * class DatabaseServiceProvider
+ * @package Platine\Framework\Service\Provider
  */
-class ServiceProvider
+class DatabaseServiceProvider extends ServiceProvider
 {
 
     /**
-     * The Application instance
-     * @var Application
-     */
-    protected Application $app;
-
-    /**
-     * Create new instance
-     * @param Application $app
-     */
-    public function __construct(Application $app)
-    {
-        $this->app = $app;
-    }
-
-    /**
-     * Register all the services needed
-     * @return void
+     * {@inheritdoc}
      */
     public function register(): void
     {
-    }
+        $this->app->bind(Configuration::class, function (ContainerInterface $app) {
+            /** @template T @var Config<T> $config */
+            $config = $app->get(Config::class);
+            $driver = $config->get('database.default', 'default');
 
-    /**
-     * Action to run when the application is booted
-     * @return void
-     */
-    public function boot(): void
-    {
+            return new Configuration($config->get('database.connections.' . $driver, []));
+        });
+        $this->app->bind(Pool::class, function (ContainerInterface $app) {
+            return new Pool($app->get(Config::class)->get('database', []));
+        });
+        $this->app->share(Connection::class, function (ContainerInterface $app) {
+            return new Connection(
+                $app->get(Configuration::class),
+                $app->get(LoggerInterface::class)
+            );
+        });
+        $this->app->bind(EntityManager::class);
+        $this->app->bind(QueryBuilder::class);
     }
 }
