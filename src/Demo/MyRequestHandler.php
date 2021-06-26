@@ -2,8 +2,8 @@
 
 namespace Platine\Framework\Demo;
 
+use Platine\Cache\CacheInterface;
 use Platine\Config\Config;
-use Platine\Cookie\Cookie;
 use Platine\Cookie\CookieManagerInterface;
 use Platine\Framework\App\Application;
 use Platine\Framework\Demo\Repository\UserRepository;
@@ -30,6 +30,7 @@ class MyRequestHandler implements RequestHandlerInterface
     protected UserRepository $userRepository;
     protected Template $template;
     protected CookieManagerInterface $cookieManager;
+    protected CacheInterface $cache;
 
 
     public function __construct(
@@ -40,6 +41,7 @@ class MyRequestHandler implements RequestHandlerInterface
         Template $template,
         UserRepository $userRepository,
         CookieManagerInterface $cookieManager
+        //CacheInterface $cache
     ) {
         $this->logger = $logger;
         $this->app = $app;
@@ -48,6 +50,7 @@ class MyRequestHandler implements RequestHandlerInterface
         $this->userRepository = $userRepository;
         $this->template = $template;
         $this->cookieManager = $cookieManager;
+        //$this->cache = $cache;
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface
@@ -66,18 +69,17 @@ class MyRequestHandler implements RequestHandlerInterface
         //$this->logger->info('User is {user}', ['user' => print_r($user, true)]);
         //$this->cookieManager->add(new Cookie('app_user', print_r($user, true)));
         $this->logger->info('User name is {name}', ['name' => $name]);
-        $resp = new Response(200);
 
-        $content = $this->template->render('home', [
-            'name' => $name,
-            'lang' => $lang,
-            'user' => $user,
-            'app_name' => $this->config->get('app.name'),
-            'version' => $this->app->version(),
-        ]);
-
-        $resp->getBody()->write($content);
-
-        return $resp->withHeader('Framework', 'Platine PHP');
+        return new TemplateResponse(
+            $this->template,
+            'home',
+            [
+                'name' => $name,
+                'lang' => $lang,
+                'user' => $user,
+                'app_name' => $this->config->get('app.name'),
+                'version' => $this->app->version(),
+            ]
+        );
     }
 }

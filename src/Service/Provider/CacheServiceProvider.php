@@ -48,11 +48,14 @@ declare(strict_types=1);
 namespace Platine\Framework\Service\Provider;
 
 use Platine\Cache\Cache;
+use Platine\Cache\CacheInterface;
 use Platine\Cache\Configuration;
 use Platine\Config\Config;
 use Platine\Container\ContainerInterface;
 use Platine\Filesystem\Adapter\AdapterInterface;
+use Platine\Filesystem\Adapter\Local\LocalAdapter;
 use Platine\Filesystem\Filesystem;
+use Platine\Filesystem\FileSystemInterface;
 use Platine\Framework\Service\ServiceProvider;
 
 /**
@@ -70,8 +73,8 @@ class CacheServiceProvider extends ServiceProvider
         $this->app->bind(Configuration::class, function (ContainerInterface $app) {
             return new Configuration($app->get(Config::class)->get('cache', []));
         });
-        $this->app->bind(AdapterInterface::class);
-        $this->app->bind(Filesystem::class);
-        $this->app->bind(Cache::class);
+        $this->app->bind(AdapterInterface::class, LocalAdapter::class);
+        $this->app->bind(FileSystemInterface::class, Filesystem::class);
+        $this->app->bind(CacheInterface::class, Cache::class);
     }
 }

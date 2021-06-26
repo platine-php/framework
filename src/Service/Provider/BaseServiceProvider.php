@@ -52,6 +52,7 @@ use Platine\Console\Application as ConsoleApp;
 use Platine\Container\ConstructorResolver;
 use Platine\Container\ContainerInterface;
 use Platine\Container\ResolverInterface;
+use Platine\Framework\App\Application;
 use Platine\Framework\Http\Emitter\EmitterInterface;
 use Platine\Framework\Http\Emitter\ResponseEmitter;
 use Platine\Framework\Service\ServiceProvider;
@@ -73,19 +74,19 @@ class BaseServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
+        $this->app->share(Application::class, $this->app);
         $this->app->share('app', $this->app);
         $this->app->share(ConsoleApp::class, function () {
             return new ConsoleApp('PLATINE CONSOLE', '1.6.8');
         });
-        $this->app->instance($this->app);
-        $this->app->bind(RouteCollectionInterface::class, RouteCollection::class);
-        $this->app->bind(Router::class);
         $this->app->bind(ContainerInterface::class, $this->app);
         $this->app->bind(ResolverInterface::class, ConstructorResolver::class);
+        $this->app->bind(RouteCollectionInterface::class, RouteCollection::class);
+        $this->app->bind(Router::class);
         $this->app->bind(MiddlewareResolverInterface::class, MiddlewareResolver::class);
         $this->app->bind(EmitterInterface::class, function (ContainerInterface $app) {
             return new ResponseEmitter(
-                $app->get(Config::class)->get('app.response_length', null)
+                $app->get(Config::class)->get('app.response_chunck_size', null)
             );
         });
     }

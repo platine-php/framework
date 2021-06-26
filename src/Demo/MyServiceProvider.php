@@ -63,5 +63,6 @@ class MyServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->bind(MyRequestHandler::class);
+        $this->app->bind(ConfigCommand::class);
     }
 }

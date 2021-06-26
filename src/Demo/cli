@@ -6,7 +6,7 @@
     use Platine\Framework\Kernel\ConsoleKernel;
 
     $app = new Application();
-    $app->setConfigPath(__DIR__ . '/packages/app/config');
+    $app->setConfigPath(__DIR__ . '/../../../../packages/app/config');
 
     $kernel = $app->make(ConsoleKernel::class); 
 
