@@ -1,16 +1,19 @@
 <?php
 
-namespace Platine\Framework\Demo;
+namespace Platine\Framework\Demo\Action;
 
 use Platine\Cache\CacheInterface;
 use Platine\Config\Config;
 use Platine\Cookie\CookieManagerInterface;
 use Platine\Framework\App\Application;
 use Platine\Framework\Demo\Repository\UserRepository;
+use Platine\Framework\Demo\Response\RedirectResponse;
+use Platine\Framework\Demo\Response\TemplateResponse;
 use Platine\Framework\Http\RequestData;
 use Platine\Http\Handler\RequestHandlerInterface;
 use Platine\Http\ResponseInterface;
 use Platine\Http\ServerRequestInterface;
+use Platine\Lang\Lang;
 use Platine\Logger\LoggerInterface;
 use Platine\Session\Session;
 use Platine\Template\Template;
@@ -31,6 +34,7 @@ class LoginAction implements RequestHandlerInterface
     protected Template $template;
     protected CookieManagerInterface $cookieManager;
     protected CacheInterface $cache;
+    protected Lang $lang;
 
 
     public function __construct(
@@ -41,7 +45,8 @@ class LoginAction implements RequestHandlerInterface
         Template $template,
         UserRepository $userRepository,
         CookieManagerInterface $cookieManager,
-        CacheInterface $cache
+        CacheInterface $cache,
+        Lang $lang
     ) {
         $this->logger = $logger;
         $this->app = $app;
@@ -51,6 +56,7 @@ class LoginAction implements RequestHandlerInterface
         $this->template = $template;
         $this->cookieManager = $cookieManager;
         $this->cache = $cache;
+        $this->lang = $lang;
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface
@@ -60,12 +66,14 @@ class LoginAction implements RequestHandlerInterface
             return new TemplateResponse(
                 $this->template,
                 'login',
-                []
+                [
+                    'labelName' => $this->lang->tr('name'),
+                    'lang' => $this->lang->getLocale()
+                ]
             );
         }
 
         $param = new RequestData($request);
-
 
         $name = $param->post('name');
         $user = $this->userRepository->findBy(['lname' => $name]);
@@ -76,7 +84,9 @@ class LoginAction implements RequestHandlerInterface
                 $this->template,
                 'login',
                 [
-                   'name' => $name
+                   'name' => $name,
+                   'labelName' => $this->lang->tr('name'),
+                    'lang' => $this->lang->getLocale()
                 ]
             );
         }

@@ -6,7 +6,7 @@
  * and open the template in the editor.
  */
 
-namespace Platine\Framework\Demo;
+namespace Platine\Framework\Demo\Response;
 
 use Platine\Http\Response;
 use Platine\Template\Template;

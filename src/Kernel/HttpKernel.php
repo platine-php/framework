@@ -158,11 +158,11 @@ class HttpKernel implements RequestHandlerInterface
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
         $handler = clone $this;
-        if (key($handler->middlewares) === null) {
-            throw new HttpNotFoundException($request);
-        }
 
         $middleware = current($handler->middlewares);
+        if ($middleware === false) {
+            throw new HttpNotFoundException($request);
+        }
         next($handler->middlewares);
 
         return $middleware->process($request, $handler);
@@ -179,7 +179,7 @@ class HttpKernel implements RequestHandlerInterface
 
         $basePath = $this->app->getBasePath();
         if (empty($basePath)) {
-            $basePath = $config->get('app.base_path');
+            $basePath = $config->get('app.base_path', '/');
         }
         $this->router->setBasePath($basePath);
 

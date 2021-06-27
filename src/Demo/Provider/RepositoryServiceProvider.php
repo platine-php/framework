@@ -30,11 +30,11 @@
  */
 
 /**
- *  @file BaseServiceProvider.php
+ *  @file RepositoryServiceProvider.php
  *
- *  The Framework base service provider class
+ *  The repository provider class
  *
- *  @package    Platine\Framework\Service\Provider
+ *  @package    Platine\Framework\Demo\Provider
  *  @author Platine Developers team
  *  @copyright  Copyright (c) 2020
  *  @license    http://opensource.org/licenses/MIT  MIT License
@@ -45,28 +45,16 @@
 
 declare(strict_types=1);
 
-namespace Platine\Framework\Service\Provider;
+namespace Platine\Framework\Demo\Provider;
 
-use Platine\Config\Config;
-use Platine\Console\Application as ConsoleApp;
-use Platine\Container\ConstructorResolver;
-use Platine\Container\ContainerInterface;
-use Platine\Container\ResolverInterface;
-use Platine\Framework\App\Application;
-use Platine\Framework\Http\Emitter\EmitterInterface;
-use Platine\Framework\Http\Emitter\ResponseEmitter;
+use Platine\Framework\Demo\Repository\UserRepository;
 use Platine\Framework\Service\ServiceProvider;
-use Platine\Http\Handler\MiddlewareResolver;
-use Platine\Http\Handler\MiddlewareResolverInterface;
-use Platine\Route\RouteCollection;
-use Platine\Route\RouteCollectionInterface;
-use Platine\Route\Router;
 
 /**
- * class BaseServiceProvider
- * @package Platine\Framework\Service\Provider
+ * class RepositoryServiceProvider
+ * @package Platine\Framework
  */
-class BaseServiceProvider extends ServiceProvider
+class RepositoryServiceProvider extends ServiceProvider
 {
 
     /**
@@ -74,20 +62,6 @@ class BaseServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        $this->app->share(Application::class, $this->app);
-        $this->app->share('app', $this->app);
-        $this->app->share(ConsoleApp::class, function () {
-            return new ConsoleApp('PLATINE CONSOLE', '1.6.8');
-        });
-        $this->app->share(ContainerInterface::class, $this->app);
-        $this->app->bind(ResolverInterface::class, ConstructorResolver::class);
-        $this->app->bind(RouteCollectionInterface::class, RouteCollection::class);
-        $this->app->share(Router::class);
-        $this->app->bind(MiddlewareResolverInterface::class, MiddlewareResolver::class);
-        $this->app->bind(EmitterInterface::class, function (ContainerInterface $app) {
-            return new ResponseEmitter(
-                $app->get(Config::class)->get('app.response_chunck_size', null)
-            );
-        });
+        $this->app->bind(UserRepository::class);
     }
 }

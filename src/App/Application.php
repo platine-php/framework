@@ -53,7 +53,6 @@ use Platine\Container\Container;
 use Platine\Framework\Service\Provider\BaseServiceProvider;
 use Platine\Framework\Service\Provider\EventServiceProvider;
 use Platine\Framework\Service\Provider\LoggerServiceProvider;
-use Platine\Framework\Service\Provider\RoutingServiceProvider;
 use Platine\Framework\Service\ServiceProvider;
 
 /**
@@ -248,6 +247,8 @@ class Application extends Container
         $config = new Config($loader, $this->env);
         $this->instance($loader);
         $this->instance($config);
+
+        date_default_timezone_set($config->get('app.timezone', 'UTC'));
     }
 
     /**

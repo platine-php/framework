@@ -6,7 +6,7 @@
  * and open the template in the editor.
  */
 
-namespace Platine\Framework\Demo;
+namespace Platine\Framework\Demo\Response;
 
 use Platine\Http\Response;
 
@@ -18,6 +18,10 @@ use Platine\Http\Response;
 class RedirectResponse extends Response
 {
 
+    /**
+     * The URL to redirect to
+     * @var string
+     */
     protected string $url = '/';
 
     /**
@@ -31,7 +35,7 @@ class RedirectResponse extends Response
     }
 
     /**
-     * Redirection the user to another location
+     * Redirect to the current URL attribute
      * @return $this
      */
     public function redirect(): self

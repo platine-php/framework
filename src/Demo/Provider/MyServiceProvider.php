@@ -34,7 +34,7 @@
  *
  *  My test service provider class
  *
- *  @package    Platine\Framework\Service\Provider
+ *  @package    Platine\Framework\Demo\Provider
  *  @author Platine Developers team
  *  @copyright  Copyright (c) 2020
  *  @license    http://opensource.org/licenses/MIT  MIT License
@@ -45,9 +45,12 @@
 
 declare(strict_types=1);
 
-namespace Platine\Framework\Demo;
+namespace Platine\Framework\Demo\Provider;
 
-use Platine\Framework\Demo\HomeAction;
+use Platine\Framework\Demo\Action\HomeAction;
+use Platine\Framework\Demo\Action\LoginAction;
+use Platine\Framework\Demo\Action\LogoutAction;
+use Platine\Framework\Demo\Command\ConfigCommand;
 use Platine\Framework\Service\ServiceProvider;
 
 /**

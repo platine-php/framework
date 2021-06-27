@@ -30,9 +30,9 @@
  */
 
 /**
- *  @file RepositoryServiceProvider.php
+ *  @file LangServiceProvider.php
  *
- *  The repository provider class
+ *  The Framework language service provider class
  *
  *  @package    Platine\Framework\Service\Provider
  *  @author Platine Developers team
@@ -45,16 +45,23 @@
 
 declare(strict_types=1);
 
-namespace Platine\Framework\Demo;
+namespace Platine\Framework\Service\Provider;
 
-use Platine\Framework\Demo\Repository\UserRepository;
+use Platine\Config\Config;
+use Platine\Container\ContainerInterface;
 use Platine\Framework\Service\ServiceProvider;
+use Platine\Lang\Configuration;
+use Platine\Lang\Lang;
+use Platine\Lang\Storage\MemoryStorage;
+use Platine\Lang\Storage\StorageInterface;
+use Platine\Lang\Translator\GettextTranslator;
+use Platine\Lang\Translator\TranslatorInterface;
 
 /**
- * class RepositoryServiceProvider
- * @package Platine\Framework
+ * class LangServiceProvider
+ * @package Platine\Framework\Service\Provider
  */
-class RepositoryServiceProvider extends ServiceProvider
+class LangServiceProvider extends ServiceProvider
 {
 
     /**
@@ -62,6 +69,11 @@ class RepositoryServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        $this->app->bind(UserRepository::class);
+        $this->app->bind(Configuration::class, function (ContainerInterface $app) {
+            return new Configuration($app->get(Config::class)->get('lang', []));
+        });
+        $this->app->bind(StorageInterface::class, MemoryStorage::class);
+        $this->app->bind(TranslatorInterface::class, GettextTranslator::class);
+        $this->app->bind(Lang::class);
     }
 }

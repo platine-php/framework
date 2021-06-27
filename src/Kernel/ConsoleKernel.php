@@ -86,6 +86,11 @@ class ConsoleKernel
         $this->console = $console;
     }
 
+    /**
+     *
+     * @param string[] $argv
+     * @return void
+     */
     public function run(array $argv): void
     {
         $this->bootstrap();

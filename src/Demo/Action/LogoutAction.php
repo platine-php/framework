@@ -1,6 +1,6 @@
 <?php
 
-namespace Platine\Framework\Demo;
+namespace Platine\Framework\Demo\Action;
 
 use Platine\Cache\CacheInterface;
 use Platine\Config\Config;
@@ -8,6 +8,7 @@ use Platine\Cookie\CookieManagerInterface;
 use Platine\Framework\App\Application;
 use Platine\Framework\Demo\Repository\UserRepository;
 use Platine\Http\Handler\RequestHandlerInterface;
+use Platine\Http\Response;
 use Platine\Http\ResponseInterface;
 use Platine\Http\ServerRequestInterface;
 use Platine\Logger\LoggerInterface;
@@ -15,11 +16,11 @@ use Platine\Session\Session;
 use Platine\Template\Template;
 
 /**
- * Description of HomeAction
+ * Description of LogoutAction
  *
  * @author tony
  */
-class HomeAction implements RequestHandlerInterface
+class LogoutAction implements RequestHandlerInterface
 {
 
     protected LoggerInterface $logger;
@@ -54,19 +55,14 @@ class HomeAction implements RequestHandlerInterface
 
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
-        $user = $this->session->get('user');
-        if (!$user) {
-            $this->logger->info('User ot yet login');
+        $this->session->remove('user');
 
-            return (new RedirectResponse('login'))->redirect();
-        }
+        $res = new Response();
 
-        return new TemplateResponse(
-            $this->template,
-            'home',
-            [
-                'user' => $user,
-            ]
-        );
+        $res->getBody()
+                ->write('You are successfully logout 
+                    <br /><a href = \'login\'>Login Page</a>');
+
+        return $res;
     }
 }

@@ -6,7 +6,7 @@
  * and open the template in the editor.
  */
 
-namespace Platine\Framework\Demo;
+namespace Platine\Framework\Demo\Command;
 
 use Platine\Config\Config;
 use Platine\Console\Command\Command;
@@ -54,6 +54,7 @@ class ConfigCommand extends Command
         $writer->blackBgBlue(sprintf('Show configuration for [%s]', $type), true)->eol();
 
         $items = (array) $config->get($type, []);
+        /** @var array<int, array<int, array<string, string>>> $rows*/
         $rows = [];
         foreach ($items as $name => $value) {
             $valueStr = Str::stringify($value);
