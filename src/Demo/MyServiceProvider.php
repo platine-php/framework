@@ -47,7 +47,7 @@ declare(strict_types=1);
 
 namespace Platine\Framework\Demo;
 
-use Platine\Framework\Demo\MyRequestHandler;
+use Platine\Framework\Demo\HomeAction;
 use Platine\Framework\Service\ServiceProvider;
 
 /**
@@ -62,7 +62,9 @@ class MyServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        $this->app->bind(MyRequestHandler::class);
+        $this->app->bind(HomeAction::class);
+        $this->app->bind(LoginAction::class);
+        $this->app->bind(LogoutAction::class);
         $this->app->bind(ConfigCommand::class);
     }
 }

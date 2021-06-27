@@ -10,5 +10,5 @@
 
     $kernel = $app->make(ConsoleKernel::class); 
 
-    $kernel->run($_SERVER['argv']);
+    $kernel->run($_SERVER['argv'] ?? []);
 

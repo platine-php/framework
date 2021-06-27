@@ -16,11 +16,11 @@ use Platine\Session\Session;
 use Platine\Template\Template;
 
 /**
- * Description of MyRequestHandler
+ * Description of LogoutAction
  *
  * @author tony
  */
-class MyRequestHandler implements RequestHandlerInterface
+class LogoutAction implements RequestHandlerInterface
 {
 
     protected LoggerInterface $logger;
@@ -40,8 +40,8 @@ class MyRequestHandler implements RequestHandlerInterface
         Session $session,
         Template $template,
         UserRepository $userRepository,
-        CookieManagerInterface $cookieManager
-        //CacheInterface $cache
+        CookieManagerInterface $cookieManager,
+        CacheInterface $cache
     ) {
         $this->logger = $logger;
         $this->app = $app;
@@ -50,36 +50,19 @@ class MyRequestHandler implements RequestHandlerInterface
         $this->userRepository = $userRepository;
         $this->template = $template;
         $this->cookieManager = $cookieManager;
-        //$this->cache = $cache;
+        $this->cache = $cache;
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
+        $this->session->remove('user');
 
-        //$param = new RequestData($request);
+        $res = new Response();
 
-        if (!$this->session->has('lang')) {
-            $this->logger->info('Session language not exist create it now');
-            $this->session->set('lang', 'fr_Fr');
-        }
-        $lang = $this->session->get('lang');
+        $res->getBody()
+                ->write('You are successfully logout 
+                    <br /><a href = \'login\'>Login Page</a>');
 
-        $name = $request->getAttribute('name', 'Tony');
-        $user = $this->userRepository->find(1);
-        //$this->logger->info('User is {user}', ['user' => print_r($user, true)]);
-        //$this->cookieManager->add(new Cookie('app_user', print_r($user, true)));
-        $this->logger->info('User name is {name}', ['name' => $name]);
-
-        return new TemplateResponse(
-            $this->template,
-            'home',
-            [
-                'name' => $name,
-                'lang' => $lang,
-                'user' => $user,
-                'app_name' => $this->config->get('app.name'),
-                'version' => $this->app->version(),
-            ]
-        );
+        return $res;
     }
 }

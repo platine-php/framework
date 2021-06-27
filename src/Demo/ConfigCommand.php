@@ -11,6 +11,7 @@ namespace Platine\Framework\Demo;
 use Platine\Config\Config;
 use Platine\Console\Command\Command;
 use Platine\Framework\App\Application;
+use Platine\Stdlib\Helper\Str;
 
 /**
  * Description of ConfigCommand
@@ -55,14 +56,15 @@ class ConfigCommand extends Command
         $items = (array) $config->get($type, []);
         $rows = [];
         foreach ($items as $name => $value) {
+            $valueStr = Str::stringify($value);
             if (is_int($name)) {
                 $rows[] = [
-                    'value' => (string) $value,
+                    'value' => $valueStr
                 ];
             } else {
                 $rows[] = [
                     'name' => $name,
-                    'value' => (string) $value,
+                    'value' => $valueStr
                 ];
             }
         }
