@@ -17,7 +17,7 @@
         'storages' => [
             'file' => [
                 'class' => LocalStorage::class,
-                'path' => __DIR__ . '/../storage/session',
+                'path' => __DIR__ . '/../storage/tmp/session',
                 'prefix' => 'sess_',
             ], 
             'apcu' => [

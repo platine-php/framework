@@ -8,7 +8,7 @@
             'file' => [
                 'enable' => true,
                 'class' => FileHandler::class,
-                'path' => __DIR__ . '/../storage/logs',
+                'path' => __DIR__ . '/../storage/tmp/logs',
                 'prefix' => 'app.',
                 'level' => LogLevel::DEBUG,
             ],

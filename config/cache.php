@@ -9,7 +9,7 @@
         'storages' => [
             'file' => [
                 'class' => LocalStorage::class,
-                'path' => __DIR__ . '/../storage/cache',
+                'path' => __DIR__ . '/../storage/tmp/cache',
                 'prefix' => 'cache_',
             ], 
             'apcu' => [

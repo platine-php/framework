@@ -30,11 +30,11 @@
  */
 
 /**
- *  @file MyServiceProvider.php
+ *  @file functions.php
  *
- *  My test service provider class
+ *  This file contains Framework some useful functions
+ * used
  *
- *  @package    Platine\Framework\Demo\Provider
  *  @author Platine Developers team
  *  @copyright  Copyright (c) 2020
  *  @license    http://opensource.org/licenses/MIT  MIT License
@@ -45,31 +45,19 @@
 
 declare(strict_types=1);
 
-namespace Platine\Framework\Demo\Provider;
+use Platine\Framework\App\Application;
 
-use Platine\Framework\Demo\Action\User\DetailAction;
-use Platine\Framework\Demo\Action\User\ListAction;
-use Platine\Framework\Demo\Action\User\LoginAction;
-use Platine\Framework\Demo\Action\User\LogoutAction;
-use Platine\Framework\Demo\Command\ConfigCommand;
-use Platine\Framework\Service\ServiceProvider;
-
-/**
- * class MyServiceProvider
- * @package Platine\Framework
- */
-class MyServiceProvider extends ServiceProvider
-{
-
+if (!function_exists('app')) {
     /**
-     * {@inheritdoc}
+     * Return the container resolved instance
+     * @param string|null $identifier the container identifier, if null the
+     *  application instance will be returned
+     * @return mixed
      */
-    public function register(): void
+    function app(?string $identifier = null)
     {
-        $this->app->bind(LoginAction::class);
-        $this->app->bind(ListAction::class);
-        $this->app->bind(LogoutAction::class);
-        $this->app->bind(DetailAction::class);
-        $this->app->bind(ConfigCommand::class);
+        $app = Application::getInstance();
+
+        return $identifier ? $app->get($identifier) : $app;
     }
 }

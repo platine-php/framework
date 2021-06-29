@@ -11,6 +11,7 @@ namespace Platine\Framework\Demo\Command;
 use Platine\Config\Config;
 use Platine\Console\Command\Command;
 use Platine\Framework\App\Application;
+use Platine\Lang\Lang;
 use Platine\Stdlib\Helper\Str;
 
 /**
@@ -22,11 +23,12 @@ class ConfigCommand extends Command
 {
 
     protected Application $application;
+    protected Lang $lang;
 
     /**
      *
      */
-    public function __construct(Application $application)
+    public function __construct(Application $application, Lang $lang)
     {
         parent::__construct('config', 'Command to manage configuration');
         $this->setAlias('c');
@@ -35,11 +37,12 @@ class ConfigCommand extends Command
         $this->addOption('-t|--type', 'Configuration type', 'app', true);
 
         $this->application = $application;
+        $this->lang = $lang;
     }
 
     public function execute()
     {
-        if ($this->getArgumentValue('list')) {
+        if ($this->getArgumentValue('list') === 'list') {
             $this->showConfigList();
         }
     }
@@ -64,7 +67,7 @@ class ConfigCommand extends Command
                 ];
             } else {
                 $rows[] = [
-                    'name' => $name,
+                    $this->lang->tr('name') => $name,
                     'value' => $valueStr
                 ];
             }

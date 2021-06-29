@@ -57,7 +57,10 @@
     "autoload": {
         "psr-4":{
             "Platine\\Framework\\": "src/"
-        }
+        },
+        "files": [
+            "src/Helper/functions.php"
+        ]
     },
 
     "autoload-dev": {
