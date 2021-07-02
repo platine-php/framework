@@ -50,4 +50,18 @@ class BaseParam
     {
         return [];
     }
+
+    /**
+     * Return the value for the given property
+     * @param string $name
+     * @return mixed|null
+     */
+    public function __get($name)
+    {
+        if (property_exists($this, $name)) {
+            return $this->{$name};
+        }
+
+        return null;
+    }
 }

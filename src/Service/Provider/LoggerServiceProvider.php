@@ -51,6 +51,7 @@ use Platine\Config\Config;
 use Platine\Container\ContainerInterface;
 use Platine\Framework\Service\ServiceProvider;
 use Platine\Logger\Configuration as LoggerConfiguration;
+use Platine\Logger\Handler\FileHandler;
 use Platine\Logger\Logger;
 use Platine\Logger\LoggerInterface;
 
@@ -67,9 +68,17 @@ class LoggerServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->bind(LoggerInterface::class, function (ContainerInterface $app) {
-            return new Logger(
-                new LoggerConfiguration($app->get(Config::class)->get('logging', []))
+            $cfg = new LoggerConfiguration(
+                $app->get(Config::class)->get('logging', [])
             );
+            $logger = new Logger($cfg);
+
+            $logger->addHandler(
+                'file',
+                new FileHandler($cfg)
+            );
+
+            return $logger;
         });
     }
 }

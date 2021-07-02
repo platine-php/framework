@@ -4,7 +4,8 @@ namespace Platine\Framework\Demo\Form\Param;
 
 class AuthParam extends BaseParam
 {
-    protected string $username;
+    protected string $username = '';
+    protected string $password = '';
 
     public function getUsername(): string
     {
@@ -14,6 +15,18 @@ class AuthParam extends BaseParam
     public function setUsername(string $username): self
     {
         $this->username = $username;
+
+        return $this;
+    }
+
+    public function getPassword(): string
+    {
+        return $this->password;
+    }
+
+    public function setPassword(string $password): self
+    {
+        $this->password = $password;
 
         return $this;
     }

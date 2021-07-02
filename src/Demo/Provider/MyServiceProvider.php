@@ -47,6 +47,7 @@ declare(strict_types=1);
 
 namespace Platine\Framework\Demo\Provider;
 
+use Platine\Framework\Demo\Action\User\CreateAction;
 use Platine\Framework\Demo\Action\User\DetailAction;
 use Platine\Framework\Demo\Action\User\ListAction;
 use Platine\Framework\Demo\Action\User\LoginAction;
@@ -66,6 +67,7 @@ class MyServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
+        $this->app->bind(CreateAction::class);
         $this->app->bind(LoginAction::class);
         $this->app->bind(ListAction::class);
         $this->app->bind(LogoutAction::class);

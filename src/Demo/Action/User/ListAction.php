@@ -33,7 +33,7 @@ class ListAction implements RequestHandlerInterface
 
         return new TemplateResponse(
             $this->template,
-            'list',
+            'user/list',
             [
                 'users' => $users,
             ]

@@ -46,7 +46,7 @@ class DetailAction implements RequestHandlerInterface
 
         return new TemplateResponse(
             $this->template,
-            'detail',
+            'user/detail',
             [
                 'user' => $user,
             ]

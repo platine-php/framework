@@ -1,0 +1,16 @@
+<h3>Authentication</h3>
+<form action = '' method='post'>
+    <div>
+        <label>Username:</label>
+        <input type= 'text' name = 'username' value = '{{ param.username }}' /><br />
+        <p style="color: red;">{{ errors.username }}</p>
+    </div>
+    <div>
+        <label>Password:</label>
+        <input type= 'password' name = 'password' value = '' /><br />
+        <p style="color: red;">{{ errors.password }}</p>
+    </div>
+    <div>
+        <input type= 'submit' name = 'submit' value = 'Connection' />
+    </div>
+</form>

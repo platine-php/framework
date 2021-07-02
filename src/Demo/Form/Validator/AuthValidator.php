@@ -26,13 +26,18 @@ class AuthValidator extends AbstractValidator
     public function setData(): void
     {
         $this->addData('username', $this->param->getUsername());
+        $this->addData('password', $this->param->getPassword());
     }
 
     public function setRules(): void
     {
         $this->validator->addRules('username', [
            new NotEmpty(),
-            new MinLength(3)
+           new MinLength(3)
+        ]);
+
+        $this->validator->addRules('password', [
+           new NotEmpty(),
         ]);
     }
 }

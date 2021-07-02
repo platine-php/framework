@@ -1,0 +1,29 @@
+2021-07-02 20:41:25.534262	[INFO]	[Platine\Database\Connection]	[pid:0]	Execute Query: [SELECT * FROM `users` WHERE `username` = ?], parameters: [admin@admin.com], time: [0.000299]
+2021-07-02 20:41:25.538220	[ERROR]	[MAIN]	[pid:0]	User with username admin@admin.com not found
+2021-07-02 20:48:47.432313	[INFO]	[Platine\Database\Connection]	[pid:0]	Execute Query: [SELECT * FROM `users` WHERE `username` = ?], parameters: [admin@admin.com], time: [0.000402]
+2021-07-02 20:48:47.433536	[ERROR]	[MAIN]	[pid:0]	User with username admin@admin.com not found
+2021-07-02 20:49:01.953392	[INFO]	[Platine\Database\Connection]	[pid:0]	Execute Query: [SELECT * FROM `users` WHERE `username` = ?], parameters: [tnh], time: [0.000528]
+2021-07-02 20:49:01.961666	[ERROR]	[MAIN]	[pid:0]	Invalid user credential, tnh
+2021-07-02 20:49:50.463219	[INFO]	[Platine\Database\Connection]	[pid:0]	Execute Query: [SELECT * FROM `users` WHERE `username` = ?], parameters: [tnh], time: [0.000302]
+2021-07-02 20:49:50.569972	[ERROR]	[MAIN]	[pid:0]	Invalid user credential, tnh
+2021-07-02 20:49:55.644752	[INFO]	[Platine\Database\Connection]	[pid:0]	Execute Query: [SELECT * FROM `users` WHERE `username` = ?], parameters: [tnh], time: [0.000319]
+2021-07-02 20:49:55.782990	[INFO]	[Platine\Database\Connection]	[pid:0]	Execute Query: [SELECT * FROM `users`], parameters: [], time: [0.000404]
+2021-07-02 20:52:40.689586	[INFO]	[Platine\Database\Connection]	[pid:0]	Execute Query: [SELECT * FROM `users` WHERE `username` = ?], parameters: [tnh], time: [0.000401]
+2021-07-02 20:52:40.832183	[INFO]	[Platine\Database\Connection]	[pid:0]	Execute Query: [SELECT * FROM `users`], parameters: [], time: [0.000248]
+2021-07-02 20:53:48.839481	[ERROR]	[MAIN]	[pid:0]	404 Not found: The requested resource could not be found. Please verify the URI and try again, Platine\Framework\Http\Exception\HttpNotFoundException(code:404) Not found at D:\wamp\www\platine-php\packages\framework\src\Kernel\HttpKernel.php line 147
+2021-07-02 21:10:58.775563	[INFO]	[Platine\Database\Connection]	[pid:0]	Execute Query: [SELECT * FROM `users` WHERE `username` = ?], parameters: [tnh], time: [0.000283]
+2021-07-02 21:10:58.776859	[ERROR]	[MAIN]	[pid:0]	User with username tnh already exists
+2021-07-02 21:11:17.518341	[INFO]	[Platine\Database\Connection]	[pid:0]	Execute Query: [SELECT * FROM `users` WHERE `username` = ?], parameters: [ethan], time: [0.000251]
+2021-07-02 21:11:17.636994	[INFO]	[Platine\Database\Connection]	[pid:0]	Execute Query: [INSERT INTO `users`(`username`, `fname`, `lname`, `password`, `status`, `age`, `deleted`) VALUES (?, ?, ?, ?, ?, ?, ?)], parameters: [ethan, Tony, NGUEREZA, $2y$10$o6GU6uuqUEd0znn4hzScr.Yjo8sOc.wSMQj2Wd36fgVKW0XQa62Sa, 1, 23, 0], time: [0.000326]
+2021-07-02 21:11:17.663089	[INFO]	[Platine\Database\Connection]	[pid:0]	Execute Query: [SELECT * FROM `users`], parameters: [], time: [0.000394]
+2021-07-02 21:11:17.671624	[ERROR]	[MAIN]	[pid:0]	Platine Application Error: An error has occurred. Sorry for the temporary inconvenience., Platine\Template\Exception\NotFoundException(code:0) Template file [D:\wamp\www\platine-php\packages\framework\storage\resource\templates\list.html] does not exist at D:\wamp\www\platine-php\vendor\platine-php\template\src\Loader\FileLoader.php line 130
+2021-07-02 21:11:47.083442	[INFO]	[Platine\Database\Connection]	[pid:0]	Execute Query: [SELECT * FROM `users`], parameters: [], time: [0.000305]
+2021-07-02 21:14:00.286821	[INFO]	[Platine\Database\Connection]	[pid:0]	Execute Query: [SELECT * FROM `users` WHERE `username` = ?], parameters: [tnh], time: [0.000379]
+2021-07-02 21:14:00.424863	[INFO]	[Platine\Database\Connection]	[pid:0]	Execute Query: [SELECT * FROM `users`], parameters: [], time: [0.000309]
+2021-07-02 21:14:06.679208	[INFO]	[Platine\Database\Connection]	[pid:0]	Execute Query: [SELECT * FROM `users` WHERE `user_id` = ?], parameters: [8], time: [0.000984]
+2021-07-02 21:14:11.192511	[INFO]	[Platine\Database\Connection]	[pid:0]	Execute Query: [SELECT * FROM `users`], parameters: [], time: [0.000236]
+2021-07-02 21:14:14.989263	[ERROR]	[MAIN]	[pid:0]	404 Not found: The requested resource could not be found. Please verify the URI and try again, Platine\Framework\Http\Exception\HttpNotFoundException(code:404) Not found at D:\wamp\www\platine-php\packages\framework\src\Kernel\HttpKernel.php line 147
+2021-07-02 21:14:46.573633	[INFO]	[Platine\Database\Connection]	[pid:0]	Execute Query: [SELECT * FROM `users`], parameters: [], time: [0.000256]
+2021-07-02 21:14:53.591664	[INFO]	[Platine\Database\Connection]	[pid:0]	Execute Query: [SELECT * FROM `users`], parameters: [], time: [0.000340]
+2021-07-02 21:14:59.102388	[INFO]	[Platine\Database\Connection]	[pid:0]	Execute Query: [SELECT * FROM `users` WHERE `user_id` = ?], parameters: [1], time: [0.000301]
+2021-07-02 21:15:00.785706	[INFO]	[Platine\Database\Connection]	[pid:0]	Execute Query: [SELECT * FROM `users`], parameters: [], time: [0.000716]

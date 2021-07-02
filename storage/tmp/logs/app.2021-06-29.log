@@ -1,9 +1,0 @@
-2021-06-29 05:24:02.920522	[INFO]	[Platine\Database\Connection]	[pid:0]	Execute Query: [SELECT * FROM `users`], parameters: [], time: [0.000877]
-2021-06-29 05:24:14.463775	[INFO]	[Platine\Database\Connection]	[pid:0]	Execute Query: [SELECT * FROM `users` WHERE `user_id` = ?], parameters: [1], time: [0.000725]
-2021-06-29 05:25:28.642118	[INFO]	[Platine\Database\Connection]	[pid:0]	Execute Query: [SELECT * FROM `users`], parameters: [], time: [0.001413]
-2021-06-29 05:25:41.948797	[ERROR]	[MAIN]	[pid:0]	404 Not found: The requested resource could not be found. Please verify the URI and try again, Platine\Framework\Http\Exception\HttpNotFoundException(code:404) Not found at D:\wamp\www\platine-php\packages\framework\src\Kernel\HttpKernel.php line 164
-2021-06-29 05:26:42.909140	[ERROR]	[MAIN]	[pid:0]	404 Not found: The requested resource could not be found. Please verify the URI and try again, Platine\Framework\Http\Exception\HttpNotFoundException(code:404) Not found at D:\wamp\www\platine-php\packages\framework\src\Kernel\HttpKernel.php line 164
-2021-06-29 05:26:56.571398	[INFO]	[Platine\Database\Connection]	[pid:0]	Execute Query: [SELECT * FROM `users`], parameters: [], time: [0.000762]
-2021-06-29 05:27:10.802912	[INFO]	[Platine\Database\Connection]	[pid:0]	Execute Query: [SELECT * FROM `users` WHERE `lname` = ?], parameters: [TNH], time: [0.000494]
-2021-06-29 05:27:10.842997	[INFO]	[Platine\Database\Connection]	[pid:0]	Execute Query: [SELECT * FROM `users`], parameters: [], time: [0.000218]
-2021-06-29 08:57:22.890352	[INFO]	[Platine\Database\Connection]	[pid:0]	Execute Query: [SELECT * FROM `users`], parameters: [], time: [0.005838]

@@ -95,6 +95,43 @@ class RequestData
     }
 
     /**
+     * Return the post data
+     * @return array<string, mixed>
+     */
+    public function posts(): array
+    {
+        return $this->posts;
+    }
+
+    /**
+     * Return the get data
+     * @return array<string, mixed>
+     */
+    public function gets(): array
+    {
+        return $this->gets;
+    }
+
+    /**
+     * Return the server data
+     * @return array<string, mixed>
+     */
+    public function servers(): array
+    {
+        return $this->servers;
+    }
+
+    /**
+     * Return the cookie data
+     * @return array<string, mixed>
+     */
+    public function cookies(): array
+    {
+        return $this->cookies;
+    }
+
+
+    /**
      * Return the request query value for the given key
      * @param string $key the key to fetch also support for dot notation
      * @param mixed $default

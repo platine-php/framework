@@ -2,8 +2,8 @@
 
 namespace Platine\Framework\Demo\Action\User;
 
-use Platine\Framework\Demo\Form\Param\AuthParam;
-use Platine\Framework\Demo\Form\Validator\AuthValidator;
+use Platine\Framework\Demo\Form\Param\UserParam;
+use Platine\Framework\Demo\Form\Validator\UserValidator;
 use Platine\Framework\Demo\Repository\UserRepository;
 use Platine\Framework\Demo\Response\RedirectResponse;
 use Platine\Framework\Demo\Response\TemplateResponse;
@@ -17,11 +17,11 @@ use Platine\Session\Session;
 use Platine\Template\Template;
 
 /**
- * Description of LoginAction
+ * Description of CreateAction
  *
  * @author tony
  */
-class LoginAction implements RequestHandlerInterface
+class CreateAction implements RequestHandlerInterface
 {
 
     protected LoggerInterface $logger;
@@ -47,21 +47,21 @@ class LoginAction implements RequestHandlerInterface
         if ($request->getMethod() === 'GET') {
             return new TemplateResponse(
                 $this->template,
-                'user/login',
+                'user/create',
                 [
-                    'param' => new AuthParam([])
+                    'param' => new UserParam([])
                 ]
             );
         }
 
         $param = new RequestData($request);
-        $formParam = new AuthParam($param->posts());
-        $validator = new AuthValidator($formParam);
+        $formParam = new UserParam($param->posts());
+        $validator = new UserValidator($formParam);
 
         if (!$validator->validate()) {
             return new TemplateResponse(
                 $this->template,
-                'user/login',
+                'user/create',
                 [
                     'errors' => $validator->getErrors(),
                     'param' => $formParam
@@ -70,33 +70,35 @@ class LoginAction implements RequestHandlerInterface
         }
 
         $username = $param->post('username');
-        $password = $param->post('password');
-        $user = $this->userRepository->findBy(['username' => $username]);
+        $userExist = $this->userRepository->findBy(['username' => $username]);
 
-        if (!$user) {
-            $this->logger->error('User with username {username} not found', ['username' => $username]);
+        if ($userExist) {
+            $this->logger->error('User with username {username} already exists', ['username' => $username]);
             return new TemplateResponse(
                 $this->template,
-                'user/login',
+                'user/create',
                 [
                    'param' => $formParam
                 ]
             );
         }
+
+        $password = $param->post('password');
 
         $hash = new BcryptHash();
-        if (!$hash->verify($password, $user->password)) {
-            $this->logger->error('Invalid user credential, {username}', ['username' => $username]);
-            return new TemplateResponse(
-                $this->template,
-                'user/login',
-                [
-                   'param' => $formParam
-                ]
-            );
-        }
+        $passwordHash = $hash->hash($password);
 
-        $this->session->set('user', $user);
+        $user = $this->userRepository->create([
+            'username' => $formParam->getUsername(),
+            'fname' => $formParam->getFirstname(),
+            'lname' => $formParam->getLastname(),
+            'password' => $passwordHash,
+            'status' => 1,
+            'age' => (int) $formParam->getAge(),
+            'deleted' => 0,
+        ]);
+
+        $this->userRepository->save($user);
 
         return (new RedirectResponse('list'))->redirect();
     }
