@@ -30,11 +30,11 @@
  */
 
 /**
- *  @file CacheServiceProvider.php
+ *  @file BaseKernel.php
  *
- *  The Framework cache service provider class
+ *  The Base Kernel class
  *
- *  @package    Platine\Framework\Service\Provider
+ *  @package    Platine\Framework\Kernel
  *  @author Platine Developers team
  *  @copyright  Copyright (c) 2020
  *  @license    http://opensource.org/licenses/MIT  MIT License
@@ -45,38 +45,40 @@
 
 declare(strict_types=1);
 
-namespace Platine\Framework\Service\Provider;
+namespace Platine\Framework\Kernel;
 
-use Platine\Cache\Cache;
-use Platine\Cache\CacheInterface;
-use Platine\Cache\Configuration;
-use Platine\Cache\Storage\LocalStorage;
-use Platine\Cache\Storage\StorageInterface;
-use Platine\Config\Config;
-use Platine\Container\ContainerInterface;
-use Platine\Filesystem\Adapter\AdapterInterface;
-use Platine\Filesystem\Adapter\Local\LocalAdapter;
-use Platine\Filesystem\Filesystem;
-use Platine\Framework\Service\ServiceProvider;
+use Platine\Framework\App\Application;
 
 /**
- * class CacheServiceProvider
- * @package Platine\Framework\Service\Provider
+ * class BaseKernel
+ * @package Platine\Framework\Kernel
  */
-class CacheServiceProvider extends ServiceProvider
+class BaseKernel
 {
 
     /**
-     * {@inheritdoc}
+     * Application instance
+     * @var Application
      */
-    public function register(): void
+    protected Application $app;
+
+    /**
+     * Create new instance
+     * @param Application $app
+     */
+    public function __construct(Application $app)
     {
-        $this->app->bind(Configuration::class, function (ContainerInterface $app) {
-            return new Configuration($app->get(Config::class)->get('cache', []));
-        });
-        $this->app->bind(AdapterInterface::class, LocalAdapter::class);
-        $this->app->bind(Filesystem::class);
-        $this->app->bind(StorageInterface::class, LocalStorage::class);
-        $this->app->bind(CacheInterface::class, Cache::class);
+        $this->app = $app;
+    }
+
+    /**
+     * Bootstrap the application
+     * @return void
+     */
+    public function bootstrap(): void
+    {
+        $this->app->registerConfiguration();
+        $this->app->registerConfiguredServiceProviders();
+        $this->app->boot();
     }
 }

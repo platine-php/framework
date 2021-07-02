@@ -1,8 +1,4 @@
 <?php
-    use Platine\Session\Storage\LocalStorage;
-    use Platine\Session\Storage\ApcuStorage;
-    use Platine\Session\Storage\NullStorage;
-
     return [
         'name' => 'PHPSESSID',
         'driver' => 'file',
@@ -16,16 +12,11 @@
         ],
         'storages' => [
             'file' => [
-                'class' => LocalStorage::class,
                 'path' => __DIR__ . '/../storage/tmp/session',
                 'prefix' => 'sess_',
             ], 
-            'apcu' => [
-                'class' => ApcuStorage::class,
-            ],
-            'null' => [
-                'class' => NullStorage::class,
-            ],
+            'apcu' => [],
+            'null' => [],
         ]
     
     ];

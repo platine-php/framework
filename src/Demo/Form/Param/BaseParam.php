@@ -1,0 +1,53 @@
+<?php
+
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
+namespace Platine\Framework\Demo\Form\Param;
+
+use Platine\Stdlib\Helper\Str;
+
+class BaseParam
+{
+
+    /**
+     * Create new instance
+     * @param array<string, mixed> $data
+     */
+    public function __construct(array $data = [])
+    {
+        $params = array_merge($this->getDefault(), $data);
+        $this->load($params);
+    }
+
+    /**
+     * Load the field data
+     * @param array<string, mixed> $data
+     * @return void
+     */
+    public function load(array $data): void
+    {
+        foreach ($data as $name => $value) {
+            $key = Str::camel($name, true);
+
+            $setterMethod = 'set' . ucfirst($key);
+            if (method_exists($this, $setterMethod)) {
+                $this->{$setterMethod}($value);
+            } elseif (property_exists($this, $key)) {
+                $this->{$key} = $value;
+            }
+        }
+    }
+
+    /**
+     * Return the fields default values
+     * @return array<string, mixed>
+     */
+    public function getDefault(): array
+    {
+        return [];
+    }
+}

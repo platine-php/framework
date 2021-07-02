@@ -30,9 +30,9 @@
  */
 
 /**
- *  @file CacheServiceProvider.php
+ *  @file MyServiceProvider.php
  *
- *  The Framework cache service provider class
+ *  My test service provider class
  *
  *  @package    Platine\Framework\Service\Provider
  *  @author Platine Developers team
@@ -45,25 +45,15 @@
 
 declare(strict_types=1);
 
-namespace Platine\Framework\Service\Provider;
+namespace Platine\Framework;
 
-use Platine\Cache\Cache;
-use Platine\Cache\CacheInterface;
-use Platine\Cache\Configuration;
-use Platine\Cache\Storage\LocalStorage;
-use Platine\Cache\Storage\StorageInterface;
-use Platine\Config\Config;
-use Platine\Container\ContainerInterface;
-use Platine\Filesystem\Adapter\AdapterInterface;
-use Platine\Filesystem\Adapter\Local\LocalAdapter;
-use Platine\Filesystem\Filesystem;
 use Platine\Framework\Service\ServiceProvider;
 
 /**
- * class CacheServiceProvider
- * @package Platine\Framework\Service\Provider
+ * class MyServiceProvider
+ * @package Platine\Framework
  */
-class CacheServiceProvider extends ServiceProvider
+class MyServiceProvider extends ServiceProvider
 {
 
     /**
@@ -71,12 +61,6 @@ class CacheServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        $this->app->bind(Configuration::class, function (ContainerInterface $app) {
-            return new Configuration($app->get(Config::class)->get('cache', []));
-        });
-        $this->app->bind(AdapterInterface::class, LocalAdapter::class);
-        $this->app->bind(Filesystem::class);
-        $this->app->bind(StorageInterface::class, LocalStorage::class);
-        $this->app->bind(CacheInterface::class, Cache::class);
+        $this->app->bind(MyRequestHandler::class);
     }
 }

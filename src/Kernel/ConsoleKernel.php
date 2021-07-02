@@ -57,11 +57,10 @@ use Platine\Framework\App\Application;
  * class ConsoleKernel
  * @package Platine\Framework\Kernel
  */
-class ConsoleKernel
+class ConsoleKernel extends BaseKernel
 {
 
     protected ConsoleApp $console;
-    protected Application $app;
 
     /**
      * The list of middlewares
@@ -82,7 +81,7 @@ class ConsoleKernel
      */
     public function __construct(Application $app, ConsoleApp $console)
     {
-        $this->app = $app;
+        parent::__construct($app);
         $this->console = $console;
     }
 
@@ -95,10 +94,6 @@ class ConsoleKernel
     {
         $this->bootstrap();
 
-        foreach ($this->commands as $command) {
-            $this->console->addCommand($command);
-        }
-
         $this->console->handle($argv);
     }
 
@@ -108,14 +103,16 @@ class ConsoleKernel
      */
     public function bootstrap(): void
     {
-        $this->app->registerConfiguration();
-        $this->app->registerConfiguredServiceProviders();
-        $this->app->boot();
+        parent::bootstrap();
 
         if (!$this->commandsLoaded) {
             $this->registerConfiguredCommands();
 
             $this->commandsLoaded = true;
+        }
+
+        foreach ($this->commands as $command) {
+            $this->console->addCommand($command);
         }
     }
 

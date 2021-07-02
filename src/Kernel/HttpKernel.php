@@ -63,7 +63,7 @@ use Platine\Route\Router;
  * class HttpKernel
  * @package Platine\Framework\Kernel
  */
-class HttpKernel implements RequestHandlerInterface
+class HttpKernel extends BaseKernel implements RequestHandlerInterface
 {
 
     /**
@@ -79,31 +79,14 @@ class HttpKernel implements RequestHandlerInterface
     protected array $middlewares = [];
 
     /**
-     * Application instance
-     * @var Application
-     */
-    protected Application $app;
-
-    /**
      * Create new instance
      * @param Application $app
      * @param Router $router
      */
     public function __construct(Application $app, Router $router)
     {
-        $this->app = $app;
+        parent::__construct($app);
         $this->router = $router;
-    }
-
-    /**
-     * Bootstrap the application
-     * @return void
-     */
-    public function bootstrap(): void
-    {
-        $this->app->registerConfiguration();
-        $this->app->registerConfiguredServiceProviders();
-        $this->app->boot();
     }
 
     /**

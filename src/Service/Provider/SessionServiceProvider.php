@@ -49,10 +49,14 @@ namespace Platine\Framework\Service\Provider;
 
 use Platine\Config\Config;
 use Platine\Container\ContainerInterface;
+use Platine\Filesystem\Adapter\Local\LocalAdapter;
+use Platine\Filesystem\Filesystem;
 use Platine\Framework\Http\Middleware\SessionMiddleware;
 use Platine\Framework\Service\ServiceProvider;
 use Platine\Session\Configuration;
 use Platine\Session\Session;
+use Platine\Session\Storage\LocalStorage;
+use SessionHandlerInterface;
 
 /**
  * class SessionServiceProvider
@@ -66,8 +70,16 @@ class SessionServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        $this->app->bind(Configuration::class, function (ContainerInterface $app) {
-            return new Configuration($app->get(Config::class)->get('session', []));
+        $cfg = $this->app->get(Config::class)->get('session', []);
+        $this->app->bind(Configuration::class, function (ContainerInterface $app) use ($cfg) {
+            return new Configuration($cfg);
+        });
+        $this->app->bind(Filesystem::class);
+        $this->app->bind(SessionHandlerInterface::class, function (ContainerInterface $app) {
+            return new LocalStorage(
+                $app->get(Filesystem::class),
+                $app->get(Configuration::class)
+            );
         });
         $this->app->bind(Session::class);
         $this->app->bind(SessionMiddleware::class);

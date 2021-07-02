@@ -6,6 +6,8 @@ use Platine\Cache\CacheInterface;
 use Platine\Config\Config;
 use Platine\Cookie\CookieManagerInterface;
 use Platine\Framework\App\Application;
+use Platine\Framework\Demo\Form\Param\AuthParam;
+use Platine\Framework\Demo\Form\Validator\AuthValidator;
 use Platine\Framework\Demo\Repository\UserRepository;
 use Platine\Framework\Demo\Response\RedirectResponse;
 use Platine\Framework\Demo\Response\TemplateResponse;
@@ -74,6 +76,24 @@ class LoginAction implements RequestHandlerInterface
 
         $param = new RequestData($request);
 
+        $formParam = new AuthParam([
+            'username' => $param->post('name')
+        ]);
+
+        $validator = new AuthValidator($formParam);
+
+        if (!$validator->validate()) {
+            return new TemplateResponse(
+                $this->template,
+                'login',
+                [
+                    'labelName' => $this->lang->tr('name'),
+                    'errors' => $validator->getErrors(),
+                    'lang' => $this->lang->getLocale()
+                ]
+            );
+        }
+
         $name = $param->post('name');
         $user = $this->userRepository->findBy(['lname' => $name]);
 
@@ -85,7 +105,7 @@ class LoginAction implements RequestHandlerInterface
                 [
                    'name' => $name,
                    'labelName' => $this->lang->tr('name'),
-                    'lang' => $this->lang->getLocale()
+                   'lang' => $this->lang->getLocale()
                 ]
             );
         }
