@@ -2,6 +2,8 @@
 
 namespace Platine\Framework\Demo\Form\Param;
 
+use Platine\Orm\Entity;
+
 class UserParam extends BaseParam
 {
     protected string $username = '';
@@ -9,6 +11,17 @@ class UserParam extends BaseParam
     protected string $firstname = '';
     protected string $password = '';
     protected string $age = '';
+
+    public function fromEntity(Entity $entity): BaseParam
+    {
+        $this->username = $entity->username;
+        $this->lastname = $entity->lname;
+        $this->firstname = $entity->fname;
+        $this->password = $entity->password;
+        $this->age = $entity->age;
+
+        return $this;
+    }
 
     public function getUsername(): string
     {

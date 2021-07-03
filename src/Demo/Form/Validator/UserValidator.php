@@ -3,6 +3,7 @@
 namespace Platine\Framework\Demo\Form\Validator;
 
 use Platine\Framework\Demo\Form\Param\UserParam;
+use Platine\Validator\Rule\AlphaDash;
 use Platine\Validator\Rule\Max;
 use Platine\Validator\Rule\Min;
 use Platine\Validator\Rule\MinLength;
@@ -39,7 +40,8 @@ class UserValidator extends AbstractValidator
     {
         $this->validator->addRules('username', [
            new NotEmpty(),
-           new MinLength(3)
+           new MinLength(3),
+            new AlphaDash()
         ]);
 
         $this->validator->addRules('lastname', [
@@ -60,7 +62,6 @@ class UserValidator extends AbstractValidator
         ]);
 
         $this->validator->addRules('password', [
-           new NotEmpty(),
            new MinLength(5),
         ]);
     }

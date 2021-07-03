@@ -8,6 +8,7 @@
 
 namespace Platine\Framework\Demo\Form\Param;
 
+use Platine\Orm\Entity;
 use Platine\Stdlib\Helper\Str;
 
 class BaseParam
@@ -40,6 +41,11 @@ class BaseParam
                 $this->{$key} = $value;
             }
         }
+    }
+
+    public function fromEntity(Entity $entity): self
+    {
+        return $this;
     }
 
     /**

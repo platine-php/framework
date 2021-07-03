@@ -18,11 +18,11 @@ use Platine\Stdlib\Helper\Str;
 use Platine\Template\Template;
 
 /**
- * Description of CreateAction
+ * Description of EditAction
  *
  * @author tony
  */
-class CreateAction implements RequestHandlerInterface
+class EditAction implements RequestHandlerInterface
 {
 
     protected LoggerInterface $logger;
@@ -45,12 +45,20 @@ class CreateAction implements RequestHandlerInterface
 
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
+        $id = (int) $request->getAttribute('id');
+        $user = $this->userRepository->find($id);
+        if (!$user) {
+            $this->logger->warning('Can not find user with id {id}', ['id' => $id]);
+
+            return (new RedirectResponse('../list'))->redirect();
+        }
+
         if ($request->getMethod() === 'GET') {
             return new TemplateResponse(
                 $this->template,
-                'user/create',
+                'user/edit',
                 [
-                    'param' => new UserParam([])
+                    'param' => (new UserParam())->fromEntity($user)
                 ]
             );
         }
@@ -62,7 +70,7 @@ class CreateAction implements RequestHandlerInterface
         if (!$validator->validate()) {
             return new TemplateResponse(
                 $this->template,
-                'user/create',
+                'user/edit',
                 [
                     'errors' => $validator->getErrors(),
                     'param' => $formParam
@@ -73,11 +81,11 @@ class CreateAction implements RequestHandlerInterface
         $username = $param->post('username');
         $userExist = $this->userRepository->findBy(['username' => $username]);
 
-        if ($userExist) {
+        if ($userExist && $userExist->user_id != $id) {
             $this->logger->error('User with username {username} already exists', ['username' => $username]);
             return new TemplateResponse(
                 $this->template,
-                'user/create',
+                'user/edit',
                 [
                    'param' => $formParam
                 ]
@@ -86,18 +94,16 @@ class CreateAction implements RequestHandlerInterface
 
         $password = $param->post('password');
 
-        $hash = new BcryptHash();
-        $passwordHash = $hash->hash($password);
+        $user->username = $formParam->getUsername();
+        $user->fname = Str::ucfirst($formParam->getFirstname());
+        $user->lname = Str::upper($formParam->getLastname());
+        $user->age = (int) $formParam->getAge();
 
-        $user = $this->userRepository->create([
-            'username' => $formParam->getUsername(),
-            'fname' => Str::ucfirst($formParam->getFirstname()),
-            'lname' => Str::upper($formParam->getLastname()),
-            'password' => $passwordHash,
-            'status' => 1,
-            'age' => (int) $formParam->getAge(),
-            'deleted' => 0,
-        ]);
+        if (!empty($password)) {
+            $hash = new BcryptHash();
+            $passwordHash = $hash->hash($password);
+            $user->password = $passwordHash;
+        }
 
         $result = $this->userRepository->save($user);
 
@@ -105,13 +111,13 @@ class CreateAction implements RequestHandlerInterface
             $this->logger->error('Error when saved the user');
             return new TemplateResponse(
                 $this->template,
-                'user/create',
+                'user/edit',
                 [
                    'param' => $formParam
                 ]
             );
         }
 
-        return (new RedirectResponse('list'))->redirect();
+        return (new RedirectResponse('../list'))->redirect();
     }
 }

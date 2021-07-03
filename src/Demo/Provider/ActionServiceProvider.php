@@ -30,9 +30,9 @@
  */
 
 /**
- *  @file MyServiceProvider.php
+ *  @file ActionServiceProvider.php
  *
- *  My test service provider class
+ *  All actions service provider class
  *
  *  @package    Platine\Framework\Demo\Provider
  *  @author Platine Developers team
@@ -58,10 +58,10 @@ use Platine\Framework\Demo\Command\ConfigCommand;
 use Platine\Framework\Service\ServiceProvider;
 
 /**
- * class MyServiceProvider
+ * class ActionServiceProvider
  * @package Platine\Framework
  */
-class MyServiceProvider extends ServiceProvider
+class ActionServiceProvider extends ServiceProvider
 {
 
     /**
@@ -69,6 +69,12 @@ class MyServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        $this->app->bind(ConfigCommand::class);
+        $this->app->bind(DeleteAction::class);
+        $this->app->bind(EditAction::class);
+        $this->app->bind(CreateAction::class);
+        $this->app->bind(LoginAction::class);
+        $this->app->bind(ListAction::class);
+        $this->app->bind(LogoutAction::class);
+        $this->app->bind(DetailAction::class);
     }
 }

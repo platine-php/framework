@@ -1,0 +1,4 @@
+2021-07-03 07:26:37.835035	[INFO]	[Platine\Database\Connection]	[pid:0]	Execute Query: [SELECT * FROM `users` WHERE `username` = ?], parameters: [octave_t], time: [0.000270]
+2021-07-03 07:26:37.993657	[INFO]	[Platine\Database\Connection]	[pid:0]	Execute Query: [SELECT * FROM `users`], parameters: [], time: [0.000391]
+2021-07-03 07:27:04.435805	[INFO]	[Platine\Database\Connection]	[pid:0]	Execute Query: [SELECT * FROM `users` WHERE `user_id` = ?], parameters: [12], time: [0.000569]
+2021-07-03 07:27:08.374774	[INFO]	[Platine\Database\Connection]	[pid:0]	Execute Query: [SELECT * FROM `users`], parameters: [], time: [0.000298]
