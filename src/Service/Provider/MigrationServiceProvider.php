@@ -30,9 +30,9 @@
  */
 
 /**
- *  @file DatabaseServiceProvider.php
+ *  @file MigrationServiceProvider.php
  *
- *  The Framework database service provider class
+ *  The Framework database migration service provider class
  *
  *  @package    Platine\Framework\Service\Provider
  *  @author Platine Developers team
@@ -47,22 +47,18 @@ declare(strict_types=1);
 
 namespace Platine\Framework\Service\Provider;
 
-use Platine\Config\Config;
-use Platine\Container\ContainerInterface;
-use Platine\Database\Configuration;
-use Platine\Database\Connection;
-use Platine\Database\Pool;
-use Platine\Database\QueryBuilder;
-use Platine\Database\Schema;
+use Platine\Framework\Migration\Command\MigrationCreateCommand;
+use Platine\Framework\Migration\Command\MigrationExecuteCommand;
+use Platine\Framework\Migration\Command\MigrationMigrateCommand;
+use Platine\Framework\Migration\Command\MigrationStatusCommand;
+use Platine\Framework\Migration\MigrationRepository;
 use Platine\Framework\Service\ServiceProvider;
-use Platine\Logger\LoggerInterface;
-use Platine\Orm\EntityManager;
 
 /**
- * class DatabaseServiceProvider
+ * class MigrationServiceProvider
  * @package Platine\Framework\Service\Provider
  */
-class DatabaseServiceProvider extends ServiceProvider
+class MigrationServiceProvider extends ServiceProvider
 {
 
     /**
@@ -70,24 +66,10 @@ class DatabaseServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        $this->app->bind(Configuration::class, function (ContainerInterface $app) {
-            /** @template T @var Config<T> $config */
-            $config = $app->get(Config::class);
-            $driver = $config->get('database.default', 'default');
-
-            return new Configuration($config->get('database.connections.' . $driver, []));
-        });
-        $this->app->bind(Pool::class, function (ContainerInterface $app) {
-            return new Pool($app->get(Config::class)->get('database', []));
-        });
-        $this->app->share(Connection::class, function (ContainerInterface $app) {
-            return new Connection(
-                $app->get(Configuration::class),
-                $app->get(LoggerInterface::class)
-            );
-        });
-        $this->app->bind(EntityManager::class);
-        $this->app->bind(QueryBuilder::class);
-        $this->app->bind(Schema::class);
+        $this->app->bind(MigrationRepository::class);
+        $this->app->bind(MigrationStatusCommand::class);
+        $this->app->bind(MigrationCreateCommand::class);
+        $this->app->bind(MigrationExecuteCommand::class);
+        $this->app->bind(MigrationMigrateCommand::class);
     }
 }

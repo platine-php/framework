@@ -18,8 +18,6 @@ use Platine\Template\Parser\Token;
 class LangTag extends AbstractTag
 {
 
-    protected Lang $lang;
-
     /**
      * Value to debug
      * @var string
@@ -33,31 +31,22 @@ class LangTag extends AbstractTag
     {
         $lexer = new Lexer('/' . Token::QUOTED_FRAGMENT . '/');
         if ($lexer->match($markup)) {
-            //$this->variables = $this->variablesFromString($markup);
-            //$this->name = "'" . implode('', $this->variables) . "'";
             $this->value = $lexer->getStringMatch(0);
         } else {
             throw new ParseException(sprintf(
-                'Syntax Error in "%s" - Valid syntax: cycle [name :] var [, var2, var3 ...]',
-                'cycle'
+                'Syntax Error in "%s" - Valid syntax: tr [name]',
+                'tr'
             ));
         }
     }
 
     public function render(Context $context): string
     {
-        return $this->lang->tr($this->value);
-    }
-
-    /**
-     * Set the language instance
-     * @param Lang $lang
-     * @return $this
-     */
-    public function setLang(Lang $lang): self
-    {
-        $this->lang = $lang;
-
-        return $this;
+        if ($context->hasKey($this->value)) {
+            $this->value = (string) $context->get($this->value);
+        }
+        /** @var Lang $lang */
+        $lang = app(Lang::class);
+        return $lang->tr($this->value);
     }
 }

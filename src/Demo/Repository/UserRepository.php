@@ -14,6 +14,10 @@ use Platine\Orm\Repository;
 class UserRepository extends Repository
 {
 
+    /**
+     * Create new instance
+     * @param EntityManager $manager
+     */
     public function __construct(EntityManager $manager)
     {
         parent::__construct($manager, User::class);

@@ -52,7 +52,6 @@ use Platine\Config\FileLoader;
 use Platine\Container\Container;
 use Platine\Framework\Service\Provider\BaseServiceProvider;
 use Platine\Framework\Service\Provider\EventServiceProvider;
-use Platine\Framework\Service\Provider\LoggerServiceProvider;
 use Platine\Framework\Service\ServiceProvider;
 
 /**
@@ -288,7 +287,6 @@ class Application extends Container
     protected function loadCoreServiceProviders(): void
     {
         $this->registerServiceProvider(new BaseServiceProvider($this));
-        $this->registerServiceProvider(new LoggerServiceProvider($this));
         $this->registerServiceProvider(new EventServiceProvider($this));
     }
 }

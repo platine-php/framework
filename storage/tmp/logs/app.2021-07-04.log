@@ -1,0 +1,12 @@
+2021-07-04 17:29:18.165275	[INFO]	[Platine\Database\Connection]	[pid:0]	Execute Query: [SELECT * FROM `users` WHERE `user_id` = ?], parameters: [10], time: [0.000243]
+2021-07-04 17:29:24.237475	[INFO]	[Platine\Database\Connection]	[pid:0]	Execute Query: [SELECT * FROM `users` WHERE `user_id` = ?], parameters: [10], time: [0.000280]
+2021-07-04 17:29:24.240311	[INFO]	[Platine\Database\Connection]	[pid:0]	Execute Query: [SELECT * FROM `users` WHERE `username` = ?], parameters: [octave_t], time: [0.000285]
+2021-07-04 17:29:24.242615	[INFO]	[Platine\Database\Connection]	[pid:0]	Execute Query: [UPDATE `users` SET `username` = ?, `fname` = ?, `lname` = ?, `age` = ? WHERE `user_id` = ?], parameters: [octave_t, Tnh, NGUEREZA, 100, 10], time: [0.000252]
+2021-07-04 17:29:24.271544	[INFO]	[Platine\Database\Connection]	[pid:0]	Execute Query: [SELECT * FROM `users`], parameters: [], time: [0.000218]
+2021-07-04 17:30:41.497383	[INFO]	[Platine\Database\Connection]	[pid:0]	Execute Query: [SELECT * FROM `users` WHERE `user_id` = ?], parameters: [11], time: [0.000327]
+2021-07-04 17:30:44.901566	[INFO]	[Platine\Database\Connection]	[pid:0]	Execute Query: [SELECT * FROM `users`], parameters: [], time: [0.000380]
+2021-07-04 17:32:13.995454	[INFO]	[Platine\Database\Connection]	[pid:0]	Execute Query: [SELECT * FROM `users`], parameters: [], time: [0.000229]
+2021-07-04 17:32:14.016866	[ERROR]	[MAIN]	[pid:0]	Platine Application Error: An error has occurred. Sorry for the temporary inconvenience., TypeError(code:0) Argument 1 passed to Platine\Lang\Lang::tr() must be of the type string, null given, called in D:\wamp\www\platine-php\packages\framework\src\Demo\Template\LangTag.php on line 49 at D:\wamp\www\platine-php\vendor\platine-php\lang\src\Lang.php line 213
+2021-07-04 17:32:31.754213	[INFO]	[Platine\Database\Connection]	[pid:0]	Execute Query: [SELECT * FROM `users`], parameters: [], time: [0.000272]
+2021-07-04 17:34:17.470826	[INFO]	[Platine\Database\Connection]	[pid:0]	Execute Query: [SELECT * FROM `users`], parameters: [], time: [0.000328]
+2021-07-04 17:34:26.756842	[INFO]	[Platine\Database\Connection]	[pid:0]	Execute Query: [SELECT * FROM `users`], parameters: [], time: [0.000303]

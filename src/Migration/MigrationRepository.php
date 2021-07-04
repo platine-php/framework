@@ -30,11 +30,11 @@
  */
 
 /**
- *  @file ActionServiceProvider.php
+ *  @file MigrationEntity.php
  *
- *  All actions service provider class
+ *  The migration repository class
  *
- *  @package    Platine\Framework\Demo\Provider
+ *  @package    Platine\Framework\Migration
  *  @author Platine Developers team
  *  @copyright  Copyright (c) 2020
  *  @license    http://opensource.org/licenses/MIT  MIT License
@@ -45,36 +45,24 @@
 
 declare(strict_types=1);
 
-namespace Platine\Framework\Demo\Provider;
+namespace Platine\Framework\Migration;
 
-use Platine\Framework\Demo\Action\User\CreateAction;
-use Platine\Framework\Demo\Action\User\DeleteAction;
-use Platine\Framework\Demo\Action\User\DetailAction;
-use Platine\Framework\Demo\Action\User\EditAction;
-use Platine\Framework\Demo\Action\User\ListAction;
-use Platine\Framework\Demo\Action\User\LoginAction;
-use Platine\Framework\Demo\Action\User\LogoutAction;
-use Platine\Framework\Demo\Command\ConfigCommand;
-use Platine\Framework\Service\ServiceProvider;
+use Platine\Orm\EntityManager;
+use Platine\Orm\Repository;
 
 /**
- * class ActionServiceProvider
- * @package Platine\Framework
+ * class MigrationRepository
+ * @package Platine\Framework\Migration
  */
-class ActionServiceProvider extends ServiceProvider
+class MigrationRepository extends Repository
 {
 
     /**
-     * {@inheritdoc}
+     * Create new instance
+     * @param EntityManager $manager
      */
-    public function register(): void
+    public function __construct(EntityManager $manager)
     {
-        $this->app->bind(DeleteAction::class);
-        $this->app->bind(EditAction::class);
-        $this->app->bind(CreateAction::class);
-        $this->app->bind(LoginAction::class);
-        $this->app->bind(ListAction::class);
-        $this->app->bind(LogoutAction::class);
-        $this->app->bind(DetailAction::class);
+        parent::__construct($manager, MigrationEntity::class);
     }
 }

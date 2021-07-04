@@ -47,14 +47,8 @@ declare(strict_types=1);
 
 namespace Platine\Framework\Demo\Provider;
 
-use Platine\Framework\Demo\Action\User\CreateAction;
-use Platine\Framework\Demo\Action\User\DeleteAction;
-use Platine\Framework\Demo\Action\User\DetailAction;
-use Platine\Framework\Demo\Action\User\EditAction;
-use Platine\Framework\Demo\Action\User\ListAction;
-use Platine\Framework\Demo\Action\User\LoginAction;
-use Platine\Framework\Demo\Action\User\LogoutAction;
 use Platine\Framework\Demo\Command\ConfigCommand;
+use Platine\Framework\Migration\Command\MigrationStatusCommand;
 use Platine\Framework\Service\ServiceProvider;
 
 /**

@@ -30,11 +30,11 @@
  */
 
 /**
- *  @file DatabaseServiceProvider.php
+ *  @file AbstractMigration.php
  *
- *  The Framework database service provider class
+ *  The Base migration class
  *
- *  @package    Platine\Framework\Service\Provider
+ *  @package    Platine\Framework\Migration
  *  @author Platine Developers team
  *  @copyright  Copyright (c) 2020
  *  @license    http://opensource.org/licenses/MIT  MIT License
@@ -45,49 +45,25 @@
 
 declare(strict_types=1);
 
-namespace Platine\Framework\Service\Provider;
+namespace Platine\Framework\Migration;
 
-use Platine\Config\Config;
-use Platine\Container\ContainerInterface;
-use Platine\Database\Configuration;
-use Platine\Database\Connection;
-use Platine\Database\Pool;
-use Platine\Database\QueryBuilder;
 use Platine\Database\Schema;
-use Platine\Framework\Service\ServiceProvider;
-use Platine\Logger\LoggerInterface;
-use Platine\Orm\EntityManager;
 
 /**
- * class DatabaseServiceProvider
- * @package Platine\Framework\Service\Provider
+ * class AbstractMigration
+ * @package Platine\Framework\Migration
  */
-class DatabaseServiceProvider extends ServiceProvider
+abstract class AbstractMigration extends Schema
 {
+    /**
+     * Execute when do migrate
+     * @return void
+     */
+    abstract public function up(): void;
 
     /**
-     * {@inheritdoc}
+     * Execute when rollback migrate
+     * @return void
      */
-    public function register(): void
-    {
-        $this->app->bind(Configuration::class, function (ContainerInterface $app) {
-            /** @template T @var Config<T> $config */
-            $config = $app->get(Config::class);
-            $driver = $config->get('database.default', 'default');
-
-            return new Configuration($config->get('database.connections.' . $driver, []));
-        });
-        $this->app->bind(Pool::class, function (ContainerInterface $app) {
-            return new Pool($app->get(Config::class)->get('database', []));
-        });
-        $this->app->share(Connection::class, function (ContainerInterface $app) {
-            return new Connection(
-                $app->get(Configuration::class),
-                $app->get(LoggerInterface::class)
-            );
-        });
-        $this->app->bind(EntityManager::class);
-        $this->app->bind(QueryBuilder::class);
-        $this->app->bind(Schema::class);
-    }
+    abstract public function down(): void;
 }

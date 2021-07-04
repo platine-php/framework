@@ -30,11 +30,11 @@
  */
 
 /**
- *  @file DatabaseServiceProvider.php
+ *  @file UserActionServiceProvider.php
  *
- *  The Framework database service provider class
+ *  User actions service provider class
  *
- *  @package    Platine\Framework\Service\Provider
+ *  @package    Platine\Framework\Demo\Provider
  *  @author Platine Developers team
  *  @copyright  Copyright (c) 2020
  *  @license    http://opensource.org/licenses/MIT  MIT License
@@ -45,24 +45,22 @@
 
 declare(strict_types=1);
 
-namespace Platine\Framework\Service\Provider;
+namespace Platine\Framework\Demo\Provider;
 
-use Platine\Config\Config;
-use Platine\Container\ContainerInterface;
-use Platine\Database\Configuration;
-use Platine\Database\Connection;
-use Platine\Database\Pool;
-use Platine\Database\QueryBuilder;
-use Platine\Database\Schema;
+use Platine\Framework\Demo\Action\User\CreateAction;
+use Platine\Framework\Demo\Action\User\DeleteAction;
+use Platine\Framework\Demo\Action\User\DetailAction;
+use Platine\Framework\Demo\Action\User\EditAction;
+use Platine\Framework\Demo\Action\User\ListAction;
+use Platine\Framework\Demo\Action\User\LoginAction;
+use Platine\Framework\Demo\Action\User\LogoutAction;
 use Platine\Framework\Service\ServiceProvider;
-use Platine\Logger\LoggerInterface;
-use Platine\Orm\EntityManager;
 
 /**
- * class DatabaseServiceProvider
- * @package Platine\Framework\Service\Provider
+ * class ActionServiceProvider
+ * @package Platine\Framework
  */
-class DatabaseServiceProvider extends ServiceProvider
+class UserActionServiceProvider extends ServiceProvider
 {
 
     /**
@@ -70,24 +68,12 @@ class DatabaseServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        $this->app->bind(Configuration::class, function (ContainerInterface $app) {
-            /** @template T @var Config<T> $config */
-            $config = $app->get(Config::class);
-            $driver = $config->get('database.default', 'default');
-
-            return new Configuration($config->get('database.connections.' . $driver, []));
-        });
-        $this->app->bind(Pool::class, function (ContainerInterface $app) {
-            return new Pool($app->get(Config::class)->get('database', []));
-        });
-        $this->app->share(Connection::class, function (ContainerInterface $app) {
-            return new Connection(
-                $app->get(Configuration::class),
-                $app->get(LoggerInterface::class)
-            );
-        });
-        $this->app->bind(EntityManager::class);
-        $this->app->bind(QueryBuilder::class);
-        $this->app->bind(Schema::class);
+        $this->app->bind(DeleteAction::class);
+        $this->app->bind(EditAction::class);
+        $this->app->bind(CreateAction::class);
+        $this->app->bind(LoginAction::class);
+        $this->app->bind(ListAction::class);
+        $this->app->bind(LogoutAction::class);
+        $this->app->bind(DetailAction::class);
     }
 }

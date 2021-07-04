@@ -12,7 +12,7 @@ class UserParam extends BaseParam
     protected string $password = '';
     protected string $age = '';
 
-    public function fromEntity(Entity $entity): BaseParam
+    public function fromEntity(Entity $entity): UserParam
     {
         $this->username = $entity->username;
         $this->lastname = $entity->lname;
