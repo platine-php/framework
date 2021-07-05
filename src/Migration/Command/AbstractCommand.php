@@ -200,11 +200,7 @@ abstract class AbstractCommand extends Command
         $this->checkMigrationPath();
 
         $className = $this->getMigrationClassName($description, $version);
-        $filename = sprintf(
-            '%s_%s.php',
-            $version,
-            str_replace($version, '', Str::snake($className))
-        );
+        $filename = $this->getFilenameFromClass($className, $version);
         $fullPath = $this->migrationPath . $filename;
 
         $file = $this->filesystem->file($fullPath);
@@ -245,7 +241,7 @@ abstract class AbstractCommand extends Command
         $files = $directory->read(DirectoryInterface::FILE);
         foreach ($files as $file) {
             $matches = [];
-            if (preg_match('/^([0-9]+)_([a-z_]+)\.php$/i', $file->getName(), $matches)) {
+            if (preg_match('/^([0-9_]+)_([a-z_]+)\.php$/i', $file->getName(), $matches)) {
                 $result[$matches[1]] = $matches[2];
             }
         }
@@ -257,15 +253,16 @@ abstract class AbstractCommand extends Command
 
     /**
      * Return the executed migration
+     * @param string $orderDir
      * @return array<string, Entity>
      */
-    protected function getExecuted(): array
+    protected function getExecuted(string $orderDir = 'ASC'): array
     {
         $this->checkMigrationTable();
 
         $migrations = $this->repository
                            ->query()
-                           ->orderBy('version')
+                           ->orderBy('version', $orderDir)
                            ->all();
         $result = [];
 
@@ -284,6 +281,22 @@ abstract class AbstractCommand extends Command
      */
     protected function getMigrationClassName(string $description, string $version): string
     {
-        return Str::camel($description, false) . $version;
+        return Str::camel($description, false)
+               . Str::replaceFirst('_', '', $version);
+    }
+
+    /**
+     * Return the name of the migration file
+     * @param string $className
+     * @param string $version
+     * @return string
+     */
+    protected function getFilenameFromClass(string $className, string $version): string
+    {
+        return $filename = sprintf(
+            '%s_%s.php',
+            $version,
+            str_replace(Str::replaceFirst('_', '', $version), '', Str::snake($className))
+        );
     }
 }

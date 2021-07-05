@@ -50,6 +50,7 @@ namespace Platine\Framework\Service\Provider;
 use Platine\Framework\Migration\Command\MigrationCreateCommand;
 use Platine\Framework\Migration\Command\MigrationExecuteCommand;
 use Platine\Framework\Migration\Command\MigrationMigrateCommand;
+use Platine\Framework\Migration\Command\MigrationResetCommand;
 use Platine\Framework\Migration\Command\MigrationStatusCommand;
 use Platine\Framework\Migration\MigrationRepository;
 use Platine\Framework\Service\ServiceProvider;
@@ -71,5 +72,6 @@ class MigrationServiceProvider extends ServiceProvider
         $this->app->bind(MigrationCreateCommand::class);
         $this->app->bind(MigrationExecuteCommand::class);
         $this->app->bind(MigrationMigrateCommand::class);
+        $this->app->bind(MigrationResetCommand::class);
     }
 }

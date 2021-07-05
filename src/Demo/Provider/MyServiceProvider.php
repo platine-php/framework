@@ -48,7 +48,7 @@ declare(strict_types=1);
 namespace Platine\Framework\Demo\Provider;
 
 use Platine\Framework\Demo\Command\ConfigCommand;
-use Platine\Framework\Migration\Command\MigrationStatusCommand;
+use Platine\Framework\Demo\Command\RouteCommand;
 use Platine\Framework\Service\ServiceProvider;
 
 /**
@@ -63,6 +63,7 @@ class MyServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
+        $this->app->bind(RouteCommand::class);
         $this->app->bind(ConfigCommand::class);
     }
 }

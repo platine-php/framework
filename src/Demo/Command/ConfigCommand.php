@@ -11,7 +11,6 @@ namespace Platine\Framework\Demo\Command;
 use Platine\Config\Config;
 use Platine\Console\Command\Command;
 use Platine\Framework\App\Application;
-use Platine\Lang\Lang;
 use Platine\Stdlib\Helper\Str;
 
 /**
@@ -23,26 +22,23 @@ class ConfigCommand extends Command
 {
 
     protected Application $application;
-    protected Lang $lang;
 
     /**
      *
      */
-    public function __construct(Application $application, Lang $lang)
+    public function __construct(Application $application)
     {
         parent::__construct('config', 'Command to manage configuration');
-        $this->setAlias('c');
 
-        $this->addArgument('list', 'List the configuration');
+        $this->addOption('-l|--list', 'List the configuration', '', false);
         $this->addOption('-t|--type', 'Configuration type', 'app', true);
 
         $this->application = $application;
-        $this->lang = $lang;
     }
 
     public function execute()
     {
-        if ($this->getArgumentValue('list') === 'list') {
+        if ($this->getOptionValue('list')) {
             $this->showConfigList();
         }
     }
@@ -54,7 +50,7 @@ class ConfigCommand extends Command
         $config = $this->application->get(Config::class);
         $type = $this->getOptionValue('type');
 
-        $writer->blackBgBlue(sprintf('Show configuration for [%s]', $type), true)->eol();
+        $writer->boldGreen(sprintf('Show configuration for [%s]', $type), true)->eol();
 
         $items = (array) $config->get($type, []);
         /** @var array<int, array<int, array<string, string>>> $rows*/
@@ -67,7 +63,7 @@ class ConfigCommand extends Command
                 ];
             } else {
                 $rows[] = [
-                    $this->lang->tr('name') => $name,
+                    'name' => $name,
                     'value' => $valueStr
                 ];
             }

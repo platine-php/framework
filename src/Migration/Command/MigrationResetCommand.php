@@ -30,9 +30,9 @@
  */
 
 /**
- *  @file MigrationMigrateCommand.php
+ *  @file MigrationResetCommand.php
  *
- *  The migration migrate command class
+ *  The migration reset command class
  *
  *  @package    Platine\Framework\Migration\Command
  *  @author Platine Developers team
@@ -54,10 +54,10 @@ use Platine\Framework\App\Application;
 use Platine\Framework\Migration\MigrationRepository;
 
 /**
- * class MigrationMigrateCommand
+ * class MigrationResetCommand
  * @package Platine\Framework\Migration\Command
  */
-class MigrationMigrateCommand extends AbstractCommand
+class MigrationResetCommand extends AbstractCommand
 {
 
     /**
@@ -72,8 +72,8 @@ class MigrationMigrateCommand extends AbstractCommand
         Filesystem $filesystem
     ) {
         parent::__construct($app, $repository, $schema, $config, $filesystem);
-        $this->setName('migration:migrate')
-             ->setDescription('Upgrade migration to latest');
+        $this->setName('migration:reset')
+             ->setDescription('Rollback all migration done before');
     }
 
     /**
@@ -83,35 +83,34 @@ class MigrationMigrateCommand extends AbstractCommand
     {
         $io = $this->io();
         $writer = $io->writer();
-        $writer->boldYellow('MIGRATION UPGRADE TO LATEST', true)->eol();
+        $writer->boldYellow('ALL MIGRATION ROLLBACK', true)->eol();
 
-        $migrations = $this->getMigrations();
-        $executed = $this->getExecuted();
-        $diff = array_diff_key($migrations, $executed);
+        $executed = $this->getExecuted('DESC');
 
-        if (empty($diff)) {
-            $writer->boldGreen('Migration already up to date');
+        if (empty($executed)) {
+            $writer->boldGreen('No migration done before');
             return;
         }
 
-        $writer->bold('Migration list to be upgraded:', true);
-        foreach ($diff as $version => $value) {
-            $writer->boldGreen(sprintf(' * %s - %s', $version, $value), true);
+        $writer->bold('Migration list to be rollback:', true);
+        foreach ($executed as $version => $entity) {
+            $writer->boldGreen(
+                sprintf(' * %s - %s', $version, $entity->description),
+                true
+            );
         }
 
         $writer->write('', true);
 
-        if ($io->confirm('Are you confirm the migration upgrade to latest?', 'n')) {
+        if ($io->confirm('Are you confirm the migration rollback ?', 'n')) {
             /** @var MigrationExecuteCommand $migrationExecute */
             $migrationExecute = $this->application->get(MigrationExecuteCommand::class);
-            foreach ($diff as $version => $description) {
-                $cleanDescription = str_replace('_', ' ', $description);
-                $version = (string) $version;
-                $migrationExecute->executeMigrationUp($version, $cleanDescription);
+            foreach ($executed as $version => $entity) {
+                $migrationExecute->executeMigrationDown($version, $entity->description);
             }
 
             $writer->write('', true);
-            $writer->boldGreen('Migration upgraded successfully', true);
+            $writer->boldGreen('Migration rollback successfully', true);
         }
     }
 }

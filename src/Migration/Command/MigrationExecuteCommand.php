@@ -74,9 +74,8 @@ class MigrationExecuteCommand extends AbstractCommand
     ) {
         parent::__construct($app, $repository, $schema, $config, $filesystem);
         $this->setName('migration:exec')
-             ->setDescription('Upgrade the migration up/down for the given version');
+             ->setDescription('Execute the migration up/down for one version');
 
-        $this->addArgument('migration version', 'Version to execute', '', true);
         $this->addArgument('type', 'type of migration [up|down]', 'up', true, true, false, function ($val) {
             if (!in_array($val, ['up', 'down'])) {
                 throw new RuntimeException(sprintf(
@@ -94,38 +93,38 @@ class MigrationExecuteCommand extends AbstractCommand
      */
     public function execute()
     {
-        $version = $this->getArgumentValue('migrationVersion');
+        //$version = $this->getArgumentValue('migrationVersion');
         $type = $this->getArgumentValue('type');
 
-        $writer = $this->io()->writer();
+        $io = $this->io();
+        $writer = $io->writer();
         $writer->boldYellow('MIGRATION EXECUTION', true)->eol();
-        $writer->bold('Version: ');
-        $writer->boldBlueBgBlack($version, true);
-        $writer->bold('Type: ');
-        $writer->boldBlueBgBlack($type, true);
 
         $migrations = $this->getMigrations();
-        if (!array_key_exists($version, $migrations)) {
-            throw new RuntimeException(sprintf(
-                'Invalid migration version [%s]',
-                $version
-            ));
-        }
-        $description = str_replace('_', ' ', $migrations[$version]);
-
-        $writer->bold('Description: ');
-        $writer->boldBlueBgBlack($description, true)->eol();
+        $executed = $this->getExecuted('DESC');
 
         if ($type === 'up') {
-            $this->executeMigrationUp($version, $description);
+            $diff = array_diff_key($migrations, $executed);
+            if (empty($diff)) {
+                $writer->boldGreen('Migration already up to date');
+            } else {
+                $version = $io->choice('Choose which version to migrate up', $diff);
+                $description = str_replace('_', ' ', $migrations[$version]);
+                $this->executeMigrationUp($version, $description);
+            }
         } else {
-            $this->executeMigrationDown($version, $description);
+            if (empty($executed)) {
+                $writer->boldGreen('No migration to rollback');
+            } else {
+                $data = [];
+                foreach ($executed as $version => $entity) {
+                    $data[(string)$version] = $entity->description;
+                }
+                $version = $io->choice('Choose which version to rollback', $data);
+                $description = str_replace('_', ' ', $data[$version]);
+                $this->executeMigrationDown($version, $description);
+            }
         }
-
-        $writer->boldGreen(sprintf(
-            'Migration [%s] executed successfully',
-            $description
-        ))->eol();
     }
 
     /**
@@ -136,20 +135,9 @@ class MigrationExecuteCommand extends AbstractCommand
      */
     public function executeMigrationUp(string $version, string $description): void
     {
-        $exists = $this->repository->findBy([
-            'version' => $version
-        ]);
-
-        if ($exists) {
-            throw new RuntimeException(sprintf(
-                'Migration with version [%s], already executed at [%s]',
-                $version,
-                $exists->created_at
-            ));
-        }
         $writer = $this->io()->writer();
         $writer->boldGreen(sprintf(
-            '* Execute migration %s: %s',
+            '* Execute migration up for %s: %s',
             $version,
             $description,
         ))->eol();
@@ -174,6 +162,13 @@ class MigrationExecuteCommand extends AbstractCommand
      */
     public function executeMigrationDown(string $version, string $description): void
     {
+        $writer = $this->io()->writer();
+        $writer->boldGreen(sprintf(
+            '* Execute migration down for %s: %s',
+            $version,
+            $description,
+        ))->eol();
+
         $migration = $this->createMigrationClass($description, $version);
         $migration->down();
 

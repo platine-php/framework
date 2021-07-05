@@ -92,13 +92,9 @@ class MigrationCreateCommand extends AbstractCommand
     {
         $writer = $this->io()->writer();
 
-        $version = date('YmdHis');
+        $version = date('Ymd_His');
         $className = $this->getMigrationClassName($this->name, $version);
-        $filename = sprintf(
-            '%s_%s.php',
-            $version,
-            str_replace($version, '', Str::snake($className))
-        );
+        $filename = $this->getFilenameFromClass($className, $version);
         $fullPath = $this->migrationPath . $filename;
 
         $writer->boldGreen('Migration detail: ')->eol();
