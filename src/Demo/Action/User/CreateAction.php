@@ -112,6 +112,6 @@ class CreateAction implements RequestHandlerInterface
             );
         }
 
-        return (new RedirectResponse('list'))->redirect();
+        return new RedirectResponse('list');
     }
 }

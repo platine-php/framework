@@ -49,7 +49,6 @@ namespace Platine\Framework\Service\Provider;
 
 use Platine\Config\Config;
 use Platine\Container\ContainerInterface;
-use Platine\Filesystem\Adapter\Local\LocalAdapter;
 use Platine\Filesystem\Filesystem;
 use Platine\Framework\Http\Middleware\SessionMiddleware;
 use Platine\Framework\Service\ServiceProvider;

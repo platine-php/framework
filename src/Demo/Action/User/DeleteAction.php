@@ -4,7 +4,6 @@ namespace Platine\Framework\Demo\Action\User;
 
 use Platine\Framework\Demo\Repository\UserRepository;
 use Platine\Framework\Demo\Response\RedirectResponse;
-use Platine\Framework\Demo\Response\TemplateResponse;
 use Platine\Http\Handler\RequestHandlerInterface;
 use Platine\Http\ResponseInterface;
 use Platine\Http\ServerRequestInterface;
@@ -41,11 +40,11 @@ class DeleteAction implements RequestHandlerInterface
         if (!$user) {
             $this->logger->warning('Can not find user with id {id}', ['id' => $id]);
 
-            return (new RedirectResponse('../list'))->redirect();
+            return new RedirectResponse('../list');
         }
         $this->logger->info('Delete of user {user}', ['user' => $user->user_id]);
         $this->userRepository->delete($user);
 
-        return (new RedirectResponse('../list'))->redirect();
+        return new RedirectResponse('../list');
     }
 }

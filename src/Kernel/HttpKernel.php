@@ -51,6 +51,7 @@ use Platine\Config\Config;
 use Platine\Framework\App\Application;
 use Platine\Framework\Http\Emitter\EmitterInterface;
 use Platine\Framework\Http\Exception\HttpNotFoundException;
+use Platine\Framework\Service\ServiceProvider;
 use Platine\Http\Handler\MiddlewareInterface;
 use Platine\Http\Handler\MiddlewareResolverInterface;
 use Platine\Http\Handler\RequestHandlerInterface;
@@ -170,6 +171,13 @@ class HttpKernel extends BaseKernel implements RequestHandlerInterface
         //TODO find a way to remove return of array for
         //routes configuration
         $routes[0]($this->router);
+
+        //Load providers routes
+        /** @var ServiceProvider[] $providers */
+        $providers = $this->app->getProviders();
+        foreach ($providers as $provider) {
+            $provider->addRoutes($this->router);
+        }
 
         $this->app->instance($this->router);
     }

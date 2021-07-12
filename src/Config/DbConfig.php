@@ -3,8 +3,8 @@
 /**
  * Platine Framework
  *
- * Platine Framework is a lightweight, high-performance, simple and elegant PHP
- * Web framework
+ * Platine Framework is a lightweight, high-performance, simple and elegant
+ * PHP Web framework
  *
  * This content is released under the MIT License (MIT)
  *
@@ -30,12 +30,12 @@
  */
 
 /**
- *  @file SessionMiddleware.php
+ *  @file DatabaseConfigLoader.php
  *
- *  The session middleware class
+ *  The database configuration loader class
  *
- *  @package    Platine\Framework\Http\Middleware
- *  @author Platine Developers Team
+ *  @package    Platine\Framework\Config
+ *  @author Platine Developers team
  *  @copyright  Copyright (c) 2020
  *  @license    http://opensource.org/licenses/MIT  MIT License
  *  @link   http://www.iacademy.cf
@@ -45,50 +45,32 @@
 
 declare(strict_types=1);
 
-namespace Platine\Framework\Http\Middleware;
+namespace Platine\Framework\Config;
 
-use Platine\Framework\App\Application;
-use Platine\Http\Handler\MiddlewareInterface;
-use Platine\Http\Handler\RequestHandlerInterface;
-use Platine\Http\ResponseInterface;
-use Platine\Http\ServerRequestInterface;
-use Platine\Session\Session;
+use Platine\Config\Config;
+use Platine\Database\QueryBuilder;
 
 /**
- * class SessionMiddleware
- * @package Platine\Framework\Http\Middleware
+ * class DbConfig
+ * @package Platine\Framework\Config
  */
-class SessionMiddleware implements MiddlewareInterface
+class DbConfig extends Config
 {
 
     /**
-     * The application instance
-     * @var Application
+     * The Query Builder instance
+     * @var QueryBuilder
      */
-    protected Application $app;
+    protected QueryBuilder $queryBuilder;
 
     /**
      * Create new instance
-     * @param Application $app
+     * @param QueryBuilder $queryBuilder
+     * @param string $env
      */
-    public function __construct(Application $app)
+    public function __construct(QueryBuilder $queryBuilder, string $env = '')
     {
-        $this->app = $app;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function process(
-        ServerRequestInterface $request,
-        RequestHandlerInterface $handler
-    ): ResponseInterface {
-
-        $request = $request->withAttribute(
-            Session::class,
-            $this->app->get(Session::class)
-        );
-
-        return $handler->handle($request);
+        $this->queryBuilder = $queryBuilder;
+        parent::__construct(new DatabaseConfigLoader($queryBuilder, 'config'), $env);
     }
 }

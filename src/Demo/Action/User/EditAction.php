@@ -50,7 +50,7 @@ class EditAction implements RequestHandlerInterface
         if (!$user) {
             $this->logger->warning('Can not find user with id {id}', ['id' => $id]);
 
-            return (new RedirectResponse('../list'))->redirect();
+            return new RedirectResponse('../list');
         }
 
         if ($request->getMethod() === 'GET') {
@@ -118,6 +118,6 @@ class EditAction implements RequestHandlerInterface
             );
         }
 
-        return (new RedirectResponse('../list'))->redirect();
+        return new RedirectResponse('../list');
     }
 }

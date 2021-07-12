@@ -30,11 +30,11 @@
  */
 
 /**
- *  @file MigrationServiceProvider.php
+ *  @file UserServiceProvider.php
  *
- *  The Framework database migration service provider class
+ *  User service provider class
  *
- *  @package    Platine\Framework\Service\Provider
+ *  @package    Platine\Framework\Demo\Provider
  *  @author Platine Developers team
  *  @copyright  Copyright (c) 2020
  *  @license    http://opensource.org/licenses/MIT  MIT License
@@ -45,21 +45,23 @@
 
 declare(strict_types=1);
 
-namespace Platine\Framework\Service\Provider;
+namespace Platine\Framework\Demo\Provider;
 
-use Platine\Framework\Migration\Command\MigrationCreateCommand;
-use Platine\Framework\Migration\Command\MigrationExecuteCommand;
-use Platine\Framework\Migration\Command\MigrationMigrateCommand;
-use Platine\Framework\Migration\Command\MigrationResetCommand;
-use Platine\Framework\Migration\Command\MigrationStatusCommand;
-use Platine\Framework\Migration\MigrationRepository;
+use Platine\Framework\Demo\Action\User\CreateAction;
+use Platine\Framework\Demo\Action\User\DeleteAction;
+use Platine\Framework\Demo\Action\User\DetailAction;
+use Platine\Framework\Demo\Action\User\EditAction;
+use Platine\Framework\Demo\Action\User\ListAction;
+use Platine\Framework\Demo\Action\User\LoginAction;
+use Platine\Framework\Demo\Action\User\LogoutAction;
 use Platine\Framework\Service\ServiceProvider;
+use Platine\Route\Router;
 
 /**
- * class MigrationServiceProvider
- * @package Platine\Framework\Service\Provider
+ * class UserServiceProvider
+ * @package Platine\Framework
  */
-class MigrationServiceProvider extends ServiceProvider
+class UserServiceProvider extends ServiceProvider
 {
 
     /**
@@ -67,18 +69,26 @@ class MigrationServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        $this->app->bind(MigrationRepository::class);
-        $this->app->bind(MigrationStatusCommand::class);
-        $this->app->bind(MigrationCreateCommand::class);
-        $this->app->bind(MigrationExecuteCommand::class);
-        $this->app->bind(MigrationMigrateCommand::class);
-        $this->app->bind(MigrationResetCommand::class);
+        $this->app->bind(DeleteAction::class);
+        $this->app->bind(EditAction::class);
+        $this->app->bind(CreateAction::class);
+        $this->app->bind(LoginAction::class);
+        $this->app->bind(ListAction::class);
+        $this->app->bind(LogoutAction::class);
+        $this->app->bind(DetailAction::class);
+    }
 
-        //Commands
-        $this->addCommand(MigrationStatusCommand::class);
-        $this->addCommand(MigrationCreateCommand::class);
-        $this->addCommand(MigrationExecuteCommand::class);
-        $this->addCommand(MigrationMigrateCommand::class);
-        $this->addCommand(MigrationResetCommand::class);
+    /**
+     * {@inheritdoc}
+     */
+    public function addRoutes(Router $router): void
+    {
+        $router->get('/list', ListAction::class, 'user_list');
+        $router->get('/detail/{id:i}', DetailAction::class, 'user_detail');
+        $router->get('/delete/{id:i}', DeleteAction::class, 'user_delete');
+        $router->get('/logout', LogoutAction::class, 'logout');
+        $router->add('/login', LoginAction::class, ['GET', 'POST'], 'user_login');
+        $router->add('/add', CreateAction::class, ['GET', 'POST'], 'user_create');
+        $router->add('/edit/{id:i}', EditAction::class, ['GET', 'POST'], 'user_edit');
     }
 }

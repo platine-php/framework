@@ -93,7 +93,6 @@ class MigrationExecuteCommand extends AbstractCommand
      */
     public function execute()
     {
-        //$version = $this->getArgumentValue('migrationVersion');
         $type = $this->getArgumentValue('type');
 
         $io = $this->io();

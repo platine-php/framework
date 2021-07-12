@@ -19,27 +19,12 @@ class RedirectResponse extends Response
 {
 
     /**
-     * The URL to redirect to
-     * @var string
-     */
-    protected string $url = '/';
-
-    /**
      * Create new instance
      * @param string $url
      */
     public function __construct(string $url = '/')
     {
-        parent::__construct(301);
-        $this->url = $url;
-    }
-
-    /**
-     * Redirect to the current URL attribute
-     * @return $this
-     */
-    public function redirect(): self
-    {
-        return $this->withHeader('Location', $this->url);
+        parent::__construct(302);
+        $this->headers['Location'] = [$url];
     }
 }

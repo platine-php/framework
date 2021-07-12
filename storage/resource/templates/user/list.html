@@ -1,37 +1,40 @@
-<h3>User List</h3>
-<p><a href = 'logout'>Logout</a>|<a href = 'add'>Create User</a></p>
+{% extends "layout" %}
+{% block body %}
+    <h3>User List</h3>
+    <p><a href = 'logout'>Logout</a>|<a href = 'add'>Create User</a></p>
 
-{% if users.size > 0 %}
-    <table border = '1' cellpadding = '3' cellspacing = '0'>
-        <tr>
-            <th>ID</th>
-            <th>Username</th>
-            <th>Last Name</th>
-            <th>First Name</th>
-            <th>Age</th>
-            <th>Status</th>
-            <th>Create Date</th>
-            <th>Action</th>
-        </tr>
-        {% for user in users %}
+    {% if users.size > 0 %}
+        <table border = '1' cellpadding = '3' cellspacing = '0'>
             <tr>
-                <td>{{ user.user_id }}</td>
-                <td>{{ user.username }}</td>
-                <td>{{ user.lname }}</td>
-                <td>{{ user.fname }}</td>
-                <td>{{ user.age }}</td>
-                <td>{% if user.status == 1 %}Enable{% else %}Disable{% endif %}</td>
-                <td>{{ user.created_at|date:"d/m/Y" }}</td>
-                <td>
-                    <a href = 'edit/{{ user.user_id }}'>Edit|</a>
-                    <a href = 'delete/{{ user.user_id }}'>Delete|</a>
-                    <a href = 'detail/{{ user.user_id }}'>View</a>
-                </td>
+                <th>ID</th>
+                <th>Username</th>
+                <th>Last Name</th>
+                <th>First Name</th>
+                <th>Age</th>
+                <th>Status</th>
+                <th>Create Date</th>
+                <th>Action</th>
             </tr>
+            {% for user in users %}
+                <tr>
+                    <td>{{ user.user_id }}</td>
+                    <td>{{ user.username }}</td>
+                    <td>{{ user.lname }}</td>
+                    <td>{{ user.fname }}</td>
+                    <td>{{ user.age }}</td>
+                    <td>{% if user.status == 1 %}Enable{% else %}Disable{% endif %}</td>
+                    <td>{{ user.created_at|date:"d/m/Y" }}</td>
+                    <td>
+                        <a href = 'edit/{{ user.user_id }}'>Edit|</a>
+                        <a href = 'delete/{{ user.user_id }}'>Delete|</a>
+                        <a href = 'detail/{{ user.user_id }}'>View</a>
+                    </td>
+                </tr>
 
-         {% endfor %}
-    </table>
+             {% endfor %}
+        </table>
 
-{% else %}
-    <p>No available data to show</p>
-{% endif %}
+    {% else %}
+        <p>No available data to show</p>
+    {% endif %}
+{% endblock %}

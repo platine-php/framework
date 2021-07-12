@@ -30,11 +30,11 @@
  */
 
 /**
- *  @file UserActionServiceProvider.php
+ *  @file DatabaseConfigServiceProvider.php
  *
- *  User actions service provider class
+ *  The Framework database configuration service provider class
  *
- *  @package    Platine\Framework\Demo\Provider
+ *  @package    Platine\Framework\Service\Provider
  *  @author Platine Developers team
  *  @copyright  Copyright (c) 2020
  *  @license    http://opensource.org/licenses/MIT  MIT License
@@ -45,22 +45,19 @@
 
 declare(strict_types=1);
 
-namespace Platine\Framework\Demo\Provider;
+namespace Platine\Framework\Service\Provider;
 
-use Platine\Framework\Demo\Action\User\CreateAction;
-use Platine\Framework\Demo\Action\User\DeleteAction;
-use Platine\Framework\Demo\Action\User\DetailAction;
-use Platine\Framework\Demo\Action\User\EditAction;
-use Platine\Framework\Demo\Action\User\ListAction;
-use Platine\Framework\Demo\Action\User\LoginAction;
-use Platine\Framework\Demo\Action\User\LogoutAction;
+use Platine\Config\Config;
+use Platine\Container\ContainerInterface;
+use Platine\Database\QueryBuilder;
+use Platine\Framework\Config\DbConfig;
 use Platine\Framework\Service\ServiceProvider;
 
 /**
- * class ActionServiceProvider
- * @package Platine\Framework
+ * class DatabaseConfigServiceProvider
+ * @package Platine\Framework\Service\Provider
  */
-class UserActionServiceProvider extends ServiceProvider
+class DatabaseConfigServiceProvider extends ServiceProvider
 {
 
     /**
@@ -68,12 +65,9 @@ class UserActionServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        $this->app->bind(DeleteAction::class);
-        $this->app->bind(EditAction::class);
-        $this->app->bind(CreateAction::class);
-        $this->app->bind(LoginAction::class);
-        $this->app->bind(ListAction::class);
-        $this->app->bind(LogoutAction::class);
-        $this->app->bind(DetailAction::class);
+        $this->app->share(DbConfig::class, function (ContainerInterface $app) {
+            $env = $app->get(Config::class)->get('app.env', '');
+            return new DbConfig($app->get(QueryBuilder::class), $env);
+        });
     }
 }

@@ -108,6 +108,13 @@ class ConsoleKernel extends BaseKernel
         if (!$this->commandsLoaded) {
             $this->registerConfiguredCommands();
 
+            //Load providers commands
+            /** @var class-string[] $commands */
+            $commands = $this->app->getProvidersCommands();
+            foreach ($commands as $command) {
+                $this->addCommand($command);
+            }
+
             $this->commandsLoaded = true;
         }
 

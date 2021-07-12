@@ -1,0 +1,29 @@
+2021-07-12 13:17:26.314490	[INFO]	[Platine\Database\Connection]	[pid:0]	Execute Query: [SELECT * FROM `users`], parameters: [], time: [0.000485]
+2021-07-12 13:19:43.806142	[INFO]	[Platine\Database\Connection]	[pid:0]	Execute Query: [SELECT * FROM `users` WHERE `username` = ?], parameters: [octave_t], time: [0.000333]
+2021-07-12 13:20:20.322465	[INFO]	[Platine\Database\Connection]	[pid:0]	Execute Query: [SELECT * FROM `users` WHERE `username` = ?], parameters: [octave_t], time: [0.000499]
+2021-07-12 13:20:46.551670	[INFO]	[Platine\Database\Connection]	[pid:0]	Execute Query: [SELECT * FROM `users` WHERE `username` = ?], parameters: [octave_t], time: [0.000270]
+2021-07-12 13:20:46.694426	[INFO]	[Platine\Database\Connection]	[pid:0]	Execute Query: [SELECT * FROM `users`], parameters: [], time: [0.000366]
+2021-07-12 13:21:23.063472	[INFO]	[Platine\Database\Connection]	[pid:0]	Execute Query: [SELECT * FROM `users` WHERE `username` = ?], parameters: [octave_t], time: [0.000337]
+2021-07-12 13:21:23.187923	[INFO]	[Platine\Database\Connection]	[pid:0]	Execute Query: [SELECT * FROM `users`], parameters: [], time: [0.000276]
+2021-07-12 13:21:38.976570	[INFO]	[Platine\Database\Connection]	[pid:0]	Execute Query: [SELECT * FROM `users` WHERE `username` = ?], parameters: [octave_t], time: [0.000294]
+2021-07-12 13:21:39.112647	[INFO]	[Platine\Database\Connection]	[pid:0]	Execute Query: [SELECT * FROM `users`], parameters: [], time: [0.000324]
+2021-07-12 13:21:44.580339	[INFO]	[Platine\Database\Connection]	[pid:0]	Execute Query: [SELECT * FROM `users` WHERE `user_id` = ?], parameters: [10], time: [0.000360]
+2021-07-12 13:21:50.167735	[INFO]	[Platine\Database\Connection]	[pid:0]	Execute Query: [SELECT * FROM `users` WHERE `user_id` = ?], parameters: [11], time: [0.000431]
+2021-07-12 13:21:53.317023	[INFO]	[Platine\Database\Connection]	[pid:0]	Execute Query: [SELECT * FROM `users` WHERE `user_id` = ?], parameters: [111], time: [0.000825]
+2021-07-12 13:21:53.319400	[WARNING]	[MAIN]	[pid:0]	Can not find user with id 111
+2021-07-12 13:21:53.327239	[ERROR]	[MAIN]	[pid:0]	Platine Application Error: An error has occurred. Sorry for the temporary inconvenience., Error(code:0) Call to undefined method Platine\Framework\Demo\Response\RedirectResponse::redirect() at D:\wamp\www\platine-php\packages\framework\src\Demo\Action\User\DetailAction.php line 44
+2021-07-12 13:26:21.498180	[INFO]	[Platine\Database\Connection]	[pid:0]	Execute Query: [SELECT * FROM `users` WHERE `user_id` = ?], parameters: [111], time: [0.000581]
+2021-07-12 13:26:21.501526	[WARNING]	[MAIN]	[pid:0]	Can not find user with id 111
+2021-07-12 13:26:21.559147	[INFO]	[Platine\Database\Connection]	[pid:0]	Execute Query: [SELECT * FROM `users`], parameters: [], time: [0.000268]
+2021-07-12 13:26:46.753309	[INFO]	[Platine\Database\Connection]	[pid:0]	Execute Query: [SELECT * FROM `users` WHERE `username` = ?], parameters: [ingrid], time: [0.000311]
+2021-07-12 13:26:46.867853	[INFO]	[Platine\Database\Connection]	[pid:0]	Execute Query: [INSERT INTO `users`(`username`, `fname`, `lname`, `password`, `status`, `age`, `deleted`) VALUES (?, ?, ?, ?, ?, ?, ?)], parameters: [ingrid, Ingrid lionnelle, MBOUTOU, $2y$10$c2.1Z35jDrLLvgoy3oWkTercPeI1ByNTzZoh.kDzhzM6hr1ifAl2e, 1, 12, 0], time: [0.002376]
+2021-07-12 13:26:46.896254	[INFO]	[Platine\Database\Connection]	[pid:0]	Execute Query: [SELECT * FROM `users`], parameters: [], time: [0.000281]
+2021-07-12 13:27:32.567414	[INFO]	[Platine\Database\Connection]	[pid:0]	Execute Query: [SELECT * FROM `users`], parameters: [], time: [0.000303]
+2021-07-12 13:28:10.890731	[ERROR]	[MAIN]	[pid:0]	Platine Application Error: An error has occurred. Sorry for the temporary inconvenience., ArgumentCountError(code:0) Too few arguments to function Platine\Framework\Http\Middleware\SessionMiddleware::__construct(), 0 passed in D:\wamp\www\platine-php\vendor\platine-php\request-handler\src\MiddlewareResolver.php on line 207 and exactly 1 expected at D:\wamp\www\platine-php\packages\framework\src\Http\Middleware\SessionMiddleware.php line 74
+2021-07-12 13:29:23.561575	[INFO]	[Platine\Database\Connection]	[pid:0]	Execute Query: [SELECT * FROM `users`], parameters: [], time: [0.000275]
+2021-07-12 13:29:27.604538	[ERROR]	[MAIN]	[pid:0]	Platine Application Error: An error has occurred. Sorry for the temporary inconvenience., Platine\Container\Exception\NotFoundException(code:0) The type/class [Platine\Session\Session] does not exist in the container! at D:\wamp\www\platine-php\vendor\platine-php\container\src\Container.php line 293
+2021-07-12 13:32:15.721145	[ERROR]	[MAIN]	[pid:0]	Platine Application Error: An error has occurred. Sorry for the temporary inconvenience., Platine\Container\Exception\NotFoundException(code:0) The type/class [Platine\Session\Session] does not exist in the container! at D:\wamp\www\platine-php\vendor\platine-php\container\src\Container.php line 293
+2021-07-12 13:32:22.348466	[ERROR]	[MAIN]	[pid:0]	Platine Application Error: An error has occurred. Sorry for the temporary inconvenience., Platine\Container\Exception\NotFoundException(code:0) The type/class [Platine\Session\Session] does not exist in the container! at D:\wamp\www\platine-php\vendor\platine-php\container\src\Container.php line 293
+2021-07-12 13:32:51.681325	[ERROR]	[MAIN]	[pid:0]	Platine Application Error: An error has occurred. Sorry for the temporary inconvenience., Platine\Container\Exception\NotFoundException(code:0) The type/class [Platine\Session\Session] does not exist in the container! at D:\wamp\www\platine-php\vendor\platine-php\container\src\Container.php line 293
+2021-07-12 13:33:24.737893	[INFO]	[Platine\Database\Connection]	[pid:0]	Execute Query: [SELECT * FROM `users` WHERE `username` = ?], parameters: [octave_t], time: [0.000299]
+2021-07-12 13:33:24.862215	[INFO]	[Platine\Database\Connection]	[pid:0]	Execute Query: [SELECT * FROM `users`], parameters: [], time: [0.000279]

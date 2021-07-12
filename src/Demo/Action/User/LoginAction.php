@@ -98,6 +98,6 @@ class LoginAction implements RequestHandlerInterface
 
         $this->session->set('user', $user);
 
-        return (new RedirectResponse('list'))->redirect();
+        return new RedirectResponse('list');
     }
 }

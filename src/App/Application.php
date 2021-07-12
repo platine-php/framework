@@ -158,7 +158,30 @@ class Application extends Container
         return $this;
     }
 
-        /**
+    /**
+     * Return the list of providers
+     * @return array<string, ServiceProvider>
+     */
+    public function getProviders(): array
+    {
+        return $this->providers;
+    }
+
+    /**
+     * Return the list of service providers commands
+     * @return array<class-string>
+     */
+    public function getProvidersCommands(): array
+    {
+        $commands = [];
+        foreach ($this->providers as /** @var ServiceProvider $provider */ $provider) {
+            $commands = array_merge($commands, $provider->getCommands());
+        }
+
+        return $commands;
+    }
+
+    /**
      * Boot the application
      * @return void
      */

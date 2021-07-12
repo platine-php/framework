@@ -48,6 +48,7 @@ declare(strict_types=1);
 namespace Platine\Framework\Service;
 
 use Platine\Framework\App\Application;
+use Platine\Route\Router;
 
 /**
  * class ServiceProvider
@@ -61,6 +62,12 @@ class ServiceProvider
      * @var Application
      */
     protected Application $app;
+
+    /**
+     * Provider command list
+     * @var class-string[]
+     */
+    protected array $commands = [];
 
     /**
      * Create new instance
@@ -85,5 +92,35 @@ class ServiceProvider
      */
     public function boot(): void
     {
+    }
+
+    /**
+     * Add application route
+     * @param Router $router the route instance
+     * @return void
+     */
+    public function addRoutes(Router $router): void
+    {
+    }
+
+    /**
+     * Register command
+     * @param class-string $command
+     * @return $this
+     */
+    public function addCommand(string $command): self
+    {
+        $this->commands[] = $command;
+
+        return $this;
+    }
+
+    /**
+     * Return the list of command
+     * @return class-string[]
+     */
+    public function getCommands(): array
+    {
+        return $this->commands;
     }
 }
