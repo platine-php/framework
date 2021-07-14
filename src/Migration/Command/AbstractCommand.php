@@ -50,9 +50,6 @@ namespace Platine\Framework\Migration\Command;
 use Platine\Config\Config;
 use Platine\Console\Command\Command;
 use Platine\Database\Connection;
-use Platine\Database\Exception\QueryPrepareException;
-use Platine\Database\Schema;
-use Platine\Database\Schema\CreateTable;
 use Platine\Filesystem\DirectoryInterface;
 use Platine\Filesystem\FileInterface;
 use Platine\Filesystem\Filesystem;
@@ -75,12 +72,6 @@ abstract class AbstractCommand extends Command
      * @var MigrationRepository
      */
     protected MigrationRepository $repository;
-
-    /**
-     * The schema to use
-     * @var Schema
-     */
-    protected Schema $schema;
 
     /**
      * The configuration to use
@@ -107,30 +98,27 @@ abstract class AbstractCommand extends Command
     protected string $migrationPath = '';
 
     /**
-     * Migration table name
+     * The migration table
      * @var string
      */
-    protected string $table = 'migrations';
+    protected string $table;
 
     /**
      * Create new instance
      * @param Application $app
      * @param MigrationRepository $repository
-     * @param Schema $schema
      * @param Config $config
      * @param Filesystem $filesystem
      */
     public function __construct(
         Application $app,
         MigrationRepository $repository,
-        Schema $schema,
         Config $config,
         Filesystem $filesystem
     ) {
         parent::__construct('migration', 'Command to manage database migration');
         $this->application = $app;
         $this->repository = $repository;
-        $this->schema = $schema;
         $this->config = $config;
         $this->filesystem = $filesystem;
         $path = Path::convert2Absolute($config->get('migration.path', 'migrations'));
@@ -152,39 +140,6 @@ abstract class AbstractCommand extends Command
                 $this->migrationPath
             ));
         }
-    }
-
-    /**
-     * Check if migration table does not exist and create it
-     * @return void
-     */
-    protected function checkMigrationTable(): void
-    {
-        try {
-            $this->repository->find('xx');
-        } catch (QueryPrepareException $ex) {
-            $this->createMigrationTable();
-        }
-    }
-
-    /**
-     * Create migration table
-     * @return void
-     */
-    protected function createMigrationTable(): void
-    {
-        $tableName = $this->config->get('migration.table', 'migrations');
-        $this->schema->create($tableName, function (CreateTable $table) {
-            $table->string('version', 20)
-                   ->description('The migration version')
-                   ->primary();
-            $table->string('description')
-                   ->description('The migration description');
-            $table->datetime('created_at')
-                    ->description('Migration run time');
-
-            $table->engine('INNODB');
-        });
     }
 
     /**
@@ -258,8 +213,6 @@ abstract class AbstractCommand extends Command
      */
     protected function getExecuted(string $orderDir = 'ASC'): array
     {
-        $this->checkMigrationTable();
-
         $migrations = $this->repository
                            ->query()
                            ->orderBy('version', $orderDir)

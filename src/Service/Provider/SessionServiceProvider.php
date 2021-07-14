@@ -81,6 +81,5 @@ class SessionServiceProvider extends ServiceProvider
             );
         });
         $this->app->bind(Session::class);
-        $this->app->bind(SessionMiddleware::class);
     }
 }

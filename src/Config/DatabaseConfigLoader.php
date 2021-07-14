@@ -48,6 +48,9 @@ declare(strict_types=1);
 namespace Platine\Framework\Config;
 
 use Platine\Config\LoaderInterface;
+use Platine\Database\Query\ColumnExpression;
+use Platine\Database\Query\Expression;
+use Platine\Database\Query\SubQuery;
 use Platine\Database\QueryBuilder;
 
 /**
@@ -87,7 +90,9 @@ class DatabaseConfigLoader implements LoaderInterface
      */
     public function load(string $environment, string $group): array
     {
-        $items = [];
+        $items = $this->getConfigurations($group, $environment);
+
+        /*
 
         $environments = $this->parse($environment);
         foreach ($environments as $env) {
@@ -109,6 +114,8 @@ class DatabaseConfigLoader implements LoaderInterface
                 $items = $this->merge($items, $config);
             }
         }
+         *
+         */
 
         return $items;
     }
@@ -147,9 +154,6 @@ class DatabaseConfigLoader implements LoaderInterface
     protected function loadConfig(array $results): array
     {
         $config = [];
-
-        var_dump($results);
-
         foreach ($results as $cfg) {
             if ($cfg->parent) {
                 $results = $this->queryBuilder
@@ -167,5 +171,39 @@ class DatabaseConfigLoader implements LoaderInterface
             }
         }
         return $config;
+    }
+
+    /**
+     * Return the configuration
+     * @param string $group
+     * @param string|null $env
+     * @return mixed
+     */
+    public function getConfigurations(string $group, ?string $env = null)
+    {
+        $results = $this->queryBuilder
+                        ->from($this->table)
+                        ->where('id')->in(function (SubQuery $q) use ($env, $group) {
+                            $query = $q->from($this->table)
+                            ->where('module')->is($group)
+                            ->where('status')->is(1)
+                            ->groupBy(['code']);
+                            if ($env === null) {
+                                $query->where('env')->isNull();
+                            } else {
+                                $query->where('env')->is($env);
+                            }
+
+                            $query->select(function (ColumnExpression $cexp) {
+                                $cexp->column(function (Expression $exp) {
+                                    $exp->op('COALESCE');
+                                });
+                            });
+                        })
+                        ->select()
+                        ->fetchObject()
+                        ->all();
+
+        return $results;
     }
 }

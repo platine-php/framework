@@ -30,9 +30,9 @@
  */
 
 /**
- *  @file MigrationStatusCommand.php
+ *  @file MigrationInitCommand.php
  *
- *  The migration status command class
+ *  The migration initialize command class
  *
  *  @package    Platine\Framework\Migration\Command
  *  @author Platine Developers team
@@ -48,17 +48,24 @@ declare(strict_types=1);
 namespace Platine\Framework\Migration\Command;
 
 use Platine\Config\Config;
+use Platine\Database\Schema;
+use Platine\Database\Schema\CreateTable;
 use Platine\Filesystem\Filesystem;
 use Platine\Framework\App\Application;
-use Platine\Framework\Migration\Command\AbstractCommand;
 use Platine\Framework\Migration\MigrationRepository;
 
 /**
- * class MigrationStatusCommand
+ * class MigrationInitCommand
  * @package Platine\Framework\Migration\Command
  */
-class MigrationStatusCommand extends AbstractCommand
+class MigrationInitCommand extends AbstractCommand
 {
+
+    /**
+     * The schema to use
+     * @var Schema
+     */
+    protected Schema $schema;
 
     /**
      * Create new instance
@@ -67,12 +74,16 @@ class MigrationStatusCommand extends AbstractCommand
     public function __construct(
         Application $app,
         MigrationRepository $repository,
+        Schema $schema,
         Config $config,
         Filesystem $filesystem
     ) {
         parent::__construct($app, $repository, $config, $filesystem);
-        $this->setName('migration:status')
-             ->setDescription('Show current status of your migrations');
+        $this->setName('migration:init')
+             ->setDescription("Initialize the migration data. Note this command\n"
+                     . "is run only at the first time to create migration table");
+
+        $this->schema = $schema;
     }
 
     /**
@@ -80,45 +91,42 @@ class MigrationStatusCommand extends AbstractCommand
      */
     public function execute()
     {
-        $writer = $this->io()->writer();
-        $writer->boldYellow('MIGRATION STATUS', true)->eol();
-        $writer->bold('Migration path: ');
-        $writer->boldBlueBgBlack($this->migrationPath, true);
-        $writer->bold('Migration table: ');
-        $writer->boldBlueBgBlack($this->table, true);
+        $io = $this->io();
+        $writer = $io->writer();
+        $writer->boldYellow('MIGRATION INITIALIZATION', true);
 
-        $migrations = $this->getMigrations();
-        $executed = $this->getExecuted();
-        $diff = array_diff_key($migrations, $executed);
-
-        $writer->boldGreen('Migration All: ' . count($migrations), true);
-        $writer->boldGreen('Migration Available: ' . count($diff), true);
-        $writer->boldGreen('Migration Executed: ' . count($executed), true)->eol();
-
-        $writer->boldYellow('MIGRATION LIST', true);
-
-        $rows = [];
-        foreach ($executed as $version => $entity) {
-            $rows[] = [
-                'version' => (string) $version,
-                'description' => $entity->description,
-                'date' => $entity->created_at,
-                'status' => 'UP'
-            ];
+        if ($this->schema->hasTable($this->table, true)) {
+            $writer->boldRed(sprintf(
+                'Migration table [%s] already created',
+                $this->table
+            ));
+            return;
         }
 
-        foreach ($diff as $version => $description) {
-            $cleanDescription = str_replace('_', ' ', $description);
-            $version = (string) $version;
-            $rows[] = [
-                'version' => $version,
-                'description' => $cleanDescription,
-                'date' => '',
-                'status' => 'DOWN'
-            ];
-        }
-        $writer->table($rows);
+        $this->createMigrationTable();
+        $writer->boldGreen(sprintf(
+            'Migration table [%s] created successfully',
+            $this->table
+        ));
+    }
 
-        $writer->boldGreen('Command finished successfully')->eol();
+    /**
+     * Create migration table
+     * @return void
+     */
+    protected function createMigrationTable(): void
+    {
+        $tableName = $this->table;
+        $this->schema->create($tableName, function (CreateTable $table) {
+            $table->string('version', 20)
+                   ->description('The migration version')
+                   ->primary();
+            $table->string('description')
+                   ->description('The migration description');
+            $table->datetime('created_at')
+                    ->description('Migration run time');
+
+            $table->engine('INNODB');
+        });
     }
 }

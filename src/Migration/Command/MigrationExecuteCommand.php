@@ -48,7 +48,6 @@ declare(strict_types=1);
 namespace Platine\Framework\Migration\Command;
 
 use Platine\Config\Config;
-use Platine\Database\Schema;
 use Platine\Filesystem\Filesystem;
 use Platine\Framework\App\Application;
 use Platine\Framework\Migration\MigrationRepository;
@@ -68,11 +67,10 @@ class MigrationExecuteCommand extends AbstractCommand
     public function __construct(
         Application $app,
         MigrationRepository $repository,
-        Schema $schema,
         Config $config,
         Filesystem $filesystem
     ) {
-        parent::__construct($app, $repository, $schema, $config, $filesystem);
+        parent::__construct($app, $repository, $config, $filesystem);
         $this->setName('migration:exec')
              ->setDescription('Execute the migration up/down for one version');
 
@@ -86,6 +84,8 @@ class MigrationExecuteCommand extends AbstractCommand
 
              return $val;
         });
+
+        $this->addOption('-i|--id', 'the migration version', null, false, true);
     }
 
     /**
@@ -102,26 +102,48 @@ class MigrationExecuteCommand extends AbstractCommand
         $migrations = $this->getMigrations();
         $executed = $this->getExecuted('DESC');
 
+        $version = $this->getOptionValue('id');
+
         if ($type === 'up') {
             $diff = array_diff_key($migrations, $executed);
             if (empty($diff)) {
                 $writer->boldGreen('Migration already up to date');
             } else {
-                $version = $io->choice('Choose which version to migrate up', $diff);
-                $description = str_replace('_', ' ', $migrations[$version]);
-                $this->executeMigrationUp($version, $description);
+                if (empty($version)) {
+                    $version = $io->choice('Choose which version to migrate up', $diff);
+                }
+
+                if (!isset($diff[$version])) {
+                    $writer->boldRed(sprintf(
+                        'Invalid migration version [%s] or already executed',
+                        $version
+                    ));
+                } else {
+                    $description = str_replace('_', ' ', $migrations[$version]);
+                    $this->executeMigrationUp($version, $description);
+                }
             }
         } else {
             if (empty($executed)) {
                 $writer->boldGreen('No migration to rollback');
             } else {
                 $data = [];
-                foreach ($executed as $version => $entity) {
-                    $data[(string)$version] = $entity->description;
+                foreach ($executed as $ver => $entity) {
+                    $data[$ver] = $entity->description;
                 }
-                $version = $io->choice('Choose which version to rollback', $data);
-                $description = str_replace('_', ' ', $data[$version]);
-                $this->executeMigrationDown($version, $description);
+                if (empty($version)) {
+                    $version = $io->choice('Choose which version to rollback', $data);
+                }
+
+                if (!isset($data[$version])) {
+                    $writer->boldRed(sprintf(
+                        'Invalid migration version [%s] or not yet executed',
+                        $version
+                    ));
+                } else {
+                    $description = str_replace('_', ' ', $data[$version]);
+                    $this->executeMigrationDown($version, $description);
+                }
             }
         }
     }

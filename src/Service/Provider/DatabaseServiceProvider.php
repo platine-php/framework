@@ -77,7 +77,7 @@ class DatabaseServiceProvider extends ServiceProvider
 
             return new Configuration($config->get('database.connections.' . $driver, []));
         });
-        $this->app->bind(Pool::class, function (ContainerInterface $app) {
+        $this->app->share(Pool::class, function (ContainerInterface $app) {
             return new Pool($app->get(Config::class)->get('database', []));
         });
         $this->app->share(Connection::class, function (ContainerInterface $app) {

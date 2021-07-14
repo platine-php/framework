@@ -48,7 +48,6 @@ declare(strict_types=1);
 namespace Platine\Framework\Migration\Command;
 
 use Platine\Config\Config;
-use Platine\Database\Schema;
 use Platine\Filesystem\Filesystem;
 use Platine\Framework\App\Application;
 use Platine\Framework\Migration\MigrationRepository;
@@ -67,11 +66,10 @@ class MigrationResetCommand extends AbstractCommand
     public function __construct(
         Application $app,
         MigrationRepository $repository,
-        Schema $schema,
         Config $config,
         Filesystem $filesystem
     ) {
-        parent::__construct($app, $repository, $schema, $config, $filesystem);
+        parent::__construct($app, $repository, $config, $filesystem);
         $this->setName('migration:reset')
              ->setDescription('Rollback all migration done before');
     }

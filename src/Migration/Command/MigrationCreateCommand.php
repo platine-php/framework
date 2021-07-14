@@ -50,7 +50,6 @@ namespace Platine\Framework\Migration\Command;
 use Platine\Config\Config;
 use Platine\Console\Input\Reader;
 use Platine\Console\Output\Writer;
-use Platine\Database\Schema;
 use Platine\Filesystem\Filesystem;
 use Platine\Framework\App\Application;
 use Platine\Framework\Migration\MigrationRepository;
@@ -76,13 +75,14 @@ class MigrationCreateCommand extends AbstractCommand
     public function __construct(
         Application $app,
         MigrationRepository $repository,
-        Schema $schema,
         Config $config,
         Filesystem $filesystem
     ) {
-        parent::__construct($app, $repository, $schema, $config, $filesystem);
+        parent::__construct($app, $repository, $config, $filesystem);
         $this->setName('migration:create')
              ->setDescription('Create a new migration');
+
+        $this->addArgument('name', 'name of migration', null, false, true);
     }
 
     /**
@@ -128,8 +128,11 @@ class MigrationCreateCommand extends AbstractCommand
     {
         $writer->boldYellow('MIGRATION GENERATION', true)->eol();
 
-        $io = $this->io();
-        $name = $io->prompt('Enter the name of the migration', 'Migration description');
+        $name = $this->getArgumentValue('name');
+        if (!$name) {
+            $io = $this->io();
+            $name = $io->prompt('Enter the name of the migration', 'Migration description');
+        }
         $this->name = $name;
     }
 
