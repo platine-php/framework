@@ -4,6 +4,7 @@ use Platine\Framework\Demo\Provider\MyServiceProvider;
 use Platine\Framework\Demo\Provider\RepositoryServiceProvider;
 use Platine\Framework\Demo\Provider\UserServiceProvider;
 use Platine\Framework\Service\Provider\CacheServiceProvider;
+use Platine\Framework\Service\Provider\CommandServiceProvider;
 use Platine\Framework\Service\Provider\CookieServiceProvider;
 use Platine\Framework\Service\Provider\DatabaseConfigServiceProvider;
 use Platine\Framework\Service\Provider\DatabaseServiceProvider;
@@ -28,6 +29,7 @@ use Platine\Framework\Service\Provider\TemplateServiceProvider;
         CookieServiceProvider::class,
         LangServiceProvider::class,
         DatabaseConfigServiceProvider::class,
+        CommandServiceProvider::class,
         
         //Custom
         MyServiceProvider::class,

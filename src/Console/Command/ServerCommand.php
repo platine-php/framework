@@ -30,11 +30,11 @@
  */
 
 /**
- *  @file RoutingServiceProvider.php
+ *  @file ServerCommand.php
  *
- *  The Framework routing service provider class
+ *  The Server command class
  *
- *  @package    Platine\Framework\Service\Provider
+ *  @package    Platine\Framework\Console\Command
  *  @author Platine Developers team
  *  @copyright  Copyright (c) 2020
  *  @license    http://opensource.org/licenses/MIT  MIT License
@@ -45,27 +45,47 @@
 
 declare(strict_types=1);
 
-namespace Platine\Framework\Service\Provider;
+namespace Platine\Framework\Console\Command;
 
-use Platine\Framework\Http\Middleware\RouteDispatcherMiddleware;
-use Platine\Framework\Http\Middleware\RouteMatchMiddleware;
-use Platine\Framework\Http\RouteHelper;
-use Platine\Framework\Service\ServiceProvider;
+use Platine\Console\Command\Command;
+use Platine\Console\Command\Shell;
 
 /**
- * class RoutingServiceProvider
- * @package Platine\Framework\Service\Provider
+ * class ServerCommand
+ * @package Platine\Framework\Console\Command
  */
-class RoutingServiceProvider extends ServiceProvider
+class ServerCommand extends Command
 {
 
     /**
-     * {@inheritdoc}
+     * Create new instance
+     * {@inheritodc}
      */
-    public function register(): void
+    public function __construct()
     {
-        $this->app->bind(RouteMatchMiddleware::class);
-        $this->app->bind(RouteDispatcherMiddleware::class);
-        $this->app->bind(RouteHelper::class);
+        parent::__construct('server', 'Command to manage PHP development server');
+        $this->addOption('-a|--address', 'Server address', '0.0.0.0', true);
+        $this->addOption('-p|--port', 'Server listen port', '8080', true);
+        $this->addOption('-r|--root', 'Server listen port', 'public', true);
+    }
+
+    /**
+     * {@inheritodc}
+     */
+    public function execute()
+    {
+        $host = $this->getOptionValue('address');
+        $port = $this->getOptionValue('port');
+        $path = $this->getOptionValue('root');
+        $cmd = sprintf('php -S %s:%s -t %s', $host, $port, $path);
+        $writer = $this->io()->writer();
+        $writer->boldYellow(sprintf('Running command [%s]', $cmd), true);
+        $shell = new Shell($cmd);
+
+        $shell->execute();
+        echo $shell->getExitCode();
+        if ($shell->getExitCode() !== 0) {
+            $writer->boldRed($shell->getErrorOutput(), true);
+        }
     }
 }

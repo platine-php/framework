@@ -30,11 +30,12 @@
  */
 
 /**
- *  @file RoutingServiceProvider.php
+ *  @file RouteHelper.php
  *
- *  The Framework routing service provider class
+ * This route helper class that contains some useful methods to manage the
+ * route data.
  *
- *  @package    Platine\Framework\Service\Provider
+ *  @package    Platine\Framework\Http
  *  @author Platine Developers team
  *  @copyright  Copyright (c) 2020
  *  @license    http://opensource.org/licenses/MIT  MIT License
@@ -45,27 +46,41 @@
 
 declare(strict_types=1);
 
-namespace Platine\Framework\Service\Provider;
+namespace Platine\Framework\Http;
 
-use Platine\Framework\Http\Middleware\RouteDispatcherMiddleware;
-use Platine\Framework\Http\Middleware\RouteMatchMiddleware;
-use Platine\Framework\Http\RouteHelper;
-use Platine\Framework\Service\ServiceProvider;
+use Platine\Route\Router;
+
 
 /**
- * class RoutingServiceProvider
- * @package Platine\Framework\Service\Provider
+ * class RouteHelper
+ * @package Platine\Framework\Http
  */
-class RoutingServiceProvider extends ServiceProvider
+class RouteHelper
 {
 
     /**
-     * {@inheritdoc}
+     * The router instance
+     * @var Router
      */
-    public function register(): void
+    protected Router $router;
+
+    /**
+     * Create new instance
+     * @param Router $router
+     */
+    public function __construct(Router $router)
     {
-        $this->app->bind(RouteMatchMiddleware::class);
-        $this->app->bind(RouteDispatcherMiddleware::class);
-        $this->app->bind(RouteHelper::class);
+        $this->router = $router;
+    }
+
+    /**
+     * Generate the URL using route name
+     * @param string $name
+     * @param array<string, mixed> $parameters
+     * @return string
+     */
+    public function generateUrl(string $name, array $parameters = []): string
+    {
+        return $this->router->path($name, $parameters);
     }
 }

@@ -8,6 +8,7 @@ use Platine\Framework\Demo\Repository\UserRepository;
 use Platine\Framework\Demo\Response\RedirectResponse;
 use Platine\Framework\Demo\Response\TemplateResponse;
 use Platine\Framework\Http\RequestData;
+use Platine\Framework\Http\RouteHelper;
 use Platine\Http\Handler\RequestHandlerInterface;
 use Platine\Http\ResponseInterface;
 use Platine\Http\ServerRequestInterface;
@@ -29,18 +30,21 @@ class EditAction implements RequestHandlerInterface
     protected Session $session;
     protected UserRepository $userRepository;
     protected Template $template;
+    protected RouteHelper $routeHelper;
 
 
     public function __construct(
         LoggerInterface $logger,
         Session $session,
         Template $template,
-        UserRepository $userRepository
+        UserRepository $userRepository,
+        RouteHelper $routeHelper
     ) {
         $this->logger = $logger;
         $this->session = $session;
         $this->userRepository = $userRepository;
         $this->template = $template;
+        $this->routeHelper = $routeHelper;
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface
@@ -50,7 +54,9 @@ class EditAction implements RequestHandlerInterface
         if (!$user) {
             $this->logger->warning('Can not find user with id {id}', ['id' => $id]);
 
-            return new RedirectResponse('../list');
+            return new RedirectResponse(
+                $this->routeHelper->generateUrl('user_list')
+            );
         }
 
         if ($request->getMethod() === 'GET') {
@@ -118,6 +124,8 @@ class EditAction implements RequestHandlerInterface
             );
         }
 
-        return new RedirectResponse('../list');
+        return new RedirectResponse(
+            $this->routeHelper->generateUrl('user_list')
+        );
     }
 }

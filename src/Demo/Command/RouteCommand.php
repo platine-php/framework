@@ -57,7 +57,7 @@ class RouteCommand extends Command
         $routeList[0]($this->router);
 
         //Load providers routes
-        /** @var ServiceProvider[] $provider */
+        /** @var ServiceProvider[] $providers */
         $providers = $this->application->getProviders();
         foreach ($providers as $provider) {
             $provider->addRoutes($this->router);

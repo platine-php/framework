@@ -1,6 +1,7 @@
 <?php
 
 use Platine\Framework\Demo\Template\LangTag;
+use Platine\Framework\Demo\Template\RouteUrlTag;
 
     return [
         'cache_expire' => 5600,
@@ -11,6 +12,7 @@ use Platine\Framework\Demo\Template\LangTag;
         'auto_escape' => true,
         'filters' => [],
         'tags' => [
-            'tr' => LangTag::class
+            'tr' => LangTag::class,
+            'rurl' => RouteUrlTag::class,
         ],
     ];

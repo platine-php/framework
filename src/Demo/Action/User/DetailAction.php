@@ -5,6 +5,7 @@ namespace Platine\Framework\Demo\Action\User;
 use Platine\Framework\Demo\Repository\UserRepository;
 use Platine\Framework\Demo\Response\RedirectResponse;
 use Platine\Framework\Demo\Response\TemplateResponse;
+use Platine\Framework\Http\RouteHelper;
 use Platine\Http\Handler\RequestHandlerInterface;
 use Platine\Http\ResponseInterface;
 use Platine\Http\ServerRequestInterface;
@@ -22,16 +23,19 @@ class DetailAction implements RequestHandlerInterface
     protected LoggerInterface $logger;
     protected UserRepository $userRepository;
     protected Template $template;
+    protected RouteHelper $routeHelper;
 
 
     public function __construct(
         LoggerInterface $logger,
         Template $template,
-        UserRepository $userRepository
+        UserRepository $userRepository,
+        RouteHelper $routeHelper
     ) {
         $this->logger = $logger;
         $this->userRepository = $userRepository;
         $this->template = $template;
+        $this->routeHelper = $routeHelper;
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface
@@ -41,7 +45,9 @@ class DetailAction implements RequestHandlerInterface
         if (!$user) {
             $this->logger->warning('Can not find user with id {id}', ['id' => $id]);
 
-            return new RedirectResponse('../list');
+            return new RedirectResponse(
+                $this->routeHelper->generateUrl('user_list')
+            );
         }
 
         return new TemplateResponse(

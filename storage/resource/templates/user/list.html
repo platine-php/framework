@@ -1,7 +1,7 @@
 {% extends "main" %}
 {% block body %}
     <h3>User List</h3>
-    <p><a href = 'logout'>Logout</a>|<a href = 'add'>Create User</a></p>
+    <p><a href = '{% rurl logout id:3 name:"foo" %}'>Logout</a>|<a href = '{% rurl user_create %}'>Create User</a></p>
 
     {% if users.size > 0 %}
         <table border = '1' cellpadding = '3' cellspacing = '0'>
@@ -25,9 +25,9 @@
                     <td>{% if user.status == 1 %}Enable{% else %}Disable{% endif %}</td>
                     <td>{{ user.created_at|date:"d/m/Y" }}</td>
                     <td>
-                        <a href = 'edit/{{ user.user_id }}'>Edit|</a>
-                        <a href = 'delete/{{ user.user_id }}'>Delete|</a>
-                        <a href = 'detail/{{ user.user_id }}'>View</a>
+                        <a href = '{% rurl user_edit id:user.user_id  %}'>Edit|</a>
+                        <a href = '{% rurl user_delete id:user.user_id  %}'>Delete|</a>
+                        <a href = '{% rurl user_detail id:user.user_id  %}'>View</a>
                     </td>
                 </tr>
 

@@ -33,9 +33,9 @@ class ListAction implements RequestHandlerInterface
 
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
-        $name = $this->dbConfig->get('app.name');
+        //$name = $this->dbConfig->get('app.name');
 
-        var_dump($name);
+        //var_dump($name);
         /*$debug = $this->dbConfig->get('app.debug');
         $prefix = $this->dbConfig->get('app.billing.invoice.prefix');
         echo $name.'|'.$debug.'|'.$prefix;

@@ -30,9 +30,9 @@
  */
 
 /**
- *  @file RoutingServiceProvider.php
+ *  @file CommandServiceProvider.php
  *
- *  The Framework routing service provider class
+ *  The Framework command service provider class
  *
  *  @package    Platine\Framework\Service\Provider
  *  @author Platine Developers team
@@ -47,16 +47,14 @@ declare(strict_types=1);
 
 namespace Platine\Framework\Service\Provider;
 
-use Platine\Framework\Http\Middleware\RouteDispatcherMiddleware;
-use Platine\Framework\Http\Middleware\RouteMatchMiddleware;
-use Platine\Framework\Http\RouteHelper;
+use Platine\Framework\Console\Command\ServerCommand;
 use Platine\Framework\Service\ServiceProvider;
 
 /**
- * class RoutingServiceProvider
+ * class CommandServiceProvider
  * @package Platine\Framework\Service\Provider
  */
-class RoutingServiceProvider extends ServiceProvider
+class CommandServiceProvider extends ServiceProvider
 {
 
     /**
@@ -64,8 +62,9 @@ class RoutingServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        $this->app->bind(RouteMatchMiddleware::class);
-        $this->app->bind(RouteDispatcherMiddleware::class);
-        $this->app->bind(RouteHelper::class);
+        $this->app->bind(ServerCommand::class);
+
+        //Commands
+        $this->addCommand(ServerCommand::class);
     }
 }
