@@ -1,6 +1,6 @@
 <?php
 
-use Platine\Framework\Demo\Provider\MyServiceProvider;
+use Platine\Framework\Demo\Provider\AppServiceProvider;
 use Platine\Framework\Demo\Provider\RepositoryServiceProvider;
 use Platine\Framework\Demo\Provider\UserServiceProvider;
 use Platine\Framework\Service\Provider\CacheServiceProvider;
@@ -32,7 +32,7 @@ use Platine\Framework\Service\Provider\TemplateServiceProvider;
         CommandServiceProvider::class,
         
         //Custom
-        MyServiceProvider::class,
+        AppServiceProvider::class,
         UserServiceProvider::class,
         RepositoryServiceProvider::class,
     ];

@@ -79,6 +79,7 @@ class CreateAction implements RequestHandlerInterface
 
         if ($userExist) {
             $this->logger->error('User with username {username} already exists', ['username' => $username]);
+            $this->session->setFlash('error', 'This user already exists');
             return new TemplateResponse(
                 $this->template,
                 'user/create',
@@ -106,6 +107,7 @@ class CreateAction implements RequestHandlerInterface
         $result = $this->userRepository->save($user);
 
         if (!$result) {
+            $this->session->setFlash('error', 'Error when saved the user');
             $this->logger->error('Error when saved the user');
             return new TemplateResponse(
                 $this->template,
@@ -115,6 +117,8 @@ class CreateAction implements RequestHandlerInterface
                 ]
             );
         }
+
+        $this->session->setFlash('success', 'User saved successfully');
 
         return new RedirectResponse(
             $this->routeHelper->generateUrl('user_list')

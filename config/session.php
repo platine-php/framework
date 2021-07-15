@@ -1,6 +1,6 @@
 <?php
     return [
-        'name' => 'PHPSESSID',
+        'name' => 'PLATINE_S',
         'driver' => 'file',
         'ttl' => 300,
         'flash_key' => 'session_flash',
@@ -13,7 +13,7 @@
         'storages' => [
             'file' => [
                 'path' => __DIR__ . '/../storage/tmp/session',
-                'prefix' => 'sess_',
+                'prefix' => 'platine_s_',
             ], 
             'apcu' => [],
             'null' => [],

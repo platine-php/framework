@@ -10,6 +10,7 @@ use Platine\Http\Handler\RequestHandlerInterface;
 use Platine\Http\ResponseInterface;
 use Platine\Http\ServerRequestInterface;
 use Platine\Logger\LoggerInterface;
+use Platine\Session\Session;
 use Platine\Template\Template;
 
 /**
@@ -24,14 +25,17 @@ class DetailAction implements RequestHandlerInterface
     protected UserRepository $userRepository;
     protected Template $template;
     protected RouteHelper $routeHelper;
+    protected Session $session;
 
 
     public function __construct(
+        Session $session,
         LoggerInterface $logger,
         Template $template,
         UserRepository $userRepository,
         RouteHelper $routeHelper
     ) {
+        $this->session = $session;
         $this->logger = $logger;
         $this->userRepository = $userRepository;
         $this->template = $template;
@@ -43,6 +47,7 @@ class DetailAction implements RequestHandlerInterface
         $id = (int) $request->getAttribute('id');
         $user = $this->userRepository->find($id);
         if (!$user) {
+            $this->session->setFlash('error', 'Can not find the user');
             $this->logger->warning('Can not find user with id {id}', ['id' => $id]);
 
             return new RedirectResponse(

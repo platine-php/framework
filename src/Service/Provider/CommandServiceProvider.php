@@ -47,6 +47,8 @@ declare(strict_types=1);
 
 namespace Platine\Framework\Service\Provider;
 
+use Platine\Framework\Console\Command\ConfigCommand;
+use Platine\Framework\Console\Command\RouteCommand;
 use Platine\Framework\Console\Command\ServerCommand;
 use Platine\Framework\Service\ServiceProvider;
 
@@ -63,6 +65,8 @@ class CommandServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->bind(ServerCommand::class);
+        $this->app->bind(RouteCommand::class);
+        $this->app->bind(ConfigCommand::class);
 
         //Commands
         $this->addCommand(ServerCommand::class);

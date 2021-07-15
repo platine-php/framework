@@ -30,9 +30,9 @@
  */
 
 /**
- *  @file MyServiceProvider.php
+ *  @file AppServiceProvider.php
  *
- *  My test service provider class
+ *  Application base service provider class
  *
  *  @package    Platine\Framework\Demo\Provider
  *  @author Platine Developers team
@@ -47,15 +47,14 @@ declare(strict_types=1);
 
 namespace Platine\Framework\Demo\Provider;
 
-use Platine\Framework\Demo\Command\ConfigCommand;
-use Platine\Framework\Demo\Command\RouteCommand;
+use Platine\Framework\Demo\Action\HomeAction;
 use Platine\Framework\Service\ServiceProvider;
 
 /**
- * class MyServiceProvider
+ * class AppServiceProvider
  * @package Platine\Framework
  */
-class MyServiceProvider extends ServiceProvider
+class AppServiceProvider extends ServiceProvider
 {
 
     /**
@@ -63,7 +62,6 @@ class MyServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        $this->app->bind(RouteCommand::class);
-        $this->app->bind(ConfigCommand::class);
+        $this->app->bind(HomeAction::class);
     }
 }

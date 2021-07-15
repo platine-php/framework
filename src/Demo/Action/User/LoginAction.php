@@ -77,7 +77,7 @@ class LoginAction implements RequestHandlerInterface
         $user = $this->userRepository->findBy(['username' => $username]);
 
         if (!$user) {
-            $this->logger->error('User with username {username} not found', ['username' => $username]);
+            $this->session->setFlash('error', 'Can not find user with given username');
             return new TemplateResponse(
                 $this->template,
                 'user/login',
@@ -90,6 +90,7 @@ class LoginAction implements RequestHandlerInterface
         $hash = new BcryptHash();
         if (!$hash->verify($password, $user->password)) {
             $this->logger->error('Invalid user credential, {username}', ['username' => $username]);
+            $this->session->setFlash('error', 'Invalid user credential');
             return new TemplateResponse(
                 $this->template,
                 'user/login',
@@ -99,10 +100,16 @@ class LoginAction implements RequestHandlerInterface
             );
         }
 
-        $this->session->set('user', $user);
+        $data = [
+          'id' => $user->user_id,
+          'username' => $user->username,
+          'lastname' => $user->lname,
+          'firstname' => $user->fname,
+        ];
+        $this->session->set('user', $data);
 
         return new RedirectResponse(
-            $this->routeHelper->generateUrl('user_list')
+            $this->routeHelper->generateUrl('home')
         );
     }
 }

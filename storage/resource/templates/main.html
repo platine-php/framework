@@ -1,20 +1,76 @@
-{% block header %}
 <html>
     <head>
-        <title>Platine App</title>
-        <style>
-            
-        </style>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name = "keywords" content = "Platine Framework" />
+        <meta name="description" content="Platine Framework is a lightweight, high-performance, simple and elegant PHP Web framework">
+        <meta name="author" content="Platine Framework Team">
+        {% block title %}
+            <title>Platine App</title>
+        {% endblock %}
+        <link href="{% static css/bootstrap.min.css %}" type="text/css" rel="stylesheet" />
+        <link href="{% static css/fontawesome-all.min.css %}" type="text/css" rel="stylesheet" />
+        <link href="{% static css/app.css %}" type="text/css" rel="stylesheet" /> 
     </head>
+    <body class="bg-light">
+        {% block navbar %}
+            <nav class="navbar navbar-expand navbar-dark bg-primary">
+                <a class="sidebar-toggle mr-3" href="#"><i class="fa fa-bars"></i></a>
+                <a href="{% route_url home %}" class = 'navbar-brand'>Platine App</a>
+                <div class="navbar-collapse collapse">
+                    <ul class="navbar-nav ml-auto">
+                        <li class="nav-item dropdown">
+                            <a href="#" id="dd_user" class="nav-link dropdown-toggle" data-toggle="dropdown"><i class="fa fa-user"></i> <b>{% session user.firstname %} {% session user.lastname %}</b></a>
+                            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dd_user">
+                                <a href = '{% route_url logout %}' class = 'dropdown-item' >Logout</a>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+        {% endblock %} <!-- endblock navbar -->
+        {% block menu %}
+            <div class="d-flex">
+                <div class="sidebar sidebar-dark bg-dark">
+                    <ul class="list-unstyled">
+                        <li><a href = '{% route_url home %}'><i class = "fa fa-fw fa-home"></i> Home</a></li>
+                        <li>
+                            <a href="#users" data-toggle="collapse">
+                                <i class="fa fa-fw fa-users"></i> Users
+                            </a>
+                            <ul id="users" class="list-unstyled collapse">
+                                <li><a href = '{% route_url user_create %}'>Create</a></li>
+                                <li><a href = '{% route_url user_list %}'>List</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+                <div class="content p-4">
+        {% endblock %} <!-- endblock menu -->
+                
+        {% block flash %}
+            <p class="alert alert-success"><i class="fa fa-check-circle"></i> {% flash success %}</p>
+            <p class="alert alert-warning"><i class="fa fa-exclamation-triangle"></i> {% flash warning %}</p>
+            <p class="alert alert-danger"><i class="fa fa-times-circle"></i> {% flash error %}</p>
+            <p class="alert alert-info"><i class="fa fa-info-circle"></i> {% flash info %}</p>
+        {% endblock %} <!-- endblock flash -->
 
-{% endblock %}
-    <body>
-    {% block body %}
+        {% block body %}
 
+        {% endblock %} <!-- endblock body -->
 
-    {% endblock %}
+        {% block footer %}
+            <br />
+            <hr />
+            <footer>
+                <p class = "text-center"><b>&copy; 2021 Platine App 1.0.0-dev, developed using <a href = 'https://github.com/platine-php/framework' target = '_blank'><b>Platine Framework</b></p>
+            </footer>
+            </div> <!-- ./content p-4 -->
+            </div> <!-- ./d-flex -->
+        {% endblock %} <!-- endblock footer -->
+        <script src="{% static js/jquery.min.js %}"></script>
+        <script src="{% static js/bootstrap.bundle.min.js %}"></script>
+        <script src="{% static js/app.js %}"></script>
     </body>
-{% block footer %}
-
 </html>
-{% endblock %}

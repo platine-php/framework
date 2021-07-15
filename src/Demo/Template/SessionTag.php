@@ -2,7 +2,7 @@
 
 namespace Platine\Framework\Demo\Template;
 
-use Platine\Framework\Http\RouteHelper;
+use Platine\Session\Session;
 use Platine\Template\Exception\ParseException;
 use Platine\Template\Parser\AbstractTag;
 use Platine\Template\Parser\Context;
@@ -11,15 +11,15 @@ use Platine\Template\Parser\Parser;
 use Platine\Template\Parser\Token;
 
 /**
- * Description of RouteUrlTag
+ * Description of SessionTag
  *
  * @author tony
  */
-class RouteUrlTag extends AbstractTag
+class SessionTag extends AbstractTag
 {
 
     /**
-     * The name of the route
+     * The key of the session
      * @var string
      */
     protected string $name;
@@ -32,26 +32,19 @@ class RouteUrlTag extends AbstractTag
         $lexer = new Lexer('/' . Token::QUOTED_FRAGMENT . '/');
         if ($lexer->match($markup)) {
             $this->name = $lexer->getStringMatch(0);
-            $this->extractAttributes($markup);
         } else {
             throw new ParseException(sprintf(
-                'Syntax Error in "%s" - Valid syntax: route_url [name] [PARAMETERS ...]',
-                'route_url'
+                'Syntax Error in "%s" - Valid syntax: session [key]',
+                'session'
             ));
         }
     }
 
     public function render(Context $context): string
     {
-        $parameters = [];
-        foreach ($this->attributes as $key => $value) {
-            if ($context->hasKey($value)) {
-                $value = (string) $context->get($value);
-                $parameters[$key] = $value;
-            }
-        }
-        /** @var RouteHelper $helper */
-        $helper = app(RouteHelper::class);
-        return $helper->generateUrl($this->name, $parameters);
+        /** @var Session $session */
+        $session = app(Session::class);
+
+        return (string) $session->get($this->name);
     }
 }

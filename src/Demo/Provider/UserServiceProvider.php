@@ -83,12 +83,14 @@ class UserServiceProvider extends ServiceProvider
      */
     public function addRoutes(Router $router): void
     {
-        $router->get('/list', ListAction::class, 'user_list');
-        $router->get('/detail/{id:i}', DetailAction::class, 'user_detail');
-        $router->get('/delete/{id:i}', DeleteAction::class, 'user_delete');
-        $router->get('/logout', LogoutAction::class, 'logout');
-        $router->add('/login', LoginAction::class, ['GET', 'POST'], 'user_login');
-        $router->add('/add', CreateAction::class, ['GET', 'POST'], 'user_create');
-        $router->add('/edit/{id:i}', EditAction::class, ['GET', 'POST'], 'user_edit');
+        $router->group('/users', function (Router $router) {
+            $router->get('', ListAction::class, 'user_list');
+            $router->get('/detail/{id:i}', DetailAction::class, 'user_detail');
+            $router->get('/delete/{id:i}', DeleteAction::class, 'user_delete');
+            $router->get('/logout', LogoutAction::class, 'logout');
+            $router->add('/login', LoginAction::class, ['GET', 'POST'], 'user_login');
+            $router->add('/add', CreateAction::class, ['GET', 'POST'], 'user_create');
+            $router->add('/edit/{id:i}', EditAction::class, ['GET', 'POST'], 'user_edit');
+        });
     }
 }

@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Platine Framework 1.0.0-dev\n"
-"POT-Creation-Date: 2021-06-27 19:43+0100\n"
-"PO-Revision-Date: 2021-06-27 20:11+0100\n"
+"POT-Creation-Date: 2021-07-15 12:34+0100\n"
+"PO-Revision-Date: 2021-07-15 12:38+0100\n"
 "Last-Translator: Tony NGUEREZA <nguerezatony@gmail.com>\n"
 "Language-Team: Tony NGUEREZA, nguerezatony@gmail.com\n"
 "Language: en_US\n"
@@ -16,6 +16,9 @@ msgstr ""
 "X-Poedit-KeywordsList: tr;trp:1,2;trd;trdp:1,2\n"
 "X-Poedit-SearchPath-0: .\n"
 
-#: src/Demo/Action/LoginAction.php:70 src/Demo/Action/LoginAction.php:88
-msgid "name"
-msgstr "your Name"
+#: Action/User/DeleteAction.php:53
+msgid "Can not find the user"
+msgstr "Can not find the user"
+
+#~ msgid "name"
+#~ msgstr "your Name"

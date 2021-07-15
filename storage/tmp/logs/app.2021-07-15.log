@@ -1,44 +1,9 @@
-2021-07-15 04:35:52.232133	[INFO]	[Platine\Database\Connection]	[pid:0]	Execute Query: [SELECT * FROM `users` WHERE `user_id` = ?], parameters: [10], time: [0.000307]
-2021-07-15 04:35:56.045498	[INFO]	[Platine\Database\Connection]	[pid:0]	Execute Query: [SELECT * FROM `users` WHERE `user_id` = ?], parameters: [100], time: [0.000176]
-2021-07-15 04:35:56.046244	[WARNING]	[MAIN]	[pid:0]	Can not find user with id 100
-2021-07-15 04:35:56.068057	[INFO]	[Platine\Database\Connection]	[pid:0]	Execute Query: [SELECT * FROM `users`], parameters: [], time: [0.000198]
-2021-07-15 04:36:01.050691	[INFO]	[Platine\Database\Connection]	[pid:0]	Execute Query: [SELECT * FROM `users` WHERE `user_id` = ?], parameters: [14], time: [0.000258]
-2021-07-15 04:36:01.052270	[INFO]	[MAIN]	[pid:0]	Delete of user 14
-2021-07-15 04:36:01.057243	[INFO]	[Platine\Database\Connection]	[pid:0]	Execute Query: [DELETE FROM `users` WHERE `user_id` = ?], parameters: [14], time: [0.001522]
-2021-07-15 04:36:01.077454	[INFO]	[Platine\Database\Connection]	[pid:0]	Execute Query: [SELECT * FROM `users`], parameters: [], time: [0.000277]
-2021-07-15 04:42:31.724928	[INFO]	[Platine\Database\Connection]	[pid:0]	Execute Query: [SELECT * FROM `users`], parameters: [], time: [0.000268]
-2021-07-15 04:42:31.741148	[ERROR]	[MAIN]	[pid:0]	Platine Application Error: An error has occurred. Sorry for the temporary inconvenience., ErrorException(code:0) Undefined variable: lang at D:\wamp\www\platine-php\packages\framework\src\Demo\Template\RouteUrlTag.php line 52
-2021-07-15 04:43:16.593639	[INFO]	[Platine\Database\Connection]	[pid:0]	Execute Query: [SELECT * FROM `users`], parameters: [], time: [0.000270]
-2021-07-15 04:43:32.884054	[INFO]	[Platine\Database\Connection]	[pid:0]	Execute Query: [SELECT * FROM `users`], parameters: [], time: [0.000293]
-2021-07-15 04:43:32.891821	[ERROR]	[MAIN]	[pid:0]	Platine Application Error: An error has occurred. Sorry for the temporary inconvenience., Platine\Route\Exception\RouteNotFoundException(code:0) Route [logouts] not found at D:\wamp\www\platine-php\vendor\platine-php\router\src\Router.php line 272
-2021-07-15 04:43:44.812178	[INFO]	[Platine\Database\Connection]	[pid:0]	Execute Query: [SELECT * FROM `users`], parameters: [], time: [0.000287]
-2021-07-15 04:43:44.818363	[ERROR]	[MAIN]	[pid:0]	Platine Application Error: An error has occurred. Sorry for the temporary inconvenience., Platine\Route\Exception\RouteNotFoundException(code:0) Route ["logout"] not found at D:\wamp\www\platine-php\vendor\platine-php\router\src\Router.php line 272
-2021-07-15 04:43:58.277117	[INFO]	[Platine\Database\Connection]	[pid:0]	Execute Query: [SELECT * FROM `users`], parameters: [], time: [0.000271]
-2021-07-15 04:44:17.275965	[INFO]	[Platine\Database\Connection]	[pid:0]	Execute Query: [SELECT * FROM `users`], parameters: [], time: [0.000254]
-2021-07-15 04:47:30.096724	[INFO]	[Platine\Database\Connection]	[pid:0]	Execute Query: [SELECT * FROM `users`], parameters: [], time: [0.000577]
-2021-07-15 04:49:10.577954	[INFO]	[Platine\Database\Connection]	[pid:0]	Execute Query: [SELECT * FROM `users`], parameters: [], time: [0.000257]
-2021-07-15 04:49:45.900819	[INFO]	[Platine\Database\Connection]	[pid:0]	Execute Query: [SELECT * FROM `users`], parameters: [], time: [0.000258]
-2021-07-15 04:50:24.470166	[INFO]	[Platine\Database\Connection]	[pid:0]	Execute Query: [SELECT * FROM `users`], parameters: [], time: [0.000265]
-2021-07-15 04:50:24.478049	[ERROR]	[MAIN]	[pid:0]	Platine Application Error: An error has occurred. Sorry for the temporary inconvenience., Platine\Route\Exception\RouteNotFoundException(code:0) Route [user_add] not found at D:\wamp\www\platine-php\vendor\platine-php\router\src\Router.php line 272
-2021-07-15 04:50:34.055625	[INFO]	[Platine\Database\Connection]	[pid:0]	Execute Query: [SELECT * FROM `users`], parameters: [], time: [0.000254]
-2021-07-15 04:51:47.764339	[INFO]	[Platine\Database\Connection]	[pid:0]	Execute Query: [SELECT * FROM `users`], parameters: [], time: [0.000222]
-2021-07-15 04:51:47.771921	[ERROR]	[MAIN]	[pid:0]	Platine Application Error: An error has occurred. Sorry for the temporary inconvenience., InvalidArgumentException(code:0) Parameter [id] is not passed at D:\wamp\www\platine-php\vendor\platine-php\router\src\Route.php line 323
-2021-07-15 04:52:10.358413	[INFO]	[Platine\Database\Connection]	[pid:0]	Execute Query: [SELECT * FROM `users`], parameters: [], time: [0.000289]
-2021-07-15 04:52:10.369360	[ERROR]	[MAIN]	[pid:0]	Platine Application Error: An error has occurred. Sorry for the temporary inconvenience., InvalidArgumentException(code:0) Parameter [id] is not passed at D:\wamp\www\platine-php\vendor\platine-php\router\src\Route.php line 323
-2021-07-15 04:53:47.484711	[INFO]	[Platine\Database\Connection]	[pid:0]	Execute Query: [SELECT * FROM `users`], parameters: [], time: [0.000239]
-2021-07-15 04:53:53.428863	[INFO]	[Platine\Database\Connection]	[pid:0]	Execute Query: [SELECT * FROM `users` WHERE `user_id` = ?], parameters: [11], time: [0.000271]
-2021-07-15 04:54:31.083664	[INFO]	[Platine\Database\Connection]	[pid:0]	Execute Query: [SELECT * FROM `users`], parameters: [], time: [0.000275]
-2021-07-15 04:54:46.905066	[INFO]	[Platine\Database\Connection]	[pid:0]	Execute Query: [SELECT * FROM `users`], parameters: [], time: [0.000258]
-2021-07-15 04:55:03.383786	[INFO]	[Platine\Database\Connection]	[pid:0]	Execute Query: [SELECT * FROM `users` WHERE `username` = ?], parameters: [hghdfgdfh], time: [0.000274]
-2021-07-15 04:55:03.468788	[INFO]	[Platine\Database\Connection]	[pid:0]	Execute Query: [INSERT INTO `users`(`username`, `fname`, `lname`, `password`, `status`, `age`, `deleted`) VALUES (?, ?, ?, ?, ?, ?, ?)], parameters: [hghdfgdfh, Djdgjdg, SDJHJF, $2y$10$eTz1Jg39jUwI8BByMWNURORc9GVLz0kHE1zreCHtpLDNcNddvvHpC, 1, 33, 0], time: [0.000312]
-2021-07-15 04:55:03.488386	[INFO]	[Platine\Database\Connection]	[pid:0]	Execute Query: [SELECT * FROM `users`], parameters: [], time: [0.000430]
-2021-07-15 04:55:26.208784	[INFO]	[Platine\Database\Connection]	[pid:0]	Execute Query: [SELECT * FROM `users`], parameters: [], time: [0.000261]
-2021-07-15 04:55:37.262634	[INFO]	[Platine\Database\Connection]	[pid:0]	Execute Query: [SELECT * FROM `users`], parameters: [], time: [0.000600]
-2021-07-15 04:55:39.960664	[INFO]	[Platine\Database\Connection]	[pid:0]	Execute Query: [SELECT * FROM `users` WHERE `user_id` = ?], parameters: [15], time: [0.000259]
-2021-07-15 04:55:44.330889	[INFO]	[Platine\Database\Connection]	[pid:0]	Execute Query: [SELECT * FROM `users` WHERE `user_id` = ?], parameters: [15], time: [0.000260]
-2021-07-15 04:55:44.331768	[INFO]	[MAIN]	[pid:0]	Delete of user 15
-2021-07-15 04:55:44.333577	[INFO]	[Platine\Database\Connection]	[pid:0]	Execute Query: [DELETE FROM `users` WHERE `user_id` = ?], parameters: [15], time: [0.000281]
-2021-07-15 04:55:44.355293	[INFO]	[Platine\Database\Connection]	[pid:0]	Execute Query: [SELECT * FROM `users`], parameters: [], time: [0.000336]
-2021-07-15 04:57:11.063343	[INFO]	[Platine\Database\Connection]	[pid:0]	Execute Query: [SELECT * FROM `users` WHERE `user_id` = ?], parameters: [13], time: [0.000303]
-2021-07-15 04:57:13.972599	[INFO]	[Platine\Database\Connection]	[pid:0]	Execute Query: [SELECT * FROM `users`], parameters: [], time: [0.005161]
-2021-07-15 04:57:17.932083	[INFO]	[Platine\Database\Connection]	[pid:0]	Execute Query: [SELECT * FROM `users` WHERE `user_id` = ?], parameters: [11], time: [0.000272]
+2021-07-15 14:17:21.627989	[INFO]	[Platine\Database\Connection]	[pid:0]	Execute Query: [SELECT * FROM `users` WHERE `username` = ?], parameters: [octave_t], time: [0.000410]
+2021-07-15 14:17:21.629983	[ERROR]	[MAIN]	[pid:0]	User with username octave_t already exists
+2021-07-15 14:17:29.581108	[INFO]	[Platine\Database\Connection]	[pid:0]	Execute Query: [SELECT * FROM `users` WHERE `username` = ?], parameters: [octave_tio], time: [0.000253]
+2021-07-15 14:17:29.701574	[INFO]	[Platine\Database\Connection]	[pid:0]	Execute Query: [INSERT INTO `users`(`username`, `fname`, `lname`, `password`, `status`, `age`, `deleted`) VALUES (?, ?, ?, ?, ?, ?, ?)], parameters: [octave_tio, Ulrich Tony Irving, DEMO, $2y$10$3XWM5dky51IVWM3DRe2LUOF.Ypr0wN6XkxEH2f/HBEpqMArHPt05m, 1, 2, 0], time: [0.000411]
+2021-07-15 14:17:29.741000	[INFO]	[Platine\Database\Connection]	[pid:0]	Execute Query: [SELECT * FROM `users`], parameters: [], time: [0.000267]
+2021-07-15 14:17:42.584430	[INFO]	[Platine\Database\Connection]	[pid:0]	Execute Query: [SELECT * FROM `users` WHERE `user_id` = ?], parameters: [17], time: [0.002526]
+2021-07-15 14:17:42.590053	[INFO]	[MAIN]	[pid:0]	Delete of user 17
+2021-07-15 14:17:42.597224	[INFO]	[Platine\Database\Connection]	[pid:0]	Execute Query: [DELETE FROM `users` WHERE `user_id` = ?], parameters: [17], time: [0.000790]
+2021-07-15 14:17:42.661250	[INFO]	[Platine\Database\Connection]	[pid:0]	Execute Query: [SELECT * FROM `users`], parameters: [], time: [0.000307]

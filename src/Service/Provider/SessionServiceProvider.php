@@ -50,7 +50,6 @@ namespace Platine\Framework\Service\Provider;
 use Platine\Config\Config;
 use Platine\Container\ContainerInterface;
 use Platine\Filesystem\Filesystem;
-use Platine\Framework\Http\Middleware\SessionMiddleware;
 use Platine\Framework\Service\ServiceProvider;
 use Platine\Session\Configuration;
 use Platine\Session\Session;
@@ -80,6 +79,6 @@ class SessionServiceProvider extends ServiceProvider
                 $app->get(Configuration::class)
             );
         });
-        $this->app->bind(Session::class);
+        $this->app->share(Session::class);
     }
 }
