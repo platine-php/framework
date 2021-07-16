@@ -87,7 +87,7 @@ class UserServiceProvider extends ServiceProvider
             $router->get('', ListAction::class, 'user_list', ['permission' => 'users']);
             $router->get('/detail/{id:i}', DetailAction::class, 'user_detail');
             $router->get('/delete/{id:i}', DeleteAction::class, 'user_delete');
-            $router->get('/logout', LogoutAction::class, 'logout');
+            $router->get('/logout', LogoutAction::class, 'user_logout');
             $router->add('/login', LoginAction::class, ['GET', 'POST'], 'user_login');
             $router->add('/add', CreateAction::class, ['GET', 'POST'], 'user_create');
             $router->add('/edit/{id:i}', EditAction::class, ['GET', 'POST'], 'user_edit');

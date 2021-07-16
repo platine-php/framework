@@ -81,3 +81,5 @@
 2021-07-16 13:01:12.378261	[INFO]	[Platine\Database\Connection]	[pid:0]	Execute Query: [SELECT * FROM `users`], parameters: [], time: [0.000260]
 2021-07-16 13:02:07.506217	[INFO]	[Platine\Database\Connection]	[pid:0]	Execute Query: [SELECT * FROM `users` WHERE `username` = ?], parameters: [octave_ta], time: [0.000272]
 2021-07-16 13:02:16.476470	[INFO]	[Platine\Database\Connection]	[pid:0]	Execute Query: [SELECT * FROM `users` WHERE `username` = ?], parameters: [octave_t], time: [0.000380]
+2021-07-16 13:08:15.372326	[ERROR]	[MAIN]	[pid:0]	404 Not found: The requested resource could not be found. Please verify the URI and try again, Platine\Framework\Http\Exception\HttpNotFoundException(code:404) Not found at D:\wamp\www\platine-php\packages\framework\src\Kernel\HttpKernel.php line 149
+2021-07-16 13:08:24.910300	[INFO]	[Platine\Database\Connection]	[pid:0]	Execute Query: [SELECT * FROM `users` WHERE `username` = ?], parameters: [octave_t], time: [0.000312]

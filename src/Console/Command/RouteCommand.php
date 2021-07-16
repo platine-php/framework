@@ -53,6 +53,7 @@ use Platine\Framework\App\Application;
 use Platine\Framework\Service\ServiceProvider;
 use Platine\Route\Route;
 use Platine\Route\Router;
+use Platine\Stdlib\Helper\Arr;
 use Platine\Stdlib\Helper\Str;
 
 /**
@@ -115,6 +116,8 @@ class RouteCommand extends Command
                 'handler' => $handler,
             ];
         }
+        
+        Arr::multisort($rows, 'path');
 
         $writer->table($rows);
 
