@@ -47,8 +47,9 @@ class RouteUrlTag extends AbstractTag
         foreach ($this->attributes as $key => $value) {
             if ($context->hasKey($value)) {
                 $value = (string) $context->get($value);
-                $parameters[$key] = $value;
             }
+
+            $parameters[$key] = $value;
         }
         /** @var RouteHelper $helper */
         $helper = app(RouteHelper::class);

@@ -20,10 +20,23 @@
     <br />
     <br />
     <br />
-    <p class="alert alert-success"><i class="fa fa-check-circle"></i> {% flash success %}</p>
-    <p class="alert alert-warning"><i class="fa fa-exclamation-triangle"></i> {% flash warning %}</p>
-    <p class="alert alert-danger"><i class="fa fa-times-circle"></i> {% flash error %}</p>
-    <p class="alert alert-info"><i class="fa fa-info-circle"></i> {% flash info %}</p>
+    {% capture flashSuccess %}{% flash success %}{% endcapture %}
+    {% capture flashWarning %}{% flash warning %}{% endcapture %}
+    {% capture flashError %}{% flash error %}{% endcapture %}
+    {% capture flashInfo %}{% flash info %}{% endcapture %}
+    
+    {% if flashSuccess %} 
+        <p class="alert alert-success"><i class="fa fa-check-circle"></i> {{ flashSuccess }}</p>
+    {% endif %}
+    {% if flashWarning %} 
+        <p class="alert alert-warning"><i class="fa fa-exclamation-triangle"></i> {{ flashWarning }}</p>
+    {% endif %}
+    {% if flashError %} 
+        <p class="alert alert-danger"><i class="fa fa-times-circle"></i> {{ flashError }}</p>
+    {% endif %}
+    {% if flashInfo %} 
+        <p class="alert alert-info"><i class="fa fa-info-circle"></i> {{ flashInfo }}</p>
+    {% endif %}
             
     <div class="row h-50 justify-content-center align-items-center">
         <div class="col-md-4">

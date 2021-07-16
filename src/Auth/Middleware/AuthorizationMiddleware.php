@@ -3,8 +3,8 @@
 /**
  * Platine Framework
  *
- * Platine Framework is a lightweight, high-performance, simple and elegant PHP
- * Web framework
+ * Platine Framework is a lightweight, high-performance, simple and elegant
+ * PHP Web framework
  *
  * This content is released under the MIT License (MIT)
  *
@@ -30,13 +30,12 @@
  */
 
 /**
- *  @file RouteMatchMiddleware.php
+ *  @file AuthorizationMiddleware.php
  *
- *  The Route match middleware class is used to match the request
- * based on the routes definition
+ *  The Authorization middleware class
  *
- *  @package    Platine\Framework\Http\Middleware
- *  @author Platine Developers Team
+ *  @package    Platine\Framework\Auth\Middleware
+ *  @author Platine Developers team
  *  @copyright  Copyright (c) 2020
  *  @license    http://opensource.org/licenses/MIT  MIT License
  *  @link   http://www.iacademy.cf
@@ -46,49 +45,57 @@
 
 declare(strict_types=1);
 
-namespace Platine\Framework\Http\Middleware;
+namespace Platine\Framework\Auth\Middleware;
 
-use Platine\Framework\Http\Exception\HttpMethodNotAllowedException;
+use Platine\Config\Config;
+use Platine\Framework\Http\Response\RedirectResponse;
+use Platine\Framework\Http\RouteHelper;
 use Platine\Http\Handler\MiddlewareInterface;
 use Platine\Http\Handler\RequestHandlerInterface;
 use Platine\Http\ResponseInterface;
 use Platine\Http\ServerRequestInterface;
 use Platine\Route\Route;
-use Platine\Route\Router;
+use Platine\Session\Session;
 
 /**
- * class RouteMatchMiddleware
- * @package Platine\Framework\Http\Middleware
+ * class AuthorizationMiddleware
+ * @package Platine\Framework\Auth\Middleware
  */
-class RouteMatchMiddleware implements MiddlewareInterface
+class AuthorizationMiddleware implements MiddlewareInterface
 {
 
     /**
-     * The Router instance
-     * @var Router
+     * The session instance to use
+     * @var Session
      */
-    protected Router $router;
+    protected Session $session;
 
     /**
-     * The list of allowed methods
-     * @var array<string>
+     * The configuration instance
+     * @var Config<T>
      */
-    protected array $allowedMethods = [];
+    protected Config $config;
+
+    /**
+     * The route helper
+     * @var RouteHelper
+     */
+    protected RouteHelper $routeHelper;
 
     /**
      * Create new instance
-     * @param Router $router
-     * @param array<string>  $allowedMethods the default allowed methods
+     * @param Session $session
+     * @param Config $config
+     * @param RouteHelper $routeHelper
      */
-    public function __construct(Router $router, array $allowedMethods = ['HEAD'])
-    {
-        $this->router = $router;
-
-        foreach ($allowedMethods as $method) {
-            if (is_string($method)) {
-                $this->allowedMethods[] = strtoupper($method);
-            }
-        }
+    public function __construct(
+        Session $session,
+        Config $config,
+        RouteHelper $routeHelper
+    ) {
+        $this->session = $session;
+        $this->config = $config;
+        $this->routeHelper = $routeHelper;
     }
 
     /**
@@ -98,39 +105,41 @@ class RouteMatchMiddleware implements MiddlewareInterface
         ServerRequestInterface $request,
         RequestHandlerInterface $handler
     ): ResponseInterface {
-        if (!$route = $this->router->match($request, false)) {
+        //If no route has been match no need check for authorization
+        /** @var Route $route|null */
+        $route = $request->getAttribute(Route::class);
+        if (!$route) {
             return $handler->handle($request);
         }
 
-        if (
-                !$this->isAllowedMethod($request->getMethod())
-                && !$route->isAllowedMethod($request->getMethod())
-        ) {
-            $exception = new HttpMethodNotAllowedException($request);
-            $exception->setAllowedMethods($route->getMethods());
+        $permission = $route->getAttribute('permission');
 
-            throw $exception;
+        if (empty($permission)) {
+            return $handler->handle($request);
         }
 
-        foreach ($route->getParameters()->all() as $parameter) {
-            $request = $request->withAttribute(
-                $parameter->getName(),
-                $parameter->getValue()
+        if (!$this->isAllowed($permission)) {
+            $unauthorizedRoute = $this->config->get(
+                'auth.authorization.unauthorized_route_name'
+            );
+
+            return new RedirectResponse(
+                $this->routeHelper->generateUrl($unauthorizedRoute)
             );
         }
 
-        $request = $request->withAttribute(Route::class, $route);
         return $handler->handle($request);
     }
 
     /**
-     * Check whether the given method is allowed
-     * @param  string  $method
+     * Whether the user is allowed or not
+     * @param string $permission
      * @return bool
      */
-    protected function isAllowedMethod(string $method): bool
+    protected function isAllowed(string $permission): bool
     {
-        return (empty($this->allowedMethods)
-                || in_array(strtoupper($method), $this->allowedMethods, true));
+        $permissions = $this->session->get('permissions', []);
+
+        return in_array($permission, $permissions);
     }
 }

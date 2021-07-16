@@ -49,6 +49,7 @@ namespace Platine\Framework\Kernel;
 
 use Platine\Config\Config;
 use Platine\Framework\App\Application;
+use Platine\Framework\Auth\AuthMiddleware;
 use Platine\Framework\Http\Emitter\EmitterInterface;
 use Platine\Framework\Http\Exception\HttpNotFoundException;
 use Platine\Framework\Service\ServiceProvider;
@@ -193,6 +194,7 @@ class HttpKernel extends BaseKernel implements RequestHandlerInterface
 
         /** @var string[] $middlewares */
         $middlewares = $config->get('middlewares', []);
+
         foreach ($middlewares as $middleware) {
             $this->use($middleware);
         }

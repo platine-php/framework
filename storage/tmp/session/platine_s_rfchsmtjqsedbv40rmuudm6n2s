@@ -1,1 +1,1 @@
-session_flash|a:0:{}user|a:4:{s:2:"id";i:10;s:8:"username";s:8:"octave_t";s:8:"lastname";s:8:"NGUEREZA";s:9:"firstname";s:3:"Tnh";}
+session_flash|a:0:{}permissions|a:1:{i:0;s:5:"users";}user|a:4:{s:2:"id";i:10;s:8:"username";s:8:"octave_t";s:8:"lastname";s:8:"NGUEREZA";s:9:"firstname";s:3:"Tnh";}

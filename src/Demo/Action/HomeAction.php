@@ -2,7 +2,7 @@
 
 namespace Platine\Framework\Demo\Action;
 
-use Platine\Framework\Demo\Response\TemplateResponse;
+use Platine\Framework\Http\Response\TemplateResponse;
 use Platine\Http\Handler\RequestHandlerInterface;
 use Platine\Http\ResponseInterface;
 use Platine\Http\ServerRequestInterface;

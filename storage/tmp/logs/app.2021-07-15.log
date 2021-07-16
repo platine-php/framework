@@ -1,9 +1,0 @@
-2021-07-15 14:17:21.627989	[INFO]	[Platine\Database\Connection]	[pid:0]	Execute Query: [SELECT * FROM `users` WHERE `username` = ?], parameters: [octave_t], time: [0.000410]
-2021-07-15 14:17:21.629983	[ERROR]	[MAIN]	[pid:0]	User with username octave_t already exists
-2021-07-15 14:17:29.581108	[INFO]	[Platine\Database\Connection]	[pid:0]	Execute Query: [SELECT * FROM `users` WHERE `username` = ?], parameters: [octave_tio], time: [0.000253]
-2021-07-15 14:17:29.701574	[INFO]	[Platine\Database\Connection]	[pid:0]	Execute Query: [INSERT INTO `users`(`username`, `fname`, `lname`, `password`, `status`, `age`, `deleted`) VALUES (?, ?, ?, ?, ?, ?, ?)], parameters: [octave_tio, Ulrich Tony Irving, DEMO, $2y$10$3XWM5dky51IVWM3DRe2LUOF.Ypr0wN6XkxEH2f/HBEpqMArHPt05m, 1, 2, 0], time: [0.000411]
-2021-07-15 14:17:29.741000	[INFO]	[Platine\Database\Connection]	[pid:0]	Execute Query: [SELECT * FROM `users`], parameters: [], time: [0.000267]
-2021-07-15 14:17:42.584430	[INFO]	[Platine\Database\Connection]	[pid:0]	Execute Query: [SELECT * FROM `users` WHERE `user_id` = ?], parameters: [17], time: [0.002526]
-2021-07-15 14:17:42.590053	[INFO]	[MAIN]	[pid:0]	Delete of user 17
-2021-07-15 14:17:42.597224	[INFO]	[Platine\Database\Connection]	[pid:0]	Execute Query: [DELETE FROM `users` WHERE `user_id` = ?], parameters: [17], time: [0.000790]
-2021-07-15 14:17:42.661250	[INFO]	[Platine\Database\Connection]	[pid:0]	Execute Query: [SELECT * FROM `users`], parameters: [], time: [0.000307]

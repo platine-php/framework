@@ -50,7 +50,6 @@ namespace Platine\Framework\Http;
 use Platine\Http\ServerRequestInterface;
 use Platine\Stdlib\Helper\Arr;
 
-
 /**
  * class RequestData
  * @package Platine\Framework\Http

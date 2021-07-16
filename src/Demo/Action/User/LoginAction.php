@@ -5,9 +5,9 @@ namespace Platine\Framework\Demo\Action\User;
 use Platine\Framework\Demo\Form\Param\AuthParam;
 use Platine\Framework\Demo\Form\Validator\AuthValidator;
 use Platine\Framework\Demo\Repository\UserRepository;
-use Platine\Framework\Demo\Response\RedirectResponse;
-use Platine\Framework\Demo\Response\TemplateResponse;
 use Platine\Framework\Http\RequestData;
+use Platine\Framework\Http\Response\RedirectResponse;
+use Platine\Framework\Http\Response\TemplateResponse;
 use Platine\Framework\Http\RouteHelper;
 use Platine\Http\Handler\RequestHandlerInterface;
 use Platine\Http\ResponseInterface;
@@ -107,6 +107,7 @@ class LoginAction implements RequestHandlerInterface
           'firstname' => $user->fname,
         ];
         $this->session->set('user', $data);
+        $this->session->set('permissions', ['users']);
 
         return new RedirectResponse(
             $this->routeHelper->generateUrl('home')

@@ -1,4 +1,5 @@
 <?php
+
     return [
         'name' => 'PLATINE_S',
         'driver' => 'file',
@@ -14,9 +15,9 @@
             'file' => [
                 'path' => __DIR__ . '/../storage/tmp/session',
                 'prefix' => 'platine_s_',
-            ], 
+            ],
             'apcu' => [],
             'null' => [],
         ]
-    
+
     ];

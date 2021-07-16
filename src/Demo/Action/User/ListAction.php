@@ -4,7 +4,7 @@ namespace Platine\Framework\Demo\Action\User;
 
 use Platine\Framework\Config\DbConfig;
 use Platine\Framework\Demo\Repository\UserRepository;
-use Platine\Framework\Demo\Response\TemplateResponse;
+use Platine\Framework\Http\Response\TemplateResponse;
 use Platine\Http\Handler\RequestHandlerInterface;
 use Platine\Http\ResponseInterface;
 use Platine\Http\ServerRequestInterface;

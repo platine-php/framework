@@ -3,7 +3,7 @@
 namespace Platine\Framework\Demo\Action\User;
 
 use Platine\Framework\Demo\Repository\UserRepository;
-use Platine\Framework\Demo\Response\RedirectResponse;
+use Platine\Framework\Http\Response\RedirectResponse;
 use Platine\Framework\Http\RouteHelper;
 use Platine\Http\Handler\RequestHandlerInterface;
 use Platine\Http\ResponseInterface;

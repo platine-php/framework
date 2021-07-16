@@ -1,6 +1,7 @@
 <?php
+
     use Platine\Logger\LogLevel;
-    
+
     return [
         'level' => LogLevel::DEBUG,
         'driver' => 'null',
@@ -15,6 +16,6 @@
                 'engine' => 'smtp',
                 'level' => LogLevel::ERROR,
             ]
-        
+
         ]
     ];

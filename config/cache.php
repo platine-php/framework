@@ -1,4 +1,5 @@
 <?php
+
     return [
         'ttl' => 300,
         'driver' => 'file',
@@ -6,9 +7,9 @@
             'file' => [
                 'path' => __DIR__ . '/../storage/tmp/cache',
                 'prefix' => 'cache_',
-            ], 
+            ],
             'apcu' => [],
             'null' => [],
         ]
-    
+
     ];
