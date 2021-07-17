@@ -15,6 +15,7 @@
                         <th>Username</th>
                         <th>Last Name</th>
                         <th>First Name</th>
+                        <th>E-mail</th>
                         <th>Age</th>
                         <th>Status</th>
                         <th>Create Date</th>
@@ -24,17 +25,18 @@
                 <tbody>
                     {% for user in users %}
                         <tr>
-                            <td>{{ user.user_id }}</td>
+                            <td>{{ user.id }}</td>
                             <td>{{ user.username }}</td>
-                            <td>{{ user.lname }}</td>
-                            <td>{{ user.fname }}</td>
+                            <td>{{ user.lastname }}</td>
+                            <td>{{ user.firstname }}</td>
+                            <td>{{ user.email }}</td>
                             <td>{{ user.age }}</td>
                             <td>{% if user.status == 1 %}Enable{% else %}Disable{% endif %}</td>
                             <td>{{ user.created_at|date:"d/m/Y" }}</td>
                             <td class="actions">
-                                <a href = '{% route_url user_edit id:user.user_id  %}' class = 'btn btn-icon btn-sm btn-pill btn-primary'><i class="fa fa-fw fa-edit"></i></a>
-                                <a href = '{% route_url user_delete id:user.user_id  %}' class = 'btn btn-icon btn-sm btn-pill btn-danger'><i class="fa fa-fw fa-trash"></i></a>
-                                <a href = '{% route_url user_detail id:user.user_id  %}' class = 'btn btn-icon btn-sm btn-pill btn-secondary'><i class="fa fa-fw fa-eye"></i></a>
+                                <a href = '{% route_url user_edit id:user.id  %}' class = 'btn btn-icon btn-sm btn-pill btn-primary'><i class="fa fa-fw fa-edit"></i></a>
+                                <a href = '{% route_url user_delete id:user.id  %}' class = 'btn btn-icon btn-sm btn-pill btn-danger'><i class="fa fa-fw fa-trash"></i></a>
+                                <a href = '{% route_url user_detail id:user.id  %}' class = 'btn btn-icon btn-sm btn-pill btn-secondary'><i class="fa fa-fw fa-eye"></i></a>
                             </td>
                         </tr>
                      {% endfor %}
@@ -45,6 +47,7 @@
                         <th>Username</th>
                         <th>Last Name</th>
                         <th>First Name</th>
+                        <th>E-mail</th>
                         <th>Age</th>
                         <th>Status</th>
                         <th>Create Date</th>

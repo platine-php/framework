@@ -54,8 +54,10 @@ use Platine\Framework\Migration\MigrationRepository;
 use RuntimeException;
 
 /**
- * class MigrationExecuteCommand
+ * @class MigrationExecuteCommand
  * @package Platine\Framework\Migration\Command
+ * @template T
+ * @extends AbstractCommand<T>
  */
 class MigrationExecuteCommand extends AbstractCommand
 {

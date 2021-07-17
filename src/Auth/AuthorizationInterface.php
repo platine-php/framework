@@ -29,34 +29,41 @@
  * SOFTWARE.
  */
 
+/**
+ *  @file AuthorizationInterface.php
+ *
+ *  The Authorization interface
+ *
+ *  @package    Platine\Framework\Auth
+ *  @author Platine Developers team
+ *  @copyright  Copyright (c) 2020
+ *  @license    http://opensource.org/licenses/MIT  MIT License
+ *  @link   http://www.iacademy.cf
+ *  @version 1.0.0
+ *  @filesource
+ */
+
 declare(strict_types=1);
 
-namespace Platine\Framework\Http\Exception;
-
-use Platine\Http\ServerRequestInterface;
-use Throwable;
+namespace Platine\Framework\Auth;
 
 /**
- * @class HttpSpecialException
- * @package Platine\Framework\Http\Exception
+ * class AuthorizationInterface
+ * @package Platine\Framework\Auth
  */
-abstract class HttpSpecialException extends HttpException
+interface AuthorizationInterface
 {
-    /**
-     * Create new instance
-     * @param ServerRequestInterface $request
-     * @param string|null $message
-     * @param Throwable|null $previous
-     */
-    public function __construct(
-        ServerRequestInterface $request,
-        ?string $message = null,
-        ?Throwable $previous = null
-    ) {
-        if ($message !== null) {
-            $this->message = $message;
-        }
 
-        parent::__construct($request, $this->message, $this->code, $previous);
-    }
+    /**
+     * Check if user is granted the given permission
+     * @param string $permission the permission to check
+     * @return bool
+     */
+    public function isGranted(string $permission): bool;
+
+    /**
+     * Return the list of current user permissions
+     * @return string[]
+     */
+    public function getPermissions(): array;
 }

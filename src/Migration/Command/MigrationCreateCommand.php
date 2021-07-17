@@ -56,8 +56,10 @@ use Platine\Framework\Migration\MigrationRepository;
 use Platine\Stdlib\Helper\Str;
 
 /**
- * class MigrationCreateCommand
+ * @class MigrationCreateCommand
  * @package Platine\Framework\Migration\Command
+ * @template T
+ * @extends AbstractCommand<T>
  */
 class MigrationCreateCommand extends AbstractCommand
 {

@@ -48,6 +48,7 @@ declare(strict_types=1);
 namespace Platine\Framework\Auth\Middleware;
 
 use Platine\Config\Config;
+use Platine\Framework\Auth\AuthenticationInterface;
 use Platine\Framework\Http\Response\RedirectResponse;
 use Platine\Framework\Http\RouteHelper;
 use Platine\Http\Handler\MiddlewareInterface;
@@ -55,20 +56,20 @@ use Platine\Http\Handler\RequestHandlerInterface;
 use Platine\Http\ResponseInterface;
 use Platine\Http\ServerRequestInterface;
 use Platine\Route\Route;
-use Platine\Session\Session;
 
 /**
- * class AuthenticationMiddleware
+ * @class AuthenticationMiddleware
  * @package Platine\Framework\Auth\Middleware
+ * @template T
  */
 class AuthenticationMiddleware implements MiddlewareInterface
 {
 
     /**
-     * The session instance to use
-     * @var Session
+     * The Authentication instance
+     * @var AuthenticationInterface
      */
-    protected Session $session;
+    protected AuthenticationInterface $authentication;
 
     /**
      * The configuration instance
@@ -84,16 +85,16 @@ class AuthenticationMiddleware implements MiddlewareInterface
 
     /**
      * Create new instance
-     * @param Session $session
-     * @param Config $config
+     * @param AuthenticationInterface $authentication
+     * @param Config<T> $config
      * @param RouteHelper $routeHelper
      */
     public function __construct(
-        Session $session,
+        AuthenticationInterface $authentication,
         Config $config,
         RouteHelper $routeHelper
     ) {
-        $this->session = $session;
+        $this->authentication = $authentication;
         $this->config = $config;
         $this->routeHelper = $routeHelper;
     }
@@ -106,7 +107,7 @@ class AuthenticationMiddleware implements MiddlewareInterface
         RequestHandlerInterface $handler
     ): ResponseInterface {
         //If no route has been match no need check for authentication
-        /** @var Route $route|null */
+        /** @var ?Route $route */
         $route = $request->getAttribute(Route::class);
         if (!$route) {
             return $handler->handle($request);
@@ -124,7 +125,7 @@ class AuthenticationMiddleware implements MiddlewareInterface
             }
         }
 
-        if (!$this->isLogged()) {
+        if (!$this->authentication->isLogged()) {
             $authRoute = $this->config->get('auth.authentication.auth_route_name');
             return new RedirectResponse(
                 $this->routeHelper->generateUrl($authRoute)
@@ -132,15 +133,5 @@ class AuthenticationMiddleware implements MiddlewareInterface
         }
 
         return $handler->handle($request);
-    }
-
-    /**
-     * Whether the user is logged or not
-     * @return bool
-     */
-    protected function isLogged(): bool
-    {
-        return $this->session->has('user')
-                && $this->session->has('permissions');
     }
 }

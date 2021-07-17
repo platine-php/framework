@@ -47,7 +47,6 @@ declare(strict_types=1);
 
 namespace Platine\Framework\Demo\Provider;
 
-use Platine\Framework\Demo\Repository\UserRepository;
 use Platine\Framework\Service\ServiceProvider;
 
 /**
@@ -62,6 +61,5 @@ class RepositoryServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        $this->app->bind(UserRepository::class);
     }
 }

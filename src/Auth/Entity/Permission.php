@@ -30,11 +30,11 @@
  */
 
 /**
- *  @file Auth.php
+ *  @file Permission.php
  *
- *  The Authentication class
+ *  The Permission Entity class
  *
- *  @package    Platine\Framework\Auth
+ *  @package    Platine\Framework\Auth\Entity
  *  @author Platine Developers team
  *  @copyright  Copyright (c) 2020
  *  @license    http://opensource.org/licenses/MIT  MIT License
@@ -45,13 +45,22 @@
 
 declare(strict_types=1);
 
-namespace Platine\Framework\Auth;
+namespace Platine\Framework\Auth\Entity;
+
+use Platine\Orm\Entity;
+use Platine\Orm\Mapper\EntityMapperInterface;
 
 /**
- * class Auth
- * @package Platine\Framework\Auth
+ * class Permission
+ * @package Platine\Framework\Auth\Entity
  */
-class Auth
+class Permission extends Entity
 {
 
+    /**
+     * {@inheritdoc}
+     */
+    public static function mapEntity(EntityMapperInterface $mapper): void
+    {
+    }
 }

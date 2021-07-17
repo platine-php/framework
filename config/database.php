@@ -6,7 +6,7 @@
         'connections' => [
             'mysql' => [
                 'driver' => 'mysql',
-                'database' => 'db_tutos',
+                'database' => 'db_platine',
                 'hostname' => '127.0.0.1',
                 'port' => 3307,
                 'username' => 'root',

@@ -53,8 +53,10 @@ use Platine\Framework\App\Application;
 use Platine\Framework\Migration\MigrationRepository;
 
 /**
- * class MigrationMigrateCommand
+ * @class MigrationMigrateCommand
  * @package Platine\Framework\Migration\Command
+ * @template T
+ * @extends AbstractCommand<T>
  */
 class MigrationMigrateCommand extends AbstractCommand
 {
@@ -100,7 +102,7 @@ class MigrationMigrateCommand extends AbstractCommand
         $writer->write('', true);
 
         if ($io->confirm('Are you confirm the migration upgrade to latest?', 'n')) {
-            /** @var MigrationExecuteCommand $migrationExecute */
+            /** @var MigrationExecuteCommand<T> $migrationExecute */
             $migrationExecute = $this->application->get(MigrationExecuteCommand::class);
             foreach ($diff as $version => $description) {
                 $cleanDescription = str_replace('_', ' ', $description);

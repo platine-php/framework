@@ -2,7 +2,7 @@
 <table border = '1' cellpadding = '3' cellspacing = '0'>
     <tr>
         <td>ID</td>
-        <td>{{ user.user_id }}</td>
+        <td>{{ user.id }}</td>
      </tr>
      <tr>
         <td>Login</td>
@@ -10,11 +10,15 @@
      </tr>
      <tr>
         <td>Lastname</td>
-        <td>{{ user.lname }}</td>
+        <td>{{ user.lastname }}</td>
      </tr>
      <tr>
         <td>Firstname</td>
-        <td>{{ user.fname }}</td>
+        <td>{{ user.firstname }}</td>
+     </tr>
+     <tr>
+        <td>E-mail</td>
+        <td>{{ user.email }}</td>
      </tr>
      <tr>
         <td>Age</td>
@@ -30,5 +34,39 @@
      </tr>
 </table>
 
+<h3>User Roles</h3>
+{% if user.roles.size > 0 %}
+    <div class= "table-responsive">
+        <table border = '1' cellpadding = '3' cellspacing = '0'>
+            <thead>
+                <tr>
+                    <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Create Date</th>
+                </tr>
+                </tr>
+            </thead>
+            <tbody>
+                {% for role in user.roles %}
+                    <tr>
+                        <td>{{ role.id }}</td>
+                        <td>{{ role.name }}</td>
+                        <td>{{ role.created_at|date:"d/m/Y" }}</td>
+                    </tr>
+                 {% endfor %}
+            </tbody>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Create Date</th>
+                </tr>
+            </thead>
+        </table>
+    </div>
+{% else %}
+    <p class="alert alert-info">No available roles</p>
+{% endif %}
 <br />
 <a href = '{% route_url user_list %}'>Back to the list</a>

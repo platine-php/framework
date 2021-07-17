@@ -57,11 +57,16 @@ use Platine\Stdlib\Helper\Arr;
 use Platine\Stdlib\Helper\Str;
 
 /**
- * class RouteCommand
+ * @class RouteCommand
  * @package Platine\Framework\Console\Command
+ * @template T
  */
 class RouteCommand extends Command
 {
+    /**
+     * The configuration instance
+     * @var Config<T>
+     */
     protected Config $config;
     protected Router $router;
     protected Application $application;
@@ -69,7 +74,7 @@ class RouteCommand extends Command
     /**
      * Create new instance
      * @param Application $application
-     * @param Config $config
+     * @param Config<T> $config
      * @param Router $router
      */
     public function __construct(Application $application, Config $config, Router $router)
@@ -116,7 +121,7 @@ class RouteCommand extends Command
                 'handler' => $handler,
             ];
         }
-        
+
         Arr::multisort($rows, 'path');
 
         $writer->table($rows);

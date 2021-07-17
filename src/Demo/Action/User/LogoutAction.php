@@ -2,12 +2,12 @@
 
 namespace Platine\Framework\Demo\Action\User;
 
+use Platine\Framework\Auth\AuthenticationInterface;
 use Platine\Framework\Http\RouteHelper;
 use Platine\Http\Handler\RequestHandlerInterface;
 use Platine\Http\Response;
 use Platine\Http\ResponseInterface;
 use Platine\Http\ServerRequestInterface;
-use Platine\Session\Session;
 
 /**
  * Description of LogoutAction
@@ -17,20 +17,21 @@ use Platine\Session\Session;
 class LogoutAction implements RequestHandlerInterface
 {
 
-    protected Session $session;
     protected RouteHelper $routeHelper;
+    protected AuthenticationInterface $authentication;
 
     public function __construct(
-        Session $session,
+        AuthenticationInterface $authentication,
         RouteHelper $routeHelper
     ) {
-        $this->session = $session;
         $this->routeHelper = $routeHelper;
+        $this->authentication = $authentication;
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
-        $this->session->remove('user');
+        $this->authentication->logout();
+
         $res = new Response();
 
         $loginUrl = $this->routeHelper->generateUrl('user_login');

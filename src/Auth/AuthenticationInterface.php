@@ -30,11 +30,11 @@
  */
 
 /**
- *  @file AuthServiceProvider.php
+ *  @file AuthenticationInterface.php
  *
- *  The Framework authentication service provider class
+ *  The Authentication interface
  *
- *  @package    Platine\Framework\Service\Provider
+ *  @package    Platine\Framework\Auth
  *  @author Platine Developers team
  *  @copyright  Copyright (c) 2020
  *  @license    http://opensource.org/licenses/MIT  MIT License
@@ -45,37 +45,50 @@
 
 declare(strict_types=1);
 
-namespace Platine\Framework\Service\Provider;
+namespace Platine\Framework\Auth;
 
-use Platine\Framework\Auth\Authentication\SessionAuthentication;
-use Platine\Framework\Auth\AuthenticationInterface;
-use Platine\Framework\Auth\Authorization\SessionAuthorization;
-use Platine\Framework\Auth\AuthorizationInterface;
-use Platine\Framework\Auth\Middleware\AuthenticationMiddleware;
-use Platine\Framework\Auth\Middleware\AuthorizationMiddleware;
-use Platine\Framework\Auth\Repository\PermissionRepository;
-use Platine\Framework\Auth\Repository\RoleRepository;
-use Platine\Framework\Auth\Repository\UserRepository;
-use Platine\Framework\Service\ServiceProvider;
+use Platine\Framework\Auth\Exception\AccountLockedException;
+use Platine\Framework\Auth\Exception\AccountNotFoundException;
+use Platine\Framework\Auth\Exception\InvalidCredentialsException;
+use Platine\Framework\Auth\Exception\MissingCredentialsException;
 
 /**
- * class AuthServiceProvider
- * @package Platine\Framework\Service\Provider
+ * class AuthenticationInterface
+ * @package Platine\Framework\Auth
  */
-class AuthServiceProvider extends ServiceProvider
+interface AuthenticationInterface
 {
 
     /**
-     * {@inheritdoc}
+     * Authenticate the user
+     * @param array<string, mixed> $credentials
+     * @param bool $remeberMe
+     * @return bool
+     *
+     * @throws MissingCredentialsException if the passed credentials is not correct
+     * @throws AccountNotFoundException if can not find the account information
+     * @throws InvalidCredentialsException if invalid credentials, like wrong password
+     * @throws AccountLockedException if account is locked
      */
-    public function register(): void
-    {
-        $this->app->bind(RoleRepository::class);
-        $this->app->bind(PermissionRepository::class);
-        $this->app->bind(UserRepository::class);
-        $this->app->bind(AuthorizationMiddleware::class);
-        $this->app->bind(AuthenticationMiddleware::class);
-        $this->app->bind(AuthenticationInterface::class, SessionAuthentication::class);
-        $this->app->bind(AuthorizationInterface::class, SessionAuthorization::class);
-    }
+    public function login(array $credentials = [], bool $remeberMe = false): bool;
+
+    /**
+     * Check if user is logged
+     * @return bool
+     */
+    public function isLogged(): bool;
+
+    /**
+     * Logout the user
+     * @return void
+     */
+    public function logout(): void;
+
+    /**
+     * Return the current logged user
+     * @return IdentityInterface
+     *
+     * @throws AccountNotFoundException if can not find the account information
+     */
+    public function getUser(): IdentityInterface;
 }

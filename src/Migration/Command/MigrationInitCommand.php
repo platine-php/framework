@@ -55,8 +55,10 @@ use Platine\Framework\App\Application;
 use Platine\Framework\Migration\MigrationRepository;
 
 /**
- * class MigrationInitCommand
+ * @class MigrationInitCommand
  * @package Platine\Framework\Migration\Command
+ * @template T
+ * @extends AbstractCommand<T>
  */
 class MigrationInitCommand extends AbstractCommand
 {

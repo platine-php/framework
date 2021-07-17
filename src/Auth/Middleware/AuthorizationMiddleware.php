@@ -48,6 +48,7 @@ declare(strict_types=1);
 namespace Platine\Framework\Auth\Middleware;
 
 use Platine\Config\Config;
+use Platine\Framework\Auth\AuthorizationInterface;
 use Platine\Framework\Http\Response\RedirectResponse;
 use Platine\Framework\Http\RouteHelper;
 use Platine\Http\Handler\MiddlewareInterface;
@@ -55,20 +56,20 @@ use Platine\Http\Handler\RequestHandlerInterface;
 use Platine\Http\ResponseInterface;
 use Platine\Http\ServerRequestInterface;
 use Platine\Route\Route;
-use Platine\Session\Session;
 
 /**
- * class AuthorizationMiddleware
+ * @class AuthorizationMiddleware
  * @package Platine\Framework\Auth\Middleware
+ * @template T
  */
 class AuthorizationMiddleware implements MiddlewareInterface
 {
 
     /**
-     * The session instance to use
-     * @var Session
+     * The Authorization instance
+     * @var AuthorizationInterface
      */
-    protected Session $session;
+    protected AuthorizationInterface $authorization;
 
     /**
      * The configuration instance
@@ -84,16 +85,16 @@ class AuthorizationMiddleware implements MiddlewareInterface
 
     /**
      * Create new instance
-     * @param Session $session
-     * @param Config $config
+     * @param AuthorizationInterface $authorization
+     * @param Config<T> $config
      * @param RouteHelper $routeHelper
      */
     public function __construct(
-        Session $session,
+        AuthorizationInterface $authorization,
         Config $config,
         RouteHelper $routeHelper
     ) {
-        $this->session = $session;
+        $this->authorization = $authorization;
         $this->config = $config;
         $this->routeHelper = $routeHelper;
     }
@@ -106,7 +107,7 @@ class AuthorizationMiddleware implements MiddlewareInterface
         RequestHandlerInterface $handler
     ): ResponseInterface {
         //If no route has been match no need check for authorization
-        /** @var Route $route|null */
+        /** @var ?Route $route */
         $route = $request->getAttribute(Route::class);
         if (!$route) {
             return $handler->handle($request);
@@ -118,7 +119,7 @@ class AuthorizationMiddleware implements MiddlewareInterface
             return $handler->handle($request);
         }
 
-        if (!$this->isAllowed($permission)) {
+        if (!$this->authorization->isGranted($permission)) {
             $unauthorizedRoute = $this->config->get(
                 'auth.authorization.unauthorized_route_name'
             );
@@ -129,17 +130,5 @@ class AuthorizationMiddleware implements MiddlewareInterface
         }
 
         return $handler->handle($request);
-    }
-
-    /**
-     * Whether the user is allowed or not
-     * @param string $permission
-     * @return bool
-     */
-    protected function isAllowed(string $permission): bool
-    {
-        $permissions = $this->session->get('permissions', []);
-
-        return in_array($permission, $permissions);
     }
 }

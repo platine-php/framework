@@ -31,32 +31,14 @@
 
 declare(strict_types=1);
 
-namespace Platine\Framework\Http\Exception;
+namespace Platine\Framework\Auth\Exception;
 
-use Platine\Http\ServerRequestInterface;
-use Throwable;
+use Exception;
 
 /**
- * @class HttpSpecialException
- * @package Platine\Framework\Http\Exception
+ * @class AuthenticationException
+ * @package Platine\Framework\Auth\Exception
  */
-abstract class HttpSpecialException extends HttpException
+class AuthenticationException extends Exception
 {
-    /**
-     * Create new instance
-     * @param ServerRequestInterface $request
-     * @param string|null $message
-     * @param Throwable|null $previous
-     */
-    public function __construct(
-        ServerRequestInterface $request,
-        ?string $message = null,
-        ?Throwable $previous = null
-    ) {
-        if ($message !== null) {
-            $this->message = $message;
-        }
-
-        parent::__construct($request, $this->message, $this->code, $previous);
-    }
 }

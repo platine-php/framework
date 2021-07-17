@@ -29,34 +29,46 @@
  * SOFTWARE.
  */
 
+/**
+ *  @file IdentityInterface.php
+ *
+ *  The Authentication identity interface
+ *
+ *  @package    Platine\Framework\Auth
+ *  @author Platine Developers team
+ *  @copyright  Copyright (c) 2020
+ *  @license    http://opensource.org/licenses/MIT  MIT License
+ *  @link   http://www.iacademy.cf
+ *  @version 1.0.0
+ *  @filesource
+ */
+
 declare(strict_types=1);
 
-namespace Platine\Framework\Http\Exception;
-
-use Platine\Http\ServerRequestInterface;
-use Throwable;
+namespace Platine\Framework\Auth;
 
 /**
- * @class HttpSpecialException
- * @package Platine\Framework\Http\Exception
+ * class IdentityInterface
+ * @package Platine\Framework\Auth
  */
-abstract class HttpSpecialException extends HttpException
+interface IdentityInterface
 {
-    /**
-     * Create new instance
-     * @param ServerRequestInterface $request
-     * @param string|null $message
-     * @param Throwable|null $previous
-     */
-    public function __construct(
-        ServerRequestInterface $request,
-        ?string $message = null,
-        ?Throwable $previous = null
-    ) {
-        if ($message !== null) {
-            $this->message = $message;
-        }
 
-        parent::__construct($request, $this->message, $this->code, $previous);
-    }
+    /**
+     * Return the id of the current user
+     * @return mixed
+     */
+    public function getId();
+
+    /**
+     * Return the username of the current user like email
+     * @return string
+     */
+    public function getUsername(): string;
+
+    /**
+     * Return the display name of the current user
+     * @return string
+     */
+    public function getName(): string;
 }

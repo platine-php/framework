@@ -29,34 +29,63 @@
  * SOFTWARE.
  */
 
+/**
+ *  @file SessionAuthorization.php
+ *
+ *  The Authorization using session feature class
+ *
+ *  @package    Platine\Framework\Auth\Authorization
+ *  @author Platine Developers team
+ *  @copyright  Copyright (c) 2020
+ *  @license    http://opensource.org/licenses/MIT  MIT License
+ *  @link   http://www.iacademy.cf
+ *  @version 1.0.0
+ *  @filesource
+ */
+
 declare(strict_types=1);
 
-namespace Platine\Framework\Http\Exception;
+namespace Platine\Framework\Auth\Authorization;
 
-use Platine\Http\ServerRequestInterface;
-use Throwable;
+use Platine\Framework\Auth\AuthorizationInterface;
+use Platine\Session\Session;
 
 /**
- * @class HttpSpecialException
- * @package Platine\Framework\Http\Exception
+ * class SessionAuthorization
+ * @package Platine\Framework\Auth\Authorization
  */
-abstract class HttpSpecialException extends HttpException
+class SessionAuthorization implements AuthorizationInterface
 {
+
+    /**
+     * The session instance to use
+     * @var Session
+     */
+    protected Session $session;
+
     /**
      * Create new instance
-     * @param ServerRequestInterface $request
-     * @param string|null $message
-     * @param Throwable|null $previous
+     * @param Session $session
      */
     public function __construct(
-        ServerRequestInterface $request,
-        ?string $message = null,
-        ?Throwable $previous = null
+        Session $session
     ) {
-        if ($message !== null) {
-            $this->message = $message;
-        }
+        $this->session = $session;
+    }
 
-        parent::__construct($request, $this->message, $this->code, $previous);
+    /**
+     * {@inheritdoc}
+     */
+    public function getPermissions(): array
+    {
+        return $this->session->get('user.permissions', []);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function isGranted(string $permission): bool
+    {
+        return in_array($permission, $this->getPermissions());
     }
 }

@@ -53,8 +53,10 @@ use Platine\Framework\App\Application;
 use Platine\Framework\Migration\MigrationRepository;
 
 /**
- * class MigrationResetCommand
+ * @class MigrationResetCommand
  * @package Platine\Framework\Migration\Command
+ * @template T
+ * @extends AbstractCommand<T>
  */
 class MigrationResetCommand extends AbstractCommand
 {
@@ -101,7 +103,7 @@ class MigrationResetCommand extends AbstractCommand
         $writer->write('', true);
 
         if ($io->confirm('Are you confirm the migration rollback ?', 'n')) {
-            /** @var MigrationExecuteCommand $migrationExecute */
+            /** @var MigrationExecuteCommand<T> $migrationExecute */
             $migrationExecute = $this->application->get(MigrationExecuteCommand::class);
             foreach ($executed as $version => $entity) {
                 $migrationExecute->executeMigrationDown($version, $entity->description);

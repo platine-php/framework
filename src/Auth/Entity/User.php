@@ -29,34 +29,68 @@
  * SOFTWARE.
  */
 
+/**
+ *  @file User.php
+ *
+ *  The Authentication User Entity class
+ *
+ *  @package    Platine\Framework\Auth\Entity
+ *  @author Platine Developers team
+ *  @copyright  Copyright (c) 2020
+ *  @license    http://opensource.org/licenses/MIT  MIT License
+ *  @link   http://www.iacademy.cf
+ *  @version 1.0.0
+ *  @filesource
+ */
+
 declare(strict_types=1);
 
-namespace Platine\Framework\Http\Exception;
+namespace Platine\Framework\Auth\Entity;
 
-use Platine\Http\ServerRequestInterface;
-use Throwable;
+use Platine\Framework\Auth\IdentityInterface;
+use Platine\Orm\Entity;
+use Platine\Orm\Mapper\EntityMapperInterface;
 
 /**
- * @class HttpSpecialException
- * @package Platine\Framework\Http\Exception
+ * class User
+ * @package Platine\Framework\Auth\Entity
  */
-abstract class HttpSpecialException extends HttpException
+class User extends Entity implements IdentityInterface
 {
-    /**
-     * Create new instance
-     * @param ServerRequestInterface $request
-     * @param string|null $message
-     * @param Throwable|null $previous
-     */
-    public function __construct(
-        ServerRequestInterface $request,
-        ?string $message = null,
-        ?Throwable $previous = null
-    ) {
-        if ($message !== null) {
-            $this->message = $message;
-        }
 
-        parent::__construct($request, $this->message, $this->code, $previous);
+    /**
+     * {@inheritdoc}
+     */
+    public static function mapEntity(EntityMapperInterface $mapper): void
+    {
+        $mapper->relation('roles')->shareMany(Role::class);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getId()
+    {
+        return $this->mapper()->getColumn('id');
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getName(): string
+    {
+        return sprintf(
+            '%s %s',
+            $this->mapper()->getColumn('firstname'),
+            $this->mapper()->getColumn('lastname')
+        );
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getUsername(): string
+    {
+        return $this->mapper()->getColumn('username');
     }
 }

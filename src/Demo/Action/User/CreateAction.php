@@ -2,9 +2,9 @@
 
 namespace Platine\Framework\Demo\Action\User;
 
+use Platine\Framework\Auth\Repository\UserRepository;
 use Platine\Framework\Demo\Form\Param\UserParam;
 use Platine\Framework\Demo\Form\Validator\UserValidator;
-use Platine\Framework\Demo\Repository\UserRepository;
 use Platine\Framework\Http\RequestData;
 use Platine\Framework\Http\Response\RedirectResponse;
 use Platine\Framework\Http\Response\TemplateResponse;
@@ -96,12 +96,12 @@ class CreateAction implements RequestHandlerInterface
 
         $user = $this->userRepository->create([
             'username' => $formParam->getUsername(),
-            'fname' => Str::ucfirst($formParam->getFirstname()),
-            'lname' => Str::upper($formParam->getLastname()),
+            'firstname' => Str::ucfirst($formParam->getFirstname()),
+            'lastname' => Str::upper($formParam->getLastname()),
             'password' => $passwordHash,
             'status' => 1,
+            'email' => $formParam->getUsername() . '@foo.com',
             'age' => (int) $formParam->getAge(),
-            'deleted' => 0,
         ]);
 
         $result = $this->userRepository->save($user);

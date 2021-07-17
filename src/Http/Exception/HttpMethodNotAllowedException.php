@@ -34,7 +34,7 @@ declare(strict_types=1);
 namespace Platine\Framework\Http\Exception;
 
 /**
- * HttpMethodNotAllowedException
+ * @class HttpMethodNotAllowedException
  * @package Platine\Framework\Http\Exception
  */
 class HttpMethodNotAllowedException extends HttpSpecialException

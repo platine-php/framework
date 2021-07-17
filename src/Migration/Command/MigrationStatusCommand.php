@@ -54,8 +54,10 @@ use Platine\Framework\Migration\Command\AbstractCommand;
 use Platine\Framework\Migration\MigrationRepository;
 
 /**
- * class MigrationStatusCommand
+ * @class MigrationStatusCommand
  * @package Platine\Framework\Migration\Command
+ * @template T
+ * @extends AbstractCommand<T>
  */
 class MigrationStatusCommand extends AbstractCommand
 {

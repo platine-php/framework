@@ -2,7 +2,7 @@
 
 namespace Platine\Framework\Demo\Action\User;
 
-use Platine\Framework\Demo\Repository\UserRepository;
+use Platine\Framework\Auth\Repository\UserRepository;
 use Platine\Framework\Http\Response\RedirectResponse;
 use Platine\Framework\Http\Response\TemplateResponse;
 use Platine\Framework\Http\RouteHelper;
@@ -45,7 +45,9 @@ class DetailAction implements RequestHandlerInterface
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
         $id = (int) $request->getAttribute('id');
-        $user = $this->userRepository->find($id);
+        $user = $this->userRepository
+                     ->with('roles')
+                     ->find($id);
         if (!$user) {
             $this->session->setFlash('error', 'Can not find the user');
             $this->logger->warning('Can not find user with id {id}', ['id' => $id]);

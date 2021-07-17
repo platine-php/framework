@@ -29,34 +29,41 @@
  * SOFTWARE.
  */
 
+/**
+ *  @file UserRepository.php
+ *
+ *  The User Repository class
+ *
+ *  @package    Platine\Framework\Auth\Repository
+ *  @author Platine Developers team
+ *  @copyright  Copyright (c) 2020
+ *  @license    http://opensource.org/licenses/MIT  MIT License
+ *  @link   http://www.iacademy.cf
+ *  @version 1.0.0
+ *  @filesource
+ */
+
 declare(strict_types=1);
 
-namespace Platine\Framework\Http\Exception;
+namespace Platine\Framework\Auth\Repository;
 
-use Platine\Http\ServerRequestInterface;
-use Throwable;
+use Platine\Framework\Auth\Entity\User;
+use Platine\Orm\EntityManager;
+use Platine\Orm\Repository;
 
 /**
- * @class HttpSpecialException
- * @package Platine\Framework\Http\Exception
+ * class UserRepository
+ * @package Platine\Framework\Auth\Repository
  */
-abstract class HttpSpecialException extends HttpException
+class UserRepository extends Repository
 {
+
     /**
      * Create new instance
-     * @param ServerRequestInterface $request
-     * @param string|null $message
-     * @param Throwable|null $previous
+     * @param EntityManager $manager
      */
-    public function __construct(
-        ServerRequestInterface $request,
-        ?string $message = null,
-        ?Throwable $previous = null
-    ) {
-        if ($message !== null) {
-            $this->message = $message;
-        }
-
-        parent::__construct($request, $this->message, $this->code, $previous);
+    public function __construct(EntityManager $manager)
+    {
+        parent::__construct($manager, User::class);
     }
 }

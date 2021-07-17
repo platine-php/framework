@@ -34,7 +34,7 @@ declare(strict_types=1);
 namespace Platine\Framework\Http\Exception;
 
 /**
- * HttpNotFoundException
+ * @class HttpNotFoundException
  * @package Platine\Framework\Http\Exception
  */
 class HttpNotFoundException extends HttpSpecialException

@@ -15,8 +15,8 @@ class UserParam extends BaseParam
     public function fromEntity(Entity $entity): UserParam
     {
         $this->username = $entity->username;
-        $this->lastname = $entity->lname;
-        $this->firstname = $entity->fname;
+        $this->lastname = $entity->lastname;
+        $this->firstname = $entity->firstname;
         $this->password = $entity->password;
         $this->age = $entity->age;
 

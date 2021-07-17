@@ -61,8 +61,9 @@ use Platine\Stdlib\Helper\Str;
 use RuntimeException;
 
 /**
- * class AbstractCommand
+ * @class AbstractCommand
  * @package Platine\Framework\Migration\Command
+ * @template T
  */
 abstract class AbstractCommand extends Command
 {
@@ -75,7 +76,7 @@ abstract class AbstractCommand extends Command
 
     /**
      * The configuration to use
-     * @var Config
+     * @var Config<T>
      */
     protected Config $config;
 
@@ -107,7 +108,7 @@ abstract class AbstractCommand extends Command
      * Create new instance
      * @param Application $app
      * @param MigrationRepository $repository
-     * @param Config $config
+     * @param Config<T> $config
      * @param Filesystem $filesystem
      */
     public function __construct(

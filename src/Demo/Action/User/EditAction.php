@@ -2,9 +2,9 @@
 
 namespace Platine\Framework\Demo\Action\User;
 
+use Platine\Framework\Auth\Repository\UserRepository;
 use Platine\Framework\Demo\Form\Param\UserParam;
 use Platine\Framework\Demo\Form\Validator\UserValidator;
-use Platine\Framework\Demo\Repository\UserRepository;
 use Platine\Framework\Http\RequestData;
 use Platine\Framework\Http\Response\RedirectResponse;
 use Platine\Framework\Http\Response\TemplateResponse;
@@ -88,7 +88,7 @@ class EditAction implements RequestHandlerInterface
         $username = $param->post('username');
         $userExist = $this->userRepository->findBy(['username' => $username]);
 
-        if ($userExist && $userExist->user_id != $id) {
+        if ($userExist && $userExist->id != $id) {
             $this->session->setFlash('error', 'This user already exists');
             $this->logger->error('User with username {username} already exists', ['username' => $username]);
             return new TemplateResponse(
@@ -103,8 +103,8 @@ class EditAction implements RequestHandlerInterface
         $password = $param->post('password');
 
         $user->username = $formParam->getUsername();
-        $user->fname = Str::ucfirst($formParam->getFirstname());
-        $user->lname = Str::upper($formParam->getLastname());
+        $user->firstname = Str::ucfirst($formParam->getFirstname());
+        $user->lastname = Str::upper($formParam->getLastname());
         $user->age = (int) $formParam->getAge();
 
         if (!empty($password)) {

@@ -4,26 +4,29 @@ namespace Platine\Framework\Migration;
 use Platine\Database\Schema\CreateTable;
 use Platine\Framework\Migration\AbstractMigration;
 
-class AddRolesTable20210705065247 extends AbstractMigration
+class AddPermissionsTable20210717094547 extends AbstractMigration
 {
 
     public function up(): void
     {
       //Action when migrate up
-      $this->create('roles', function (CreateTable $table) {
+      $this->create('permissions', function (CreateTable $table) {
           $table->integer('id')
                   ->autoincrement()
                  ->primary();
-          $table->string('name')
-                 ->description('The role name')
+          $table->string('code')
+                 ->description('The permission code')
+                 ->unique()
                  ->notNull();
           $table->string('description')
-                 ->description('The role description');
+                 ->description('The permission description');
+          $table->string('depend')
+                 ->description('The permission dependency');
           $table->datetime('created_at')
-                  ->description('role created at')
+                  ->description('permission created at')
                   ->notNull();
           $table->datetime('updated_at')
-                  ->description('role updated at');
+                  ->description('permission updated at');
 
           $table->engine('INNODB');
       });
@@ -32,6 +35,6 @@ class AddRolesTable20210705065247 extends AbstractMigration
     public function down(): void
     {
       //Action when migrate down
-      $this->drop('roles');
+      $this->drop('permissions');
     }
 }

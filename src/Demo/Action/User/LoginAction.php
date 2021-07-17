@@ -2,9 +2,14 @@
 
 namespace Platine\Framework\Demo\Action\User;
 
+use Platine\Framework\Auth\AuthenticationInterface;
+use Platine\Framework\Auth\Exception\AccountLockedException;
+use Platine\Framework\Auth\Exception\AccountNotFoundException;
+use Platine\Framework\Auth\Exception\AuthenticationException;
+use Platine\Framework\Auth\Exception\InvalidCredentialsException;
+use Platine\Framework\Auth\Exception\MissingCredentialsException;
 use Platine\Framework\Demo\Form\Param\AuthParam;
 use Platine\Framework\Demo\Form\Validator\AuthValidator;
-use Platine\Framework\Demo\Repository\UserRepository;
 use Platine\Framework\Http\RequestData;
 use Platine\Framework\Http\Response\RedirectResponse;
 use Platine\Framework\Http\Response\TemplateResponse;
@@ -13,7 +18,6 @@ use Platine\Http\Handler\RequestHandlerInterface;
 use Platine\Http\ResponseInterface;
 use Platine\Http\ServerRequestInterface;
 use Platine\Logger\LoggerInterface;
-use Platine\Security\Hash\BcryptHash;
 use Platine\Session\Session;
 use Platine\Template\Template;
 
@@ -26,23 +30,23 @@ class LoginAction implements RequestHandlerInterface
 {
 
     protected LoggerInterface $logger;
-    protected Session $session;
-    protected UserRepository $userRepository;
     protected Template $template;
     protected RouteHelper $routeHelper;
+    protected AuthenticationInterface $authentication;
+    protected Session $session;
 
     public function __construct(
-        LoggerInterface $logger,
+        AuthenticationInterface $authentication,
         Session $session,
+        LoggerInterface $logger,
         Template $template,
-        UserRepository $userRepository,
         RouteHelper $routeHelper
     ) {
-        $this->logger = $logger;
         $this->session = $session;
-        $this->userRepository = $userRepository;
+        $this->logger = $logger;
         $this->template = $template;
         $this->routeHelper = $routeHelper;
+        $this->authentication = $authentication;
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface
@@ -74,43 +78,46 @@ class LoginAction implements RequestHandlerInterface
 
         $username = $param->post('username');
         $password = $param->post('password');
-        $user = $this->userRepository->findBy(['username' => $username]);
 
-        if (!$user) {
-            $this->session->setFlash('error', 'Can not find user with given username');
-            return new TemplateResponse(
-                $this->template,
-                'user/login',
-                [
-                   'param' => $formParam
-                ]
-            );
-        }
-
-        $hash = new BcryptHash();
-        if (!$hash->verify($password, $user->password)) {
-            $this->logger->error('Invalid user credential, {username}', ['username' => $username]);
-            $this->session->setFlash('error', 'Invalid user credential');
-            return new TemplateResponse(
-                $this->template,
-                'user/login',
-                [
-                   'param' => $formParam
-                ]
-            );
-        }
-
-        $data = [
-          'id' => $user->user_id,
-          'username' => $user->username,
-          'lastname' => $user->lname,
-          'firstname' => $user->fname,
+        $credentials = [
+            'username' => $username,
+            'password' => $password,
         ];
-        $this->session->set('user', $data);
-        $this->session->set('permissions', ['users']);
+
+        try {
+            $this->authentication->login($credentials);
+        } catch (
+            MissingCredentialsException
+                | AccountNotFoundException
+                | InvalidCredentialsException
+                | AccountLockedException $ex
+        ) {
+            return $this->authExceptionResponse($ex, $formParam);
+        }
 
         return new RedirectResponse(
             $this->routeHelper->generateUrl('home')
+        );
+    }
+
+    /**
+     * Return response when authentication throw Exception
+     * @param AuthenticationException $ex
+     * @param AuthParam $formParam
+     * @return ResponseInterface
+     */
+    protected function authExceptionResponse(
+        AuthenticationException $ex,
+        AuthParam $formParam
+    ): ResponseInterface {
+        $this->logger->error('Authentication Error', ['exception' => $ex]);
+        $this->session->setFlash('error', $ex->getMessage());
+        return new TemplateResponse(
+            $this->template,
+            'user/login',
+            [
+               'param' => $formParam
+            ]
         );
     }
 }

@@ -38,7 +38,7 @@ use Platine\Http\ServerRequestInterface;
 use Throwable;
 
 /**
- * HttpException
+ * @class HttpException
  * @package Platine\Framework\Http\Exception
  */
 class HttpException extends Exception
