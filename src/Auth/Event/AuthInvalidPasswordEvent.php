@@ -30,11 +30,11 @@
  */
 
 /**
- *  @file AppServiceProvider.php
+ *  @file AuthInvalidPasswordEvent.php
  *
- *  Application base service provider class
+ *  The Authentication event for invalid password class
  *
- *  @package    Platine\Framework\Demo\Provider
+ *  @package    Platine\Framework\Auth\Event
  *  @author Platine Developers team
  *  @copyright  Copyright (c) 2020
  *  @license    http://opensource.org/licenses/MIT  MIT License
@@ -45,25 +45,51 @@
 
 declare(strict_types=1);
 
-namespace Platine\Framework\Demo\Provider;
+namespace Platine\Framework\Auth\Event;
 
-use Platine\Framework\Demo\Action\HomeAction;
-use Platine\Framework\Demo\Event\HandleAuthFailure;
-use Platine\Framework\Service\ServiceProvider;
+use Platine\Event\Event;
+use Platine\Framework\Auth\Entity\User;
 
 /**
- * @class AppServiceProvider
- * @package Platine\Framework
+ * @class AuthInvalidPasswordEvent
+ * @package Platine\Framework\Auth\Event
  */
-class AppServiceProvider extends ServiceProvider
+class AuthInvalidPasswordEvent extends Event
 {
 
     /**
-     * {@inheritdoc}
+     * The authentication user
+     * @var User
      */
-    public function register(): void
+    protected User $user;
+
+    /**
+     * Create new instance
+     * @param User $user
+     */
+    public function __construct(User $user)
     {
-        $this->app->bind(HomeAction::class);
-        $this->app->bind(HandleAuthFailure::class);
+        parent::__construct(__CLASS__, []);
+        $this->user = $user;
+    }
+
+    /**
+     * Return the user
+     * @return User
+     */
+    public function getUser(): User
+    {
+        return $this->user;
+    }
+
+    /**
+     * Set the user
+     * @param User $user
+     * @return $this
+     */
+    public function setUser(User $user): self
+    {
+        $this->user = $user;
+        return $this;
     }
 }

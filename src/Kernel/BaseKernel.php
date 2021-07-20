@@ -79,6 +79,7 @@ class BaseKernel
     {
         $this->app->registerConfiguration();
         $this->app->registerConfiguredServiceProviders();
+        $this->app->registerConfiguredEvents();
         $this->app->boot();
     }
 }

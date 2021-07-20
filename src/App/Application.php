@@ -47,9 +47,13 @@ declare(strict_types=1);
 
 namespace Platine\Framework\App;
 
+use InvalidArgumentException;
 use Platine\Config\Config;
 use Platine\Config\FileLoader;
 use Platine\Container\Container;
+use Platine\Event\DispatcherInterface;
+use Platine\Event\EventInterface;
+use Platine\Event\ListenerInterface;
 use Platine\Framework\Service\Provider\BaseServiceProvider;
 use Platine\Framework\Service\Provider\EventServiceProvider;
 use Platine\Framework\Service\ServiceProvider;
@@ -66,6 +70,12 @@ class Application extends Container
      * The application version
      */
     public const VERSION = '1.0.0-dev';
+
+    /**
+     * The event dispatcher instance
+     * @var DispatcherInterface
+     */
+    protected DispatcherInterface $dispatcher;
 
     /**
      * The base path for this application
@@ -124,6 +134,8 @@ class Application extends Container
         parent::__construct();
         $this->basePath = $basePath;
         $this->loadCoreServiceProviders();
+
+        $this->dispatcher = $this->get(DispatcherInterface::class);
     }
 
     /**
@@ -230,15 +242,6 @@ class Application extends Container
     }
 
     /**
-     * Return the application configuration path
-     * @return string
-     */
-    public function getConfigPath(): string
-    {
-        return $this->configPath;
-    }
-
-    /**
      * Set the application base path
      * @param string $basePath
      * @return $this
@@ -251,6 +254,15 @@ class Application extends Container
     }
 
     /**
+     * Return the application configuration path
+     * @return string
+     */
+    public function getConfigPath(): string
+    {
+        return $this->configPath;
+    }
+
+    /**
      * Set the application configuration path
      * @param string $configPath
      * @return $this
@@ -258,6 +270,40 @@ class Application extends Container
     public function setConfigPath(string $configPath): self
     {
         $this->configPath = $configPath;
+
+        return $this;
+    }
+
+    /**
+     * Dispatches an event to all registered listeners.
+     * @param  string|EventInterface     $eventName the name of event of instance of EventInterface
+     * @param  EventInterface|null $event  the instance of EventInterface or null
+     * @return $this
+     */
+    public function dispatch($eventName, EventInterface $event = null): self
+    {
+        $this->dispatcher->dispatch($eventName, $event);
+
+        return $this;
+    }
+
+    /**
+     * Register a listener for the given event.
+     *
+     * @param string $eventName the name of event
+     * @param ListenerInterface|callable|string $listener the Listener interface or any callable
+     * @param int $priority the listener execution priority
+     * @return $this
+     */
+    public function listen(
+        string $eventName,
+        $listener,
+        int $priority = DispatcherInterface::PRIORITY_DEFAULT
+    ): self {
+        if (is_string($listener)) {
+            $listener = $this->createListener($listener);
+        }
+        $this->dispatcher->addListener($eventName, $listener, $priority);
 
         return $this;
     }
@@ -364,6 +410,24 @@ class Application extends Container
     }
 
     /**
+     * Load configured events and listeners
+     * @return void
+     */
+    public function registerConfiguredEvents(): void
+    {
+        /** @var Config<T> $config */
+        $config = $this->get(Config::class);
+
+        /** @var array<string, string[]> $events */
+        $events = $config->get('events', []);
+        foreach ($events as $eventName => $listeners) {
+            foreach ($listeners as $listener) {
+                $this->listen($eventName, $listener);
+            }
+        }
+    }
+
+    /**
      * Load the application configuration
      * @return void
      */
@@ -415,5 +479,27 @@ class Application extends Container
     {
         $this->registerServiceProvider(new BaseServiceProvider($this));
         $this->registerServiceProvider(new EventServiceProvider($this));
+    }
+
+    /**
+     * Create listener using the container or direct class instance
+     * @param string $listener
+     * @return ListenerInterface
+     */
+    protected function createListener(string $listener): ListenerInterface
+    {
+        if ($this->has($listener)) {
+            return $this->get($listener);
+        }
+
+        if (class_exists($listener)) {
+            return new $listener();
+        }
+
+        throw new InvalidArgumentException(sprintf(
+            'Can not resolve the listener class [%s], check if this is the'
+                . ' identifier of container or class exists',
+            $listener
+        ));
     }
 }

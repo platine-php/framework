@@ -30,11 +30,11 @@
  */
 
 /**
- *  @file AppServiceProvider.php
+ *  @file HandleAuthFailure.php
  *
- *  Application base service provider class
+ *  The Handler Authentication failure event class
  *
- *  @package    Platine\Framework\Demo\Provider
+ *  @package    Platine\Framework\Demo\Event
  *  @author Platine Developers team
  *  @copyright  Copyright (c) 2020
  *  @license    http://opensource.org/licenses/MIT  MIT License
@@ -45,25 +45,46 @@
 
 declare(strict_types=1);
 
-namespace Platine\Framework\Demo\Provider;
+namespace Platine\Framework\Demo\Event;
 
-use Platine\Framework\Demo\Action\HomeAction;
-use Platine\Framework\Demo\Event\HandleAuthFailure;
-use Platine\Framework\Service\ServiceProvider;
+use Platine\Event\EventInterface;
+use Platine\Event\ListenerInterface;
+use Platine\Framework\Auth\Event\AuthInvalidPasswordEvent;
+use Platine\Logger\LoggerInterface;
 
 /**
- * @class AppServiceProvider
- * @package Platine\Framework
+ * @class HandleAuthFailure
+ * @package Platine\Framework\Demo\Event
  */
-class AppServiceProvider extends ServiceProvider
+class HandleAuthFailure implements ListenerInterface
 {
+
+    /**
+     * Logger instance
+     * @var LoggerInterface
+     */
+    protected LoggerInterface $logger;
+
+    /**
+     * Create new instance
+     * @param LoggerInterface $logger
+     */
+    public function __construct(LoggerInterface $logger)
+    {
+        $this->logger = $logger;
+    }
 
     /**
      * {@inheritdoc}
      */
-    public function register(): void
+    public function handle(EventInterface $event)
     {
-        $this->app->bind(HomeAction::class);
-        $this->app->bind(HandleAuthFailure::class);
+        if ($event instanceof AuthInvalidPasswordEvent) {
+            $user = $event->getUser();
+            $this->logger->error('User {email} - {username} enter wrong password ', [
+                'email' => $user->email,
+                'username' => $user->username,
+            ]);
+        }
     }
 }

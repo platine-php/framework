@@ -47,7 +47,9 @@ declare(strict_types=1);
 
 namespace Platine\Framework\Auth\Authentication;
 
+use Platine\Framework\App\Application;
 use Platine\Framework\Auth\AuthenticationInterface;
+use Platine\Framework\Auth\Event\AuthInvalidPasswordEvent;
 use Platine\Framework\Auth\Exception\AccountLockedException;
 use Platine\Framework\Auth\Exception\AccountNotFoundException;
 use Platine\Framework\Auth\Exception\InvalidCredentialsException;
@@ -83,16 +85,25 @@ class SessionAuthentication implements AuthenticationInterface
     protected HashInterface $hash;
 
     /**
+     * The application instance
+     * @var Application
+     */
+    protected Application $app;
+
+    /**
      * Create new instance
+     * @param Application $app
      * @param HashInterface $hash
      * @param Session $session
      * @param UserRepository $userRepository
      */
     public function __construct(
+        Application $app,
         HashInterface $hash,
         Session $session,
         UserRepository $userRepository
     ) {
+        $this->app = $app;
         $this->hash = $hash;
         $this->session = $session;
         $this->userRepository = $userRepository;
@@ -154,6 +165,8 @@ class SessionAuthentication implements AuthenticationInterface
         }
 
         if (!$this->hash->verify($password, $user->password)) {
+            $this->app->dispatch(new AuthInvalidPasswordEvent($user));
+
             throw new InvalidCredentialsException(
                 'Invalid credentials',
                 401
