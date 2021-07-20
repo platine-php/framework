@@ -82,8 +82,7 @@ class MigrationInitCommand extends AbstractCommand
     ) {
         parent::__construct($app, $repository, $config, $filesystem);
         $this->setName('migration:init')
-             ->setDescription("Initialize the migration data. Note this command\n"
-                     . "is run only at the first time to create migration table");
+             ->setDescription('Initialize the migration by creating migration table');
 
         $this->schema = $schema;
     }

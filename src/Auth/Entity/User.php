@@ -32,7 +32,7 @@
 /**
  *  @file User.php
  *
- *  The Authentication User Entity class
+ *  The User Entity class
  *
  *  @package    Platine\Framework\Auth\Entity
  *  @author Platine Developers team
@@ -52,7 +52,7 @@ use Platine\Orm\Entity;
 use Platine\Orm\Mapper\EntityMapperInterface;
 
 /**
- * class User
+ * @class User
  * @package Platine\Framework\Auth\Entity
  */
 class User extends Entity implements IdentityInterface
@@ -64,6 +64,34 @@ class User extends Entity implements IdentityInterface
     public static function mapEntity(EntityMapperInterface $mapper): void
     {
         $mapper->relation('roles')->shareMany(Role::class);
+    }
+
+    /**
+     * Set user roles
+     * @param Role[] $roles
+     * @return $this
+     */
+    public function setRoles(array $roles): self
+    {
+        foreach ($roles as $role) {
+            $this->mapper()->link('roles', $role);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Remove user roles
+     * @param Role[] $roles
+     * @return $this
+     */
+    public function removeRoles(array $roles): self
+    {
+        foreach ($roles as $role) {
+            $this->mapper()->unlink('roles', $role);
+        }
+
+        return $this;
     }
 
     /**

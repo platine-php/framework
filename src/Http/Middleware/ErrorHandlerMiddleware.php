@@ -60,7 +60,7 @@ use Throwable;
 
 
 /**
- * class ErrorHandlerMiddleware
+ * @class ErrorHandlerMiddleware
  * @package Platine\Framework\Http\Middleware
  */
 class ErrorHandlerMiddleware implements MiddlewareInterface

@@ -1,4 +1,5 @@
 <?php
+
 namespace Platine\Framework\Migration;
 
 use Platine\Database\Schema\CreateTable;
@@ -10,54 +11,54 @@ class AddUsersTable20210705065248 extends AbstractMigration
     public function up(): void
     {
       //Action when migrate up
-      $this->create('users', function (CreateTable $table) {
-          $table->integer('id')
+        $this->create('users', function (CreateTable $table) {
+            $table->integer('id')
                   ->autoincrement()
                  ->primary();
-          
-          $table->string('username')
+
+            $table->string('username')
                  ->description('The user username')
                  ->unique()
                  ->notNull();
-          
-          $table->string('email')
+
+            $table->string('email')
                  ->description('The user email')
                  ->unique()
                  ->notNull();
-          
-          $table->string('password')
+
+            $table->string('password')
                  ->description('The user password')
                  ->notNull();
-          
-          $table->integer('status')
+
+            $table->integer('status')
                  ->size('tiny')
                  ->description('The user status')
                  ->defaultValue(0);
-          
-          $table->integer('age')
+
+            $table->integer('age')
                  ->size('tiny')
                  ->description('The user age');
-          
-          $table->string('lastname')
+
+            $table->string('lastname')
                  ->description('The user lastname');
-          
-          $table->string('firstname')
+
+            $table->string('firstname')
                  ->description('The user firstname');
-          
-          $table->datetime('created_at')
+
+            $table->datetime('created_at')
                   ->description('created date')
                   ->notNull();
-          
-          $table->datetime('updated_at')
+
+            $table->datetime('updated_at')
                   ->description('last updated date');
 
-          $table->engine('INNODB');
-      });
+            $table->engine('INNODB');
+        });
     }
 
     public function down(): void
     {
       //Action when migrate down
-      $this->drop('users');
+        $this->drop('users');
     }
 }

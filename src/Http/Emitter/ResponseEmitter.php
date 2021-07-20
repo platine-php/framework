@@ -33,7 +33,7 @@
 /**
  *  @file ResponseEmitter.php
  *
- *  The default response emitter interface
+ *  The default response emitter class
  *
  *  @package    Platine\Framework\Http\Emitter
  *  @author Platine Developers team
@@ -55,7 +55,7 @@ use Platine\Http\ResponseInterface;
 use Platine\Http\StreamInterface;
 
 /**
- * class ResponseEmitter
+ * @class ResponseEmitter
  * @package Platine\Framework\Http\Emitter
  */
 class ResponseEmitter implements EmitterInterface

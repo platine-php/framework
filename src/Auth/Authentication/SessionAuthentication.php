@@ -54,7 +54,7 @@ use Platine\Framework\Auth\Exception\InvalidCredentialsException;
 use Platine\Framework\Auth\Exception\MissingCredentialsException;
 use Platine\Framework\Auth\IdentityInterface;
 use Platine\Framework\Auth\Repository\UserRepository;
-use Platine\Security\Hash\BcryptHash;
+use Platine\Security\Hash\HashInterface;
 use Platine\Session\Session;
 
 /**
@@ -77,14 +77,23 @@ class SessionAuthentication implements AuthenticationInterface
     protected UserRepository $userRepository;
 
     /**
+     * Hash instance to use
+     * @var HashInterface
+     */
+    protected HashInterface $hash;
+
+    /**
      * Create new instance
+     * @param HashInterface $hash
      * @param Session $session
      * @param UserRepository $userRepository
      */
     public function __construct(
+        HashInterface $hash,
         Session $session,
         UserRepository $userRepository
     ) {
+        $this->hash = $hash;
         $this->session = $session;
         $this->userRepository = $userRepository;
     }
@@ -144,8 +153,7 @@ class SessionAuthentication implements AuthenticationInterface
             );
         }
 
-        $hash = new BcryptHash();
-        if (!$hash->verify($password, $user->password)) {
+        if (!$this->hash->verify($password, $user->password)) {
             throw new InvalidCredentialsException(
                 'Invalid credentials',
                 401

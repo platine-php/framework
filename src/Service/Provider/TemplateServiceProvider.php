@@ -58,7 +58,7 @@ use Platine\Template\Loader\LoaderInterface;
 use Platine\Template\Template;
 
 /**
- * class TemplateServiceProvider
+ * @class TemplateServiceProvider
  * @package Platine\Framework\Service\Provider
  */
 class TemplateServiceProvider extends ServiceProvider

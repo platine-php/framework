@@ -33,7 +33,6 @@
  *  @file functions.php
  *
  *  This file contains Framework some useful functions
- * used
  *
  *  @author Platine Developers team
  *  @copyright  Copyright (c) 2020

@@ -51,7 +51,7 @@ use Platine\Http\ServerRequestInterface;
 use Platine\Stdlib\Helper\Arr;
 
 /**
- * class RequestData
+ * @class RequestData
  * @package Platine\Framework\Http
  */
 class RequestData

@@ -51,7 +51,7 @@ use Platine\Http\Response;
 use Platine\Template\Template;
 
 /**
- * class TemplateResponse
+ * @class TemplateResponse
  * @package Platine\Framework\Http\Response
  */
 class TemplateResponse extends Response

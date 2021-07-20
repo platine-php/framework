@@ -63,7 +63,7 @@ use Platine\Route\RouteCollectionInterface;
 use Platine\Route\Router;
 
 /**
- * class BaseServiceProvider
+ * @class BaseServiceProvider
  * @package Platine\Framework\Service\Provider
  */
 class BaseServiceProvider extends ServiceProvider
@@ -77,7 +77,7 @@ class BaseServiceProvider extends ServiceProvider
         $this->app->share(Application::class, $this->app);
         $this->app->share('app', $this->app);
         $this->app->share(ConsoleApp::class, function () {
-            return new ConsoleApp('PLATINE CONSOLE', '1.6.8');
+            return new ConsoleApp('PLATINE CONSOLE', '1.0.0');
         });
         $this->app->share(ContainerInterface::class, $this->app);
         $this->app->bind(ResolverInterface::class, ConstructorResolver::class);

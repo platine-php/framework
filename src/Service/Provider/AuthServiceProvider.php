@@ -57,9 +57,11 @@ use Platine\Framework\Auth\Repository\PermissionRepository;
 use Platine\Framework\Auth\Repository\RoleRepository;
 use Platine\Framework\Auth\Repository\UserRepository;
 use Platine\Framework\Service\ServiceProvider;
+use Platine\Security\Hash\BcryptHash;
+use Platine\Security\Hash\HashInterface;
 
 /**
- * class AuthServiceProvider
+ * @class AuthServiceProvider
  * @package Platine\Framework\Service\Provider
  */
 class AuthServiceProvider extends ServiceProvider
@@ -77,5 +79,6 @@ class AuthServiceProvider extends ServiceProvider
         $this->app->bind(AuthenticationMiddleware::class);
         $this->app->bind(AuthenticationInterface::class, SessionAuthentication::class);
         $this->app->bind(AuthorizationInterface::class, SessionAuthorization::class);
+        $this->app->bind(HashInterface::class, BcryptHash::class);
     }
 }

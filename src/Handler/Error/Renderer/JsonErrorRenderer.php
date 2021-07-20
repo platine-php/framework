@@ -52,7 +52,7 @@ use Platine\Stdlib\Helper\Json;
 use Throwable;
 
 /**
- * class JsonErrorRenderer
+ * @class JsonErrorRenderer
  * @package Platine\Framework\Handler\Error\Renderer
  */
 class JsonErrorRenderer extends AbstractErrorRenderer

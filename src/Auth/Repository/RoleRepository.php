@@ -52,7 +52,7 @@ use Platine\Orm\EntityManager;
 use Platine\Orm\Repository;
 
 /**
- * class RoleRepository
+ * @class RoleRepository
  * @package Platine\Framework\Auth\Repository
  */
 class RoleRepository extends Repository

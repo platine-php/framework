@@ -58,7 +58,7 @@ use Platine\Logger\LoggerInterface;
 use Throwable;
 
 /**
- * class ErrorHandler
+ * @class ErrorHandler
  * @package Platine\Framework\Handler\Error
  */
 class ErrorHandler implements ErrorHandlerInterface
@@ -71,8 +71,7 @@ class ErrorHandler implements ErrorHandlerInterface
     protected string $contentType = '';
 
     /**
-     * The renderer to use to render error for the content
-     * type
+     * The error renderer to use
      * @var ErrorRenderInterface
      */
     protected ErrorRenderInterface $renderer;
@@ -81,7 +80,7 @@ class ErrorHandler implements ErrorHandlerInterface
      * List of well known content type with their renderer
      * @var array<string, ErrorRenderInterface>
      */
-    protected array $renderes = [];
+    protected array $renderers = [];
 
     /**
      * The request method that generate this error
@@ -179,7 +178,7 @@ class ErrorHandler implements ErrorHandlerInterface
         string $contentType,
         ErrorRenderInterface $renderer
     ): self {
-        $this->renderes[$contentType] = $renderer;
+        $this->renderers[$contentType] = $renderer;
 
         return $this;
     }
@@ -225,9 +224,9 @@ class ErrorHandler implements ErrorHandlerInterface
     {
         if (
             !empty($this->contentType)
-            && array_key_exists($this->contentType, $this->renderes)
+            && array_key_exists($this->contentType, $this->renderers)
         ) {
-            $renderer = $this->renderes[$this->contentType];
+            $renderer = $this->renderers[$this->contentType];
         } else {
             $renderer = $this->renderer;
         }
@@ -245,7 +244,7 @@ class ErrorHandler implements ErrorHandlerInterface
         $header = $request->getHeaderLine('Accept');
         $selected = array_intersect(
             explode(', ', $header),
-            array_keys($this->renderes)
+            array_keys($this->renderers)
         );
 
         $count = count($selected);
@@ -272,7 +271,7 @@ class ErrorHandler implements ErrorHandlerInterface
         $matches = [];
         if (preg_match('/\+(json|xml)/', $header, $matches)) {
             $contentType = 'application/' . $matches[1];
-            if (array_key_exists($contentType, $this->renderes)) {
+            if (array_key_exists($contentType, $this->renderers)) {
                 return $contentType;
             }
         }
@@ -311,7 +310,7 @@ class ErrorHandler implements ErrorHandlerInterface
         $response = new Response($this->statusCode);
         if (
                 !empty($this->contentType)
-                && array_key_exists($this->contentType, $this->renderes)
+                && array_key_exists($this->contentType, $this->renderers)
         ) {
             $response = $response->withHeader('Content-Type', $this->contentType);
         }

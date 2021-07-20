@@ -49,9 +49,9 @@ namespace Platine\Framework\Kernel;
 
 use Platine\Config\Config;
 use Platine\Framework\App\Application;
-use Platine\Framework\Auth\AuthMiddleware;
 use Platine\Framework\Http\Emitter\EmitterInterface;
 use Platine\Framework\Http\Exception\HttpNotFoundException;
+use Platine\Framework\Kernel\BaseKernel;
 use Platine\Framework\Service\ServiceProvider;
 use Platine\Http\Handler\MiddlewareInterface;
 use Platine\Http\Handler\MiddlewareResolverInterface;
@@ -61,9 +61,11 @@ use Platine\Http\ServerRequest;
 use Platine\Http\ServerRequestInterface;
 use Platine\Route\Router;
 
+
 /**
- * class HttpKernel
+ * @class HttpKernel
  * @package Platine\Framework\Kernel
+ * @template T
  */
 class HttpKernel extends BaseKernel implements RequestHandlerInterface
 {
@@ -75,6 +77,12 @@ class HttpKernel extends BaseKernel implements RequestHandlerInterface
     protected Router $router;
 
     /**
+     * The middleware resolver instance
+     * @var MiddlewareResolverInterface
+     */
+    protected MiddlewareResolverInterface $middlewareResolver;
+
+    /**
      * The list of middlewares
      * @var MiddlewareInterface[]
      */
@@ -84,23 +92,26 @@ class HttpKernel extends BaseKernel implements RequestHandlerInterface
      * Create new instance
      * @param Application $app
      * @param Router $router
+     * @param MiddlewareResolverInterface $middlewareResolver
      */
-    public function __construct(Application $app, Router $router)
-    {
+    public function __construct(
+        Application $app,
+        Router $router,
+        MiddlewareResolverInterface $middlewareResolver
+    ) {
         parent::__construct($app);
         $this->router = $router;
+        $this->middlewareResolver = $middlewareResolver;
     }
 
     /**
-     * Add new middleware in the list
+     * Add new middleware
      * @param  mixed $middleware
      * @return $this
      */
     public function use($middleware): self
     {
-        /** @var MiddlewareResolverInterface $resolver */
-        $resolver = $this->app->get(MiddlewareResolverInterface::class);
-        $this->middlewares[] = $resolver->resolve($middleware);
+        $this->middlewares[] = $this->middlewareResolver->resolve($middleware);
 
         return $this;
     }
@@ -122,9 +133,14 @@ class HttpKernel extends BaseKernel implements RequestHandlerInterface
         $this->registerConfiguredMiddlewares();
 
         $req = $request ?? ServerRequest::createFromGlobals();
+
+        //Share the instance to use later
+        $this->app->instance($req, ServerRequestInterface::class);
+
         /** @var EmitterInterface $emitter */
         $emitter = $this->app->get(EmitterInterface::class);
         $response = $this->handle($req);
+
 
         $emitter->emit(
             $response,
@@ -159,7 +175,7 @@ class HttpKernel extends BaseKernel implements RequestHandlerInterface
      */
     public function setRouting(): void
     {
-        /** @template T @var Config<T> $config */
+        /** @var Config<T> $config */
         $config = $this->app->get(Config::class);
 
         $basePath = $this->app->getBasePath();
@@ -189,7 +205,7 @@ class HttpKernel extends BaseKernel implements RequestHandlerInterface
      */
     protected function registerConfiguredMiddlewares(): void
     {
-        /** @template T @var Config<T> $config */
+        /** @var Config<T> $config */
         $config = $this->app->get(Config::class);
 
         /** @var string[] $middlewares */

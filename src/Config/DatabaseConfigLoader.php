@@ -32,7 +32,7 @@
 /**
  *  @file DatabaseConfigLoader.php
  *
- *  The database configuration loader class
+ *  The Database Configuration loader class
  *
  *  @package    Platine\Framework\Config
  *  @author Platine Developers team
@@ -47,42 +47,30 @@ declare(strict_types=1);
 
 namespace Platine\Framework\Config;
 
-use Platine\Config\LoaderInterface;
-use Platine\Database\Query\ColumnExpression;
-use Platine\Database\Query\Expression;
-use Platine\Database\Query\SubQuery;
-use Platine\Database\QueryBuilder;
+use Platine\Framework\Config\Model\DatabaseConfigRepository;
+use Platine\Orm\Entity;
 
 /**
- * class DatabaseConfigLoader
+ * @class DatabaseConfigLoader
  * @package Platine\Framework\Config
  */
-class DatabaseConfigLoader implements LoaderInterface
+class DatabaseConfigLoader implements DatabaseConfigLoaderInterface
 {
 
     /**
-     * The QueryBuilder instance
-     * @var QueryBuilder
+     * The Repository instance
+     * @var DatabaseConfigRepository
      */
-    protected QueryBuilder $queryBuilder;
+    protected DatabaseConfigRepository $repository;
 
-    /**
-     * The table name
-     * @var string
-     */
-    protected string $table;
 
     /**
      * Create new instance
-     * @param QueryBuilder $queryBuilder
-     * @param string $table
+     * @param DatabaseConfigRepository $repository
      */
-    public function __construct(
-        QueryBuilder $queryBuilder,
-        string $table = 'config'
-    ) {
-        $this->queryBuilder = $queryBuilder;
-        $this->table = $table;
+    public function __construct(DatabaseConfigRepository $repository)
+    {
+        $this->repository = $repository;
     }
 
     /**
@@ -90,120 +78,102 @@ class DatabaseConfigLoader implements LoaderInterface
      */
     public function load(string $environment, string $group): array
     {
-        $items = $this->getConfigurations($group, $environment);
-
-        /*
-
-        $environments = $this->parse($environment);
-        foreach ($environments as $env) {
-            $results = $this->queryBuilder
-                          ->from($this->table)
-                          ->where('env')->is($env)
-                          ->where('module')->is($group)
-                          ->where('status')->is(1)
-                          ->select()
-                          ->fetchObject()
-                          ->all();
-
-            if ($results) {
-                $config = [];
-                foreach ($results as $cfg) {
-                    $config = $this->loadConfig($cfg);
-                }
-
-                $items = $this->merge($items, $config);
-            }
-        }
-         *
-         */
-
-        return $items;
+        return $this->loadDbConfigurations($group, $environment);
     }
 
     /**
-     * Split the environment at dots or slashes creating
-     * an array of name spaces to look through
-     *
-     * @param  string $env
-     * @return array<int, string>
+     * {@inheritdoc}
      */
-    protected function parse(string $env): array
+    public function loadConfig(array $where = []): ?Entity
     {
-        $environments = array_filter((array)preg_split('/(\/|\.)/', $env));
-        array_unshift($environments, '');
-
-        return $environments;
+        return $this->repository->findBy($where);
     }
 
     /**
-     * Merge two array items
-     * @param  array<string, mixed>  $items1
-     * @param  array<string, mixed>  $items2
-     * @return array<string, mixed>
+     * {@inheritdoc}
      */
-    protected function merge(array $items1, array $items2): array
+    public function insertConfig(array $data)
     {
-        return array_replace_recursive($items1, $items2);
+        $entity = $this->repository->create($data);
+        return $this->repository->insert($entity);
     }
 
     /**
-     *
-     * @param object[] $results
-     * @return array<string, mixed>
+     * {@inheritdoc}
      */
-    protected function loadConfig(array $results): array
+    public function updateConfig(Entity $entity): bool
     {
-        $config = [];
-        foreach ($results as $cfg) {
-            if ($cfg->parent) {
-                $results = $this->queryBuilder
-                              ->from($this->table)
-                              ->where('env')->is($cfg->env)
-                              ->where('module')->is($cfg->parent)
-                              ->where('status')->is(1)
-                              ->select()
-                              ->fetchObject()
-                              ->all();
+        return $this->repository->save($entity);
+    }
 
-                foreach ($results as $cfg) {
-                    $config[$cfg->name] = $cfg->value ?? $cfg->default_value;
-                }
-            }
-        }
-        return $config;
+    /**
+     * {@inheritdoc}
+     */
+    public function all(): array
+    {
+        return $this->repository->all();
     }
 
     /**
      * Return the configuration
      * @param string $group
      * @param string|null $env
+     * @return array<string, mixed>
+     */
+    protected function loadDbConfigurations(string $group, ?string $env = null): array
+    {
+        $query = $this->repository
+                                ->query()
+                                ->where('module')->is($group)
+                                ->where('status')->is(1);
+        if ($env === null) {
+            $query->where('env')->isNull();
+        } else {
+            $query->where('env')->is($env);
+        }
+
+        $results = $query->all();
+
+        $items = [];
+        foreach ($results as $result) {
+            if (!empty($result->name)) {
+                $items[$result->name] = $this->convertToDataType(
+                    $result->value,
+                    (string) $result->type
+                );
+            }
+        }
+
+        return $items;
+    }
+
+    /**
+     * Convert the returned configuration to given type
+     * @param mixed $value
+     * @param string $type
      * @return mixed
      */
-    public function getConfigurations(string $group, ?string $env = null)
+    protected function convertToDataType($value, string $type)
     {
-        $results = $this->queryBuilder
-                        ->from($this->table)
-                        ->where('id')->in(function (SubQuery $q) use ($env, $group) {
-                            $query = $q->from($this->table)
-                            ->where('module')->is($group)
-                            ->where('status')->is(1)
-                            ->groupBy(['code']);
-                            if ($env === null) {
-                                $query->where('env')->isNull();
-                            } else {
-                                $query->where('env')->is($env);
-                            }
+        switch ($type) {
+            case 'integer':
+                $value = intval($value);
+                break;
+            case 'double':
+                $value = doubleval($value);
+                break;
+            case 'float':
+                $value = floatval($value);
+                break;
+            case 'array':
+            case 'object':
+                $value = unserialize($value);
+                break;
+            case 'boolean':
+                $value = boolval($value);
+                break;
+        }
 
-                            $query->select(function (ColumnExpression $cexp) {
-                                $cexp->column(function (Expression $exp) {
-                                    $exp->op('COALESCE');
-                                });
-                            });
-                        })
-                        ->select()
-                        ->fetchObject()
-                        ->all();
-
-        return $results;
+        return $value;
     }
 }

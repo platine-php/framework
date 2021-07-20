@@ -55,8 +55,9 @@ use Platine\Framework\Service\Provider\EventServiceProvider;
 use Platine\Framework\Service\ServiceProvider;
 
 /**
- * class Application
+ * @class Application
  * @package Platine\Framework\App
+ * @template T
  */
 class Application extends Container
 {
@@ -73,10 +74,28 @@ class Application extends Container
     protected string $basePath = '';
 
     /**
+     * The vendor path
+     * @var string
+     */
+    protected string $vendorPath = '';
+
+    /**
+     * The Application path
+     * @var string
+     */
+    protected string $appPath = '';
+
+    /**
      * The application configuration path
      * @var string
      */
     protected string $configPath = 'config';
+
+    /**
+     * The application storage path
+     * @var string
+     */
+    protected string $storagePath = 'storage';
 
     /**
      * The list of service providers
@@ -114,6 +133,91 @@ class Application extends Container
     public function version(): string
     {
         return self::VERSION;
+    }
+
+    /**
+     * Return the current environment
+     * @return string
+     */
+    public function getEnv(): string
+    {
+        return $this->env;
+    }
+
+    /**
+     * Set the environment
+     * @param string $env
+     * @return $this
+     */
+    public function setEnv(string $env)
+    {
+        $this->env = $env;
+
+        return $this;
+    }
+
+    /**
+     * Return the storage path
+     * @return string
+     */
+    public function getStoragePath(): string
+    {
+        return $this->storagePath;
+    }
+
+    /**
+     * Set the storage path
+     * @param string $storagePath
+     * @return $this
+     */
+    public function setStoragePath(string $storagePath): self
+    {
+        $this->storagePath = $storagePath;
+
+        return $this;
+    }
+
+
+    /**
+     * Return the vendor path
+     * @return string
+     */
+    public function getVendorPath(): string
+    {
+        return $this->vendorPath;
+    }
+
+    /**
+     * Return the application root path
+     * @return string
+     */
+    public function getAppPath(): string
+    {
+        return $this->appPath;
+    }
+
+    /**
+     * Set vendor path
+     * @param string $vendorPath
+     * @return $this
+     */
+    public function setVendorPath(string $vendorPath): self
+    {
+        $this->vendorPath = $vendorPath;
+
+        return $this;
+    }
+
+    /**
+     * Set Application path
+     * @param string $appPath
+     * @return $this
+     */
+    public function setAppPath(string $appPath): self
+    {
+        $this->appPath = $appPath;
+
+        return $this;
     }
 
     /**
@@ -249,7 +353,7 @@ class Application extends Container
      */
     public function registerConfiguredServiceProviders(): void
     {
-        /** @template T @var Config<T> $config */
+        /** @var Config<T> $config */
         $config = $this->get(Config::class);
 
         /** @var string[] $providers */

@@ -53,7 +53,7 @@ use Platine\Framework\Auth\Exception\InvalidCredentialsException;
 use Platine\Framework\Auth\Exception\MissingCredentialsException;
 
 /**
- * class AuthenticationInterface
+ * @class AuthenticationInterface
  * @package Platine\Framework\Auth
  */
 interface AuthenticationInterface

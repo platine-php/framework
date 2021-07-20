@@ -49,32 +49,39 @@ namespace Platine\Framework\Console\Command;
 
 use Platine\Config\Config;
 use Platine\Console\Command\Command;
-use Platine\Framework\App\Application;
 use Platine\Stdlib\Helper\Str;
 
 /**
- * class ConfigCommand
+ * @class ConfigCommand
  * @package Platine\Framework\Console\Command
+ * @template T
  */
 class ConfigCommand extends Command
 {
 
-    protected Application $application;
+    /**
+     * The configuration instance
+     * @var Config<T>
+     */
+    protected Config $config;
 
     /**
      * Create new instance
-     * @param Application $application
+     * @param Config<T> $config
      */
-    public function __construct(Application $application)
+    public function __construct(Config $config)
     {
         parent::__construct('config', 'Command to manage configuration');
 
         $this->addOption('-l|--list', 'List the configuration', '', false);
         $this->addOption('-t|--type', 'Configuration type', 'app', true);
 
-        $this->application = $application;
+        $this->config = $config;
     }
 
+    /**
+     * {@inheritodc}
+     */
     public function execute()
     {
         if ($this->getOptionValue('list')) {
@@ -82,16 +89,18 @@ class ConfigCommand extends Command
         }
     }
 
+    /**
+     * Show the configuration list
+     * @return void
+     */
     protected function showConfigList(): void
     {
         $writer = $this->io()->writer();
-        /** @template T @var Config<T> $config */
-        $config = $this->application->get(Config::class);
         $type = $this->getOptionValue('type');
 
         $writer->boldGreen(sprintf('Show configuration for [%s]', $type), true)->eol();
 
-        $items = (array) $config->get($type, []);
+        $items = (array) $this->config->get($type, []);
         /** @var array<int, array<int, array<string, string>>> $rows*/
         $rows = [];
         foreach ($items as $name => $value) {

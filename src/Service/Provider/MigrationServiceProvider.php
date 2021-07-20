@@ -57,7 +57,7 @@ use Platine\Framework\Migration\MigrationRepository;
 use Platine\Framework\Service\ServiceProvider;
 
 /**
- * class MigrationServiceProvider
+ * @class MigrationServiceProvider
  * @package Platine\Framework\Service\Provider
  */
 class MigrationServiceProvider extends ServiceProvider

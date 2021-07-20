@@ -52,7 +52,7 @@ use Platine\Route\Router;
 
 
 /**
- * class RouteHelper
+ * @class RouteHelper
  * @package Platine\Framework\Http
  */
 class RouteHelper

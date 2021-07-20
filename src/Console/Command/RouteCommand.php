@@ -88,6 +88,9 @@ class RouteCommand extends Command
         $this->application = $application;
     }
 
+    /**
+     * {@inheritodc}
+     */
     public function execute()
     {
         if ($this->getOptionValue('list')) {
@@ -95,6 +98,10 @@ class RouteCommand extends Command
         }
     }
 
+    /**
+     * Show the route list
+     * @return void
+     */
     protected function showRouteList(): void
     {
         $writer = $this->io()->writer();
@@ -123,9 +130,7 @@ class RouteCommand extends Command
         }
 
         Arr::multisort($rows, 'path');
-
         $writer->table($rows);
-
         $writer->green('Command finished successfully')->eol();
     }
 }

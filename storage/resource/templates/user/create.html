@@ -1,31 +1,95 @@
-<h3>Creation of user</h3>
-<form action = '' method='post'>
-    <div>
-        <label>Username:</label>
-        <input type= 'text' name = 'username' value = '{{ param.username }}' /><br />
-        <p style="color: red;">{{ errors.username }}</p>
+{% extends "main" %}
+{% block body %}
+    <div class="row justify-content-center align-items-center">
+        <div class="col-md-10">
+            <div class="card">
+                <div class="card-header bg-white font-weight-bold">
+                  Creation of user
+                </div>
+                <div class="card-body">
+                    <form action = '' method='post'>
+                        <div class="row">
+                            <div class="col-md-7">
+                                <div class="form-group row">
+                                    <label for="username" class = "col-md-3 col-form-label">Username: <span class="required">*</span></label>
+                                    <div class="col-md-9">
+                                      <input type= 'text' name = 'username' value = '{{ param.username }}' required="true" placeholder="Enter username" class="form-control form-control-sm" />
+                                      <span class="ferror">{{ errors.username }}</span>
+                                      </div>
+                                </div>
+
+
+                                <div class="form-group row">
+                                    <label for="lastname" class = "col-md-3 col-form-label">Lastname: <span class="required">*</span></label>
+                                    <div class="col-md-9">
+                                      <input type= 'text' name = 'lastname' value = '{{ param.lastname }}' required="true" placeholder="Enter lastname" class="form-control form-control-sm" />
+                                      <span class="ferror">{{ errors.lastname }}</span>
+                                      </div>
+                                </div>
+
+                                <div class="form-group row">
+                                  <label for="firstname" class = "col-md-3 col-form-label">Firstname: <span class="required">*</span></label>
+                                  <div class="col-md-9">
+                                    <input type= 'text' name = 'firstname' value = '{{ param.firstname }}' required="true" placeholder="Enter firstname" class="form-control form-control-sm" />
+                                    <span class="ferror">{{ errors.firstname }}</span>
+                                    </div>
+                                </div>
+
+                                <div class="form-group row">
+                                  <label for="email" class = "col-md-3 col-form-label">E-mail: <span class="required">*</span></label>
+                                  <div class="col-md-9">
+                                    <input type= 'email' name = 'email' value = '{{ param.email }}' required="true" placeholder="Enter E-mail" class="form-control form-control-sm" />
+                                    <span class="ferror">{{ errors.email }}</span>
+                                    </div>
+                                </div>
+
+                                <div class="form-group row">
+                                  <label for="password" class = "col-md-3 col-form-label">Password: <span class="required">*</span></label>
+                                  <div class="col-md-9">
+                                    <input type= 'password' name = 'password' value = '' required="true" placeholder="Enter password" class="form-control form-control-sm" />
+                                    <span class="ferror">{{ errors.password }}</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="form-group row">
+                                  <label for="status" class = "col-md-3 col-form-label">Status <span class="required">*</span></label>
+                                  <div class="col-md-9">
+                                    <select name = 'status' class="form-control form-control-sm">
+                                        {% for s in status %}
+                                            <option value="{{ forloop.index0 }}" {% if param.status == forloop.index0 %}selected{% endif %}>{{ s }}</option>
+                                        {% endfor %}
+                                    </select>
+                                    <span class="ferror">{{ errors.status }}</span>
+                                    </div>
+                                </div>
+
+                                <div class="form-group row">
+                                  <label for="role" class = "col-md-3 col-form-label">Role: </label>
+                                  <div class="col-md-9">
+                                    <input type= 'text' name = 'role' value = '{{ param.role }}' placeholder="Enter role or function" class="form-control form-control-sm" />
+                                    <span class="ferror">{{ errors.role }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-5">
+                                <label for="roles">Roles: </label>
+                                <ul class="list-group">
+                                    {% for role in roles %}
+                                        <li class = "list-group-item"><input {% if param.roles contains role.id %}checked{% endif %} type="checkbox" name = "roles[]" value="{{ role.id }}" /> &nbsp;&nbsp; {{ role.name }}</li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        </div>
+                        <br />
+                        <div class="row">
+                            <div class="offset-1 col pr-2">
+                                <button type = "submit" class="btn btn-primary">Valide</button>
+                                <a href = '{% route_url user_list  %}' class = 'btn btn-dark'>Cancel</a>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
     </div>
-    <div>
-        <label>Last Name:</label>
-        <input type= 'text' name = 'lastname' value = '{{ param.lastname }}' /><br />
-        <p style="color: red;">{{ errors.lastname }}</p>
-    </div>
-    <div>
-        <label>First Name:</label>
-        <input type= 'text' name = 'firstname' value = '{{ param.firstname }}' /><br />
-        <p style="color: red;">{{ errors.firstname }}</p>
-    </div>
-    <div>
-        <label>Password:</label>
-        <input type= 'password' name = 'password' value = '' /><br />
-        <p style="color: red;">{{ errors.password }}</p>
-    </div>
-    <div>
-        <label>Age:</label>
-        <input type= 'number' name = 'age' value = '{{ param.age }}' /><br />
-        <p style="color: red;">{{ errors.age }}</p>
-    </div>
-    <div>
-        <input type= 'submit' name = 'submit' value = 'Save' />
-    </div>
-</form>
+{% endblock %}

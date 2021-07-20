@@ -57,7 +57,7 @@ use Platine\Session\Storage\LocalStorage;
 use SessionHandlerInterface;
 
 /**
- * class SessionServiceProvider
+ * @class SessionServiceProvider
  * @package Platine\Framework\Service\Provider
  */
 class SessionServiceProvider extends ServiceProvider

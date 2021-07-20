@@ -50,7 +50,7 @@ namespace Platine\Framework\Kernel;
 use Platine\Framework\App\Application;
 
 /**
- * class BaseKernel
+ * @class BaseKernel
  * @package Platine\Framework\Kernel
  */
 class BaseKernel

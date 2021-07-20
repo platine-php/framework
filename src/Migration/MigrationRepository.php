@@ -51,7 +51,7 @@ use Platine\Orm\EntityManager;
 use Platine\Orm\Repository;
 
 /**
- * class MigrationRepository
+ * @class MigrationRepository
  * @package Platine\Framework\Migration
  */
 class MigrationRepository extends Repository

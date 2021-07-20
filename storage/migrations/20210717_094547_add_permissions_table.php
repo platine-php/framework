@@ -1,4 +1,5 @@
 <?php
+
 namespace Platine\Framework\Migration;
 
 use Platine\Database\Schema\CreateTable;
@@ -10,31 +11,31 @@ class AddPermissionsTable20210717094547 extends AbstractMigration
     public function up(): void
     {
       //Action when migrate up
-      $this->create('permissions', function (CreateTable $table) {
-          $table->integer('id')
+        $this->create('permissions', function (CreateTable $table) {
+            $table->integer('id')
                   ->autoincrement()
                  ->primary();
-          $table->string('code')
+            $table->string('code')
                  ->description('The permission code')
                  ->unique()
                  ->notNull();
-          $table->string('description')
+            $table->string('description')
                  ->description('The permission description');
-          $table->string('depend')
+            $table->string('depend')
                  ->description('The permission dependency');
-          $table->datetime('created_at')
+            $table->datetime('created_at')
                   ->description('permission created at')
                   ->notNull();
-          $table->datetime('updated_at')
+            $table->datetime('updated_at')
                   ->description('permission updated at');
 
-          $table->engine('INNODB');
-      });
+            $table->engine('INNODB');
+        });
     }
 
     public function down(): void
     {
       //Action when migrate down
-      $this->drop('permissions');
+        $this->drop('permissions');
     }
 }

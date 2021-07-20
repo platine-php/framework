@@ -51,7 +51,7 @@ namespace Platine\Framework\Http\Emitter;
 use Platine\Http\ResponseInterface;
 
 /**
- * class EmitterInterface
+ * @class EmitterInterface
  * @package Platine\Framework\Http\Emitter
  */
 interface EmitterInterface

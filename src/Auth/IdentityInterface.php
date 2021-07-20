@@ -48,7 +48,7 @@ declare(strict_types=1);
 namespace Platine\Framework\Auth;
 
 /**
- * class IdentityInterface
+ * @class IdentityInterface
  * @package Platine\Framework\Auth
  */
 interface IdentityInterface
@@ -61,7 +61,8 @@ interface IdentityInterface
     public function getId();
 
     /**
-     * Return the username of the current user like email
+     * Return the unique attribute of the current user
+     * like email, username
      * @return string
      */
     public function getUsername(): string;

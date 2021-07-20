@@ -50,7 +50,7 @@ namespace Platine\Framework\Migration;
 use Platine\Database\Schema;
 
 /**
- * class AbstractMigration
+ * @class AbstractMigration
  * @package Platine\Framework\Migration
  */
 abstract class AbstractMigration extends Schema

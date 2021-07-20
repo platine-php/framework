@@ -54,7 +54,7 @@ use Platine\Event\EventInterface;
 use Platine\Framework\Service\ServiceProvider;
 
 /**
- * class EventServiceProvider
+ * @class EventServiceProvider
  * @package Platine\Framework\Service\Provider
  */
 class EventServiceProvider extends ServiceProvider

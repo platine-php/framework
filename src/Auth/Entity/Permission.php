@@ -51,7 +51,7 @@ use Platine\Orm\Entity;
 use Platine\Orm\Mapper\EntityMapperInterface;
 
 /**
- * class Permission
+ * @class Permission
  * @package Platine\Framework\Auth\Entity
  */
 class Permission extends Entity

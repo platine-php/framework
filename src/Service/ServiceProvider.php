@@ -51,7 +51,7 @@ use Platine\Framework\App\Application;
 use Platine\Route\Router;
 
 /**
- * class ServiceProvider
+ * @class ServiceProvider
  * @package Platine\Framework\Service
  */
 class ServiceProvider

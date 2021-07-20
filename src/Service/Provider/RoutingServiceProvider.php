@@ -53,7 +53,7 @@ use Platine\Framework\Http\RouteHelper;
 use Platine\Framework\Service\ServiceProvider;
 
 /**
- * class RoutingServiceProvider
+ * @class RoutingServiceProvider
  * @package Platine\Framework\Service\Provider
  */
 class RoutingServiceProvider extends ServiceProvider

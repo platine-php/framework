@@ -53,7 +53,7 @@ use Platine\Orm\Mapper\EntityMapperInterface;
 use function app;
 
 /**
- * class MigrationEntity
+ * @class MigrationEntity
  * @package Platine\Framework\Migration
  */
 class MigrationEntity extends Entity

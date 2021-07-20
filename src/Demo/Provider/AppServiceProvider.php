@@ -51,7 +51,7 @@ use Platine\Framework\Demo\Action\HomeAction;
 use Platine\Framework\Service\ServiceProvider;
 
 /**
- * class AppServiceProvider
+ * @class AppServiceProvider
  * @package Platine\Framework
  */
 class AppServiceProvider extends ServiceProvider

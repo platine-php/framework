@@ -52,7 +52,7 @@ use Platine\Stdlib\Helper\Php;
 use Throwable;
 
 /**
- * class HtmlErrorRenderer
+ * @class HtmlErrorRenderer
  * @package Platine\Framework\Handler\Error\Renderer
  */
 class HtmlErrorRenderer extends AbstractErrorRenderer

@@ -53,7 +53,7 @@ use Platine\Cookie\Middleware\CookieSendMiddleware;
 use Platine\Framework\Service\ServiceProvider;
 
 /**
- * class CookieServiceProvider
+ * @class CookieServiceProvider
  * @package Platine\Framework\Service\Provider
  */
 class CookieServiceProvider extends ServiceProvider

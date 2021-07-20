@@ -57,7 +57,7 @@ use Platine\Route\Route;
 use Platine\Route\Router;
 
 /**
- * class RouteMatchMiddleware
+ * @class RouteMatchMiddleware
  * @package Platine\Framework\Http\Middleware
  */
 class RouteMatchMiddleware implements MiddlewareInterface

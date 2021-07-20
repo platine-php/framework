@@ -37,7 +37,7 @@ namespace Platine\Framework\Http\Emitter\Exception;
 use RuntimeException;
 
 /**
- * OutputAlreadySentException
+ * @class OutputAlreadySentException
  * @package Platine\Http\Framework\Emitter\Exception
  */
 class OutputAlreadySentException extends RuntimeException

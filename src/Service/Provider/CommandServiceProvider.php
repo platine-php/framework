@@ -50,10 +50,11 @@ namespace Platine\Framework\Service\Provider;
 use Platine\Framework\Console\Command\ConfigCommand;
 use Platine\Framework\Console\Command\RouteCommand;
 use Platine\Framework\Console\Command\ServerCommand;
+use Platine\Framework\Console\Command\VendorPublishCommand;
 use Platine\Framework\Service\ServiceProvider;
 
 /**
- * class CommandServiceProvider
+ * @class CommandServiceProvider
  * @package Platine\Framework\Service\Provider
  */
 class CommandServiceProvider extends ServiceProvider
@@ -67,8 +68,10 @@ class CommandServiceProvider extends ServiceProvider
         $this->app->bind(ServerCommand::class);
         $this->app->bind(RouteCommand::class);
         $this->app->bind(ConfigCommand::class);
+        $this->app->bind(VendorPublishCommand::class);
 
         //Commands
         $this->addCommand(ServerCommand::class);
+        $this->addCommand(VendorPublishCommand::class);
     }
 }

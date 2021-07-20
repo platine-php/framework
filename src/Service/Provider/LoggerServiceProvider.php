@@ -56,7 +56,7 @@ use Platine\Logger\Logger;
 use Platine\Logger\LoggerInterface;
 
 /**
- * class LoggerServiceProvider
+ * @class LoggerServiceProvider
  * @package Platine\Framework\Service\Provider
  */
 class LoggerServiceProvider extends ServiceProvider

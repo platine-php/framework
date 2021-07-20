@@ -1,10 +1,11 @@
 <?php
 
-use Platine\Framework\Demo\Template\LangTag;
-use Platine\Framework\Demo\Template\RouteUrlTag;
-use Platine\Framework\Demo\Template\SessionFlashTag;
-use Platine\Framework\Demo\Template\SessionTag;
-use Platine\Framework\Demo\Template\StaticTag;
+use Platine\Framework\Template\Tag\CurentUrlTag;
+use Platine\Framework\Template\Tag\LangTag;
+use Platine\Framework\Template\Tag\RouteUrlTag;
+use Platine\Framework\Template\Tag\SessionFlashTag;
+use Platine\Framework\Template\Tag\SessionTag;
+use Platine\Framework\Template\Tag\StaticTag;
 
     return [
         'cache_expire' => 5600,
@@ -20,5 +21,6 @@ use Platine\Framework\Demo\Template\StaticTag;
             'session' => SessionTag::class,
             'flash' => SessionFlashTag::class,
             'static' => StaticTag::class,
+            'current_url' => CurentUrlTag::class,
         ],
     ];

@@ -82,8 +82,10 @@ class ServerCommand extends Command
         $writer->boldYellow(sprintf('Running command [%s]', $cmd), true);
         $shell = new Shell($cmd);
 
+        $shell->setOptions(null, $_ENV, null, ['bypass_shell' => true]);
+
         $shell->execute();
-        echo $shell->getExitCode();
+        $writer->boldWhite($shell->getOutput(), true);
         if ($shell->getExitCode() !== 0) {
             $writer->boldRed($shell->getErrorOutput(), true);
         }

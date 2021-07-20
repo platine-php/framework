@@ -49,12 +49,15 @@ namespace Platine\Framework\Service\Provider;
 
 use Platine\Config\Config;
 use Platine\Container\ContainerInterface;
-use Platine\Database\QueryBuilder;
+use Platine\Framework\Config\DatabaseConfigLoader;
+use Platine\Framework\Config\DatabaseConfigLoaderInterface;
 use Platine\Framework\Config\DbConfig;
+use Platine\Framework\Config\Model\DatabaseConfigRepository;
 use Platine\Framework\Service\ServiceProvider;
 
+
 /**
- * class DatabaseConfigServiceProvider
+ * @class DatabaseConfigServiceProvider
  * @package Platine\Framework\Service\Provider
  */
 class DatabaseConfigServiceProvider extends ServiceProvider
@@ -65,9 +68,16 @@ class DatabaseConfigServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        $this->app->share(DbConfig::class, function (ContainerInterface $app) {
+        $this->app->bind(
+            DatabaseConfigLoaderInterface::class,
+            DatabaseConfigLoader::class
+        );
+
+        $this->app->bind(DatabaseConfigRepository::class);
+
+        $this->app->bind(DbConfig::class, function (ContainerInterface $app) {
             $env = $app->get(Config::class)->get('app.env', '');
-            return new DbConfig($app->get(QueryBuilder::class), $env);
+            return new DbConfig($app->get(DatabaseConfigLoaderInterface::class), $env);
         });
     }
 }

@@ -58,7 +58,7 @@ use Platine\Lang\Translator\GettextTranslator;
 use Platine\Lang\Translator\TranslatorInterface;
 
 /**
- * class LangServiceProvider
+ * @class LangServiceProvider
  * @package Platine\Framework\Service\Provider
  */
 class LangServiceProvider extends ServiceProvider

@@ -59,7 +59,7 @@ use Platine\Logger\LoggerInterface;
 use Platine\Orm\EntityManager;
 
 /**
- * class DatabaseServiceProvider
+ * @class DatabaseServiceProvider
  * @package Platine\Framework\Service\Provider
  */
 class DatabaseServiceProvider extends ServiceProvider
@@ -77,9 +77,11 @@ class DatabaseServiceProvider extends ServiceProvider
 
             return new Configuration($config->get('database.connections.' . $driver, []));
         });
+
         $this->app->share(Pool::class, function (ContainerInterface $app) {
             return new Pool($app->get(Config::class)->get('database', []));
         });
+
         $this->app->share(Connection::class, function (ContainerInterface $app) {
             return new Connection(
                 $app->get(Configuration::class),

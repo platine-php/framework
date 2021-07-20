@@ -56,7 +56,7 @@ use Platine\Framework\Service\ServiceProvider;
 use Platine\Logger\LoggerInterface;
 
 /**
- * class ErrorHandlerServiceProvider
+ * @class ErrorHandlerServiceProvider
  * @package Platine\Framework\Service\Provider
  */
 class ErrorHandlerServiceProvider extends ServiceProvider

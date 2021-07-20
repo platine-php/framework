@@ -5,7 +5,9 @@
         User List
     </div>
     <div class="card-body">
-   
+        <p class="text-right">
+            <a href = '{% route_url user_create  %}' class = 'btn btn-sm btn-success'><i class="fa fa-plus-circle"></i> Create User</a>
+        </p>
     {% if users.size > 0 %}
         <div class= "table-responsive">
             <table class="table table-hover table-sm table-bordered">
@@ -16,9 +18,10 @@
                         <th>Last Name</th>
                         <th>First Name</th>
                         <th>E-mail</th>
-                        <th>Age</th>
+                        <th>Role</th>
                         <th>Status</th>
                         <th>Create Date</th>
+                        <th>Update Date</th>
                         <th>Action</th>
                     </tr>
                 </thead>
@@ -30,9 +33,10 @@
                             <td>{{ user.lastname }}</td>
                             <td>{{ user.firstname }}</td>
                             <td>{{ user.email }}</td>
-                            <td>{{ user.age }}</td>
+                            <td>{{ user.role }}</td>
                             <td>{% if user.status == 1 %}Enable{% else %}Disable{% endif %}</td>
                             <td>{{ user.created_at|date:"d/m/Y" }}</td>
+                            <td>{{ user.updated_at|date:"d/m/Y" }}</td>
                             <td class="actions">
                                 <a href = '{% route_url user_edit id:user.id  %}' class = 'btn btn-icon btn-sm btn-pill btn-primary'><i class="fa fa-fw fa-edit"></i></a>
                                 <a href = '{% route_url user_delete id:user.id  %}' class = 'btn btn-icon btn-sm btn-pill btn-danger'><i class="fa fa-fw fa-trash"></i></a>
@@ -48,9 +52,10 @@
                         <th>Last Name</th>
                         <th>First Name</th>
                         <th>E-mail</th>
-                        <th>Age</th>
+                        <th>Role</th>
                         <th>Status</th>
                         <th>Create Date</th>
+                        <th>Update Date</th>
                         <th>Action</th>
                     </tr>
                 </thead>

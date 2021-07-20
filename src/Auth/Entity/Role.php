@@ -51,7 +51,7 @@ use Platine\Orm\Entity;
 use Platine\Orm\Mapper\EntityMapperInterface;
 
 /**
- * class Role
+ * @class Role
  * @package Platine\Framework\Auth\Entity
  */
 class Role extends Entity

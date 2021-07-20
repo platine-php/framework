@@ -52,7 +52,7 @@ use Platine\Framework\Http\Exception\HttpException;
 use Throwable;
 
 /**
- * class AbstractErrorRenderer
+ * @class AbstractErrorRenderer
  * @package Platine\Framework\Handler\Error\Renderer
  */
 abstract class AbstractErrorRenderer implements ErrorRenderInterface

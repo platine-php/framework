@@ -1,72 +1,76 @@
-<h3>User Information</h3>
-<table border = '1' cellpadding = '3' cellspacing = '0'>
-    <tr>
-        <td>ID</td>
-        <td>{{ user.id }}</td>
-     </tr>
-     <tr>
-        <td>Login</td>
-        <td>{{ user.username }}</td>
-     </tr>
-     <tr>
-        <td>Lastname</td>
-        <td>{{ user.lastname }}</td>
-     </tr>
-     <tr>
-        <td>Firstname</td>
-        <td>{{ user.firstname }}</td>
-     </tr>
-     <tr>
-        <td>E-mail</td>
-        <td>{{ user.email }}</td>
-     </tr>
-     <tr>
-        <td>Age</td>
-        <td>{{ user.age }}</td>
-     </tr>
-     <tr>
-        <td>Status</td>
-        <td>{% if user.status == 1 %}Enable{% else %}Disable{% endif %}</td>
-     </tr>
-     <tr>
-        <td>Create at</td>
-        <td>{{ user.created_at|date:"d/m/Y" }}</td>
-     </tr>
-</table>
-
-<h3>User Roles</h3>
-{% if user.roles.size > 0 %}
-    <div class= "table-responsive">
-        <table border = '1' cellpadding = '3' cellspacing = '0'>
-            <thead>
-                <tr>
-                    <tr>
-                    <th>ID</th>
-                    <th>Name</th>
-                    <th>Create Date</th>
-                </tr>
-                </tr>
-            </thead>
-            <tbody>
-                {% for role in user.roles %}
-                    <tr>
-                        <td>{{ role.id }}</td>
-                        <td>{{ role.name }}</td>
-                        <td>{{ role.created_at|date:"d/m/Y" }}</td>
-                    </tr>
-                 {% endfor %}
-            </tbody>
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Name</th>
-                    <th>Create Date</th>
-                </tr>
-            </thead>
-        </table>
+{% extends "main" %}
+{% block body %}
+    <div class="card mb-4">
+        <div class="card-header bg-white font-weight-bold page-header">
+            User Information
+        </div>
+        <div class="card-body">
+            <p class="text-right">
+                <a href = '{% route_url user_create  %}' class = 'btn btn-sm btn-success'><i class="fa fa-plus-circle"></i> Create User</a>
+                <a href = '{% route_url user_list  %}' class = 'btn btn-sm btn-secondary'><i class="fa fa-users"></i> Users List</a>
+            </p>
+            <div class="row">
+                <div class="col-md-7">
+                    <div class= "table-responsive">
+                        <table class = "detail table table-sm table-bordered">
+                            <tr>
+                                <td>ID</td>
+                                <td>{{ user.id }}</td>
+                             </tr>
+                             <tr>
+                                <td>Login</td>
+                                <td>{{ user.username }}</td>
+                             </tr>
+                             <tr>
+                                <td>Lastname</td>
+                                <td>{{ user.lastname }}</td>
+                             </tr>
+                             <tr>
+                                <td>Firstname</td>
+                                <td>{{ user.firstname }}</td>
+                             </tr>
+                             <tr>
+                                <td>E-mail</td>
+                                <td>{{ user.email }}</td>
+                             </tr>
+                             <tr>
+                                <td>Role</td>
+                                <td>{{ user.role }}</td>
+                             </tr>
+                             <tr>
+                                <td>Status</td>
+                                <td>{% if user.status == 1 %}Enable{% else %}Disable{% endif %}</td>
+                             </tr>
+                             <tr>
+                                <td>Create at</td>
+                                <td>{{ user.created_at|date:"d/m/Y" }}</td>
+                             </tr>
+                        </table>
+                    </div>
+                </div>
+                <div class="col-md-5">
+                    <h5 style="text-transform: uppercase;">User Roles</h5>
+                    {% if user.roles.size > 0 %}
+                        <ul class="list-group">
+                            {% for role in user.roles %}
+                                <li class = "list-group-item">&nbsp;&nbsp; {{ role.name }}</li>
+                            {% endfor %}
+                        </ul>
+                    {% else %}
+                        <p class="alert alert-info">No available roles</p>
+                    {% endif %}
+                    <br />
+                    <div>
+                        <a href = '{% route_url user_edit id:user.id  %}?from_detail=1' class = 'btn btn-sm btn-info'><i class="fa fa-edit"></i> Edit</a>
+                        {% if user.status == 1 %}
+                            <a href = '{% route_url user_edit id:user.id  %}?from_detail=1' class = 'btn btn-sm btn-danger'><i class="fa fa-ban"></i> Deactive</a>
+                        {% else %}
+                            <a href = '{% route_url user_edit id:user.id  %}?from_detail=1' class = 'btn btn-sm btn-danger'><i class="fa fa-check-circle-o"></i> Active</a>
+                        {% endif %}
+                        <a href = '{% route_url user_list  %}' class = 'btn btn-sm btn-secondary'><i class="fa fa-users"></i> Users List</a>                        
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-{% else %}
-    <p class="alert alert-info">No available roles</p>
-{% endif %}
-<br />
-<a href = '{% route_url user_list %}'>Back to the list</a>
+{% endblock %}

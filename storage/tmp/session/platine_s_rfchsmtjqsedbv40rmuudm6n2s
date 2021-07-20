@@ -1,1 +1,1 @@
-user|a:5:{s:2:"id";i:1;s:8:"username";s:8:"octave_t";s:8:"lastname";s:8:"NGUEREZA";s:9:"firstname";s:4:"Tony";s:11:"permissions";a:3:{i:0;s:8:"add_user";i:1;s:9:"edit_user";i:2;s:5:"users";}}
+session_flash|a:0:{}user|a:5:{s:2:"id";i:1;s:8:"username";s:8:"octave_t";s:8:"lastname";s:8:"NGUEREZA";s:9:"firstname";s:4:"Tony";s:11:"permissions";a:3:{i:0;s:8:"add_user";i:1;s:9:"edit_user";i:2;s:5:"users";}}

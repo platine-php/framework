@@ -51,7 +51,7 @@ namespace Platine\Framework\Handler\Error;
 use Throwable;
 
 /**
- * class ErrorRenderInterface
+ * @class ErrorRenderInterface
  * @package Platine\Framework\Handler\Error
  */
 interface ErrorRenderInterface

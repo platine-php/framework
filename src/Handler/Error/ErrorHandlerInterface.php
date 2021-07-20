@@ -53,7 +53,7 @@ use Platine\Http\ServerRequestInterface;
 use Throwable;
 
 /**
- * class ErrorHandlerInterface
+ * @class ErrorHandlerInterface
  * @package Platine\Framework\Handler\Error
  */
 interface ErrorHandlerInterface

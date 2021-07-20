@@ -121,7 +121,7 @@ class AuthorizationMiddleware implements MiddlewareInterface
 
         if (!$this->authorization->isGranted($permission)) {
             $unauthorizedRoute = $this->config->get(
-                'auth.authorization.unauthorized_route_name'
+                'auth.authorization.unauthorized_route'
             );
 
             return new RedirectResponse(

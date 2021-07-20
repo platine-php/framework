@@ -1,4 +1,5 @@
 <?php
+
 namespace Platine\Framework\Migration;
 
 use Platine\Database\Schema\CreateTable;
@@ -10,43 +11,50 @@ class AddConfigTable20210708043103 extends AbstractMigration
     public function up(): void
     {
       //Action when migrate up
-      $this->create('config', function (CreateTable $table) {
-          $table->integer('id')
+        $this->create('config', function (CreateTable $table) {
+            $table->integer('id')
                   ->autoincrement()
                  ->primary();
-          $table->string('env')
+            $table->integer('parent_id')
+                  ->description('The parent config');
+            $table->string('env')
                  ->description('The config environment')
                  ->index();
-          $table->string('module')
+            $table->string('module')
                  ->description('The module')
-                 ->index();
-          $table->string('code')
-                 ->description('The config code')
-                  ->notNull()
+                 ->index()
+                 ->notNull();
+            $table->string('name')
+                 ->description('The config name')
                   ->index();
-          $table->string('value')
+            $table->string('value')
                  ->description('The config value');
-          $table->string('type')
+            $table->string('type')
                  ->description('The config data type');
-          $table->text('comment')
+            $table->text('comment')
                  ->description('The config description');
-          $table->integer('status')
+            $table->integer('status')
+                 ->size('tiny')
                  ->description('The config status')
                  ->defaultValue(0)
                  ->notNull();
-          $table->datetime('created_at')
-                  ->description('role created at')
+            $table->datetime('created_at')
+                  ->description('created date')
                   ->notNull();
-          $table->datetime('updated_at')
-                  ->description('role updated at');
+            $table->datetime('updated_at')
+                  ->description('updated date');
 
-          $table->engine('INNODB');
-      });
+            $table->foreign('parent_id')
+                ->references('config', 'id')
+                ->onDelete('NO ACTION');
+
+            $table->engine('INNODB');
+        });
     }
 
     public function down(): void
     {
       //Action when migrate down
-      $this->drop('config');
+        $this->drop('config');
     }
 }

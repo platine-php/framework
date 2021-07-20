@@ -50,7 +50,7 @@ namespace Platine\Framework\Demo\Provider;
 use Platine\Framework\Service\ServiceProvider;
 
 /**
- * class RepositoryServiceProvider
+ * @class RepositoryServiceProvider
  * @package Platine\Framework
  */
 class RepositoryServiceProvider extends ServiceProvider

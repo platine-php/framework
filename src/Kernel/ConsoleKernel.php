@@ -54,8 +54,9 @@ use Platine\Console\Command\Command;
 use Platine\Framework\App\Application;
 
 /**
- * class ConsoleKernel
+ * @class ConsoleKernel
  * @package Platine\Framework\Kernel
+ * @template T
  */
 class ConsoleKernel extends BaseKernel
 {
@@ -75,7 +76,7 @@ class ConsoleKernel extends BaseKernel
     protected bool $commandsLoaded = false;
 
     /**
-     *
+     * Create new instance
      * @param Application $app
      * @param ConsoleApp $console
      */
@@ -86,7 +87,7 @@ class ConsoleKernel extends BaseKernel
     }
 
     /**
-     *
+     * Run the application
      * @param string[] $argv
      * @return void
      */
@@ -124,7 +125,7 @@ class ConsoleKernel extends BaseKernel
     }
 
     /**
-     *
+     * Add new command
      * @param string|Command $command
      * @return void
      */
@@ -138,7 +139,7 @@ class ConsoleKernel extends BaseKernel
     }
 
     /**
-     *
+     * Return the console application
      * @return ConsoleApp
      */
     public function getConsoleApp(): ConsoleApp
@@ -152,7 +153,7 @@ class ConsoleKernel extends BaseKernel
      */
     protected function registerConfiguredCommands(): void
     {
-        /** @template T @var Config<T> $config */
+        /** @var Config<T> $config */
         $config = $this->app->get(Config::class);
 
         /** @var string[] $commands */

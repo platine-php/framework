@@ -50,7 +50,7 @@ namespace Platine\Framework\Http\Response;
 use Platine\Http\Response;
 
 /**
- * class RedirectResponse
+ * @class RedirectResponse
  * @package Platine\Framework\Http\Response
  */
 class RedirectResponse extends Response

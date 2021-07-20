@@ -52,7 +52,7 @@ use Platine\Orm\EntityManager;
 use Platine\Orm\Repository;
 
 /**
- * class PermissionRepository
+ * @class PermissionRepository
  * @package Platine\Framework\Auth\Repository
  */
 class PermissionRepository extends Repository

@@ -56,7 +56,7 @@ use Platine\Http\ServerRequestInterface;
 use Platine\Route\Route;
 
 /**
- * class RouteDispatcherMiddleware
+ * @class RouteDispatcherMiddleware
  * @package Platine\Framework\Http\Middleware
  */
 class RouteDispatcherMiddleware implements MiddlewareInterface

@@ -48,7 +48,7 @@ declare(strict_types=1);
 namespace Platine\Framework\Auth;
 
 /**
- * class AuthorizationInterface
+ * @class AuthorizationInterface
  * @package Platine\Framework\Auth
  */
 interface AuthorizationInterface

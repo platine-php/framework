@@ -60,7 +60,7 @@ use Platine\Filesystem\Filesystem;
 use Platine\Framework\Service\ServiceProvider;
 
 /**
- * class CacheServiceProvider
+ * @class CacheServiceProvider
  * @package Platine\Framework\Service\Provider
  */
 class CacheServiceProvider extends ServiceProvider
