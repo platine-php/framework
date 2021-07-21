@@ -47,6 +47,9 @@ declare(strict_types=1);
 
 namespace Platine\Framework\Service;
 
+use Platine\Event\DispatcherInterface;
+use Platine\Event\ListenerInterface;
+use Platine\Event\SubscriberInterface;
 use Platine\Framework\App\Application;
 use Platine\Route\Router;
 
@@ -111,6 +114,37 @@ class ServiceProvider
     public function addCommand(string $command): self
     {
         $this->commands[] = $command;
+
+        return $this;
+    }
+
+    /**
+     * Register a listener for the given event.
+     *
+     * @param string $eventName the name of event
+     * @param ListenerInterface|callable|string $listener the Listener
+     * interface or any callable
+     * @param int $priority the listener execution priority
+     * @return $this
+     */
+    public function listen(
+        string $eventName,
+        $listener,
+        int $priority = DispatcherInterface::PRIORITY_DEFAULT
+    ): self {
+        $this->app->listen($eventName, $listener, $priority);
+
+        return $this;
+    }
+
+    /**
+     * Add event subscriber
+     * @param SubscriberInterface $subscriber
+     * @return $this
+     */
+    public function subscribe(SubscriberInterface $subscriber): self
+    {
+        $this->app->subscribe($subscriber);
 
         return $this;
     }

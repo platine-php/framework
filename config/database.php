@@ -2,7 +2,7 @@
 
     return [
         'default' => 'mysql',
-
+        
         'connections' => [
             'mysql' => [
                 'driver' => 'mysql',
@@ -13,6 +13,11 @@
                 'password' => '',
                 'persistent' => true,
             ]
+        ],
+        
+        'migration' => [
+            'table' => 'migration',
+            'path' => __DIR__ . '/../storage/migrations',
         ]
 
     ];

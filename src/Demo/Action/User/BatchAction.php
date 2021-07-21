@@ -30,9 +30,9 @@
  */
 
 /**
- *  @file DeleteAction.php
+ *  @file BatchAction.php
  *
- *  The Delete action class
+ *  The Batch (delete, etc.) action class
  *
  *  @package    Platine\Framework\Demo\Action\User
  *  @author Platine Developers team
@@ -48,6 +48,7 @@ declare(strict_types=1);
 namespace Platine\Framework\Demo\Action\User;
 
 use Platine\Framework\Auth\Repository\UserRepository;
+use Platine\Framework\Http\RequestData;
 use Platine\Framework\Http\Response\RedirectResponse;
 use Platine\Framework\Http\RouteHelper;
 use Platine\Http\Handler\RequestHandlerInterface;
@@ -59,11 +60,11 @@ use Platine\Session\Session;
 use Platine\Template\Template;
 
 /**
- * @class DeleteAction
+ * @class BatchAction
  * @package Platine\Framework\Demo\Action\User
  * @template T
  */
-class DeleteAction implements RequestHandlerInterface
+class BatchAction implements RequestHandlerInterface
 {
 
     /**
@@ -103,6 +104,18 @@ class DeleteAction implements RequestHandlerInterface
     protected Lang $lang;
 
     /**
+     * The server request instance
+     * @var ServerRequestInterface
+     */
+    protected ServerRequestInterface $request;
+
+    /**
+     * The items to handle batch actions
+     * @var array<mixed>
+     */
+    protected array $items = [];
+
+    /**
      * Create new instance
      * @param Lang $lang
      * @param Session $session
@@ -132,23 +145,86 @@ class DeleteAction implements RequestHandlerInterface
      */
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
-        $id = (int) $request->getAttribute('id');
-        $user = $this->userRepository->find($id);
-        if (!$user) {
-            $this->session->setFlash('error', $this->lang->tr('Can not find the user'));
-            $this->logger->warning('Can not find user with id {id}', ['id' => $id]);
+        $param = new RequestData($request);
 
+        $items =  $param->post('items', []);
+        if (empty($items)) {
             return new RedirectResponse(
                 $this->routeHelper->generateUrl('user_list')
             );
         }
-        $this->logger->info('Delete of user {user}', ['user' => $user->id]);
-        $this->userRepository->delete($user);
 
-        $this->session->setFlash('success', 'User deleted successfully');
+        $this->request = $request;
+        $this->items = $items;
+
+        $actions = [
+            'delete',
+            'disable',
+            'enable',
+        ];
+
+        foreach ($actions as $action) {
+            if ($param->post($action)) {
+                $method = $action . 'Handle';
+
+                $this->{$method}();
+                break;
+            }
+        }
 
         return new RedirectResponse(
             $this->routeHelper->generateUrl('user_list')
         );
+    }
+
+    /**
+     * Handle delete action
+     * @return void
+     */
+    protected function deleteHandle(): void
+    {
+        $items = $this->items;
+        $this->logger->info('Deleted of user #{items}', ['items' => $items]);
+
+        $this->userRepository->query()
+                            ->where('id')
+                            ->in($items)
+                            ->delete();
+
+        $this->session->setFlash('success', 'The selected users are deleted successfully');
+    }
+
+    /**
+     * Handle disable action
+     * @return void
+     */
+    protected function disableHandle(): void
+    {
+        $items = $this->items;
+        $this->logger->info('Disable of user #{items}', ['items' => $items]);
+
+        $this->userRepository->query()
+                            ->where('id')
+                            ->in($items)
+                            ->update(['status' => false]);
+
+        $this->session->setFlash('success', 'The selected users are disabled successfully');
+    }
+
+    /**
+     * Handle enable action
+     * @return void
+     */
+    protected function enableHandle(): void
+    {
+        $items = $this->items;
+        $this->logger->info('Enable of user #{items}', ['items' => $items]);
+
+        $this->userRepository->query()
+                            ->where('id')
+                            ->in($items)
+                            ->update(['status' => true]);
+
+        $this->session->setFlash('success', 'The selected users are enabled successfully');
     }
 }

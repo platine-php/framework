@@ -30,7 +30,7 @@
  */
 
 /**
- *  @file CurentUrlTag.php
+ *  @file CurrentUrlTag.php
  *
  *  The current URL template tag class
  *
@@ -52,10 +52,10 @@ use Platine\Template\Parser\AbstractTag;
 use Platine\Template\Parser\Context;
 
 /**
- * @class CurentUrlTag
+ * @class CurrentUrlTag
  * @package Platine\Framework\Template\Tag
  */
-class CurentUrlTag extends AbstractTag
+class CurrentUrlTag extends AbstractTag
 {
 
     /**

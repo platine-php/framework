@@ -47,8 +47,8 @@ declare(strict_types=1);
 
 namespace Platine\Framework\Demo\Provider;
 
+use Platine\Framework\Demo\Action\User\BatchAction;
 use Platine\Framework\Demo\Action\User\CreateAction;
-use Platine\Framework\Demo\Action\User\DeleteAction;
 use Platine\Framework\Demo\Action\User\DetailAction;
 use Platine\Framework\Demo\Action\User\EditAction;
 use Platine\Framework\Demo\Action\User\ListAction;
@@ -69,7 +69,7 @@ class UserServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        $this->app->bind(DeleteAction::class);
+        $this->app->bind(BatchAction::class);
         $this->app->bind(EditAction::class);
         $this->app->bind(CreateAction::class);
         $this->app->bind(LoginAction::class);
@@ -86,7 +86,7 @@ class UserServiceProvider extends ServiceProvider
         $router->group('/users', function (Router $router) {
             $router->get('', ListAction::class, 'user_list', ['permission' => 'users']);
             $router->get('/detail/{id:i}', DetailAction::class, 'user_detail');
-            $router->get('/delete/{id:i}', DeleteAction::class, 'user_delete');
+            $router->post('/batch', BatchAction::class, 'user_batch');
             $router->get('/logout', LogoutAction::class, 'user_logout');
             $router->add('/login', LoginAction::class, ['GET', 'POST'], 'user_login');
             $router->add('/add', CreateAction::class, ['GET', 'POST'], 'user_create');

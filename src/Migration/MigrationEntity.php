@@ -66,7 +66,7 @@ class MigrationEntity extends Entity
     {
         /** @template T @var Config<T> $config */
         $config = app(Config::class);
-        $tableName = $config->get('migration.table', 'migrations');
+        $tableName = $config->get('database.migration.table', 'migrations');
 
         $mapper->table($tableName);
         $mapper->primaryKey('version');

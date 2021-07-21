@@ -64,6 +64,11 @@ class User extends Entity implements IdentityInterface
     public static function mapEntity(EntityMapperInterface $mapper): void
     {
         $mapper->relation('roles')->shareMany(Role::class);
+        $mapper->useTimestamp();
+        $mapper->casts([
+            'created_at' => 'date',
+            'updated_at' => '?date',
+        ]);
     }
 
     /**

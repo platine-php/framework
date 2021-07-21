@@ -1,6 +1,6 @@
 <?php
 
-use Platine\Framework\Template\Tag\CurentUrlTag;
+use Platine\Framework\Template\Tag\CurrentUrlTag;
 use Platine\Framework\Template\Tag\LangTag;
 use Platine\Framework\Template\Tag\RouteUrlTag;
 use Platine\Framework\Template\Tag\SessionFlashTag;
@@ -21,6 +21,6 @@ use Platine\Framework\Template\Tag\StaticTag;
             'session' => SessionTag::class,
             'flash' => SessionFlashTag::class,
             'static' => StaticTag::class,
-            'current_url' => CurentUrlTag::class,
+            'current_url' => CurrentUrlTag::class,
         ],
     ];

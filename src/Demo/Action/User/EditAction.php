@@ -232,7 +232,6 @@ class EditAction implements RequestHandlerInterface
         $user->role = $formParam->getRole();
         $user->email = $formParam->getEmail();
         $user->status = (bool) $formParam->getStatus();
-        $user->updated_at = date('Y-m-d H::s');
 
         if (!empty($password)) {
             $passwordHash = $this->hash->hash($password);

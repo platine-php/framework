@@ -54,6 +54,7 @@ use Platine\Container\Container;
 use Platine\Event\DispatcherInterface;
 use Platine\Event\EventInterface;
 use Platine\Event\ListenerInterface;
+use Platine\Event\SubscriberInterface;
 use Platine\Framework\Service\Provider\BaseServiceProvider;
 use Platine\Framework\Service\Provider\EventServiceProvider;
 use Platine\Framework\Service\ServiceProvider;
@@ -151,7 +152,7 @@ class Application extends Container
      * Return the current environment
      * @return string
      */
-    public function getEnv(): string
+    public function getEnvironment(): string
     {
         return $this->env;
     }
@@ -161,7 +162,7 @@ class Application extends Container
      * @param string $env
      * @return $this
      */
-    public function setEnv(string $env)
+    public function setEnvironment(string $env)
     {
         $this->env = $env;
 
@@ -200,15 +201,6 @@ class Application extends Container
     }
 
     /**
-     * Return the application root path
-     * @return string
-     */
-    public function getAppPath(): string
-    {
-        return $this->appPath;
-    }
-
-    /**
      * Set vendor path
      * @param string $vendorPath
      * @return $this
@@ -218,6 +210,15 @@ class Application extends Container
         $this->vendorPath = $vendorPath;
 
         return $this;
+    }
+
+     /**
+     * Return the application root path
+     * @return string
+     */
+    public function getAppPath(): string
+    {
+        return $this->appPath;
     }
 
     /**
@@ -276,7 +277,8 @@ class Application extends Container
 
     /**
      * Dispatches an event to all registered listeners.
-     * @param  string|EventInterface     $eventName the name of event of instance of EventInterface
+     * @param  string|EventInterface $eventName the name of event
+     * of instance of EventInterface
      * @param  EventInterface|null $event  the instance of EventInterface or null
      * @return $this
      */
@@ -291,7 +293,8 @@ class Application extends Container
      * Register a listener for the given event.
      *
      * @param string $eventName the name of event
-     * @param ListenerInterface|callable|string $listener the Listener interface or any callable
+     * @param ListenerInterface|callable|string $listener the Listener
+     * interface or any callable
      * @param int $priority the listener execution priority
      * @return $this
      */
@@ -304,6 +307,18 @@ class Application extends Container
             $listener = $this->createListener($listener);
         }
         $this->dispatcher->addListener($eventName, $listener, $priority);
+
+        return $this;
+    }
+
+    /**
+     * Add event subscriber
+     * @param SubscriberInterface $subscriber
+     * @return $this
+     */
+    public function subscribe(SubscriberInterface $subscriber): self
+    {
+        $this->dispatcher->addSubscriber($subscriber);
 
         return $this;
     }

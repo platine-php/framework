@@ -122,9 +122,9 @@ abstract class AbstractCommand extends Command
         $this->repository = $repository;
         $this->config = $config;
         $this->filesystem = $filesystem;
-        $path = Path::convert2Absolute($config->get('migration.path', 'migrations'));
+        $path = Path::convert2Absolute($config->get('database.migration.path', 'migrations'));
         $this->migrationPath = Path::normalizePathDS($path, true);
-        $this->table = $config->get('migration.table', 'migrations');
+        $this->table = $config->get('database.migration.table', 'migrations');
     }
 
     /**

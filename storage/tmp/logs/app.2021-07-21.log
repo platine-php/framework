@@ -1,0 +1,56 @@
+2021-07-21 05:31:13.429208	[INFO]	[Platine\Database\Connection]	[pid:0]	Execute Query: [SELECT * FROM `users`], parameters: [], time: [0.002611]
+2021-07-21 05:31:13.493045	[ERROR]	[MAIN]	[pid:0]	Platine Application Error: An error has occurred. Sorry for the temporary inconvenience., Error(code:0) Object of class DateTime could not be converted to string at D:\wamp\www\platine-php\vendor\platine-php\template\src\Parser\AbstractBlock.php line 216
+2021-07-21 05:46:33.188852	[INFO]	[Platine\Database\Connection]	[pid:0]	Execute Query: [SELECT * FROM `users`], parameters: [], time: [0.001109]
+2021-07-21 05:46:46.466791	[INFO]	[Platine\Database\Connection]	[pid:0]	Execute Query: [SELECT * FROM `roles`], parameters: [], time: [0.002432]
+2021-07-21 05:46:57.474613	[INFO]	[Platine\Database\Connection]	[pid:0]	Execute Query: [SELECT * FROM `roles`], parameters: [], time: [0.000715]
+2021-07-21 05:46:57.484908	[INFO]	[Platine\Database\Connection]	[pid:0]	Execute Query: [SELECT * FROM `users` WHERE `username` = ?], parameters: [hjdfdfgh], time: [0.000728]
+2021-07-21 05:46:57.585418	[INFO]	[Platine\Database\Connection]	[pid:0]	Execute Query: [INSERT INTO `users`(`username`, `firstname`, `lastname`, `password`, `status`, `email`, `role`, `created_at`, `updated_at`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)], parameters: [hjdfdfgh, Hfdfjfh, SHJHDFJ, $2y$10$B6o2dQyCsayhZHqahVz4i.mYoW515H779/.88Hd/TCY.d822SsMyG, , sdfjdfgdfjg@fjhfdfh.cim, , 2021-07-21 05:46:57, ], time: [0.003804]
+2021-07-21 05:46:57.629672	[INFO]	[Platine\Database\Connection]	[pid:0]	Execute Query: [SELECT * FROM `users`], parameters: [], time: [0.000309]
+2021-07-21 05:47:40.785915	[INFO]	[MAIN]	[pid:0]	Enable of user #[12, 13]
+2021-07-21 05:47:40.794222	[INFO]	[Platine\Database\Connection]	[pid:0]	Execute Query: [UPDATE `users` SET `status` = ?, `updated_at` = ? WHERE `id` IN (?, ?)], parameters: [1, 2021-07-21 05:47:40, 12, 13], time: [0.002806]
+2021-07-21 05:47:40.820617	[INFO]	[Platine\Database\Connection]	[pid:0]	Execute Query: [SELECT * FROM `users`], parameters: [], time: [0.000316]
+2021-07-21 05:51:17.049453	[ERROR]	[Platine\Database\Connection]	[pid:0]	Error when prepare query [SELECT * FROM `migrations` ORDER BY `version` ASC]. Error message: SQLSTATE[42S02]: Base table or view not found: 1146 La table 'db_platine.migrations' n'existe pas Array
+(
+    [message] => SQLSTATE[42S02]: Base table or view not found: 1146 La table 'db_platine.migrations' n'existe pas
+    [code] => 42S02
+    [file] => D:\wamp\www\platine-php\vendor\platine-php\database\src\Connection.php
+    [line] => 465
+    [trace] => 
+1. D:\wamp\www\platine-php\vendor\platine-php\database\src\Connection.php:PDO->prepare(...)::465
+2. D:\wamp\www\platine-php\vendor\platine-php\database\src\Connection.php:Platine\Database\Connection->prepare(...)::306
+3. D:\wamp\www\platine-php\vendor\platine-php\orm\src\Query\EntityQuery.php:Platine\Database\Connection->query(...)::445
+4. D:\wamp\www\platine-php\vendor\platine-php\orm\src\Query\EntityQuery.php:Platine\Orm\Query\EntityQuery->query(...)::169
+5. D:\wamp\www\platine-php\packages\framework\src\Migration\Command\AbstractCommand.php:Platine\Orm\Query\EntityQuery->all(...)::220
+6. D:\wamp\www\platine-php\packages\framework\src\Migration\Command\MigrationStatusCommand.php:Platine\Framework\Migration\Command\AbstractCommand->getExecuted(...)::93
+7. D:\wamp\www\platine-php\vendor\platine-php\console\src\Application.php:Platine\Framework\Migration\Command\MigrationStatusCommand->execute(...)::432
+8. D:\wamp\www\platine-php\vendor\platine-php\console\src\Application.php:Platine\Console\Application->executeCommand(...)::353
+9. D:\wamp\www\platine-php\packages\framework\src\Kernel\ConsoleKernel.php:Platine\Console\Application->handle(...)::98
+10. D:\wamp\www\platine-php\packages\framework\platine:Platine\Framework\Kernel\ConsoleKernel->run(...)::15
+
+)
+
+2021-07-21 05:53:12.410649	[ERROR]	[Platine\Database\Connection]	[pid:0]	Error when prepare query [SELECT * FROM `migrations` ORDER BY `version` ASC]. Error message: SQLSTATE[42S02]: Base table or view not found: 1146 La table 'db_platine.migrations' n'existe pas Array
+(
+    [message] => SQLSTATE[42S02]: Base table or view not found: 1146 La table 'db_platine.migrations' n'existe pas
+    [code] => 42S02
+    [file] => D:\wamp\www\platine-php\vendor\platine-php\database\src\Connection.php
+    [line] => 465
+    [trace] => 
+1. D:\wamp\www\platine-php\vendor\platine-php\database\src\Connection.php:PDO->prepare(...)::465
+2. D:\wamp\www\platine-php\vendor\platine-php\database\src\Connection.php:Platine\Database\Connection->prepare(...)::306
+3. D:\wamp\www\platine-php\vendor\platine-php\orm\src\Query\EntityQuery.php:Platine\Database\Connection->query(...)::445
+4. D:\wamp\www\platine-php\vendor\platine-php\orm\src\Query\EntityQuery.php:Platine\Orm\Query\EntityQuery->query(...)::169
+5. D:\wamp\www\platine-php\packages\framework\src\Migration\Command\AbstractCommand.php:Platine\Orm\Query\EntityQuery->all(...)::221
+6. D:\wamp\www\platine-php\packages\framework\src\Migration\Command\MigrationStatusCommand.php:Platine\Framework\Migration\Command\AbstractCommand->getExecuted(...)::93
+7. D:\wamp\www\platine-php\vendor\platine-php\console\src\Application.php:Platine\Framework\Migration\Command\MigrationStatusCommand->execute(...)::432
+8. D:\wamp\www\platine-php\vendor\platine-php\console\src\Application.php:Platine\Console\Application->executeCommand(...)::353
+9. D:\wamp\www\platine-php\packages\framework\src\Kernel\ConsoleKernel.php:Platine\Console\Application->handle(...)::98
+10. D:\wamp\www\platine-php\packages\framework\platine:Platine\Framework\Kernel\ConsoleKernel->run(...)::15
+
+)
+
+2021-07-21 05:53:53.515521	[INFO]	[Platine\Database\Connection]	[pid:0]	Execute Query: [SELECT * FROM `migration` ORDER BY `version` ASC], parameters: [], time: [0.001536]
+2021-07-21 05:54:35.373347	[INFO]	[Platine\Database\Connection]	[pid:0]	Execute Query: [SELECT * FROM `users`], parameters: [], time: [0.001297]
+2021-07-21 05:54:56.110406	[INFO]	[MAIN]	[pid:0]	Deleted of user #[11]
+2021-07-21 05:54:56.123649	[INFO]	[Platine\Database\Connection]	[pid:0]	Execute Query: [DELETE FROM `users` WHERE `id` IN (?)], parameters: [11], time: [0.004900]
+2021-07-21 05:54:56.155350	[INFO]	[Platine\Database\Connection]	[pid:0]	Execute Query: [SELECT * FROM `users`], parameters: [], time: [0.000460]

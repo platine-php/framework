@@ -39,7 +39,17 @@ function initPage($){
             var id = $(this).attr('id');
             $('input[data-depend='+id+']').prop('checked', false);
         }
-      });
+    });
+    
+    /**
+     * select/deselect all the checkbox for batch actions
+     */
+    $(".list-actions-checkbox").change(function(e){
+        e.preventDefault();
+        var checked = $(this).prop('checked');
+        $(".list-action:checkbox").prop('checked', checked);
+        
+    });
 
     /**
      * select/deselect all the checkbox

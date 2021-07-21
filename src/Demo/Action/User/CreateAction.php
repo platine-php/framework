@@ -215,7 +215,6 @@ class CreateAction implements RequestHandlerInterface
             'status' => (bool) $formParam->getStatus(),
             'email' => $formParam->getEmail(),
             'role' => $formParam->getRole(),
-            'created_at' => date('Y-m-d H:i:s'),
         ]);
 
          //Handle roles
