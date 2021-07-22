@@ -62,6 +62,7 @@ use Platine\Framework\Http\RouteHelper;
 use Platine\Http\Handler\RequestHandlerInterface;
 use Platine\Http\ResponseInterface;
 use Platine\Http\ServerRequestInterface;
+use Platine\Lang\Lang;
 use Platine\Logger\LoggerInterface;
 use Platine\Session\Session;
 use Platine\Template\Template;
@@ -93,6 +94,12 @@ class LoginAction implements RequestHandlerInterface
     protected RouteHelper $routeHelper;
 
     /**
+     * The translator instance
+     * @var Lang
+     */
+    protected Lang $lang;
+
+    /**
      * The authentication instance
      * @var AuthenticationInterface
      */
@@ -106,6 +113,7 @@ class LoginAction implements RequestHandlerInterface
 
     /**
      * Create new instance
+     * @param Lang $lang
      * @param AuthenticationInterface $authentication
      * @param Session $session
      * @param LoggerInterface $logger
@@ -113,12 +121,14 @@ class LoginAction implements RequestHandlerInterface
      * @param RouteHelper $routeHelper
      */
     public function __construct(
+        Lang $lang,
         AuthenticationInterface $authentication,
         Session $session,
         LoggerInterface $logger,
         Template $template,
         RouteHelper $routeHelper
     ) {
+        $this->lang = $lang;
         $this->session = $session;
         $this->logger = $logger;
         $this->template = $template;

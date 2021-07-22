@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Platine Framework 1.0.0-dev\n"
-"POT-Creation-Date: 2021-07-15 12:35+0100\n"
-"PO-Revision-Date: 2021-07-15 12:35+0100\n"
+"POT-Creation-Date: 2021-07-22 20:24+0100\n"
+"PO-Revision-Date: 2021-07-22 20:34+0100\n"
 "Last-Translator: Tony NGUEREZA <nguerezatony@gmail.com>\n"
 "Language-Team: Tony NGUEREZA, nguerezatony@gmail.com\n"
 "Language: fr_FR\n"
@@ -17,9 +17,77 @@ msgstr ""
 "X-Poedit-SearchPath-0: storage/resource/lang\n"
 "X-Poedit-SearchPath-1: src/Demo\n"
 
-#: src/Demo/Action/User/DeleteAction.php:53
+#: src/Demo/Action/Permission/BatchAction.php:186
+msgid "The selected permissions are deleted successfully"
+msgstr "Les permissions sélectionnées ont été supprimées avec succès"
+
+#: src/Demo/Action/Permission/CreateAction.php:180
+#: src/Demo/Action/Permission/EditAction.php:191
+msgid "This permission already exists"
+msgstr "Cette permission existe déjà"
+
+#: src/Demo/Action/Permission/CreateAction.php:201
+#: src/Demo/Action/Permission/EditAction.php:210
+msgid "Error when saved the permission"
+msgstr "Erreur survenue lors de l'enregistrement de la permission"
+
+#: src/Demo/Action/Permission/CreateAction.php:214
+#: src/Demo/Action/Permission/EditAction.php:222
+msgid "Permission saved successfully"
+msgstr "Permission enregistrée avec succès"
+
+#: src/Demo/Action/Permission/EditAction.php:145
+msgid "Can not find the permission"
+msgstr "Impossible de trouver la permission"
+
+#: src/Demo/Action/Role/BatchAction.php:186
+msgid "The selected roles are deleted successfully"
+msgstr "Les roles sélectionnés ont été supprimés avec succès"
+
+#: src/Demo/Action/Role/CreateAction.php:186
+#: src/Demo/Action/Role/EditAction.php:208
+msgid "This role already exists"
+msgstr "Ce role existe déjà"
+
+#: src/Demo/Action/Role/CreateAction.php:214
+#: src/Demo/Action/Role/EditAction.php:240
+msgid "Error when saved the role"
+msgstr "Erreur survenue lors de l'enregistrement du role"
+
+#: src/Demo/Action/Role/CreateAction.php:227
+#: src/Demo/Action/Role/EditAction.php:252
+msgid "Role saved successfully"
+msgstr "Role enregistré avec succès"
+
+#: src/Demo/Action/Role/DetailAction.php:141
+#: src/Demo/Action/Role/EditAction.php:157
+msgid "Can not find the role"
+msgstr "Impossible de trouver le role"
+
+#: src/Demo/Action/User/BatchAction.php:188
+msgid "The selected users are deleted successfully"
+msgstr "Les utilisateurs sélectionnés ont été supprimés avec succès"
+
+#: src/Demo/Action/User/CreateAction.php:203
+#: src/Demo/Action/User/EditAction.php:224
+msgid "This user already exists"
+msgstr "Cet utilisateur existe déjà"
+
+#: src/Demo/Action/User/CreateAction.php:241
+#: src/Demo/Action/User/EditAction.php:268
+msgid "Error when saved the user"
+msgstr "Erreur survenue lors de l'enregistrement de l'utilisateur"
+
+#: src/Demo/Action/User/CreateAction.php:255
+#: src/Demo/Action/User/EditAction.php:281
+msgid "User saved successfully"
+msgstr "Utilisateur enregistré avec succès"
+
+#: src/Demo/Action/User/DetailAction.php:141
+#: src/Demo/Action/User/EditAction.php:168
 msgid "Can not find the user"
 msgstr "Impossible de trouver l'utilisateur"
 
-#~ msgid "name"
-#~ msgstr "votre nom"
+#: src/Demo/Action/User/LogoutAction.php:109
+msgid "You are successfully logout"
+msgstr "Vous êtes déconnecté avec succès"

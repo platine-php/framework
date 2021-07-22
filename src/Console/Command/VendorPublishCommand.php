@@ -289,8 +289,7 @@ class VendorPublishCommand extends Command
                     sprintf(
                         'Package %s [%s] publish successfully',
                         $type,
-                        $src,
-                        $dest . $sourceFilename
+                        $src
                     ),
                     true
                 );

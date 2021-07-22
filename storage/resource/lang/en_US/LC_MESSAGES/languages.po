@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Platine Framework 1.0.0-dev\n"
-"POT-Creation-Date: 2021-07-15 12:34+0100\n"
-"PO-Revision-Date: 2021-07-15 12:38+0100\n"
+"POT-Creation-Date: 2021-07-22 20:24+0100\n"
+"PO-Revision-Date: 2021-07-22 20:24+0100\n"
 "Last-Translator: Tony NGUEREZA <nguerezatony@gmail.com>\n"
 "Language-Team: Tony NGUEREZA, nguerezatony@gmail.com\n"
 "Language: en_US\n"
@@ -16,9 +16,73 @@ msgstr ""
 "X-Poedit-KeywordsList: tr;trp:1,2;trd;trdp:1,2\n"
 "X-Poedit-SearchPath-0: .\n"
 
-#: Action/User/DeleteAction.php:53
+#: Action/Permission/BatchAction.php:186
+msgid "The selected permissions are deleted successfully"
+msgstr ""
+
+#: Action/Permission/CreateAction.php:180 Action/Permission/EditAction.php:191
+msgid "This permission already exists"
+msgstr ""
+
+#: Action/Permission/CreateAction.php:201 Action/Permission/EditAction.php:210
+msgid "Error when saved the permission"
+msgstr ""
+
+#: Action/Permission/CreateAction.php:214 Action/Permission/EditAction.php:222
+msgid "Permission saved successfully"
+msgstr ""
+
+#: Action/Permission/EditAction.php:145
+#, fuzzy
+#| msgid "Can not find the user"
+msgid "Can not find the permission"
+msgstr "Can not find the user"
+
+#: Action/Role/BatchAction.php:186
+msgid "The selected roles are deleted successfully"
+msgstr ""
+
+#: Action/Role/CreateAction.php:186 Action/Role/EditAction.php:208
+msgid "This role already exists"
+msgstr ""
+
+#: Action/Role/CreateAction.php:214 Action/Role/EditAction.php:240
+msgid "Error when saved the role"
+msgstr ""
+
+#: Action/Role/CreateAction.php:227 Action/Role/EditAction.php:252
+msgid "Role saved successfully"
+msgstr ""
+
+#: Action/Role/DetailAction.php:141 Action/Role/EditAction.php:157
+#, fuzzy
+#| msgid "Can not find the user"
+msgid "Can not find the role"
+msgstr "Can not find the user"
+
+#: Action/User/BatchAction.php:188
+msgid "The selected users are deleted successfully"
+msgstr ""
+
+#: Action/User/CreateAction.php:203 Action/User/EditAction.php:224
+msgid "This user already exists"
+msgstr ""
+
+#: Action/User/CreateAction.php:241 Action/User/EditAction.php:268
+msgid "Error when saved the user"
+msgstr ""
+
+#: Action/User/CreateAction.php:255 Action/User/EditAction.php:281
+msgid "User saved successfully"
+msgstr ""
+
+#: Action/User/DetailAction.php:141 Action/User/EditAction.php:168
 msgid "Can not find the user"
 msgstr "Can not find the user"
+
+#: Action/User/LogoutAction.php:109
+msgid "You are successfully logout"
+msgstr ""
 
 #~ msgid "name"
 #~ msgstr "your Name"

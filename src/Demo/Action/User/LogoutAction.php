@@ -53,6 +53,7 @@ use Platine\Http\Handler\RequestHandlerInterface;
 use Platine\Http\Response;
 use Platine\Http\ResponseInterface;
 use Platine\Http\ServerRequestInterface;
+use Platine\Lang\Lang;
 
 /**
  * @class LogoutAction
@@ -74,14 +75,23 @@ class LogoutAction implements RequestHandlerInterface
     protected AuthenticationInterface $authentication;
 
     /**
+     * The translator instance
+     * @var Lang
+     */
+    protected Lang $lang;
+
+    /**
      * Create new instance
+     * @param Lang $lang
      * @param AuthenticationInterface $authentication
      * @param RouteHelper $routeHelper
      */
     public function __construct(
+        Lang $lang,
         AuthenticationInterface $authentication,
         RouteHelper $routeHelper
     ) {
+        $this->lang = $lang;
         $this->routeHelper = $routeHelper;
         $this->authentication = $authentication;
     }
@@ -97,9 +107,12 @@ class LogoutAction implements RequestHandlerInterface
 
         $loginUrl = $this->routeHelper->generateUrl('user_login');
 
+        $message = $this->lang->tr('You are successfully logout');
         $res->getBody()
-                ->write(sprintf('You are successfully logout 
-                    <br /><a href = \'%s\'>Login Page</a>', $loginUrl));
+                ->write(sprintf(
+                    $message . ' <br /><a href = \'%s\'>Login Page</a>',
+                    $loginUrl
+                ));
 
         return $res;
     }

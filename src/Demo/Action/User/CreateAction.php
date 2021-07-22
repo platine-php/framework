@@ -59,6 +59,7 @@ use Platine\Framework\Http\RouteHelper;
 use Platine\Http\Handler\RequestHandlerInterface;
 use Platine\Http\ResponseInterface;
 use Platine\Http\ServerRequestInterface;
+use Platine\Lang\Lang;
 use Platine\Logger\LoggerInterface;
 use Platine\Security\Hash\HashInterface;
 use Platine\Session\Session;
@@ -84,6 +85,12 @@ class CreateAction implements RequestHandlerInterface
      * @var Session
      */
     protected Session $session;
+
+    /**
+     * The translator instance
+     * @var Lang
+     */
+    protected Lang $lang;
 
     /**
      * The user repository instance
@@ -118,6 +125,7 @@ class CreateAction implements RequestHandlerInterface
 
     /**
      * Create new instance
+     * @param Lang $lang
      * @param LoggerInterface $logger
      * @param Session $session
      * @param Template $template
@@ -127,6 +135,7 @@ class CreateAction implements RequestHandlerInterface
      * @param HashInterface $hash
      */
     public function __construct(
+        Lang $lang,
         LoggerInterface $logger,
         Session $session,
         Template $template,
@@ -135,6 +144,7 @@ class CreateAction implements RequestHandlerInterface
         RouteHelper $routeHelper,
         HashInterface $hash
     ) {
+        $this->lang = $lang;
         $this->logger = $logger;
         $this->session = $session;
         $this->userRepository = $userRepository;
@@ -190,7 +200,7 @@ class CreateAction implements RequestHandlerInterface
 
         if ($userExist) {
             $this->logger->error('User with username {username} already exists', ['username' => $username]);
-            $this->session->setFlash('error', 'This user already exists');
+            $this->session->setFlash('error', $this->lang->tr('This user already exists'));
             return new TemplateResponse(
                 $this->template,
                 'user/create',
@@ -228,7 +238,7 @@ class CreateAction implements RequestHandlerInterface
         $result = $this->userRepository->save($user);
 
         if (!$result) {
-            $this->session->setFlash('error', 'Error when saved the user');
+            $this->session->setFlash('error', $this->lang->tr('Error when saved the user'));
             $this->logger->error('Error when saved the user');
             return new TemplateResponse(
                 $this->template,
@@ -242,7 +252,7 @@ class CreateAction implements RequestHandlerInterface
         }
 
 
-        $this->session->setFlash('success', 'User saved successfully');
+        $this->session->setFlash('success', $this->lang->tr('User saved successfully'));
 
         return new RedirectResponse(
             $this->routeHelper->generateUrl('user_list')

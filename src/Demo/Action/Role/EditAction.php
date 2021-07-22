@@ -59,10 +59,9 @@ use Platine\Framework\Http\RouteHelper;
 use Platine\Http\Handler\RequestHandlerInterface;
 use Platine\Http\ResponseInterface;
 use Platine\Http\ServerRequestInterface;
+use Platine\Lang\Lang;
 use Platine\Logger\LoggerInterface;
-use Platine\Security\Hash\HashInterface;
 use Platine\Session\Session;
-use Platine\Stdlib\Helper\Str;
 use Platine\Template\Template;
 
 /**
@@ -84,6 +83,12 @@ class EditAction implements RequestHandlerInterface
      * @var Session
      */
     protected Session $session;
+
+    /**
+     * The translator instance
+     * @var Lang
+     */
+    protected Lang $lang;
 
     /**
      * The role repository
@@ -109,38 +114,32 @@ class EditAction implements RequestHandlerInterface
      */
     protected RouteHelper $routeHelper;
 
-     /**
-     * The password hash to be used
-     * @var HashInterface
-     */
-    protected HashInterface $hash;
-
     /**
      * Create new instance
+     * @param Lang $lang
      * @param LoggerInterface $logger
      * @param Session $session
      * @param Template $template
      * @param RoleRepository $roleRepository
      * @param PermissionRepository $permissionRepository
      * @param RouteHelper $routeHelper
-     * @param HashInterface $hash
      */
     public function __construct(
+        Lang $lang,
         LoggerInterface $logger,
         Session $session,
         Template $template,
         RoleRepository $roleRepository,
         PermissionRepository $permissionRepository,
-        RouteHelper $routeHelper,
-        HashInterface $hash
+        RouteHelper $routeHelper
     ) {
+        $this->lang = $lang;
         $this->logger = $logger;
         $this->session = $session;
         $this->roleRepository = $roleRepository;
         $this->permissionRepository = $permissionRepository;
         $this->template = $template;
         $this->routeHelper = $routeHelper;
-        $this->hash = $hash;
     }
 
     /**
@@ -150,12 +149,12 @@ class EditAction implements RequestHandlerInterface
     {
         $id = (int) $request->getAttribute('id');
 
-        /** @var Role $role */
+        /** @var ?Role $role */
         $role = $this->roleRepository
                                     ->with('permissions')
                                     ->find($id);
         if (!$role) {
-            $this->session->setFlash('error', 'Can not find the role');
+            $this->session->setFlash('error', $this->lang->tr('Can not find the role'));
             $this->logger->warning('Can not find role with id {id}', ['id' => $id]);
 
             return new RedirectResponse(
@@ -206,7 +205,7 @@ class EditAction implements RequestHandlerInterface
         $roleExist = $this->roleRepository->findBy(['name' => $name]);
 
         if ($roleExist && $roleExist->id != $id) {
-            $this->session->setFlash('error', 'This role already exists');
+            $this->session->setFlash('error', $this->lang->tr('This role already exists'));
             $this->logger->error('Role with name {name} already exists', ['name' => $name]);
             return new TemplateResponse(
                 $this->template,
@@ -217,8 +216,6 @@ class EditAction implements RequestHandlerInterface
                 ]
             );
         }
-
-        $password = $param->post('password');
 
         $role->name = $formParam->getName();
         $role->description = $formParam->getDescription();
@@ -240,7 +237,7 @@ class EditAction implements RequestHandlerInterface
         $result = $this->roleRepository->save($role);
 
         if (!$result) {
-            $this->session->setFlash('error', 'Error when saved the role');
+            $this->session->setFlash('error', $this->lang->tr('Error when saved the role'));
             $this->logger->error('Error when saved the role');
             return new TemplateResponse(
                 $this->template,
@@ -252,7 +249,7 @@ class EditAction implements RequestHandlerInterface
             );
         }
 
-        $this->session->setFlash('success', 'Role saved successfully');
+        $this->session->setFlash('success', $this->lang->tr('Role saved successfully'));
 
         $returnUrl = $this->routeHelper->generateUrl('role_list');
         if ($param->get('from_detail')) {

@@ -59,6 +59,7 @@ use Platine\Framework\Http\RouteHelper;
 use Platine\Http\Handler\RequestHandlerInterface;
 use Platine\Http\ResponseInterface;
 use Platine\Http\ServerRequestInterface;
+use Platine\Lang\Lang;
 use Platine\Logger\LoggerInterface;
 use Platine\Session\Session;
 use Platine\Template\Template;
@@ -76,6 +77,12 @@ class CreateAction implements RequestHandlerInterface
      * @var LoggerInterface
      */
     protected LoggerInterface $logger;
+
+    /**
+     * The translator instance
+     * @var Lang
+     */
+    protected Lang $lang;
 
     /**
      * The session instance
@@ -103,25 +110,25 @@ class CreateAction implements RequestHandlerInterface
 
     /**
      * Create new instance
+     * @param Lang $lang
      * @param LoggerInterface $logger
      * @param Session $session
      * @param Template $template
      * @param PermissionRepository $permissionRepository
-     * @param RoleRepository $roleRepository
      * @param RouteHelper $routeHelper
      */
     public function __construct(
+        Lang $lang,
         LoggerInterface $logger,
         Session $session,
         Template $template,
         PermissionRepository $permissionRepository,
-        RoleRepository $roleRepository,
         RouteHelper $routeHelper
     ) {
+        $this->lang = $lang;
         $this->logger = $logger;
         $this->session = $session;
         $this->permissionRepository = $permissionRepository;
-        $this->roleRepository = $roleRepository;
         $this->template = $template;
         $this->routeHelper = $routeHelper;
     }
@@ -167,7 +174,7 @@ class CreateAction implements RequestHandlerInterface
 
         if ($permissionExist) {
             $this->logger->error('Permission with code {code} already exists', ['code' => $code]);
-            $this->session->setFlash('error', 'This permission already exists');
+            $this->session->setFlash('error', $this->lang->tr('This permission already exists'));
             return new TemplateResponse(
                 $this->template,
                 'permission/create',
@@ -188,7 +195,7 @@ class CreateAction implements RequestHandlerInterface
         $result = $this->permissionRepository->save($permission);
 
         if (!$result) {
-            $this->session->setFlash('error', 'Error when saved the permission');
+            $this->session->setFlash('error', $this->lang->tr('Error when saved the permission'));
             $this->logger->error('Error when saved the permission');
             return new TemplateResponse(
                 $this->template,
@@ -201,7 +208,7 @@ class CreateAction implements RequestHandlerInterface
         }
 
 
-        $this->session->setFlash('success', 'Permission saved successfully');
+        $this->session->setFlash('success', $this->lang->tr('Permission saved successfully'));
 
         return new RedirectResponse(
             $this->routeHelper->generateUrl('permission_list')

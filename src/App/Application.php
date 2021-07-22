@@ -62,7 +62,6 @@ use Platine\Framework\Service\ServiceProvider;
 /**
  * @class Application
  * @package Platine\Framework\App
- * @template T
  */
 class Application extends Container
 {

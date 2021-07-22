@@ -183,6 +183,6 @@ class BatchAction implements RequestHandlerInterface
                             ->in($items)
                             ->delete();
 
-        $this->session->setFlash('success', 'The selected roles are deleted successfully');
+        $this->session->setFlash('success', $this->lang->tr('The selected roles are deleted successfully'));
     }
 }

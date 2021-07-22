@@ -54,6 +54,7 @@ use Platine\Framework\Http\RouteHelper;
 use Platine\Http\Handler\RequestHandlerInterface;
 use Platine\Http\ResponseInterface;
 use Platine\Http\ServerRequestInterface;
+use Platine\Lang\Lang;
 use Platine\Logger\LoggerInterface;
 use Platine\Session\Session;
 use Platine\Template\Template;
@@ -71,6 +72,12 @@ class DetailAction implements RequestHandlerInterface
      * @var LoggerInterface
      */
     protected LoggerInterface $logger;
+
+    /**
+     * The translator instance
+     * @var Lang
+     */
+    protected Lang $lang;
 
     /**
      * The role repository instance
@@ -98,6 +105,7 @@ class DetailAction implements RequestHandlerInterface
 
     /**
      * Create new instance
+     * @param Lang $lang
      * @param Session $session
      * @param LoggerInterface $logger
      * @param Template $template
@@ -105,12 +113,14 @@ class DetailAction implements RequestHandlerInterface
      * @param RouteHelper $routeHelper
      */
     public function __construct(
+        Lang $lang,
         Session $session,
         LoggerInterface $logger,
         Template $template,
         RoleRepository $roleRepository,
         RouteHelper $routeHelper
     ) {
+        $this->lang = $lang;
         $this->session = $session;
         $this->logger = $logger;
         $this->roleRepository = $roleRepository;
@@ -128,7 +138,7 @@ class DetailAction implements RequestHandlerInterface
                      ->with('permissions')
                      ->find($id);
         if (!$role) {
-            $this->session->setFlash('error', 'Can not find the role');
+            $this->session->setFlash('error', $this->lang->tr('Can not find the role'));
             $this->logger->warning('Can not find role with id {id}', ['id' => $id]);
 
             return new RedirectResponse(

@@ -59,6 +59,7 @@ use Platine\Framework\Http\RouteHelper;
 use Platine\Http\Handler\RequestHandlerInterface;
 use Platine\Http\ResponseInterface;
 use Platine\Http\ServerRequestInterface;
+use Platine\Lang\Lang;
 use Platine\Logger\LoggerInterface;
 use Platine\Session\Session;
 use Platine\Template\Template;
@@ -82,6 +83,12 @@ class CreateAction implements RequestHandlerInterface
      * @var Session
      */
     protected Session $session;
+
+    /**
+     * The translator instance
+     * @var Lang
+     */
+    protected Lang $lang;
 
     /**
      * The role repository instance
@@ -109,6 +116,7 @@ class CreateAction implements RequestHandlerInterface
 
     /**
      * Create new instance
+     * @param Lang $lang
      * @param LoggerInterface $logger
      * @param Session $session
      * @param Template $template
@@ -117,6 +125,7 @@ class CreateAction implements RequestHandlerInterface
      * @param RouteHelper $routeHelper
      */
     public function __construct(
+        Lang $lang,
         LoggerInterface $logger,
         Session $session,
         Template $template,
@@ -124,6 +133,7 @@ class CreateAction implements RequestHandlerInterface
         PermissionRepository $permissionRepository,
         RouteHelper $routeHelper
     ) {
+        $this->lang = $lang;
         $this->logger = $logger;
         $this->session = $session;
         $this->roleRepository = $roleRepository;
@@ -173,7 +183,7 @@ class CreateAction implements RequestHandlerInterface
 
         if ($roleExist) {
             $this->logger->error('Role with name {name} already exists', ['name' => $name]);
-            $this->session->setFlash('error', 'This role already exists');
+            $this->session->setFlash('error', $this->lang->tr('This role already exists'));
             return new TemplateResponse(
                 $this->template,
                 'role/create',
@@ -201,20 +211,20 @@ class CreateAction implements RequestHandlerInterface
         $result = $this->roleRepository->save($role);
 
         if (!$result) {
-            $this->session->setFlash('error', 'Error when saved the role');
+            $this->session->setFlash('error', $this->lang->tr('Error when saved the role'));
             $this->logger->error('Error when saved the role');
             return new TemplateResponse(
                 $this->template,
                 'role/create',
                 [
                    'param' => $formParam,
-                    'permissions' => $permissions
+                   'permissions' => $permissions
                 ]
             );
         }
 
 
-        $this->session->setFlash('success', 'Role saved successfully');
+        $this->session->setFlash('success', $this->lang->tr('Role saved successfully'));
 
         return new RedirectResponse(
             $this->routeHelper->generateUrl('role_list')

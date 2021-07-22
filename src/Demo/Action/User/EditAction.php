@@ -59,6 +59,7 @@ use Platine\Framework\Http\RouteHelper;
 use Platine\Http\Handler\RequestHandlerInterface;
 use Platine\Http\ResponseInterface;
 use Platine\Http\ServerRequestInterface;
+use Platine\Lang\Lang;
 use Platine\Logger\LoggerInterface;
 use Platine\Security\Hash\HashInterface;
 use Platine\Session\Session;
@@ -84,6 +85,12 @@ class EditAction implements RequestHandlerInterface
      * @var Session
      */
     protected Session $session;
+
+    /**
+     * The translator instance
+     * @var Lang
+     */
+    protected Lang $lang;
 
     /**
      * The user repository
@@ -117,6 +124,7 @@ class EditAction implements RequestHandlerInterface
 
     /**
      * Create new instance
+     * @param Lang $lang
      * @param LoggerInterface $logger
      * @param Session $session
      * @param Template $template
@@ -126,6 +134,7 @@ class EditAction implements RequestHandlerInterface
      * @param HashInterface $hash
      */
     public function __construct(
+        Lang $lang,
         LoggerInterface $logger,
         Session $session,
         Template $template,
@@ -134,6 +143,7 @@ class EditAction implements RequestHandlerInterface
         RouteHelper $routeHelper,
         HashInterface $hash
     ) {
+        $this->lang = $lang;
         $this->logger = $logger;
         $this->session = $session;
         $this->userRepository = $userRepository;
@@ -150,12 +160,12 @@ class EditAction implements RequestHandlerInterface
     {
         $id = (int) $request->getAttribute('id');
 
-        /** @var User $user */
+        /** @var ?User $user */
         $user = $this->userRepository
                                     ->with('roles')
                                     ->find($id);
         if (!$user) {
-            $this->session->setFlash('error', 'Can not find the user');
+            $this->session->setFlash('error', $this->lang->tr('Can not find the user'));
             $this->logger->warning('Can not find user with id {id}', ['id' => $id]);
 
             return new RedirectResponse(
@@ -211,7 +221,7 @@ class EditAction implements RequestHandlerInterface
         $userExist = $this->userRepository->findBy(['username' => $username]);
 
         if ($userExist && $userExist->id != $id) {
-            $this->session->setFlash('error', 'This user already exists');
+            $this->session->setFlash('error', $this->lang->tr('This user already exists'));
             $this->logger->error('User with username {username} already exists', ['username' => $username]);
             return new TemplateResponse(
                 $this->template,
@@ -255,7 +265,7 @@ class EditAction implements RequestHandlerInterface
         $result = $this->userRepository->save($user);
 
         if (!$result) {
-            $this->session->setFlash('error', 'Error when saved the user');
+            $this->session->setFlash('error', $this->lang->tr('Error when saved the user'));
             $this->logger->error('Error when saved the user');
             return new TemplateResponse(
                 $this->template,
@@ -268,7 +278,7 @@ class EditAction implements RequestHandlerInterface
             );
         }
 
-        $this->session->setFlash('success', 'User saved successfully');
+        $this->session->setFlash('success', $this->lang->tr('User saved successfully'));
 
         $returnUrl = $this->routeHelper->generateUrl('user_list');
         if ($param->get('from_detail')) {
