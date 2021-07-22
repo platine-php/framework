@@ -60,7 +60,7 @@ use Platine\Validator\Validator;
 class AuthValidator extends AbstractValidator
 {
     /**
-     * The authentication parameter instance
+     * The parameter instance
      * @var AuthParam
      */
     protected AuthParam $param;

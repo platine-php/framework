@@ -2,6 +2,7 @@
 
 use Platine\Framework\Demo\Provider\AppServiceProvider;
 use Platine\Framework\Demo\Provider\RepositoryServiceProvider;
+use Platine\Framework\Demo\Provider\RoleServiceProvider;
 use Platine\Framework\Demo\Provider\UserServiceProvider;
 use Platine\Framework\Service\Provider\AuthServiceProvider;
 use Platine\Framework\Service\Provider\CacheServiceProvider;
@@ -36,5 +37,6 @@ use Platine\Framework\Service\Provider\TemplateServiceProvider;
         //Custom
         AppServiceProvider::class,
         UserServiceProvider::class,
+        RoleServiceProvider::class,
         RepositoryServiceProvider::class,
     ];

@@ -11,7 +11,7 @@
                 'port' => 3307,
                 'username' => 'root',
                 'password' => '',
-                'persistent' => true,
+                'persistent' => false,
             ]
         ],
         

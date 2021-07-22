@@ -107,7 +107,7 @@ class UserParam extends BaseParam
     /**
      * {@inheritodc}
      */
-    public function fromEntity(Entity $entity): UserParam
+    public function fromEntity(Entity $entity): self
     {
         $this->username = $entity->username;
         $this->lastname = $entity->lastname;

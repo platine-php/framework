@@ -27,12 +27,12 @@ function initPage($){
     /**
      * for permissions dependancy checked auto
      */
-    $('li :checkbox').change(function(){
+    $('.role-permission').change(function(){
          var checked = $(this).prop('checked');
          if(checked){
              var depend = $(this).attr('data-depend');
              if(depend){
-                $('#'+depend).prop('checked', true);
+                $('input#'+depend).prop('checked', true);
              }
         }
         else{

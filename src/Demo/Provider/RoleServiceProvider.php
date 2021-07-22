@@ -30,11 +30,11 @@
  */
 
 /**
- *  @file Role.php
+ *  @file RoleServiceProvider.php
  *
- *  The Role/group Entity class
+ *  Role service provider class
  *
- *  @package    Platine\Framework\Auth\Entity
+ *  @package    Platine\Framework\Demo\Provider
  *  @author Platine Developers team
  *  @copyright  Copyright (c) 2020
  *  @license    http://opensource.org/licenses/MIT  MIT License
@@ -45,56 +45,46 @@
 
 declare(strict_types=1);
 
-namespace Platine\Framework\Auth\Entity;
+namespace Platine\Framework\Demo\Provider;
 
-use Platine\Orm\Entity;
-use Platine\Orm\Mapper\EntityMapperInterface;
+use Platine\Framework\Demo\Action\Role\BatchAction;
+use Platine\Framework\Demo\Action\Role\CreateAction;
+use Platine\Framework\Demo\Action\Role\DetailAction;
+use Platine\Framework\Demo\Action\Role\EditAction;
+use Platine\Framework\Demo\Action\Role\ListAction;
+use Platine\Framework\Service\ServiceProvider;
+use Platine\Route\Router;
 
 /**
- * @class Role
- * @package Platine\Framework\Auth\Entity
+ * @class RoleServiceProvider
+ * @package Platine\Framework
  */
-class Role extends Entity
+class RoleServiceProvider extends ServiceProvider
 {
 
     /**
      * {@inheritdoc}
      */
-    public static function mapEntity(EntityMapperInterface $mapper): void
+    public function register(): void
     {
-        $mapper->relation('permissions')->shareMany(Permission::class);
-        $mapper->useTimestamp();
-        $mapper->casts([
-            'created_at' => 'date',
-            'updated_at' => '?date',
-        ]);
+        $this->app->bind(BatchAction::class);
+        $this->app->bind(EditAction::class);
+        $this->app->bind(CreateAction::class);
+        $this->app->bind(ListAction::class);
+        $this->app->bind(DetailAction::class);
     }
 
     /**
-     * Set permissions
-     * @param Permission[] $permissions
-     * @return $this
+     * {@inheritdoc}
      */
-    public function setPermissions(array $permissions): self
+    public function addRoutes(Router $router): void
     {
-        foreach ($permissions as $permission) {
-            $this->mapper()->link('permissions', $permission);
-        }
-
-        return $this;
-    }
-
-    /**
-     * Remove permissions
-     * @param Permission[] $permissions
-     * @return $this
-     */
-    public function removePermissions(array $permissions): self
-    {
-        foreach ($permissions as $permission) {
-            $this->mapper()->unlink('permissions', $permission);
-        }
-
-        return $this;
+        $router->group('/roles', function (Router $router) {
+            $router->get('', ListAction::class, 'role_list');
+            $router->get('/detail/{id:i}', DetailAction::class, 'role_detail');
+            $router->post('/batch', BatchAction::class, 'role_batch');
+            $router->add('/add', CreateAction::class, ['GET', 'POST'], 'role_create');
+            $router->add('/edit/{id:i}', EditAction::class, ['GET', 'POST'], 'role_edit');
+        });
     }
 }

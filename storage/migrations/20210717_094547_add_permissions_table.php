@@ -20,7 +20,8 @@ class AddPermissionsTable20210717094547 extends AbstractMigration
                  ->unique()
                  ->notNull();
             $table->string('description')
-                 ->description('The permission description');
+                 ->description('The permission description')
+                 ->notNull();
             $table->string('depend')
                  ->description('The permission dependency');
             $table->datetime('created_at')

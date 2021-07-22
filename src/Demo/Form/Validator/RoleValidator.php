@@ -30,11 +30,11 @@
  */
 
 /**
- *  @file Role.php
+ *  @file RoleValidator.php
  *
- *  The Role/group Entity class
+ *  The role validation class
  *
- *  @package    Platine\Framework\Auth\Entity
+ *  @package    Platine\Framework\Demo\Form\Validator
  *  @author Platine Developers team
  *  @copyright  Copyright (c) 2020
  *  @license    http://opensource.org/licenses/MIT  MIT License
@@ -45,56 +45,59 @@
 
 declare(strict_types=1);
 
-namespace Platine\Framework\Auth\Entity;
+namespace Platine\Framework\Demo\Form\Validator;
 
-use Platine\Orm\Entity;
-use Platine\Orm\Mapper\EntityMapperInterface;
+use Platine\Framework\Demo\Form\Param\RoleParam;
+use Platine\Framework\Form\Validator\AbstractValidator;
+use Platine\Validator\Rule\MinLength;
+use Platine\Validator\Rule\NotEmpty;
+use Platine\Validator\Validator;
 
 /**
- * @class Role
- * @package Platine\Framework\Auth\Entity
+ * @class RoleValidator
+ * @package Platine\Framework\Demo\Form\Validator
  */
-class Role extends Entity
+class RoleValidator extends AbstractValidator
 {
 
     /**
-     * {@inheritdoc}
+     * The parameter instance
+     * @var RoleParam
      */
-    public static function mapEntity(EntityMapperInterface $mapper): void
+    protected RoleParam $param;
+
+    /**
+     * Create new instance
+     * @param RoleParam $param
+     * @param Validator|null $validator
+     */
+    public function __construct(RoleParam $param, ?Validator $validator = null)
     {
-        $mapper->relation('permissions')->shareMany(Permission::class);
-        $mapper->useTimestamp();
-        $mapper->casts([
-            'created_at' => 'date',
-            'updated_at' => '?date',
+        parent::__construct($validator);
+        $this->param = $param;
+    }
+
+    /**
+     * {@inheritodc}
+     */
+    public function setData(): void
+    {
+        $this->addData('name', $this->param->getName());
+        $this->addData('description', $this->param->getDescription());
+    }
+
+    /**
+     * {@inheritodc}
+     */
+    public function setRules(): void
+    {
+        $this->validator->addRules('name', [
+           new NotEmpty(),
+           new MinLength(2)
         ]);
-    }
 
-    /**
-     * Set permissions
-     * @param Permission[] $permissions
-     * @return $this
-     */
-    public function setPermissions(array $permissions): self
-    {
-        foreach ($permissions as $permission) {
-            $this->mapper()->link('permissions', $permission);
-        }
-
-        return $this;
-    }
-
-    /**
-     * Remove permissions
-     * @param Permission[] $permissions
-     * @return $this
-     */
-    public function removePermissions(array $permissions): self
-    {
-        foreach ($permissions as $permission) {
-            $this->mapper()->unlink('permissions', $permission);
-        }
-
-        return $this;
+        $this->validator->addRules('description', [
+           new MinLength(3)
+        ]);
     }
 }

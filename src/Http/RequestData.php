@@ -82,6 +82,12 @@ class RequestData
     protected array $cookies = [];
 
     /**
+     * Whether to apply input cleanup
+     * @var bool
+     */
+    protected bool $autoEscape = true;
+
+    /**
      * Create new instance
      * @param ServerRequestInterface $request
      */
@@ -94,12 +100,24 @@ class RequestData
     }
 
     /**
+     * Set clean input status
+     * @param bool $autoEscape
+     * @return $this
+     */
+    public function setAutoEscape(bool $autoEscape = true): self
+    {
+        $this->autoEscape = $autoEscape;
+        return $this;
+    }
+
+
+    /**
      * Return the post data
      * @return array<string, mixed>
      */
     public function posts(): array
     {
-        return $this->posts;
+        return $this->applyInputClean($this->posts);
     }
 
     /**
@@ -108,7 +126,7 @@ class RequestData
      */
     public function gets(): array
     {
-        return $this->gets;
+        return $this->applyInputClean($this->gets);
     }
 
     /**
@@ -117,7 +135,7 @@ class RequestData
      */
     public function servers(): array
     {
-        return $this->servers;
+        return $this->applyInputClean($this->servers);
     }
 
     /**
@@ -126,9 +144,8 @@ class RequestData
      */
     public function cookies(): array
     {
-        return $this->cookies;
+        return $this->applyInputClean($this->cookies);
     }
-
 
     /**
      * Return the request query value for the given key
@@ -139,7 +156,8 @@ class RequestData
      */
     public function get(string $key, $default = null)
     {
-        return Arr::get($this->gets, $key, $default);
+        $gets = $this->applyInputClean($this->gets);
+        return Arr::get($gets, $key, $default);
     }
 
     /**
@@ -151,7 +169,8 @@ class RequestData
      */
     public function post(string $key, $default = null)
     {
-        return Arr::get($this->posts, $key, $default);
+        $posts = $this->applyInputClean($this->posts);
+        return Arr::get($posts, $key, $default);
     }
 
     /**
@@ -163,7 +182,8 @@ class RequestData
      */
     public function server(string $key, $default = null)
     {
-        return Arr::get($this->servers, $key, $default);
+        $servers = $this->applyInputClean($this->servers);
+        return Arr::get($servers, $key, $default);
     }
 
     /**
@@ -175,6 +195,41 @@ class RequestData
      */
     public function cookie(string $key, $default = null)
     {
-        return Arr::get($this->cookies, $key, $default);
+        $cookies = $this->applyInputClean($this->cookies);
+        return Arr::get($cookies, $key, $default);
+    }
+
+    /**
+     * Clean the user input, like to prevent XSS, etc.
+     * @param mixed $str
+     * @return mixed
+     */
+    protected function cleanInput($str)
+    {
+        if (is_array($str)) {
+            return array_map([$this, 'cleanInput'], $str);
+        }
+        if (is_object($str)) {
+            $obj = $str;
+            foreach ($str as $var => $value) {
+                $obj->{$var} = $this->cleanInput($value);
+            }
+            return $obj;
+        }
+        return htmlspecialchars(strip_tags($str), ENT_QUOTES, 'UTF-8');
+    }
+
+    /**
+     * Apply the input cleanup based on the status
+     * @param array<mixed> $data
+     * @return array<mixed>
+     */
+    protected function applyInputClean(array $data): array
+    {
+        if ($this->autoEscape) {
+            $data = $this->cleanInput($data);
+        }
+
+        return $data;
     }
 }

@@ -30,11 +30,11 @@
  */
 
 /**
- *  @file Role.php
+ *  @file ListAction.php
  *
- *  The Role/group Entity class
+ *  The List action class
  *
- *  @package    Platine\Framework\Auth\Entity
+ *  @package    Platine\Framework\Demo\Action\Role
  *  @author Platine Developers team
  *  @copyright  Copyright (c) 2020
  *  @license    http://opensource.org/licenses/MIT  MIT License
@@ -45,56 +45,60 @@
 
 declare(strict_types=1);
 
-namespace Platine\Framework\Auth\Entity;
+namespace Platine\Framework\Demo\Action\Role;
 
-use Platine\Orm\Entity;
-use Platine\Orm\Mapper\EntityMapperInterface;
+use Platine\Framework\Auth\Repository\RoleRepository;
+use Platine\Framework\Http\Response\TemplateResponse;
+use Platine\Http\Handler\RequestHandlerInterface;
+use Platine\Http\ResponseInterface;
+use Platine\Http\ServerRequestInterface;
+use Platine\Template\Template;
 
 /**
- * @class Role
- * @package Platine\Framework\Auth\Entity
+ * @class ListAction
+ * @package Platine\Framework\Demo\Action\Role
+ * @template T
  */
-class Role extends Entity
+class ListAction implements RequestHandlerInterface
 {
+    /**
+     * The role repository
+     * @var RoleRepository
+     */
+    protected RoleRepository $roleRepository;
 
     /**
-     * {@inheritdoc}
+     * The template instance
+     * @var Template
      */
-    public static function mapEntity(EntityMapperInterface $mapper): void
-    {
-        $mapper->relation('permissions')->shareMany(Permission::class);
-        $mapper->useTimestamp();
-        $mapper->casts([
-            'created_at' => 'date',
-            'updated_at' => '?date',
-        ]);
+    protected Template $template;
+
+    /**
+     * Create new instance
+     * @param Template $template
+     * @param RoleRepository $roleRepository
+     */
+    public function __construct(
+        Template $template,
+        RoleRepository $roleRepository
+    ) {
+        $this->roleRepository = $roleRepository;
+        $this->template = $template;
     }
 
     /**
-     * Set permissions
-     * @param Permission[] $permissions
-     * @return $this
+     * {@inheritodc}
      */
-    public function setPermissions(array $permissions): self
+    public function handle(ServerRequestInterface $request): ResponseInterface
     {
-        foreach ($permissions as $permission) {
-            $this->mapper()->link('permissions', $permission);
-        }
+        $roles = $this->roleRepository->all();
 
-        return $this;
-    }
-
-    /**
-     * Remove permissions
-     * @param Permission[] $permissions
-     * @return $this
-     */
-    public function removePermissions(array $permissions): self
-    {
-        foreach ($permissions as $permission) {
-            $this->mapper()->unlink('permissions', $permission);
-        }
-
-        return $this;
+        return new TemplateResponse(
+            $this->template,
+            'role/list',
+            [
+                'roles' => $roles,
+            ]
+        );
     }
 }

@@ -30,11 +30,11 @@
  */
 
 /**
- *  @file User.php
+ *  @file RoleParam.php
  *
- *  The User Entity class
+ *  The Role form parameter class
  *
- *  @package    Platine\Framework\Auth\Entity
+ *  @package    Platine\Framework\Demo\Form\Param
  *  @author Platine Developers team
  *  @copyright  Copyright (c) 2020
  *  @license    http://opensource.org/licenses/MIT  MIT License
@@ -45,85 +45,103 @@
 
 declare(strict_types=1);
 
-namespace Platine\Framework\Auth\Entity;
+namespace Platine\Framework\Demo\Form\Param;
 
-use Platine\Framework\Auth\IdentityInterface;
+use Platine\Framework\Form\Param\BaseParam;
 use Platine\Orm\Entity;
-use Platine\Orm\Mapper\EntityMapperInterface;
 
 /**
- * @class User
- * @package Platine\Framework\Auth\Entity
+ * @class RoleParam
+ * @package Platine\Framework\Demo\Form\Param
  */
-class User extends Entity implements IdentityInterface
+class RoleParam extends BaseParam
 {
+    /**
+     * The name
+     * @var string
+     */
+    protected string $name = '';
 
     /**
-     * {@inheritdoc}
+     * The description
+     * @var string
      */
-    public static function mapEntity(EntityMapperInterface $mapper): void
-    {
-        $mapper->relation('roles')->shareMany(Role::class);
-        $mapper->useTimestamp();
-        $mapper->casts([
-            'created_at' => 'date',
-            'updated_at' => '?date',
-        ]);
-    }
+    protected string $description = '';
 
     /**
-     * Set roles
-     * @param Role[] $roles
-     * @return $this
+     * The selected permissions id
+     * @var int[]
      */
-    public function setRoles(array $roles): self
+    protected array $permissions = [];
+
+    /**
+     * {@inheritodc}
+     */
+    public function fromEntity(Entity $entity): self
     {
-        foreach ($roles as $role) {
-            $this->mapper()->link('roles', $role);
-        }
+        $this->name = $entity->name;
+        $this->description = (string) $entity->description;
 
         return $this;
     }
 
     /**
-     * Remove roles
-     * @param Role[] $roles
-     * @return $this
-     */
-    public function removeRoles(array $roles): self
-    {
-        foreach ($roles as $role) {
-            $this->mapper()->unlink('roles', $role);
-        }
-
-        return $this;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getId()
-    {
-        return $this->mapper()->getColumn('id');
-    }
-
-    /**
-     * {@inheritdoc}
+     * Return the name
+     * @return string
      */
     public function getName(): string
     {
-        return sprintf(
-            '%s %s',
-            $this->mapper()->getColumn('firstname'),
-            $this->mapper()->getColumn('lastname')
-        );
+        return $this->name;
     }
 
     /**
-     * {@inheritdoc}
+     * Return the description
+     * @return string
      */
-    public function getUsername(): string
+    public function getDescription(): string
     {
-        return $this->mapper()->getColumn('username');
+        return $this->description;
+    }
+
+    /**
+     * Return the permissions
+     * @return int[]
+     */
+    public function getPermissions(): array
+    {
+        return $this->permissions;
+    }
+
+    /**
+     * Set the name
+     * @param string $name
+     * @return $this
+     */
+    public function setName(string $name): self
+    {
+        $this->name = $name;
+        return $this;
+    }
+
+    /**
+     * Set the description
+     * @param string $description
+     * @return $this
+     */
+    public function setDescription(string $description): self
+    {
+        $this->description = $description;
+        return $this;
+    }
+
+    /**
+     * Set the permissions
+     * @param int[] $permissions
+     * @return $this
+     */
+    public function setPermissions(array $permissions): self
+    {
+        $this->permissions = $permissions;
+        return $this;
     }
 }

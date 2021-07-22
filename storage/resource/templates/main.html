@@ -37,11 +37,11 @@
                         <li><a href = '{% route_url home %}'><i class = "fa fa-fw fa-home"></i> Home</a></li>
                         <li>
                             <a href="#users" data-toggle="collapse">
-                                <i class="fa fa-fw fa-users"></i> Users
+                                <i class="fa fa-fw fa-users"></i> Users Management
                             </a>
                             <ul id="users" class="list-unstyled collapse">
-                                <li><a href = '{% route_url user_create %}'>Create</a></li>
-                                <li><a href = '{% route_url user_list %}'>List</a></li>
+                                <li><a href = '{% route_url role_list %}'>Roles</a></li>
+                                <li><a href = '{% route_url user_list %}'>Users</a></li>
                             </ul>
                         </li>
                     </ul>

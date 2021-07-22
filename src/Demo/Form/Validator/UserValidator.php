@@ -64,7 +64,7 @@ class UserValidator extends AbstractValidator
 {
 
     /**
-     * The user parameter instance
+     * The parameter instance
      * @var UserParam
      */
     protected UserParam $param;

@@ -34,7 +34,7 @@
  *
  *  The Batch (delete, etc.) action class
  *
- *  @package    Platine\Framework\Demo\Action\User
+ *  @package    Platine\Framework\Demo\Action\Role
  *  @author Platine Developers team
  *  @copyright  Copyright (c) 2020
  *  @license    http://opensource.org/licenses/MIT  MIT License
@@ -45,9 +45,9 @@
 
 declare(strict_types=1);
 
-namespace Platine\Framework\Demo\Action\User;
+namespace Platine\Framework\Demo\Action\Role;
 
-use Platine\Framework\Auth\Repository\UserRepository;
+use Platine\Framework\Auth\Repository\RoleRepository;
 use Platine\Framework\Http\RequestData;
 use Platine\Framework\Http\Response\RedirectResponse;
 use Platine\Framework\Http\RouteHelper;
@@ -60,7 +60,7 @@ use Platine\Session\Session;
 
 /**
  * @class BatchAction
- * @package Platine\Framework\Demo\Action\User
+ * @package Platine\Framework\Demo\Action\Role
  * @template T
  */
 class BatchAction implements RequestHandlerInterface
@@ -73,10 +73,10 @@ class BatchAction implements RequestHandlerInterface
     protected LoggerInterface $logger;
 
     /**
-     * The user repository
-     * @var UserRepository
+     * The role repository
+     * @var RoleRepository
      */
-    protected UserRepository $userRepository;
+    protected RoleRepository $roleRepository;
 
     /**
      * The route helper instance
@@ -113,20 +113,20 @@ class BatchAction implements RequestHandlerInterface
      * @param Lang $lang
      * @param Session $session
      * @param LoggerInterface $logger
-     * @param UserRepository $userRepository
+     * @param RoleRepository $roleRepository
      * @param RouteHelper $routeHelper
      */
     public function __construct(
         Lang $lang,
         Session $session,
         LoggerInterface $logger,
-        UserRepository $userRepository,
+        RoleRepository $roleRepository,
         RouteHelper $routeHelper
     ) {
         $this->lang = $lang;
         $this->logger = $logger;
         $this->session = $session;
-        $this->userRepository = $userRepository;
+        $this->roleRepository = $roleRepository;
         $this->routeHelper = $routeHelper;
     }
 
@@ -140,7 +140,7 @@ class BatchAction implements RequestHandlerInterface
         $items =  $param->post('items', []);
         if (empty($items)) {
             return new RedirectResponse(
-                $this->routeHelper->generateUrl('user_list')
+                $this->routeHelper->generateUrl('role_list')
             );
         }
 
@@ -149,8 +149,6 @@ class BatchAction implements RequestHandlerInterface
 
         $actions = [
             'delete',
-            'disable',
-            'enable',
         ];
 
         foreach ($actions as $action) {
@@ -167,7 +165,7 @@ class BatchAction implements RequestHandlerInterface
         }
 
         return new RedirectResponse(
-            $this->routeHelper->generateUrl('user_list')
+            $this->routeHelper->generateUrl('role_list')
         );
     }
 
@@ -178,47 +176,13 @@ class BatchAction implements RequestHandlerInterface
     protected function deleteHandle()
     {
         $items = $this->items;
-        $this->logger->info('Deleted of users #{items}', ['items' => $items]);
+        $this->logger->info('Deleted of roles #{items}', ['items' => $items]);
 
-        $this->userRepository->query()
+        $this->roleRepository->query()
                             ->where('id')
                             ->in($items)
                             ->delete();
 
-        $this->session->setFlash('success', 'The selected users are deleted successfully');
-    }
-
-    /**
-     * Handle disable action
-     * @return mixed|void
-     */
-    protected function disableHandle()
-    {
-        $items = $this->items;
-        $this->logger->info('Disable of users #{items}', ['items' => $items]);
-
-        $this->userRepository->query()
-                            ->where('id')
-                            ->in($items)
-                            ->update(['status' => false]);
-
-        $this->session->setFlash('success', 'The selected users are disabled successfully');
-    }
-
-    /**
-     * Handle enable action
-     * @return mixed|void
-     */
-    protected function enableHandle()
-    {
-        $items = $this->items;
-        $this->logger->info('Enable of users #{items}', ['items' => $items]);
-
-        $this->userRepository->query()
-                            ->where('id')
-                            ->in($items)
-                            ->update(['status' => true]);
-
-        $this->session->setFlash('success', 'The selected users are enabled successfully');
+        $this->session->setFlash('success', 'The selected roles are deleted successfully');
     }
 }
