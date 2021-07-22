@@ -30,11 +30,11 @@
  */
 
 /**
- *  @file Permission.php
+ *  @file PermissionServiceProvider.php
  *
- *  The Permission Entity class
+ *  Permission service provider class
  *
- *  @package    Platine\Framework\Auth\Entity
+ *  @package    Platine\Framework\Demo\Provider
  *  @author Platine Developers team
  *  @copyright  Copyright (c) 2020
  *  @license    http://opensource.org/licenses/MIT  MIT License
@@ -45,27 +45,43 @@
 
 declare(strict_types=1);
 
-namespace Platine\Framework\Auth\Entity;
+namespace Platine\Framework\Demo\Provider;
 
-use Platine\Orm\Entity;
-use Platine\Orm\Mapper\EntityMapperInterface;
+use Platine\Framework\Demo\Action\Permission\BatchAction;
+use Platine\Framework\Demo\Action\Permission\CreateAction;
+use Platine\Framework\Demo\Action\Permission\EditAction;
+use Platine\Framework\Demo\Action\Permission\ListAction;
+use Platine\Framework\Service\ServiceProvider;
+use Platine\Route\Router;
 
 /**
- * @class Permission
- * @package Platine\Framework\Auth\Entity
+ * @class PermissionServiceProvider
+ * @package Platine\Framework
  */
-class Permission extends Entity
+class PermissionServiceProvider extends ServiceProvider
 {
 
     /**
      * {@inheritdoc}
      */
-    public static function mapEntity(EntityMapperInterface $mapper): void
+    public function register(): void
     {
-        $mapper->useTimestamp();
-        $mapper->casts([
-            'created_at' => 'date',
-            'updated_at' => '?date',
-        ]);
+        $this->app->bind(BatchAction::class);
+        $this->app->bind(EditAction::class);
+        $this->app->bind(CreateAction::class);
+        $this->app->bind(ListAction::class);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function addRoutes(Router $router): void
+    {
+        $router->group('/permissions', function (Router $router) {
+            $router->get('', ListAction::class, 'permission_list');
+            $router->post('/batch', BatchAction::class, 'permission_batch');
+            $router->add('/add', CreateAction::class, ['GET', 'POST'], 'permission_create');
+            $router->add('/edit/{id:i}', EditAction::class, ['GET', 'POST'], 'permission_edit');
+        });
     }
 }

@@ -1,6 +1,7 @@
 <?php
 
 use Platine\Framework\Demo\Provider\AppServiceProvider;
+use Platine\Framework\Demo\Provider\PermissionServiceProvider;
 use Platine\Framework\Demo\Provider\RepositoryServiceProvider;
 use Platine\Framework\Demo\Provider\RoleServiceProvider;
 use Platine\Framework\Demo\Provider\UserServiceProvider;
@@ -38,5 +39,6 @@ use Platine\Framework\Service\Provider\TemplateServiceProvider;
         AppServiceProvider::class,
         UserServiceProvider::class,
         RoleServiceProvider::class,
+        PermissionServiceProvider::class,
         RepositoryServiceProvider::class,
     ];

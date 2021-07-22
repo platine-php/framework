@@ -1,0 +1,66 @@
+{% extends "main" %}
+{% block body %}
+    <div class="card mb-4">
+    <div class="card-header bg-white font-weight-bold page-header">
+        Permission List
+    </div>
+    <div class="card-body">
+        <p class="text-right">
+            <a href = '{% route_url permission_create  %}' class = 'btn btn-sm btn-success'><i class="fa fa-plus-circle"></i> Create Permission</a>
+        </p>
+    {% if permissions.size > 0 %}
+        <form method="post" action ="{% route_url permission_batch  %}">
+            <div class= "table-responsive">
+                <table class="table table-hover table-sm table-bordered">
+                    <thead>
+                        <tr>
+                            <th><input type="checkbox" class = "list-actions-checkbox"/></th>
+                            <th>ID</th>
+                            <th>Code</th>
+                            <th>Description</th>
+                            <th>Depend</th>
+                            <th>Create Date</th>
+                            <th>Update Date</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for permission in permissions %}
+                            <tr>
+                                <td><input name = "items[]" value ="{{ permission.id }}" type="checkbox" class = "list-action"/></td>
+                                <td>{{ permission.id }}</td>
+                                <td>{{ permission.code }}</td>
+                                <td>{{ permission.description }}</td>
+                                <td>{{ permission.depend }}</td>
+                                <td>{{ permission.created_at|date:"d/m/Y H:i:s" }}</td>
+                                <td>{{ permission.updated_at|date:"d/m/Y H:i:s" }}</td>
+                                <td class="actions">
+                                    <a href = '{% route_url permission_edit id:permission.id  %}' class = 'btn btn-icon btn-sm btn-pill btn-primary'><i class="fa fa-fw fa-edit"></i></a>
+                                </td>
+                            </tr>
+                         {% endfor %}
+                    </tbody>
+                    <thead>
+                        <tr>
+                            <th><input type="checkbox" class = "list-actions-checkbox"/></th>
+                            <th>ID</th>
+                            <th>Code</th>
+                            <th>Description</th>
+                            <th>Depend</th>
+                            <th>Create Date</th>
+                            <th>Update Date</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+            <p class ="text-right">
+                <input type = "submit" name = "delete" value="Delete" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure to delete the selected items?');"/>
+            </p>
+        </form>
+        {% else %}
+            <p class="alert alert-info">No available data to show</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
