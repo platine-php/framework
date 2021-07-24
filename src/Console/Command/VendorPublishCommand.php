@@ -52,7 +52,6 @@ use Platine\Console\Command\Command;
 use Platine\Filesystem\Filesystem;
 use Platine\Framework\App\Application;
 use Platine\Stdlib\Helper\Composer;
-use Platine\Stdlib\Helper\Json;
 use Platine\Stdlib\Helper\Path;
 
 /**
@@ -103,6 +102,7 @@ class VendorPublishCommand extends Command
      * Create new instance
      * @param Application $app
      * @param Filesystem $filesystem
+     * @param Config<T> $config
      */
     public function __construct(
         Application $app,

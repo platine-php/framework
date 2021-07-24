@@ -160,8 +160,8 @@ class CreateAction implements RequestHandlerInterface
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
         $statusList = [
-            '0' => 'Deactive',
-            '1' => 'Active',
+            'D' => 'Deactive',
+            'A' => 'Active',
         ];
 
         $roles = $this->roleRepository->all();
@@ -222,7 +222,7 @@ class CreateAction implements RequestHandlerInterface
             'firstname' => Str::ucfirst($formParam->getFirstname()),
             'lastname' => Str::upper($formParam->getLastname()),
             'password' => $passwordHash,
-            'status' => (bool) $formParam->getStatus(),
+            'status' => $formParam->getStatus(),
             'email' => $formParam->getEmail(),
             'role' => $formParam->getRole(),
         ]);

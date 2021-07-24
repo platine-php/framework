@@ -48,10 +48,12 @@ declare(strict_types=1);
 namespace Platine\Framework\Demo\Action\Permission;
 
 use Platine\Framework\Auth\Repository\PermissionRepository;
+use Platine\Framework\Http\RequestData;
 use Platine\Framework\Http\Response\TemplateResponse;
 use Platine\Http\Handler\RequestHandlerInterface;
 use Platine\Http\ResponseInterface;
 use Platine\Http\ServerRequestInterface;
+use Platine\Pagination\Pagination;
 use Platine\Template\Template;
 
 /**
@@ -74,16 +76,25 @@ class ListAction implements RequestHandlerInterface
     protected Template $template;
 
     /**
+     * The pagination instance
+     * @var Pagination
+     */
+    protected Pagination $pagination;
+
+    /**
      * Create new instance
      * @param Template $template
      * @param PermissionRepository $permissionRepository
+     * @param Pagination $pagination
      */
     public function __construct(
         Template $template,
-        PermissionRepository $permissionRepository
+        PermissionRepository $permissionRepository,
+        Pagination $pagination
     ) {
         $this->permissionRepository = $permissionRepository;
         $this->template = $template;
+        $this->pagination = $pagination;
     }
 
     /**
@@ -91,15 +102,28 @@ class ListAction implements RequestHandlerInterface
      */
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
-        $permissions = $this->permissionRepository
+
+        $param = new RequestData($request);
+
+        ////////// BEGIN PAGINATION //////////////////
+        $totalItems = $this->permissionRepository->query()
+                                                 ->count('id');
+        $currentPage = (int)$param->get('page', 1);
+        $this->pagination->setTotalItems($totalItems)
+                         ->setCurrentPage($currentPage);
+        $limit = $this->pagination->getItemsPerPage();
+        $offset = $this->pagination->getOffset();
+        ////////// END PAGINATION //////////////////
+
+        $permissions = $this->permissionRepository->limit($offset, $limit)
                                                   ->orderBy('code')
                                                   ->all();
-
         return new TemplateResponse(
             $this->template,
             'permission/list',
             [
                 'permissions' => $permissions,
+                'pagination' => $this->pagination->render()
             ]
         );
     }

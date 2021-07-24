@@ -157,7 +157,7 @@ class SessionAuthentication implements AuthenticationInterface
                     ->findBy(['username' => $username]);
         if (!$user) {
             throw new AccountNotFoundException('Can not find the user with the given information', 401);
-        } elseif ($user->status == 0) {
+        } elseif ($user->status === 'D') {
             throw new AccountLockedException(
                 'User is locked',
                 401

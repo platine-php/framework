@@ -108,6 +108,12 @@ class Application extends Container
     protected string $storagePath = 'storage';
 
     /**
+     * The custom app name space
+     * @var string
+     */
+    protected string $namespace = '';
+
+    /**
      * The list of service providers
      * @var array<string, ServiceProvider>
      */
@@ -145,6 +151,26 @@ class Application extends Container
     public function version(): string
     {
         return self::VERSION;
+    }
+
+    /**
+     * Return the application name space
+     * @return string
+     */
+    public function getNamespace(): string
+    {
+        return $this->namespace;
+    }
+
+    /**
+     * Set the application name space
+     * @param string $namespace
+     * @return $this
+     */
+    public function setNamespace(string $namespace): self
+    {
+        $this->namespace = $namespace;
+        return $this;
     }
 
     /**

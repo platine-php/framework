@@ -30,10 +30,9 @@ class AddUsersTable20210705065248 extends AbstractMigration
                  ->description('The user password')
                  ->notNull();
 
-            $table->integer('status')
-                 ->size('tiny')
-                 ->description('The user status')
-                 ->defaultValue(0);
+            $table->fixed('status', 1)
+                 ->description('The user status, A=Active, D=Deactive')
+                 ->defaultValue('D');
 
             $table->integer('age')
                  ->size('tiny')

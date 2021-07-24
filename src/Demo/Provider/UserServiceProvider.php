@@ -84,7 +84,7 @@ class UserServiceProvider extends ServiceProvider
     public function addRoutes(Router $router): void
     {
         $router->group('/users', function (Router $router) {
-            $router->get('', ListAction::class, 'user_list', ['permission' => 'users']);
+            $router->get('', ListAction::class, 'user_list', ['permission' => 'view_user']);
             $router->get('/detail/{id:i}', DetailAction::class, 'user_detail');
             $router->post('/batch', BatchAction::class, 'user_batch');
             $router->get('/logout', LogoutAction::class, 'user_logout');

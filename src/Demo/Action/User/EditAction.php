@@ -174,8 +174,8 @@ class EditAction implements RequestHandlerInterface
         }
 
         $statusList = [
-            '0' => 'Deactive',
-            '1' => 'Active',
+            'D' => 'Deactive',
+            'A' => 'Active',
         ];
 
         $roles = $this->roleRepository->all();
@@ -241,7 +241,7 @@ class EditAction implements RequestHandlerInterface
         $user->lastname = Str::upper($formParam->getLastname());
         $user->role = $formParam->getRole();
         $user->email = $formParam->getEmail();
-        $user->status = (bool) $formParam->getStatus();
+        $user->status = $formParam->getStatus();
 
         if (!empty($password)) {
             $passwordHash = $this->hash->hash($password);

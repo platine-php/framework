@@ -48,10 +48,12 @@ declare(strict_types=1);
 namespace Platine\Framework\Demo\Action\User;
 
 use Platine\Framework\Auth\Repository\UserRepository;
+use Platine\Framework\Http\RequestData;
 use Platine\Framework\Http\Response\TemplateResponse;
 use Platine\Http\Handler\RequestHandlerInterface;
 use Platine\Http\ResponseInterface;
 use Platine\Http\ServerRequestInterface;
+use Platine\Pagination\Pagination;
 use Platine\Template\Template;
 
 /**
@@ -74,16 +76,25 @@ class ListAction implements RequestHandlerInterface
     protected Template $template;
 
     /**
+     * The pagination instance
+     * @var Pagination
+     */
+    protected Pagination $pagination;
+
+    /**
      * Create new instance
      * @param Template $template
      * @param UserRepository $userRepository
+     * @param Pagination $pagination
      */
     public function __construct(
         Template $template,
-        UserRepository $userRepository
+        UserRepository $userRepository,
+        Pagination $pagination
     ) {
         $this->userRepository = $userRepository;
         $this->template = $template;
+        $this->pagination = $pagination;
     }
 
     /**
@@ -91,13 +102,52 @@ class ListAction implements RequestHandlerInterface
      */
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
-        $users = $this->userRepository->all();
+        $param = new RequestData($request);
+
+        //FILTERS
+        /** @var array<string, mixed> $filters */
+        $filters = [];
+        $filtersParam = [
+            'status'
+        ];
+
+        foreach ($filtersParam as $p) {
+            $value = $param->get($p);
+            if ($value) {
+                $filters[$p] = $value;
+            }
+        }
+
+        ////////// BEGIN PAGINATION //////////////////
+        $totalItems = $this->userRepository->query()
+                                            ->filter($filters)
+                                            ->count('id');
+        $currentPage = (int)$param->get('page', 1);
+        $this->pagination->setTotalItems($totalItems)
+                         ->setCurrentPage($currentPage);
+        $limit = $this->pagination->getItemsPerPage();
+        $offset = $this->pagination->getOffset();
+        ////////// END PAGINATION //////////////////
+
+        $users = $this->userRepository
+                                      ->limit($offset, $limit)
+                                      ->orderBy(['lastname', 'firstname'])
+                                      ->filters($filters)
+                                      ->all();
+
+        $statusList = [
+            'D' => 'Deactive',
+            'A' => 'Active',
+        ];
 
         return new TemplateResponse(
             $this->template,
             'user/list',
             [
                 'users' => $users,
+                'status' => $statusList,
+                'filters' => $filters,
+                'pagination' => $this->pagination->render()
             ]
         );
     }

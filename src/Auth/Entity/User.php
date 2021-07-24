@@ -50,6 +50,7 @@ namespace Platine\Framework\Auth\Entity;
 use Platine\Framework\Auth\IdentityInterface;
 use Platine\Orm\Entity;
 use Platine\Orm\Mapper\EntityMapperInterface;
+use Platine\Orm\Query\Query;
 
 /**
  * @class User
@@ -69,6 +70,10 @@ class User extends Entity implements IdentityInterface
             'created_at' => 'date',
             'updated_at' => '?date',
         ]);
+
+        $mapper->filter('status', function (Query $q, $status) {
+            $q->where('status')->is($status);
+        });
     }
 
     /**

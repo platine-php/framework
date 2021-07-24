@@ -117,7 +117,7 @@ class UserValidator extends AbstractValidator
 
         $this->validator->addRules('status', [
            new NotEmpty(),
-           new InList([0, 1])
+           new InList(['A', 'D'])
         ]);
 
         $this->validator->addRules('email', [

@@ -54,9 +54,9 @@
                                 <div class="form-group row">
                                   <label for="status" class = "col-md-3 col-form-label">Status <span class="required">*</span></label>
                                   <div class="col-md-9">
-                                    <select name = 'status' class="form-control form-control-sm">
+                                    <select name = 'status' class="form-control form-control-sm select2js">
                                         {% for s in status %}
-                                            <option value="{{ forloop.index0 }}" {% if param.status == forloop.index0 %}selected{% endif %}>{{ s }}</option>
+                                            <option value="{{ s.0 }}" {% if param.status == s.0 %}selected{% endif %}>{{ s.1 }}</option>
                                         {% endfor %}
                                     </select>
                                     <span class="ferror">{{ errors.status }}</span>

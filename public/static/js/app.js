@@ -63,5 +63,12 @@ function initPage($){
         e.preventDefault();
         $(":checkbox").prop('checked', false);
     });
+    
+    /**
+     For select2 search
+    */
+    $(".select2js").select2({
+        allowClear: false
+    });
 }
 

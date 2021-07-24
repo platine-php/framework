@@ -1,4 +1,5 @@
-<html>
+<!DOCTYPE html>
+<html lang="fr">
     <head>
         <meta charset="UTF-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -11,6 +12,7 @@
         {% endblock %}
         <link href="{% static css/bootstrap.min.css %}" type="text/css" rel="stylesheet" />
         <link href="{% static css/fontawesome-all.min.css %}" type="text/css" rel="stylesheet" />
+        <link href="{% static select2/css/select2.min.css %}" type="text/css" rel="stylesheet" />
         <link href="{% static css/app.css %}" type="text/css" rel="stylesheet" /> 
     </head>
     <body class="bg-light">
@@ -78,13 +80,14 @@
             <br />
             <hr />
             <footer>
-                <p class = "text-center"><b>&copy; 2021 Platine App 1.0.0-dev, developed using <a href = 'https://github.com/platine-php/framework' target = '_blank'><b>Platine Framework</b></p>
+                <p class = "text-center"><b>&copy; 2021 Platine App</b> 1.0.0-dev, developed using <a href = 'https://github.com/platine-php/framework' target = '_blank'><b>Platine Framework</b></a></p>
             </footer>
             </div> <!-- ./content p-4 -->
             </div> <!-- ./d-flex -->
         {% endblock %} <!-- endblock footer -->
         <script src="{% static js/jquery.min.js %}"></script>
         <script src="{% static js/bootstrap.bundle.min.js %}"></script>
+        <script src="{% static select2/js/select2.full.min.js %}"></script>
         <script src="{% static js/app.js %}"></script>
     </body>
 </html>

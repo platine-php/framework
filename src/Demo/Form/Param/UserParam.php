@@ -115,7 +115,7 @@ class UserParam extends BaseParam
         $this->password = $entity->password;
         $this->role = (string) $entity->role;
         $this->email = $entity->email;
-        $this->status = (string) $entity->status;
+        $this->status = $entity->status;
 
         return $this;
     }

@@ -181,9 +181,9 @@ class BatchAction implements RequestHandlerInterface
         $this->logger->info('Deleted of users #{items}', ['items' => $items]);
 
         $this->userRepository->query()
-                            ->where('id')
-                            ->in($items)
-                            ->delete();
+                             ->where('id')
+                                ->in($items)
+                             ->delete();
 
         $this->session->setFlash('success', $this->lang->tr('The selected users are deleted successfully'));
     }
@@ -200,7 +200,7 @@ class BatchAction implements RequestHandlerInterface
         $this->userRepository->query()
                             ->where('id')
                             ->in($items)
-                            ->update(['status' => false]);
+                            ->update(['status' => 'D']);
 
         $this->session->setFlash('success', 'The selected users are disabled successfully');
     }
@@ -217,7 +217,7 @@ class BatchAction implements RequestHandlerInterface
         $this->userRepository->query()
                             ->where('id')
                             ->in($items)
-                            ->update(['status' => true]);
+                            ->update(['status' => 'A']);
 
         $this->session->setFlash('success', 'The selected users are enabled successfully');
     }

@@ -31,7 +31,7 @@
                                 <div class="form-group row">
                                   <label for="depend" class = "col-md-3 col-form-label">Dependency </label>
                                   <div class="col-md-9">
-                                      <select name ="depend" class="form-control form-control-sm">
+                                      <select name ="depend" class="form-control form-control-sm select2js">
                                           <option value="">--None--</option>
                                           {% for permission in permissions %}
                                             <option {% if param.depend == permission.code %}selected{% endif %} value="{{ permission.code }}">{{ permission.description }}</option>

@@ -48,10 +48,12 @@ declare(strict_types=1);
 namespace Platine\Framework\Demo\Action\Role;
 
 use Platine\Framework\Auth\Repository\RoleRepository;
+use Platine\Framework\Http\RequestData;
 use Platine\Framework\Http\Response\TemplateResponse;
 use Platine\Http\Handler\RequestHandlerInterface;
 use Platine\Http\ResponseInterface;
 use Platine\Http\ServerRequestInterface;
+use Platine\Pagination\Pagination;
 use Platine\Template\Template;
 
 /**
@@ -74,16 +76,25 @@ class ListAction implements RequestHandlerInterface
     protected Template $template;
 
     /**
+     * The pagination instance
+     * @var Pagination
+     */
+    protected Pagination $pagination;
+
+    /**
      * Create new instance
      * @param Template $template
      * @param RoleRepository $roleRepository
+     * @param Pagination $pagination
      */
     public function __construct(
         Template $template,
-        RoleRepository $roleRepository
+        RoleRepository $roleRepository,
+        Pagination $pagination
     ) {
         $this->roleRepository = $roleRepository;
         $this->template = $template;
+        $this->pagination = $pagination;
     }
 
     /**
@@ -91,13 +102,28 @@ class ListAction implements RequestHandlerInterface
      */
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
-        $roles = $this->roleRepository->all();
+        $param = new RequestData($request);
+
+        ////////// BEGIN PAGINATION //////////////////
+        $totalItems = $this->roleRepository->query()
+                                            ->count('id');
+        $currentPage = (int)$param->get('page', 1);
+        $this->pagination->setTotalItems($totalItems)
+                         ->setCurrentPage($currentPage);
+        $limit = $this->pagination->getItemsPerPage();
+        $offset = $this->pagination->getOffset();
+        ////////// END PAGINATION //////////////////
+
+        $roles = $this->roleRepository
+                                      ->limit($offset, $limit)
+                                      ->all();
 
         return new TemplateResponse(
             $this->template,
             'role/list',
             [
                 'roles' => $roles,
+                'pagination' => $this->pagination->render()
             ]
         );
     }
