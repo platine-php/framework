@@ -47,7 +47,6 @@ declare(strict_types=1);
 
 namespace Platine\Framework\Demo\Action\Permission;
 
-use Platine\Framework\Auth\Entity\Permission;
 use Platine\Framework\Auth\Repository\PermissionRepository;
 use Platine\Framework\Demo\Form\Param\PermissionParam;
 use Platine\Framework\Demo\Form\Validator\PermissionValidator;
@@ -170,7 +169,7 @@ class EditAction implements RequestHandlerInterface
 
         $param = new RequestData($request);
         $formParam = new PermissionParam($param->posts());
-        $validator = new PermissionValidator($formParam);
+        $validator = new PermissionValidator($formParam, $this->lang);
 
         if (!$validator->validate()) {
             return new TemplateResponse(

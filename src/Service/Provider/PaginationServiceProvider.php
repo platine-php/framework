@@ -75,8 +75,9 @@ class PaginationServiceProvider extends ServiceProvider
                 'page'
             );
         });
+
         $this->app->bind(RendererInterface::class, BootstrapRenderer::class);
-        $this->app->bind(Pagination::class);
+
         $this->app->bind(Pagination::class, function (ContainerInterface $app) {
             $pagination = new Pagination(
                 $app->get(UrlGeneratorInterface::class),

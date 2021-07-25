@@ -202,7 +202,7 @@ class EditAction implements RequestHandlerInterface
 
         $param = new RequestData($request);
         $formParam = new UserParam($param->posts());
-        $validator = new UserValidator($formParam);
+        $validator = new UserValidator($formParam, $this->lang);
 
         if (!$validator->validate()) {
             return new TemplateResponse(

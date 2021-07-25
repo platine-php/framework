@@ -49,10 +49,10 @@ namespace Platine\Framework\Demo\Form\Validator;
 
 use Platine\Framework\Demo\Form\Param\PermissionParam;
 use Platine\Framework\Form\Validator\AbstractValidator;
+use Platine\Lang\Lang;
 use Platine\Validator\Rule\AlphaDash;
 use Platine\Validator\Rule\MinLength;
 use Platine\Validator\Rule\NotEmpty;
-use Platine\Validator\Validator;
 
 /**
  * @class PermissionValidator
@@ -70,18 +70,18 @@ class PermissionValidator extends AbstractValidator
     /**
      * Create new instance
      * @param PermissionParam $param
-     * @param Validator|null $validator
+     * @param Lang $lang
      */
-    public function __construct(PermissionParam $param, ?Validator $validator = null)
+    public function __construct(PermissionParam $param, Lang $lang)
     {
-        parent::__construct($validator);
+        parent::__construct($lang);
         $this->param = $param;
     }
 
     /**
      * {@inheritodc}
      */
-    public function setData(): void
+    public function setValidationData(): void
     {
         $this->addData('code', $this->param->getCode());
         $this->addData('description', $this->param->getDescription());
@@ -91,20 +91,20 @@ class PermissionValidator extends AbstractValidator
     /**
      * {@inheritodc}
      */
-    public function setRules(): void
+    public function setValidationRules(): void
     {
-        $this->validator->addRules('code', [
+        $this->addRules('code', [
            new NotEmpty(),
            new MinLength(2),
            new AlphaDash()
         ]);
 
-        $this->validator->addRules('description', [
+        $this->addRules('description', [
            new NotEmpty(),
            new MinLength(3)
         ]);
 
-        $this->validator->addRules('depend', [
+        $this->addRules('depend', [
            new MinLength(2)
         ]);
     }

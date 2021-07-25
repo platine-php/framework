@@ -47,7 +47,6 @@ declare(strict_types=1);
 
 namespace Platine\Framework\Demo\Action\Role;
 
-use Platine\Framework\Auth\Entity\Role;
 use Platine\Framework\Auth\Repository\PermissionRepository;
 use Platine\Framework\Auth\Repository\RoleRepository;
 use Platine\Framework\Demo\Form\Param\RoleParam;
@@ -187,7 +186,7 @@ class EditAction implements RequestHandlerInterface
 
         $param = new RequestData($request);
         $formParam = new RoleParam($param->posts());
-        $validator = new RoleValidator($formParam);
+        $validator = new RoleValidator($formParam, $this->lang);
 
         if (!$validator->validate()) {
             return new TemplateResponse(

@@ -164,7 +164,7 @@ class CreateAction implements RequestHandlerInterface
 
         $param = new RequestData($request);
         $formParam = new RoleParam($param->posts());
-        $validator = new RoleValidator($formParam);
+        $validator = new RoleValidator($formParam, $this->lang);
 
         if (!$validator->validate()) {
             return new TemplateResponse(

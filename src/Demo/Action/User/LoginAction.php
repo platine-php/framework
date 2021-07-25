@@ -153,7 +153,7 @@ class LoginAction implements RequestHandlerInterface
 
         $param = new RequestData($request);
         $formParam = new AuthParam($param->posts());
-        $validator = new AuthValidator($formParam);
+        $validator = new AuthValidator($formParam, $this->lang);
 
         if (!$validator->validate()) {
             return new TemplateResponse(

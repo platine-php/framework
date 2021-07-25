@@ -49,7 +49,6 @@ namespace Platine\Framework\Demo\Action\Permission;
 
 use Platine\Framework\Auth\Entity\Permission;
 use Platine\Framework\Auth\Repository\PermissionRepository;
-use Platine\Framework\Auth\Repository\RoleRepository;
 use Platine\Framework\Demo\Form\Param\PermissionParam;
 use Platine\Framework\Demo\Form\Validator\PermissionValidator;
 use Platine\Framework\Http\RequestData;
@@ -155,7 +154,7 @@ class CreateAction implements RequestHandlerInterface
 
         $param = new RequestData($request);
         $formParam = new PermissionParam($param->posts());
-        $validator = new PermissionValidator($formParam);
+        $validator = new PermissionValidator($formParam, $this->lang);
 
         if (!$validator->validate()) {
             return new TemplateResponse(

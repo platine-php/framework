@@ -49,12 +49,12 @@ namespace Platine\Framework\Demo\Form\Validator;
 
 use Platine\Framework\Demo\Form\Param\UserParam;
 use Platine\Framework\Form\Validator\AbstractValidator;
+use Platine\Lang\Lang;
 use Platine\Validator\Rule\AlphaDash;
 use Platine\Validator\Rule\Email;
 use Platine\Validator\Rule\InList;
 use Platine\Validator\Rule\MinLength;
 use Platine\Validator\Rule\NotEmpty;
-use Platine\Validator\Validator;
 
 /**
  * @class UserValidator
@@ -72,18 +72,18 @@ class UserValidator extends AbstractValidator
     /**
      * Create new instance
      * @param UserParam $param
-     * @param Validator|null $validator
+     * @param Lang $lang
      */
-    public function __construct(UserParam $param, ?Validator $validator = null)
+    public function __construct(UserParam $param, Lang $lang)
     {
-        parent::__construct($validator);
+        parent::__construct($lang);
         $this->param = $param;
     }
 
     /**
      * {@inheritodc}
      */
-    public function setData(): void
+    public function setValidationData(): void
     {
         $this->addData('username', $this->param->getUsername());
         $this->addData('lastname', $this->param->getLastname());
@@ -97,39 +97,39 @@ class UserValidator extends AbstractValidator
     /**
      * {@inheritodc}
      */
-    public function setRules(): void
+    public function setValidationRules(): void
     {
-        $this->validator->addRules('username', [
+        $this->addRules('username', [
            new NotEmpty(),
            new MinLength(3),
            new AlphaDash()
         ]);
 
-        $this->validator->addRules('lastname', [
+        $this->addRules('lastname', [
            new NotEmpty(),
            new MinLength(3)
         ]);
 
-        $this->validator->addRules('firstname', [
+        $this->addRules('firstname', [
            new NotEmpty(),
            new MinLength(3)
         ]);
 
-        $this->validator->addRules('status', [
+        $this->addRules('status', [
            new NotEmpty(),
            new InList(['A', 'D'])
         ]);
 
-        $this->validator->addRules('email', [
+        $this->addRules('email', [
            new NotEmpty(),
            new Email()
         ]);
 
-        $this->validator->addRules('role', [
+        $this->addRules('role', [
            new MinLength(3)
         ]);
 
-        $this->validator->addRules('password', [
+        $this->addRules('password', [
            new MinLength(5),
         ]);
     }

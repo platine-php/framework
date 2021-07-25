@@ -1,0 +1,156 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Platine Validator 1.0.0\n"
+"POT-Creation-Date: 2021-07-25 08:02+0100\n"
+"PO-Revision-Date: 2021-07-25 08:11+0100\n"
+"Language-Team: Platine Team\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.0\n"
+"X-Poedit-Basepath: ../../../src\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"X-Poedit-KeywordsList: translate\n"
+"Last-Translator: Tony NGUEREZA <nguerezatony@gmail.com>\n"
+"Language: fr_FR\n"
+"X-Poedit-SearchPath-0: .\n"
+
+#: Rule/Alpha.php:80
+#, php-format
+msgid "%s must contain alphabetic characters"
+msgstr "%s doit contenir des caractères alphabétiques"
+
+#: Rule/AlphaDash.php:80
+#, php-format
+msgid "%s must contain alphabetic characters, - and _"
+msgstr "%s doit contenir des caractères alphabétiques, - et _"
+
+#: Rule/AlphaNumeric.php:80
+#, php-format
+msgid "%s must contain alphanumeric characters!"
+msgstr "%s doit contenir des caractères alphanumériques !"
+
+#: Rule/AlphaNumericDash.php:80
+#, php-format
+msgid "%s must contain alphanumeric characters, - and _"
+msgstr "%s doit contenir des caractères alphanumériques, - et _"
+
+#: Rule/Date.php:87
+#, php-format
+msgid "%s must contain a correct date format [%s]!"
+msgstr "%s doit contenir un format de date correct [%s] !"
+
+#: Rule/DateAfter.php:86
+#, php-format
+msgid "%s must be after the date [%s]!"
+msgstr "%s doit être après la date [%s] !"
+
+#: Rule/DateBefore.php:86
+#, php-format
+msgid "%s must be before the date [%s]!"
+msgstr "%s doit être antérieur à la date [%s] !"
+
+#: Rule/Email.php:71
+#, php-format
+msgid "%s must be a valid email address!"
+msgstr "%s doit être une adresse e-mail valide !"
+
+#: Rule/Equal.php:86
+#, php-format
+msgid "%s must to be equal to [%s]!"
+msgstr "%s doit être égal à [%s] !"
+
+#: Rule/ExactLength.php:89
+#, php-format
+msgid "%s must contain exactly %d characters!"
+msgstr "%s doit contenir exactement %d caractères !"
+
+#: Rule/IP.php:71
+#, php-format
+msgid "%s must be a valid ip address!"
+msgstr "%s doit être une adresse IP valide !"
+
+#: Rule/IPv4.php:71
+#, php-format
+msgid "%s must be a valid IPv4 address!"
+msgstr "%s doit être une adresse IPv4 valide !"
+
+#: Rule/IPv6.php:71
+#, php-format
+msgid "%s must be a valid IPv6 address!"
+msgstr "%s doit être une adresse IPv6 valide !"
+
+#: Rule/InList.php:86
+#, php-format
+msgid "%s must be one of the following (%s)!"
+msgstr "%s doit être l'un des suivants (%s) !"
+
+#: Rule/Integer.php:73
+#, php-format
+msgid "%s must be an integer!"
+msgstr "%s doit être un entier !"
+
+#: Rule/Matches.php:87
+#, php-format
+msgid "%s must be identical to field %s!"
+msgstr "%s doit être identique au champ %s !"
+
+#: Rule/Max.php:89
+#, php-format
+msgid "%s must be less or equal to [%s]!"
+msgstr "%s doit être inférieur ou égal à [%s] !"
+
+#: Rule/MaxLength.php:89
+#, php-format
+msgid "%s must contain at most %d characters!"
+msgstr "%s doit contenir au plus %d caractères !"
+
+#: Rule/Min.php:89
+#, php-format
+msgid "%s must be greather or equal to [%s]!"
+msgstr "%s doit être supérieur ou égal à [%s] !"
+
+#: Rule/MinLength.php:89
+#, php-format
+msgid "%s must contain at least %d characters!"
+msgstr "%s doit contenir au moins %d caractères !"
+
+#: Rule/Natural.php:74
+#, php-format
+msgid "%s must be a natural number (0, 1, 2, )!"
+msgstr "%s doit être un nombre naturel (0, 1, 2, ) !"
+
+#: Rule/NotEmpty.php:74
+#, php-format
+msgid "%s must not to be empty!"
+msgstr "%s ne doit pas être vide !"
+
+#: Rule/NotEqual.php:86
+#, php-format
+msgid "%s must not to be equal to [%s]!"
+msgstr "%s ne doit pas être égal à [%s] !"
+
+#: Rule/NotMatches.php:87
+#, php-format
+msgid "%s must not to be identical to field %s!"
+msgstr "%s ne doit pas être identique au champ %s !"
+
+#: Rule/Number.php:71
+#, php-format
+msgid "%s must be a number!"
+msgstr "%s doit être un nombre !"
+
+#: Rule/Range.php:94
+#, php-format
+msgid "%s must be between %s and %s!"
+msgstr "%s doit être compris entre %s et %s !"
+
+#: Rule/Regex.php:86
+#, php-format
+msgid "%s does not use the correct format!"
+msgstr "%s n'utilise pas le bon format !"
+
+#: Rule/URL.php:71
+#, php-format
+msgid "%s must be a valid URL!"
+msgstr "%s doit être une URL valide !"

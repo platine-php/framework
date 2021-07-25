@@ -47,64 +47,34 @@ declare(strict_types=1);
 
 namespace Platine\Framework\Form\Validator;
 
+use Platine\Lang\Lang;
 use Platine\Validator\Validator;
 
 /**
  * @class AbstractValidator
  * @package Platine\Framework\Form\Validator
  */
-abstract class AbstractValidator
+abstract class AbstractValidator extends Validator
 {
     /**
-     * The validation instance
-     * @var Validator
-     */
-    protected Validator $validator;
-
-    /**
-     * The data to validate
-     * @var array<string, mixed>
-     */
-    protected array $data = [];
-
-    /**
      * Create new instance
-     * @param Validator|null $validator
+     * @param Lang $lang
      */
-    public function __construct(?Validator $validator = null)
+    public function __construct(Lang $lang)
     {
-        $this->validator = $validator ?? new Validator();
+        parent::__construct($lang);
     }
 
     /**
-     * Validate the data
+     * {@inheritodc}
      * @return bool
      */
-    public function validate(): bool
+    public function validate(array $data = []): bool
     {
-        $this->setRules();
-        $this->setData();
-        $this->validator->setData($this->data);
+        $this->setValidationRules();
+        $this->setValidationData();
 
-        return $this->validator->validate();
-    }
-
-    /**
-     * Whether is the validation is passed or not
-     * @return bool
-     */
-    public function isValid(): bool
-    {
-        return $this->validator->isValid();
-    }
-
-    /**
-     * Return the validations errors
-     * @return array<string, string>
-     */
-    public function getErrors(): array
-    {
-        return $this->validator->getErrors();
+        return parent::validate();
     }
 
     /**
@@ -124,11 +94,11 @@ abstract class AbstractValidator
      * Set the validation rules
      * @return void
      */
-    abstract public function setRules(): void;
+    abstract public function setValidationRules(): void;
 
     /**
      * Set the validation data
      * @return void
      */
-    abstract public function setData(): void;
+    abstract public function setValidationData(): void;
 }

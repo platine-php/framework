@@ -1,7 +1,7 @@
 <?php
 
     return [
-        'locale' => 'en_US',
+        'locale' => 'fr_FR',
         'store_name' => 'app_lang',
         'domain' => 'languages',
         'encoding' => 'UTF-8',

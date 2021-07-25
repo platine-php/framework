@@ -49,9 +49,9 @@ namespace Platine\Framework\Demo\Form\Validator;
 
 use Platine\Framework\Demo\Form\Param\AuthParam;
 use Platine\Framework\Form\Validator\AbstractValidator;
+use Platine\Lang\Lang;
 use Platine\Validator\Rule\MinLength;
 use Platine\Validator\Rule\NotEmpty;
-use Platine\Validator\Validator;
 
 /**
  * @class AuthValidator
@@ -68,18 +68,18 @@ class AuthValidator extends AbstractValidator
     /**
      * Create new instance
      * @param AuthParam $param
-     * @param Validator|null $validator
+     * @param Lang $lang
      */
-    public function __construct(AuthParam $param, ?Validator $validator = null)
+    public function __construct(AuthParam $param, Lang $lang)
     {
-        parent::__construct($validator);
+        parent::__construct($lang);
         $this->param = $param;
     }
 
     /**
      * {@inheritodc}
      */
-    public function setData(): void
+    public function setValidationData(): void
     {
         $this->addData('username', $this->param->getUsername());
         $this->addData('password', $this->param->getPassword());
@@ -88,14 +88,14 @@ class AuthValidator extends AbstractValidator
     /**
      * {@inheritodc}
      */
-    public function setRules(): void
+    public function setValidationRules(): void
     {
-        $this->validator->addRules('username', [
+        $this->addRules('username', [
            new NotEmpty(),
            new MinLength(3)
         ]);
 
-        $this->validator->addRules('password', [
+        $this->addRules('password', [
            new NotEmpty(),
         ]);
     }

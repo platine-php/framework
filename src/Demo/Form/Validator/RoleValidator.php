@@ -49,9 +49,9 @@ namespace Platine\Framework\Demo\Form\Validator;
 
 use Platine\Framework\Demo\Form\Param\RoleParam;
 use Platine\Framework\Form\Validator\AbstractValidator;
+use Platine\Lang\Lang;
 use Platine\Validator\Rule\MinLength;
 use Platine\Validator\Rule\NotEmpty;
-use Platine\Validator\Validator;
 
 /**
  * @class RoleValidator
@@ -69,18 +69,18 @@ class RoleValidator extends AbstractValidator
     /**
      * Create new instance
      * @param RoleParam $param
-     * @param Validator|null $validator
+     * @param Lang $lang
      */
-    public function __construct(RoleParam $param, ?Validator $validator = null)
+    public function __construct(RoleParam $param, Lang $lang)
     {
-        parent::__construct($validator);
+        parent::__construct($lang);
         $this->param = $param;
     }
 
     /**
      * {@inheritodc}
      */
-    public function setData(): void
+    public function setValidationData(): void
     {
         $this->addData('name', $this->param->getName());
         $this->addData('description', $this->param->getDescription());
@@ -89,14 +89,14 @@ class RoleValidator extends AbstractValidator
     /**
      * {@inheritodc}
      */
-    public function setRules(): void
+    public function setValidationRules(): void
     {
-        $this->validator->addRules('name', [
+        $this->addRules('name', [
            new NotEmpty(),
            new MinLength(2)
         ]);
 
-        $this->validator->addRules('description', [
+        $this->addRules('description', [
            new MinLength(3)
         ]);
     }

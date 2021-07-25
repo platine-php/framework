@@ -49,6 +49,8 @@ namespace Platine\Framework\Console\Command;
 
 use Platine\Config\Config;
 use Platine\Console\Command\Command;
+use Platine\Filesystem\DirectoryInterface;
+use Platine\Filesystem\FileInterface;
 use Platine\Filesystem\Filesystem;
 use Platine\Framework\App\Application;
 use Platine\Stdlib\Helper\Composer;
@@ -111,12 +113,13 @@ class VendorPublishCommand extends Command
     ) {
         parent::__construct(
             'vendor:publish',
-            'Command to publish composer vendor configuration, migration, etc.'
+            'Command to publish composer vendor configuration, migration, language etc.'
         );
         $this->addArgument('name', 'The package name', null, true);
         $this->addOption('-o|--overwrite', 'Overwrite existing files.', false, false);
         $this->addOption('-c|--config', 'Publish only the configuration.', false, false);
         $this->addOption('-m|--migration', 'Publish only the migrations.', false, false);
+        $this->addOption('-l|--lang', 'Publish only the languages.', false, false);
         $this->addOption('-a|--all', 'Publish all files.', false, false);
 
         $this->config = $config;
@@ -200,6 +203,11 @@ class VendorPublishCommand extends Command
         if ($migration) {
             $this->publishMigration();
         }
+
+        $lang = $this->getOptionValue('lang');
+        if ($lang) {
+            $this->publishLanguage();
+        }
     }
 
     /**
@@ -210,6 +218,7 @@ class VendorPublishCommand extends Command
     {
         $this->publishConfiguration();
         $this->publishMigration();
+        $this->publishLanguage();
     }
 
     /**
@@ -218,6 +227,9 @@ class VendorPublishCommand extends Command
      */
     protected function publishConfiguration(): void
     {
+        $writer = $this->io()->writer();
+        $writer->boldYellow('Publish of package coniguration', true);
+
         $manifest = $this->manifest;
         $config = $manifest['config'] ?? [];
         $destinationPath = Path::normalizePathDS(
@@ -230,11 +242,36 @@ class VendorPublishCommand extends Command
     }
 
     /**
+     * Publish the language
+     * @return void
+     */
+    protected function publishLanguage(): void
+    {
+        $writer = $this->io()->writer();
+        $writer->boldYellow('Publish of package language', true);
+
+        $path = Path::convert2Absolute(
+            $this->config->get('lang.translation_path')
+        );
+        $destinationPath = Path::normalizePathDS($path, true);
+
+        $manifest = $this->manifest;
+        $languages = $manifest['lang'] ?? [];
+        foreach ($languages as $language) {
+            $this->publishItem($language, $destinationPath, 'language');
+        }
+    }
+
+    /**
      * Publish the migration
      * @return void
      */
     protected function publishMigration(): void
     {
+        $writer = $this->io()->writer();
+        $writer->boldYellow('Publish of package migration', true);
+
+
         $path = Path::convert2Absolute(
             $this->config->get('migration.path', 'migrations')
         );
@@ -258,43 +295,69 @@ class VendorPublishCommand extends Command
     {
         $writer = $this->io()->writer();
 
-        $writer->boldYellow(sprintf('Publish of package %s', $type), true);
-
-        $sourceFilename = basename($src);
         $sourcePath = $this->packagePath . '/' . $src;
-        $file = $this->filesystem->file($sourcePath);
-        if (!$file->exists()) {
+        $asset = $this->filesystem->get($sourcePath);
+        if ($asset === null || !$asset->exists()) {
             $writer->red(sprintf(
                 'Can not find the package file %s [%s].',
                 $type,
-                $file->getPath()
+                $asset->getPath()
+            ), true);
+            return;
+        }
+
+        if ($asset->isDir()) {
+            $this->publishDirectory($asset, $dest);
+        } elseif ($asset->isFile()) {
+            $this->publishFile($asset, $dest);
+        }
+
+        $writer->boldGreen(
+            sprintf(
+                'Package %s [%s] publish successfully',
+                $type,
+                $src
+            ),
+            true
+        );
+    }
+
+    /**
+     * Copy file to the destination
+     * @param FileInterface $file
+     * @param string $dest
+     * @return void
+     */
+    protected function publishFile(FileInterface $file, string $dest): void
+    {
+        $sourceFilename = $file->getName();
+        $destFile = $this->filesystem->file(
+            $dest . $sourceFilename
+        );
+
+        $overwrite = $this->getOptionValue('overwrite');
+
+        $writer = $this->io()->writer();
+        if ($destFile->exists() && !$overwrite) {
+            $writer->red(sprintf(
+                "File \n[%s]\n already exist, if you want to overwrite"
+                    . ' use option "--overwrite".',
+                $destFile->getPath()
             ), true);
         } else {
-            $destFile = $this->filesystem->file(
-                $dest . $sourceFilename
-            );
-
-            $overwrite = $this->getOptionValue('overwrite');
-
-            if ($destFile->exists() && !$overwrite) {
-                $writer->red(sprintf(
-                    "%s file \n[%s]\n already exist, if you want to overwrite"
-                        . ' use option "--overwrite".',
-                    $type,
-                    $destFile->getPath()
-                ), true);
-            } else {
-                $file->copyTo($dest);
-                $writer->boldGreen(
-                    sprintf(
-                        'Package %s [%s] publish successfully',
-                        $type,
-                        $src
-                    ),
-                    true
-                );
-            }
+            $file->copyTo($dest);
         }
+    }
+
+    /**
+     * Publish directory
+     * @param DirectoryInterface $directory
+     * @param string $dest
+     * @return void
+     */
+    protected function publishDirectory(DirectoryInterface $directory, string $dest): void
+    {
+        $directory->copyTo($dest);
     }
 
     /**
