@@ -79,7 +79,7 @@ class SessionFlashTag extends AbstractTag
         } else {
             throw new ParseException(sprintf(
                 'Syntax Error in "%s" - Valid syntax: session [key]',
-                'session'
+                'flash'
             ));
         }
     }
