@@ -10,6 +10,7 @@
             </p>
         {% if roles.size > 0 %}
             <form method="post" action ="{% route_url role_batch  %}">
+                {% csrf %}
                 <div class= "table-responsive">
                     <table class="table table-hover table-sm table-bordered">
                         <thead>

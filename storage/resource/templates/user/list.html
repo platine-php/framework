@@ -23,6 +23,7 @@
             </p>
         {% if users.size > 0 %}
             <form method="post" action ="{% route_url user_batch  %}">
+                {% csrf %}
                 <div class= "table-responsive">
                     <table class="table table-hover table-sm table-bordered">
                         <thead>

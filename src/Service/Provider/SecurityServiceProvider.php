@@ -30,11 +30,11 @@
  */
 
 /**
- *  @file AppServiceProvider.php
+ *  @file SecurityServiceProvider.php
  *
- *  Application base service provider class
+ *  The Framework security service provider class
  *
- *  @package    Platine\Framework\Demo\Provider
+ *  @package    Platine\Framework\Service\Provider
  *  @author Platine Developers team
  *  @copyright  Copyright (c) 2020
  *  @license    http://opensource.org/licenses/MIT  MIT License
@@ -45,18 +45,16 @@
 
 declare(strict_types=1);
 
-namespace Platine\Framework\Demo\Provider;
+namespace Platine\Framework\Service\Provider;
 
-use Platine\Framework\Demo\Action\DownloadAction;
-use Platine\Framework\Demo\Action\HomeAction;
-use Platine\Framework\Demo\Event\HandleAuthFailure;
+use Platine\Framework\Http\Middleware\CsrfMiddleware;
 use Platine\Framework\Service\ServiceProvider;
 
 /**
- * @class AppServiceProvider
- * @package Platine\Framework
+ * @class SecurityServiceProvider
+ * @package Platine\Framework\Service\Provider
  */
-class AppServiceProvider extends ServiceProvider
+class SecurityServiceProvider extends ServiceProvider
 {
 
     /**
@@ -64,8 +62,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        $this->app->bind(DownloadAction::class);
-        $this->app->bind(HomeAction::class);
-        $this->app->bind(HandleAuthFailure::class);
+        $this->app->bind(CsrfMiddleware::class);
     }
 }

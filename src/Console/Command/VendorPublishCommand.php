@@ -228,7 +228,7 @@ class VendorPublishCommand extends Command
     protected function publishConfiguration(): void
     {
         $writer = $this->io()->writer();
-        $writer->boldYellow('Publish of package coniguration', true);
+        $writer->boldYellow('Publish of package configuration', true);
 
         $manifest = $this->manifest;
         $config = $manifest['config'] ?? [];

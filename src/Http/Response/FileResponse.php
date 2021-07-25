@@ -30,11 +30,11 @@
  */
 
 /**
- *  @file AppServiceProvider.php
+ *  @file FileResponse.php
  *
- *  Application base service provider class
+ *  The File Send Response class
  *
- *  @package    Platine\Framework\Demo\Provider
+ *  @package    Platine\Framework\Http\Response
  *  @author Platine Developers team
  *  @copyright  Copyright (c) 2020
  *  @license    http://opensource.org/licenses/MIT  MIT License
@@ -45,27 +45,49 @@
 
 declare(strict_types=1);
 
-namespace Platine\Framework\Demo\Provider;
+namespace Platine\Framework\Http\Response;
 
-use Platine\Framework\Demo\Action\DownloadAction;
-use Platine\Framework\Demo\Action\HomeAction;
-use Platine\Framework\Demo\Event\HandleAuthFailure;
-use Platine\Framework\Service\ServiceProvider;
+use Platine\Http\Response;
+use Platine\Http\Stream;
+use Platine\Stdlib\Helper\Path;
 
 /**
- * @class AppServiceProvider
- * @package Platine\Framework
+ * @class FileResponse
+ * @package Platine\Framework\Http\Response
  */
-class AppServiceProvider extends ServiceProvider
+class FileResponse extends Response
 {
 
     /**
-     * {@inheritdoc}
+     * Create new instance
+     * @param string $path
+     * @param string|null $filename
      */
-    public function register(): void
+    public function __construct(string $path, ?string $filename = null)
     {
-        $this->app->bind(DownloadAction::class);
-        $this->app->bind(HomeAction::class);
-        $this->app->bind(HandleAuthFailure::class);
+        parent::__construct(200);
+
+        $realpath = Path::realPath($path);
+        $extension = pathinfo($realpath, PATHINFO_EXTENSION);
+        $mimetype = 'application/octet-stream';
+        if (!empty($extension)) {
+            $mimetype = Path::getMimeByExtension($extension);
+        }
+
+        if (empty($filename)) {
+            $filename = basename($path);
+        }
+
+        $body = new Stream($realpath);
+
+        $this->headers['Content-Description'] = ['File Transfer'];
+        $this->headers['Content-Type'] = [$mimetype];
+        $this->headers['Content-Disposition'] = ['attachment; filename="' . $filename  . '"'];
+        $this->headers['Expires'] = [0];
+        $this->headers['Cache-Control'] = ['must-revalidate'];
+        $this->headers['Pragma'] = ['public'];
+        $this->headers['Content-Length'] = [(int) $body->getSize()];
+
+        $this->body = $body;
     }
 }

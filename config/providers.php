@@ -17,6 +17,7 @@ use Platine\Framework\Service\Provider\LoggerServiceProvider;
 use Platine\Framework\Service\Provider\MigrationServiceProvider;
 use Platine\Framework\Service\Provider\PaginationServiceProvider;
 use Platine\Framework\Service\Provider\RoutingServiceProvider;
+use Platine\Framework\Service\Provider\SecurityServiceProvider;
 use Platine\Framework\Service\Provider\SessionServiceProvider;
 use Platine\Framework\Service\Provider\TemplateServiceProvider;
 
@@ -36,6 +37,7 @@ use Platine\Framework\Service\Provider\TemplateServiceProvider;
         CommandServiceProvider::class,
         AuthServiceProvider::class,
         PaginationServiceProvider::class,
+        SecurityServiceProvider::class,
 
         //Custom
         AppServiceProvider::class,

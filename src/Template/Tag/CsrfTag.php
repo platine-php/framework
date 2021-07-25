@@ -30,11 +30,11 @@
  */
 
 /**
- *  @file AppServiceProvider.php
+ *  @file CsrfTag.php
  *
- *  Application base service provider class
+ *  The CSRF generation template tag class
  *
- *  @package    Platine\Framework\Demo\Provider
+ *  @package    Platine\Framework\Template\Tag
  *  @author Platine Developers team
  *  @copyright  Copyright (c) 2020
  *  @license    http://opensource.org/licenses/MIT  MIT License
@@ -45,27 +45,59 @@
 
 declare(strict_types=1);
 
-namespace Platine\Framework\Demo\Provider;
+namespace Platine\Framework\Template\Tag;
 
-use Platine\Framework\Demo\Action\DownloadAction;
-use Platine\Framework\Demo\Action\HomeAction;
-use Platine\Framework\Demo\Event\HandleAuthFailure;
-use Platine\Framework\Service\ServiceProvider;
+use Platine\Config\Config;
+use Platine\Session\Session;
+use Platine\Stdlib\Helper\Str;
+use Platine\Template\Parser\AbstractTag;
+use Platine\Template\Parser\Context;
 
 /**
- * @class AppServiceProvider
- * @package Platine\Framework
+ * @class CsrfTag
+ * @package Platine\Framework\Template\Tag
  */
-class AppServiceProvider extends ServiceProvider
+class CsrfTag extends AbstractTag
 {
 
     /**
      * {@inheritdoc}
      */
-    public function register(): void
+    public function render(Context $context): string
     {
-        $this->app->bind(DownloadAction::class);
-        $this->app->bind(HomeAction::class);
-        $this->app->bind(HandleAuthFailure::class);
+        /** @template T @var Config<T> $config */
+        $config = app(Config::class);
+
+        /** @var Session $session */
+        $session = app(Session::class);
+
+        $currentTime = time();
+
+        if (
+            $session->has('csrf_data.value')
+            && $session->has('csrf_data.expire')
+            && $session->get('csrf_data.expire') > $currentTime
+        ) {
+            $value = $session->get('csrf_data.value');
+        } else {
+            $value = sha1(Str::randomToken(24));
+            $expire = $config->get('app.csrf.expire', 300);
+            $newTime = time() + $expire;
+
+            $data = [
+                'expire' => $newTime,
+                'value' => $value,
+            ];
+
+            $session->set('csrf_data', $data);
+        }
+
+        $key = $config->get('app.csrf.key', '');
+
+        return sprintf(
+            '<input type = "hidden" name = "%s" value = "%s" />',
+            $key,
+            $value
+        );
     }
 }

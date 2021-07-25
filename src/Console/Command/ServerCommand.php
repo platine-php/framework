@@ -66,7 +66,7 @@ class ServerCommand extends Command
         parent::__construct('server', 'Command to manage PHP development server');
         $this->addOption('-a|--address', 'Server address', '0.0.0.0', true);
         $this->addOption('-p|--port', 'Server listen port', '8080', true);
-        $this->addOption('-r|--root', 'Server listen port', 'public', true);
+        $this->addOption('-r|--root', 'Server document root', 'public', true);
     }
 
     /**

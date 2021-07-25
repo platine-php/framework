@@ -30,11 +30,11 @@
  */
 
 /**
- *  @file AppServiceProvider.php
+ *  @file DownloadAction.php
  *
- *  Application base service provider class
+ *  The Download action class
  *
- *  @package    Platine\Framework\Demo\Provider
+ *  @package    Platine\Framework\Demo\Action
  *  @author Platine Developers team
  *  @copyright  Copyright (c) 2020
  *  @license    http://opensource.org/licenses/MIT  MIT License
@@ -45,27 +45,28 @@
 
 declare(strict_types=1);
 
-namespace Platine\Framework\Demo\Provider;
+namespace Platine\Framework\Demo\Action;
 
-use Platine\Framework\Demo\Action\DownloadAction;
-use Platine\Framework\Demo\Action\HomeAction;
-use Platine\Framework\Demo\Event\HandleAuthFailure;
-use Platine\Framework\Service\ServiceProvider;
+use Platine\Framework\Http\Response\FileResponse;
+use Platine\Http\Handler\RequestHandlerInterface;
+use Platine\Http\ResponseInterface;
+use Platine\Http\ServerRequestInterface;
 
 /**
- * @class AppServiceProvider
- * @package Platine\Framework
+ * @class DownloadAction
+ * @package Platine\Framework\Demo\Action
+ * @template T
  */
-class AppServiceProvider extends ServiceProvider
+class DownloadAction implements RequestHandlerInterface
 {
 
     /**
-     * {@inheritdoc}
+     * {@inheritodc}
      */
-    public function register(): void
+    public function handle(ServerRequestInterface $request): ResponseInterface
     {
-        $this->app->bind(DownloadAction::class);
-        $this->app->bind(HomeAction::class);
-        $this->app->bind(HandleAuthFailure::class);
+        $file = 'static/css/bootstrap.min.css';
+
+        return new FileResponse($file, $filename = null);
     }
 }
