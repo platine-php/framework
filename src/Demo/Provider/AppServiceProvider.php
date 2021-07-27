@@ -49,6 +49,7 @@ namespace Platine\Framework\Demo\Provider;
 
 use Platine\Framework\Demo\Action\DownloadAction;
 use Platine\Framework\Demo\Action\HomeAction;
+use Platine\Framework\Demo\Action\JsonAction;
 use Platine\Framework\Demo\Event\HandleAuthFailure;
 use Platine\Framework\Helper\Flash;
 use Platine\Framework\Service\ServiceProvider;
@@ -65,6 +66,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
+        $this->app->bind(JsonAction::class);
         $this->app->bind(DownloadAction::class);
         $this->app->bind(HomeAction::class);
         $this->app->bind(HandleAuthFailure::class);

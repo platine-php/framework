@@ -103,8 +103,8 @@ class RouteMatchMiddleware implements MiddlewareInterface
         }
 
         if (
-                !$this->isAllowedMethod($request->getMethod())
-                && !$route->isAllowedMethod($request->getMethod())
+            !$this->isAllowedMethod($request->getMethod())
+            && !$route->isAllowedMethod($request->getMethod())
         ) {
             $exception = new HttpMethodNotAllowedException($request);
             $exception->setAllowedMethods($route->getMethods());
@@ -120,6 +120,7 @@ class RouteMatchMiddleware implements MiddlewareInterface
         }
 
         $request = $request->withAttribute(Route::class, $route);
+
         return $handler->handle($request);
     }
 

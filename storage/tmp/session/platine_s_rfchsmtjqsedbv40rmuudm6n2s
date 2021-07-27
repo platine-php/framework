@@ -1,1 +1,1 @@
-session_flash|a:0:{}csrf_data|a:2:{s:6:"expire";i:1627230829;s:5:"value";s:40:"85fdec71de769677f157a6d831a02d06e52fb11d";}
+session_flash|a:0:{}user|a:5:{s:2:"id";i:1;s:8:"username";s:8:"octave_t";s:8:"lastname";s:8:"NGUEREZA";s:9:"firstname";s:4:"Tony";s:11:"permissions";a:7:{i:0;s:8:"add_user";i:1;s:9:"edit_user";i:2;s:9:"view_user";i:3;s:9:"view_role";i:4;s:8:"add_role";i:5;s:9:"edit_role";i:6;s:11:"delete_role";}}

@@ -2,7 +2,7 @@
 
     return [
         'default' => 'mysql',
-        
+
         'connections' => [
             'mysql' => [
                 'driver' => 'mysql',
@@ -14,7 +14,7 @@
                 'persistent' => false,
             ]
         ],
-        
+
         'migration' => [
             'table' => 'migration',
             'path' => __DIR__ . '/../storage/migrations',

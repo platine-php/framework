@@ -100,6 +100,7 @@ class CsrfMiddleware implements MiddlewareInterface
 
     /**
      * Create new instance
+     * @param LoggerInterface $logger
      * @param Lang $lang
      * @param Config $config
      * @param Session $session
@@ -130,14 +131,14 @@ class CsrfMiddleware implements MiddlewareInterface
             return $handler->handle($request);
         }
 
-        $methods = $this->config->get('app.csrf.http_methods', []);
+        $methods = $this->config->get('security.csrf.http_methods', []);
 
         if (!in_array($request->getMethod(), $methods)) {
             return $handler->handle($request);
         }
 
         //check if is url whitelist
-        $urls = $this->config->get('app.csrf.url_whitelist', []);
+        $urls = $this->config->get('security.csrf.url_whitelist', []);
         foreach ($urls as $url) {
             /*
              * Route: /users/login, url: /users/login
@@ -164,7 +165,7 @@ class CsrfMiddleware implements MiddlewareInterface
     protected function isValid(): bool
     {
         $param = new RequestData($this->request);
-        $key = $this->config->get('app.csrf.key', '');
+        $key = $this->config->get('security.csrf.key', '');
 
         $sessionExpire = $this->session->get('csrf_data.expire');
         $sessionValue = $this->session->get('csrf_data.value');
@@ -196,7 +197,7 @@ class CsrfMiddleware implements MiddlewareInterface
     }
 
     /**
-     * Return the unauthorized responses
+     * Return the unauthorized response
      * @return ResponseInterface
      */
     protected function unauthorizedResponse(): ResponseInterface
@@ -204,7 +205,7 @@ class CsrfMiddleware implements MiddlewareInterface
         $this->logger->error(
             'Unauthorized Request, CSRF validation failed for {method}:{url}',
             [
-                'method' => (string) $this->request->getMethod(),
+                'method' => $this->request->getMethod(),
                 'url' => (string) $this->request->getUri(),
             ]
         );

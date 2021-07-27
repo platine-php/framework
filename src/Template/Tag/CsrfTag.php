@@ -81,7 +81,7 @@ class CsrfTag extends AbstractTag
             $value = $session->get('csrf_data.value');
         } else {
             $value = sha1(Str::randomToken(24));
-            $expire = $config->get('app.csrf.expire', 300);
+            $expire = $config->get('security.csrf.expire', 300);
             $newTime = time() + $expire;
 
             $data = [
@@ -92,7 +92,7 @@ class CsrfTag extends AbstractTag
             $session->set('csrf_data', $data);
         }
 
-        $key = $config->get('app.csrf.key', '');
+        $key = $config->get('security.csrf.key', '');
 
         return sprintf(
             '<input type = "hidden" name = "%s" value = "%s" />',

@@ -47,6 +47,7 @@ declare(strict_types=1);
 
 namespace Platine\Framework\Service\Provider;
 
+use Platine\Framework\Http\Middleware\CorsMiddleware;
 use Platine\Framework\Http\Middleware\CsrfMiddleware;
 use Platine\Framework\Service\ServiceProvider;
 
@@ -62,6 +63,7 @@ class SecurityServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
+        $this->app->bind(CorsMiddleware::class);
         $this->app->bind(CsrfMiddleware::class);
     }
 }

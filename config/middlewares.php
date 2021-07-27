@@ -3,6 +3,7 @@
 use Platine\Cookie\Middleware\CookieSendMiddleware;
 use Platine\Framework\Auth\Middleware\AuthenticationMiddleware;
 use Platine\Framework\Auth\Middleware\AuthorizationMiddleware;
+use Platine\Framework\Http\Middleware\CorsMiddleware;
 use Platine\Framework\Http\Middleware\CsrfMiddleware;
 use Platine\Framework\Http\Middleware\ErrorHandlerMiddleware;
 use Platine\Framework\Http\Middleware\RouteDispatcherMiddleware;
@@ -10,6 +11,7 @@ use Platine\Framework\Http\Middleware\RouteMatchMiddleware;
 
     return [
         ErrorHandlerMiddleware::class,
+        CorsMiddleware::class, //Must be before Route match middleware
         CookieSendMiddleware::class,
         RouteMatchMiddleware::class,
         CsrfMiddleware::class, //Must be after Route match middleware

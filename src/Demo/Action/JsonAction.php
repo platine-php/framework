@@ -30,11 +30,11 @@
  */
 
 /**
- *  @file TemplateResponse.php
+ *  @file JsonAction.php
  *
- *  This Template Response class
+ *  The JSON example action class
  *
- *  @package    Platine\Framework\Http\Response
+ *  @package    Platine\Framework\Demo\Action
  *  @author Platine Developers team
  *  @copyright  Copyright (c) 2020
  *  @license    http://opensource.org/licenses/MIT  MIT License
@@ -45,49 +45,29 @@
 
 declare(strict_types=1);
 
-namespace Platine\Framework\Http\Response;
+namespace Platine\Framework\Demo\Action;
 
-use Platine\Http\Response;
-use Platine\Template\Template;
+use Platine\Framework\Http\Response\JsonResponse;
+use Platine\Http\Handler\RequestHandlerInterface;
+use Platine\Http\ResponseInterface;
+use Platine\Http\ServerRequestInterface;
 
 /**
- * @class TemplateResponse
- * @package Platine\Framework\Http\Response
+ * @class JsonAction
+ * @package Platine\Framework\Demo\Action
  */
-class TemplateResponse extends Response
+class JsonAction implements RequestHandlerInterface
 {
 
     /**
-     * The template instance
-     * @var Template
+     * {@inheritodc}
      */
-    protected Template $template;
-
-    /**
-     * Create new instance
-     * @param Template $template
-     * @param string $name
-     * @param array<string, mixed> $context
-     * @param int $statusCode
-     * @param string $reasonPhrase
-     */
-    public function __construct(
-        Template $template,
-        string $name,
-        array $context = [],
-        int $statusCode = 200,
-        string $reasonPhrase = ''
-    ) {
-        parent::__construct($statusCode, $reasonPhrase);
-        $this->getBody()->write($template->render($name, $context));
-    }
-
-    /**
-     * Return the template instance
-     * @return Template
-     */
-    public function getTemplate(): Template
+    public function handle(ServerRequestInterface $request): ResponseInterface
     {
-        return $this->template;
+        return new JsonResponse([
+            'one' => 1,
+            'two' => 2,
+            'array' => [1, 3, 4],
+        ]);
     }
 }

@@ -30,9 +30,9 @@
  */
 
 /**
- *  @file TemplateResponse.php
+ *  @file JsonResponse.php
  *
- *  This Template Response class
+ *  This JSON Response class
  *
  *  @package    Platine\Framework\Http\Response
  *  @author Platine Developers team
@@ -48,46 +48,29 @@ declare(strict_types=1);
 namespace Platine\Framework\Http\Response;
 
 use Platine\Http\Response;
-use Platine\Template\Template;
+use Platine\Stdlib\Helper\Json;
 
 /**
- * @class TemplateResponse
+ * @class JsonResponse
  * @package Platine\Framework\Http\Response
  */
-class TemplateResponse extends Response
+class JsonResponse extends Response
 {
 
     /**
-     * The template instance
-     * @var Template
-     */
-    protected Template $template;
-
-    /**
      * Create new instance
-     * @param Template $template
-     * @param string $name
-     * @param array<string, mixed> $context
+     * @param mixed $data
      * @param int $statusCode
      * @param string $reasonPhrase
      */
     public function __construct(
-        Template $template,
-        string $name,
-        array $context = [],
+        $data,
         int $statusCode = 200,
         string $reasonPhrase = ''
     ) {
         parent::__construct($statusCode, $reasonPhrase);
-        $this->getBody()->write($template->render($name, $context));
-    }
 
-    /**
-     * Return the template instance
-     * @return Template
-     */
-    public function getTemplate(): Template
-    {
-        return $this->template;
+        $this->headers['Content-Type'] = ['application/json'];
+        $this->getBody()->write(Json::encode($data));
     }
 }
