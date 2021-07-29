@@ -297,18 +297,18 @@ class VendorPublishCommand extends Command
 
         $sourcePath = $this->packagePath . '/' . $src;
         $asset = $this->filesystem->get($sourcePath);
-        if ($asset === null || !$asset->exists()) {
+        if ($asset === null) {
             $writer->red(sprintf(
                 'Can not find the package file %s [%s].',
                 $type,
-                $asset->getPath()
+                $sourcePath
             ), true);
             return;
         }
 
-        if ($asset->isDir()) {
+        if ($asset instanceof DirectoryInterface) {
             $this->publishDirectory($asset, $dest);
-        } elseif ($asset->isFile()) {
+        } elseif ($asset instanceof FileInterface) {
             $this->publishFile($asset, $dest);
         }
 

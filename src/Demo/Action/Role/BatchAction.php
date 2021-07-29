@@ -48,6 +48,7 @@ declare(strict_types=1);
 namespace Platine\Framework\Demo\Action\Role;
 
 use Platine\Framework\Auth\Repository\RoleRepository;
+use Platine\Framework\Helper\Flash;
 use Platine\Framework\Http\RequestData;
 use Platine\Framework\Http\Response\RedirectResponse;
 use Platine\Framework\Http\RouteHelper;
@@ -56,7 +57,6 @@ use Platine\Http\ResponseInterface;
 use Platine\Http\ServerRequestInterface;
 use Platine\Lang\Lang;
 use Platine\Logger\LoggerInterface;
-use Platine\Session\Session;
 
 /**
  * @class BatchAction
@@ -85,10 +85,10 @@ class BatchAction implements RequestHandlerInterface
     protected RouteHelper $routeHelper;
 
     /**
-     * The session instance
-     * @var Session
+     * The flash instance
+     * @var Flash
      */
-    protected Session $session;
+    protected Flash $flash;
 
     /**
      * The translator instance
@@ -111,21 +111,21 @@ class BatchAction implements RequestHandlerInterface
     /**
      * Create new instance
      * @param Lang $lang
-     * @param Session $session
+     * @param Flash $flash
      * @param LoggerInterface $logger
      * @param RoleRepository $roleRepository
      * @param RouteHelper $routeHelper
      */
     public function __construct(
         Lang $lang,
-        Session $session,
+        Flash $flash,
         LoggerInterface $logger,
         RoleRepository $roleRepository,
         RouteHelper $routeHelper
     ) {
         $this->lang = $lang;
         $this->logger = $logger;
-        $this->session = $session;
+        $this->flash = $flash;
         $this->roleRepository = $roleRepository;
         $this->routeHelper = $routeHelper;
     }
@@ -183,6 +183,8 @@ class BatchAction implements RequestHandlerInterface
                             ->in($items)
                             ->delete();
 
-        $this->session->setFlash('success', $this->lang->tr('The selected roles are deleted successfully'));
+        $this->flash->setSuccess(
+            $this->lang->tr('The selected roles are deleted successfully')
+        );
     }
 }

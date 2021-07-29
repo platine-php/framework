@@ -79,7 +79,7 @@ class CorsMiddleware implements MiddlewareInterface
     /**
      * Create new instance
      * @param LoggerInterface $logger
-     * @param Config $config
+     * @param Config<T> $config
      */
     public function __construct(
         LoggerInterface $logger,

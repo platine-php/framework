@@ -50,7 +50,7 @@ namespace Platine\Framework\Demo\Form\Validator;
 use Platine\Framework\Demo\Form\Param\PermissionParam;
 use Platine\Framework\Form\Validator\AbstractValidator;
 use Platine\Lang\Lang;
-use Platine\Validator\Rule\AlphaDash;
+use Platine\Validator\Rule\AlphaNumericDash;
 use Platine\Validator\Rule\MinLength;
 use Platine\Validator\Rule\NotEmpty;
 
@@ -96,7 +96,7 @@ class PermissionValidator extends AbstractValidator
         $this->addRules('code', [
            new NotEmpty(),
            new MinLength(2),
-           new AlphaDash()
+           new AlphaNumericDash()
         ]);
 
         $this->addRules('description', [

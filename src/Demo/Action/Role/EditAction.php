@@ -47,10 +47,12 @@ declare(strict_types=1);
 
 namespace Platine\Framework\Demo\Action\Role;
 
+use Platine\Framework\Auth\Entity\Role;
 use Platine\Framework\Auth\Repository\PermissionRepository;
 use Platine\Framework\Auth\Repository\RoleRepository;
 use Platine\Framework\Demo\Form\Param\RoleParam;
 use Platine\Framework\Demo\Form\Validator\RoleValidator;
+use Platine\Framework\Helper\Flash;
 use Platine\Framework\Http\RequestData;
 use Platine\Framework\Http\Response\RedirectResponse;
 use Platine\Framework\Http\Response\TemplateResponse;
@@ -60,7 +62,6 @@ use Platine\Http\ResponseInterface;
 use Platine\Http\ServerRequestInterface;
 use Platine\Lang\Lang;
 use Platine\Logger\LoggerInterface;
-use Platine\Session\Session;
 use Platine\Template\Template;
 
 /**
@@ -78,10 +79,10 @@ class EditAction implements RequestHandlerInterface
     protected LoggerInterface $logger;
 
     /**
-     * The session instance
-     * @var Session
+     * The flash instance
+     * @var Flash
      */
-    protected Session $session;
+    protected Flash $flash;
 
     /**
      * The translator instance
@@ -117,7 +118,7 @@ class EditAction implements RequestHandlerInterface
      * Create new instance
      * @param Lang $lang
      * @param LoggerInterface $logger
-     * @param Session $session
+     * @param Flash $flash
      * @param Template $template
      * @param RoleRepository $roleRepository
      * @param PermissionRepository $permissionRepository
@@ -126,7 +127,7 @@ class EditAction implements RequestHandlerInterface
     public function __construct(
         Lang $lang,
         LoggerInterface $logger,
-        Session $session,
+        Flash $flash,
         Template $template,
         RoleRepository $roleRepository,
         PermissionRepository $permissionRepository,
@@ -134,7 +135,7 @@ class EditAction implements RequestHandlerInterface
     ) {
         $this->lang = $lang;
         $this->logger = $logger;
-        $this->session = $session;
+        $this->flash = $flash;
         $this->roleRepository = $roleRepository;
         $this->permissionRepository = $permissionRepository;
         $this->template = $template;
@@ -153,7 +154,7 @@ class EditAction implements RequestHandlerInterface
                                     ->with('permissions')
                                     ->find($id);
         if (!$role) {
-            $this->session->setFlash('error', $this->lang->tr('Can not find the role'));
+            $this->flash->setError($this->lang->tr('Can not find the role'));
             $this->logger->warning('Can not find role with id {id}', ['id' => $id]);
 
             return new RedirectResponse(
@@ -204,7 +205,7 @@ class EditAction implements RequestHandlerInterface
         $roleExist = $this->roleRepository->findBy(['name' => $name]);
 
         if ($roleExist && $roleExist->id != $id) {
-            $this->session->setFlash('error', $this->lang->tr('This role already exists'));
+            $this->flash->setError($this->lang->tr('This role already exists'));
             $this->logger->error('Role with name {name} already exists', ['name' => $name]);
             return new TemplateResponse(
                 $this->template,
@@ -236,7 +237,7 @@ class EditAction implements RequestHandlerInterface
         $result = $this->roleRepository->save($role);
 
         if (!$result) {
-            $this->session->setFlash('error', $this->lang->tr('Error when saved the role'));
+            $this->flash->setError($this->lang->tr('Error when saved the role'));
             $this->logger->error('Error when saved the role');
             return new TemplateResponse(
                 $this->template,
@@ -248,7 +249,7 @@ class EditAction implements RequestHandlerInterface
             );
         }
 
-        $this->session->setFlash('success', $this->lang->tr('Role saved successfully'));
+        $this->flash->setSuccess($this->lang->tr('Role saved successfully'));
 
         $returnUrl = $this->routeHelper->generateUrl('role_list');
         if ($param->get('from_detail')) {

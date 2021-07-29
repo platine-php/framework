@@ -104,7 +104,7 @@ class ListAction implements RequestHandlerInterface
     {
         $param = new RequestData($request);
 
-        //FILTERS
+        ///////////////////// BEGIN FILTERS //////////////////////////////
         /** @var array<string, mixed> $filters */
         $filters = [];
         $filtersParam = [
@@ -117,11 +117,13 @@ class ListAction implements RequestHandlerInterface
                 $filters[$p] = $value;
             }
         }
+        ////////////////////// END FILTERS //////////////////////////////
 
         ////////// BEGIN PAGINATION //////////////////
         $totalItems = $this->userRepository->query()
                                             ->filter($filters)
                                             ->count('id');
+
         $currentPage = (int)$param->get('page', 1);
         $this->pagination->setTotalItems($totalItems)
                          ->setCurrentPage($currentPage);

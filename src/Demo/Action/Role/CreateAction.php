@@ -52,6 +52,7 @@ use Platine\Framework\Auth\Repository\PermissionRepository;
 use Platine\Framework\Auth\Repository\RoleRepository;
 use Platine\Framework\Demo\Form\Param\RoleParam;
 use Platine\Framework\Demo\Form\Validator\RoleValidator;
+use Platine\Framework\Helper\Flash;
 use Platine\Framework\Http\RequestData;
 use Platine\Framework\Http\Response\RedirectResponse;
 use Platine\Framework\Http\Response\TemplateResponse;
@@ -61,7 +62,6 @@ use Platine\Http\ResponseInterface;
 use Platine\Http\ServerRequestInterface;
 use Platine\Lang\Lang;
 use Platine\Logger\LoggerInterface;
-use Platine\Session\Session;
 use Platine\Template\Template;
 
 /**
@@ -79,10 +79,10 @@ class CreateAction implements RequestHandlerInterface
     protected LoggerInterface $logger;
 
     /**
-     * The session instance
-     * @var Session
+     * The flash instance
+     * @var Flash
      */
-    protected Session $session;
+    protected Flash $flash;
 
     /**
      * The translator instance
@@ -118,7 +118,7 @@ class CreateAction implements RequestHandlerInterface
      * Create new instance
      * @param Lang $lang
      * @param LoggerInterface $logger
-     * @param Session $session
+     * @param Flash $flash
      * @param Template $template
      * @param RoleRepository $roleRepository
      * @param PermissionRepository $permissionRepository
@@ -127,7 +127,7 @@ class CreateAction implements RequestHandlerInterface
     public function __construct(
         Lang $lang,
         LoggerInterface $logger,
-        Session $session,
+        Flash $flash,
         Template $template,
         RoleRepository $roleRepository,
         PermissionRepository $permissionRepository,
@@ -135,7 +135,7 @@ class CreateAction implements RequestHandlerInterface
     ) {
         $this->lang = $lang;
         $this->logger = $logger;
-        $this->session = $session;
+        $this->flash = $flash;
         $this->roleRepository = $roleRepository;
         $this->permissionRepository = $permissionRepository;
         $this->template = $template;
@@ -183,7 +183,7 @@ class CreateAction implements RequestHandlerInterface
 
         if ($roleExist) {
             $this->logger->error('Role with name {name} already exists', ['name' => $name]);
-            $this->session->setFlash('error', $this->lang->tr('This role already exists'));
+            $this->flash->setError($this->lang->tr('This role already exists'));
             return new TemplateResponse(
                 $this->template,
                 'role/create',
@@ -211,7 +211,7 @@ class CreateAction implements RequestHandlerInterface
         $result = $this->roleRepository->save($role);
 
         if (!$result) {
-            $this->session->setFlash('error', $this->lang->tr('Error when saved the role'));
+            $this->flash->setError($this->lang->tr('Error when saved the role'));
             $this->logger->error('Error when saved the role');
             return new TemplateResponse(
                 $this->template,
@@ -223,8 +223,7 @@ class CreateAction implements RequestHandlerInterface
             );
         }
 
-
-        $this->session->setFlash('success', $this->lang->tr('Role saved successfully'));
+        $this->flash->setSuccess($this->lang->tr('Role saved successfully'));
 
         return new RedirectResponse(
             $this->routeHelper->generateUrl('role_list')

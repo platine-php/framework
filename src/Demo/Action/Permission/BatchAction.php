@@ -48,6 +48,7 @@ declare(strict_types=1);
 namespace Platine\Framework\Demo\Action\Permission;
 
 use Platine\Framework\Auth\Repository\PermissionRepository;
+use Platine\Framework\Helper\Flash;
 use Platine\Framework\Http\RequestData;
 use Platine\Framework\Http\Response\RedirectResponse;
 use Platine\Framework\Http\RouteHelper;
@@ -56,7 +57,6 @@ use Platine\Http\ResponseInterface;
 use Platine\Http\ServerRequestInterface;
 use Platine\Lang\Lang;
 use Platine\Logger\LoggerInterface;
-use Platine\Session\Session;
 
 /**
  * @class BatchAction
@@ -85,10 +85,10 @@ class BatchAction implements RequestHandlerInterface
     protected RouteHelper $routeHelper;
 
     /**
-     * The session instance
-     * @var Session
+     * The flash instance
+     * @var Flash
      */
-    protected Session $session;
+    protected Flash $flash;
 
     /**
      * The translator instance
@@ -111,21 +111,21 @@ class BatchAction implements RequestHandlerInterface
     /**
      * Create new instance
      * @param Lang $lang
-     * @param Session $session
+     * @param Flash $flash
      * @param LoggerInterface $logger
      * @param PermissionRepository $permissionRepository
      * @param RouteHelper $routeHelper
      */
     public function __construct(
         Lang $lang,
-        Session $session,
+        Flash $flash,
         LoggerInterface $logger,
         PermissionRepository $permissionRepository,
         RouteHelper $routeHelper
     ) {
         $this->lang = $lang;
         $this->logger = $logger;
-        $this->session = $session;
+        $this->flash = $flash;
         $this->permissionRepository = $permissionRepository;
         $this->routeHelper = $routeHelper;
     }
@@ -183,6 +183,8 @@ class BatchAction implements RequestHandlerInterface
                             ->in($items)
                             ->delete();
 
-        $this->session->setFlash('success', $this->lang->tr('The selected permissions are deleted successfully'));
+        $this->flash->setSuccess(
+            $this->lang->tr('The selected permissions are deleted successfully')
+        );
     }
 }

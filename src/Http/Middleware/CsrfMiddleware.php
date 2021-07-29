@@ -102,7 +102,7 @@ class CsrfMiddleware implements MiddlewareInterface
      * Create new instance
      * @param LoggerInterface $logger
      * @param Lang $lang
-     * @param Config $config
+     * @param Config<T> $config
      * @param Session $session
      */
     public function __construct(

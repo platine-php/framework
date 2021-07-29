@@ -83,10 +83,10 @@ class FileResponse extends Response
         $this->headers['Content-Description'] = ['File Transfer'];
         $this->headers['Content-Type'] = [$mimetype];
         $this->headers['Content-Disposition'] = ['attachment; filename="' . $filename  . '"'];
-        $this->headers['Expires'] = [0];
+        $this->headers['Expires'] = ['0'];
         $this->headers['Cache-Control'] = ['must-revalidate'];
         $this->headers['Pragma'] = ['public'];
-        $this->headers['Content-Length'] = [(int) $body->getSize()];
+        $this->headers['Content-Length'] = [(string) $body->getSize()];
 
         $this->body = $body;
     }

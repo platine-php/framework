@@ -2,15 +2,16 @@
 
 declare(strict_types=1);
 
-namespace Platine\Test\Route\Middleware;
+namespace Platine\Test\Http\Middleware;
 
-use Platine\Http\Handler\RequestHandler;
+use Platine\Dev\PlatineTestCase;
+use Platine\Framework\Http\Exception\HttpMethodNotAllowedException;
+use Platine\Framework\Http\Middleware\RouteMatchMiddleware;
+use Platine\Http\Handler\RequestHandlerInterface;
 use Platine\Http\Response;
 use Platine\Http\ResponseInterface;
 use Platine\Http\ServerRequest;
 use Platine\Http\Uri;
-use Platine\Dev\PlatineTestCase;
-use Platine\Route\Middleware\RouteMatchMiddleware;
 use Platine\Route\Route;
 use Platine\Route\RouteCollection;
 use Platine\Route\Router;
@@ -52,7 +53,7 @@ class RouteMatchMiddlewareTest extends PlatineTestCase
         $responseObject = new Response();
         $responseObject->getBody()->write('RouteIsMatch');
 
-        $requestHandler = $this->getMockBuilder(RequestHandler::class)
+        $requestHandler = $this->getMockBuilder(RequestHandlerInterface::class)
                 ->getMock();
 
         $requestHandler->expects($this->any())
@@ -96,7 +97,7 @@ class RouteMatchMiddlewareTest extends PlatineTestCase
         $responseObject = new Response();
         $responseObject->getBody()->write('RouteIsMatchWithParameters');
 
-        $requestHandler = $this->getMockBuilder(RequestHandler::class)
+        $requestHandler = $this->getMockBuilder(RequestHandlerInterface::class)
                 ->getMock();
 
         $requestHandler->expects($this->any())
@@ -137,7 +138,7 @@ class RouteMatchMiddlewareTest extends PlatineTestCase
 
         $router = new Router($routeCollection);
 
-        $requestHandler = $this->getMockBuilder(RequestHandler::class)
+        $requestHandler = $this->getMockBuilder(RequestHandlerInterface::class)
                 ->getMock();
 
         $uri = $this->getMockBuilder(Uri::class)
@@ -160,11 +161,8 @@ class RouteMatchMiddlewareTest extends PlatineTestCase
 
         $m = new RouteMatchMiddleware($router, array('GET'));
 
+        $this->expectException(HttpMethodNotAllowedException::class);
         $response = $m->process($request, $requestHandler);
-
-        $this->assertInstanceOf(ResponseInterface::class, $response);
-        $this->assertEquals(405, $response->getStatusCode());
-        $this->assertArrayHasKey('Allow', $response->getHeaders());
     }
 
     public function testProcessRouteNotMatch(): void
@@ -177,7 +175,7 @@ class RouteMatchMiddlewareTest extends PlatineTestCase
         $responseObject = new Response();
         $responseObject->getBody()->write('RouteNotMatch');
 
-        $requestHandler = $this->getMockBuilder(RequestHandler::class)
+        $requestHandler = $this->getMockBuilder(RequestHandlerInterface::class)
                 ->getMock();
 
         $requestHandler->expects($this->any())

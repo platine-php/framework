@@ -48,6 +48,7 @@ declare(strict_types=1);
 namespace Platine\Framework\Demo\Action\User;
 
 use Platine\Framework\Auth\Repository\UserRepository;
+use Platine\Framework\Helper\Flash;
 use Platine\Framework\Http\Response\RedirectResponse;
 use Platine\Framework\Http\Response\TemplateResponse;
 use Platine\Framework\Http\RouteHelper;
@@ -56,7 +57,6 @@ use Platine\Http\ResponseInterface;
 use Platine\Http\ServerRequestInterface;
 use Platine\Lang\Lang;
 use Platine\Logger\LoggerInterface;
-use Platine\Session\Session;
 use Platine\Template\Template;
 
 /**
@@ -98,15 +98,15 @@ class DetailAction implements RequestHandlerInterface
     protected RouteHelper $routeHelper;
 
     /**
-     * The session instance
-     * @var Session
+     * The flash instance
+     * @var Flash
      */
-    protected Session $session;
+    protected Flash $flash;
 
     /**
      * Create new instance
      * @param Lang $lang
-     * @param Session $session
+     * @param Flash $flash
      * @param LoggerInterface $logger
      * @param Template $template
      * @param UserRepository $userRepository
@@ -114,14 +114,14 @@ class DetailAction implements RequestHandlerInterface
      */
     public function __construct(
         Lang $lang,
-        Session $session,
+        Flash $flash,
         LoggerInterface $logger,
         Template $template,
         UserRepository $userRepository,
         RouteHelper $routeHelper
     ) {
         $this->lang = $lang;
-        $this->session = $session;
+        $this->flash = $flash;
         $this->logger = $logger;
         $this->userRepository = $userRepository;
         $this->template = $template;
@@ -138,7 +138,7 @@ class DetailAction implements RequestHandlerInterface
                      ->with('roles')
                      ->find($id);
         if (!$user) {
-            $this->session->setFlash('error', $this->lang->tr('Can not find the user'));
+            $this->flash->setError($this->lang->tr('Can not find the user'));
             $this->logger->warning('Can not find user with id {id}', ['id' => $id]);
 
             return new RedirectResponse(

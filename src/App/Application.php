@@ -439,7 +439,7 @@ class Application extends Container
      */
     public function registerConfiguredServiceProviders(): void
     {
-        /** @var Config<T> $config */
+        /** @template T @var Config<T> $config */
         $config = $this->get(Config::class);
 
         /** @var string[] $providers */
@@ -455,7 +455,7 @@ class Application extends Container
      */
     public function registerConfiguredEvents(): void
     {
-        /** @var Config<T> $config */
+        /** @template T @var Config<T> $config */
         $config = $this->get(Config::class);
 
         /** @var array<string, string[]> $events */

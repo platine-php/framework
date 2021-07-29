@@ -47,9 +47,11 @@ declare(strict_types=1);
 
 namespace Platine\Framework\Demo\Action\Permission;
 
+use Platine\Framework\Auth\Entity\Permission;
 use Platine\Framework\Auth\Repository\PermissionRepository;
 use Platine\Framework\Demo\Form\Param\PermissionParam;
 use Platine\Framework\Demo\Form\Validator\PermissionValidator;
+use Platine\Framework\Helper\Flash;
 use Platine\Framework\Http\RequestData;
 use Platine\Framework\Http\Response\RedirectResponse;
 use Platine\Framework\Http\Response\TemplateResponse;
@@ -59,7 +61,6 @@ use Platine\Http\ResponseInterface;
 use Platine\Http\ServerRequestInterface;
 use Platine\Lang\Lang;
 use Platine\Logger\LoggerInterface;
-use Platine\Session\Session;
 use Platine\Template\Template;
 
 /**
@@ -77,10 +78,10 @@ class EditAction implements RequestHandlerInterface
     protected LoggerInterface $logger;
 
     /**
-     * The session instance
-     * @var Session
+     * The flash instance
+     * @var Flash
      */
-    protected Session $session;
+    protected Flash $flash;
 
     /**
      * The translator instance
@@ -110,7 +111,7 @@ class EditAction implements RequestHandlerInterface
      * Create new instance
      * @param Lang $lang
      * @param LoggerInterface $logger
-     * @param Session $session
+     * @param Flash $flash
      * @param Template $template
      * @param PermissionRepository $permissionRepository
      * @param RouteHelper $routeHelper
@@ -118,14 +119,14 @@ class EditAction implements RequestHandlerInterface
     public function __construct(
         Lang $lang,
         LoggerInterface $logger,
-        Session $session,
+        Flash $flash,
         Template $template,
         PermissionRepository $permissionRepository,
         RouteHelper $routeHelper
     ) {
         $this->lang = $lang;
         $this->logger = $logger;
-        $this->session = $session;
+        $this->flash = $flash;
         $this->permissionRepository = $permissionRepository;
         $this->template = $template;
         $this->routeHelper = $routeHelper;
@@ -141,7 +142,7 @@ class EditAction implements RequestHandlerInterface
         /** @var ?Permission $permission */
         $permission = $this->permissionRepository->find($id);
         if (!$permission) {
-            $this->session->setFlash('error', $this->lang->tr('Can not find the permission'));
+            $this->flash->setError($this->lang->tr('Can not find the permission'));
             $this->logger->warning('Can not find permission with id {id}', ['id' => $id]);
 
             return new RedirectResponse(
@@ -187,7 +188,7 @@ class EditAction implements RequestHandlerInterface
         $permissionExist = $this->permissionRepository->findBy(['code' => $code]);
 
         if ($permissionExist && $permissionExist->id != $id) {
-            $this->session->setFlash('error', $this->lang->tr('This permission already exists'));
+            $this->flash->setError($this->lang->tr('This permission already exists'));
             $this->logger->error('Permission with code {code} already exists', ['code' => $code]);
             return new TemplateResponse(
                 $this->template,
@@ -206,7 +207,7 @@ class EditAction implements RequestHandlerInterface
         $result = $this->permissionRepository->save($permission);
 
         if (!$result) {
-            $this->session->setFlash('error', $this->lang->tr('Error when saved the permission'));
+            $this->flash->setError($this->lang->tr('Error when saved the permission'));
             $this->logger->error('Error when saved the permission');
             return new TemplateResponse(
                 $this->template,
@@ -218,7 +219,7 @@ class EditAction implements RequestHandlerInterface
             );
         }
 
-        $this->session->setFlash('success', $this->lang->tr('Permission saved successfully'));
+        $this->flash->setSuccess($this->lang->tr('Permission saved successfully'));
 
         return new RedirectResponse(
             $this->routeHelper->generateUrl('permission_list')

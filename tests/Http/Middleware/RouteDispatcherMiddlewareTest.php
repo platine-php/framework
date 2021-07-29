@@ -2,17 +2,17 @@
 
 declare(strict_types=1);
 
-namespace Platine\Test\Route\Middleware;
+namespace Platine\Test\Http\Middleware;
 
 use Platine\Container\Container;
 use Platine\Dev\PlatineTestCase;
+use Platine\Framework\Http\Middleware\RouteDispatcherMiddleware;
 use Platine\Http\Handler\MiddlewareResolver;
-use Platine\Http\Handler\RequestHandler;
+use Platine\Http\Handler\RequestHandlerInterface;
 use Platine\Http\Response;
 use Platine\Http\ResponseInterface;
 use Platine\Http\ServerRequest;
 use Platine\Http\Uri;
-use Platine\Route\Middleware\RouteDispatcherMiddleware;
 use Platine\Route\Route;
 
 /**
@@ -43,7 +43,7 @@ class RouteDispatcherMiddlewareTest extends PlatineTestCase
         $responseObject = new Response();
         $responseObject->getBody()->write('RouteNotMatch');
 
-        $requestHandler = $this->getMockBuilder(RequestHandler::class)
+        $requestHandler = $this->getMockBuilder(RequestHandlerInterface::class)
                 ->getMock();
 
         $requestHandler->expects($this->any())
@@ -84,7 +84,7 @@ class RouteDispatcherMiddlewareTest extends PlatineTestCase
 
     public function testProcessRouteAttributeFound(): void
     {
-        $requestHandler = $this->getMockBuilder(RequestHandler::class)
+        $requestHandler = $this->getMockBuilder(RequestHandlerInterface::class)
                 ->getMock();
 
         $uri = $this->getMockBuilder(Uri::class)

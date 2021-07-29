@@ -55,6 +55,7 @@ use Platine\Framework\Auth\Exception\InvalidCredentialsException;
 use Platine\Framework\Auth\Exception\MissingCredentialsException;
 use Platine\Framework\Demo\Form\Param\AuthParam;
 use Platine\Framework\Demo\Form\Validator\AuthValidator;
+use Platine\Framework\Helper\Flash;
 use Platine\Framework\Http\RequestData;
 use Platine\Framework\Http\Response\RedirectResponse;
 use Platine\Framework\Http\Response\TemplateResponse;
@@ -64,7 +65,6 @@ use Platine\Http\ResponseInterface;
 use Platine\Http\ServerRequestInterface;
 use Platine\Lang\Lang;
 use Platine\Logger\LoggerInterface;
-use Platine\Session\Session;
 use Platine\Template\Template;
 
 /**
@@ -106,16 +106,16 @@ class LoginAction implements RequestHandlerInterface
     protected AuthenticationInterface $authentication;
 
     /**
-     * The session instance
-     * @var Session
+     * The flash instance
+     * @var Flash
      */
-    protected Session $session;
+    protected Flash $flash;
 
     /**
      * Create new instance
      * @param Lang $lang
      * @param AuthenticationInterface $authentication
-     * @param Session $session
+     * @param Flash $flash
      * @param LoggerInterface $logger
      * @param Template $template
      * @param RouteHelper $routeHelper
@@ -123,13 +123,13 @@ class LoginAction implements RequestHandlerInterface
     public function __construct(
         Lang $lang,
         AuthenticationInterface $authentication,
-        Session $session,
+        Flash $flash,
         LoggerInterface $logger,
         Template $template,
         RouteHelper $routeHelper
     ) {
         $this->lang = $lang;
-        $this->session = $session;
+        $this->flash = $flash;
         $this->logger = $logger;
         $this->template = $template;
         $this->routeHelper = $routeHelper;
@@ -201,7 +201,7 @@ class LoginAction implements RequestHandlerInterface
         AuthParam $formParam
     ): ResponseInterface {
         $this->logger->error('Authentication Error', ['exception' => $ex]);
-        $this->session->setFlash('error', $ex->getMessage());
+        $this->flash->setError($ex->getMessage());
         return new TemplateResponse(
             $this->template,
             'user/login',
