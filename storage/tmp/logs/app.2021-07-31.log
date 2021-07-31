@@ -1,0 +1,13 @@
+2021-07-31 11:28:38.100384	[ERROR]	[MAIN]	[pid:0]	Platine Application Error: An error has occurred. Sorry for the temporary inconvenience., ParseError(code:0) syntax error, unexpected ''name'' (T_CONSTANT_ENCAPSED_STRING), expecting ']' at D:\wamp\www\platine-php\packages\framework\src\Demo\Action\JsonAction.php line 88
+2021-07-31 11:29:38.173831	[INFO]	[MAIN]	[pid:0]	Handle API Request http://localhost/platine-php/packages/framework/public/api/json
+2021-07-31 11:29:40.884756	[INFO]	[MAIN]	[pid:0]	Handle API Request http://localhost/platine-php/packages/framework/public/api/json
+2021-07-31 11:29:43.629689	[INFO]	[MAIN]	[pid:0]	Handle API Request http://localhost/platine-php/packages/framework/public/api/json
+2021-07-31 11:29:45.300827	[INFO]	[MAIN]	[pid:0]	Handle API Request http://localhost/platine-php/packages/framework/public/api/json
+2021-07-31 11:29:46.093816	[INFO]	[MAIN]	[pid:0]	Handle API Request http://localhost/platine-php/packages/framework/public/api/json
+2021-07-31 11:30:01.087377	[INFO]	[MAIN]	[pid:0]	Handle API Request http://localhost/platine-php/packages/framework/public/api/json
+2021-07-31 11:30:42.354560	[INFO]	[MAIN]	[pid:0]	Handle API Request http://localhost/platine-php/packages/framework/public/api/json
+2021-07-31 11:30:50.870386	[INFO]	[MAIN]	[pid:0]	Handle API Request http://localhost/platine-php/packages/framework/public/api/json
+2021-07-31 11:30:52.835141	[INFO]	[MAIN]	[pid:0]	Handle API Request http://localhost/platine-php/packages/framework/public/api/json
+2021-07-31 11:30:54.565328	[INFO]	[MAIN]	[pid:0]	Handle API Request http://localhost/platine-php/packages/framework/public/api/json
+2021-07-31 11:30:55.882076	[INFO]	[MAIN]	[pid:0]	Handle API Request http://localhost/platine-php/packages/framework/public/api/json
+2021-07-31 11:31:02.257235	[INFO]	[MAIN]	[pid:0]	Handle API Request http://localhost/platine-php/packages/framework/public/api/json

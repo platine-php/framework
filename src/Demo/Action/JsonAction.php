@@ -51,6 +51,7 @@ use Platine\Framework\Http\Response\JsonResponse;
 use Platine\Http\Handler\RequestHandlerInterface;
 use Platine\Http\ResponseInterface;
 use Platine\Http\ServerRequestInterface;
+use Platine\Logger\LoggerInterface;
 
 /**
  * @class JsonAction
@@ -60,14 +61,48 @@ class JsonAction implements RequestHandlerInterface
 {
 
     /**
+     * The logger instance
+     * @var LoggerInterface
+     */
+    protected LoggerInterface $logger;
+
+    /**
+     * Create new instance
+     * @param LoggerInterface $logger
+     */
+    public function __construct(
+        LoggerInterface $logger
+    ) {
+        $this->logger = $logger;
+    }
+
+    /**
      * {@inheritodc}
      */
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
+        $this->logger->info('Handle API Request {url}', ['url' => (string) $request->getUri()]);
         return new JsonResponse([
-            'one' => 1,
-            'two' => 2,
-            'array' => [1, 3, 4],
+            [
+                'id' => 1,
+                'name' => 'Tony Ulrich NGUEREZA',
+                'created_at' => '2021-08-01 23:09:12',
+            ],
+            [
+                'id' => 2,
+                'name' => 'Ethan NGUEREZA',
+                'created_at' => '2020-11-01 13:09:12',
+            ],
+            [
+                'id' => 3,
+                'name' => 'Octave NGUEREZA',
+                'created_at' => '2021-01-14 02:09:12',
+            ],
+            [
+                'id' => 4,
+                'name' => 'Ingrid MBOUTOU',
+                'created_at' => '2021-04-16 08:19:08',
+            ]
         ]);
     }
 }

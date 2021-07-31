@@ -6,6 +6,7 @@
             'url_whitelist' => [
                 '/users/login',
                 '/users/logout',
+                '/api',
             ]
         ],
         'authorization' => [

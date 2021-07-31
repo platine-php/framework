@@ -10,8 +10,9 @@
             ]
         ],
         'cors' => [
-            'origin' => '*',
-            'headers' => [
+            'path' => '/api',
+            'origins' => ['*'],
+            'allow_headers' => [
                 'Origin',
                 'X-Requested-With',
                 'Content-Type',
@@ -22,8 +23,9 @@
                 'Cache-Control',
                 'token',
             ],
-            'methods' => ['GET', 'OPTIONS', 'HEAD', 'PUT', 'POST', 'DELETE'],
-            'credentials' => true,
+            'expose_headers' => [],
+            'allow_methods' => ['GET', 'OPTIONS', 'HEAD', 'PUT', 'POST', 'DELETE'],
+            'allow_credentials' => true,
             'max_age' => 1800,
         ]
     ];

@@ -54,6 +54,7 @@ use Platine\Http\Response;
 use Platine\Http\ResponseInterface;
 use Platine\Http\ServerRequestInterface;
 use Platine\Logger\LoggerInterface;
+use Platine\Route\Route;
 use Platine\Stdlib\Helper\Str;
 
 /**
@@ -77,6 +78,18 @@ class CorsMiddleware implements MiddlewareInterface
     protected LoggerInterface $logger;
 
     /**
+     * The server request to use
+     * @var ServerRequestInterface
+     */
+    protected ServerRequestInterface $request;
+
+    /**
+     * The response to return
+     * @var ResponseInterface
+     */
+    protected ResponseInterface $response;
+
+    /**
      * Create new instance
      * @param LoggerInterface $logger
      * @param Config<T> $config
@@ -96,53 +109,201 @@ class CorsMiddleware implements MiddlewareInterface
         ServerRequestInterface $request,
         RequestHandlerInterface $handler
     ): ResponseInterface {
-        if ($request->getMethod() !== 'OPTIONS') {
+        //If no route has been match no need check for CORS
+        /** @var ?Route $route */
+        $route = $request->getAttribute(Route::class);
+        if (!$route) {
             return $handler->handle($request);
         }
 
-        $this->logger->info(
-            'CORS Request for {method}:{url}',
-            [
-                'method' => $request->getMethod(),
-                'url' => (string) $request->getUri(),
-            ]
-        );
+        //Check if the path match
+        $path = $this->config->get('security.cors.path', '/');
+        if (!preg_match('~^' . $path . '~', $route->getPattern())) {
+            return $handler->handle($request);
+        }
 
-        return $this->corsResponse();
+        $this->request = $request;
+
+        if ($this->isPreflight()) {
+            $response = new Response(204);
+
+            $this->logger->info(
+                'CORS Preflight Request for {method}:{url}',
+                [
+                    'method' => $request->getMethod(),
+                    'url' => (string) $request->getUri(),
+                ]
+            );
+        } else {
+            $response = $handler->handle($request);
+        }
+
+        $this->response = $response;
+
+        $this->setCorsHeaders();
+
+        return $this->response;
     }
 
     /**
-     * Return the CORS response
-     * @return ResponseInterface
+     * Check if the current request is preflight
+     * @return bool
      */
-    protected function corsResponse(): ResponseInterface
+    protected function isPreflight(): bool
     {
-        $origin = $this->config->get('security.cors.origin', '*');
-        $headers = $this->config->get('security.cors.headers', [
-            'Origin',
-            'X-Requested-With',
-            'Content-Type',
-            'Accept',
-            'Connection',
-            'User-Agent',
-            'Cookie',
-            'Cache-Control',
-            'token',
-        ]);
-        $methods = $this->config->get(
-            'security.cors.methods',
-            ['GET', 'OPTIONS', 'HEAD', 'PUT', 'POST', 'DELETE']
-        );
-        $credentials = $this->config->get('security.cors.credentials', true);
+        return $this->request->getMethod() === 'OPTIONS';
+    }
+
+    /**
+     * Set the CORS headers
+     * @return void
+     */
+    protected function setCorsHeaders(): void
+    {
+        if ($this->isPreflight()) {
+            $this->setOrigin()
+                 ->setMaxAge()
+                 ->setAllowCredentials()
+                 ->setAllowMethods()
+                 ->setAllowHeaders();
+        } else {
+            $this->setOrigin()
+                 ->setExposedHeaders()
+                 ->setAllowCredentials();
+        }
+    }
+
+    /**
+     * Set Origin header
+     * @return $this
+     */
+    protected function setOrigin(): self
+    {
+        $origins = $this->config->get('security.cors.origins', ['*']);
+        // default to the first allowed origin
+        $origin = reset($origins);
+
+        foreach ($origins as $ori) {
+            if ($ori === $this->request->getHeaderLine('Origin')) {
+                $origin = $ori;
+                break;
+            }
+        }
+
+        $this->response = $this->response
+                                ->withHeader(
+                                    'Access-Control-Allow-Origin',
+                                    $origin
+                                );
+
+        return $this;
+    }
+
+    /**
+     * Set expose headers
+     * @return $this
+     */
+    protected function setExposedHeaders(): self
+    {
+
+        $headers = $this->config->get('security.cors.expose_headers', []);
+
+        if (!empty($headers)) {
+            $this->response = $this->response
+                                ->withHeader(
+                                    'Access-Control-Expose-Headers',
+                                    implode(', ', $headers)
+                                );
+        }
+
+        return $this;
+    }
+
+    /**
+     * Set max age header
+     * @return $this
+     */
+    protected function setMaxAge(): self
+    {
         $maxAge = $this->config->get('security.cors.max_age', 1800);
 
-        $response = (new Response(204))
-                            ->withHeader('Access-Control-Allow-Credentials', Str::stringify($credentials))
-                            ->withHeader('Access-Control-Max-Age', Str::stringify($maxAge))
-                            ->withHeader('Access-Control-Allow-Origin', $origin)
-                            ->withHeader('Access-Control-Allow-Methods', implode(', ', $methods))
-                            ->withHeader('Access-Control-Allow-Headers', implode(', ', $headers));
+        $this->response = $this->response
+                            ->withHeader(
+                                'Access-Control-Max-Age',
+                                Str::stringify($maxAge)
+                            );
 
-        return $response;
+        return $this;
+    }
+
+    /**
+     * Set Allow credentials header
+     * @return $this
+     */
+    protected function setAllowCredentials(): self
+    {
+        $allowCredentials = $this->config->get('security.cors.allow_credentials', false);
+
+        if ($allowCredentials) {
+            $this->response = $this->response
+                                ->withHeader(
+                                    'Access-Control-Allow-Credential',
+                                    Str::stringify($allowCredentials)
+                                );
+        }
+
+        return $this;
+    }
+
+    /**
+     * Set allow methods header
+     * @return $this
+     */
+    protected function setAllowMethods(): self
+    {
+        $methods = $this->config->get('security.cors.allow_methods', []);
+
+        if (!empty($methods)) {
+            $this->response = $this->response
+                                ->withHeader(
+                                    'Access-Control-Allow-Methods',
+                                    implode(', ', $methods)
+                                );
+        }
+
+        return $this;
+    }
+
+    /**
+     * Set Allow headers
+     * @return $this
+     */
+    protected function setAllowHeaders(): self
+    {
+
+        $headers = $this->config->get('security.cors.allow_headers', []);
+
+        if (empty($headers)) {
+            //use request headers
+            $requestHeaders = $this->request
+                                    ->getHeaderLine('Access-Control-Request-Headers');
+
+            if (!empty($requestHeaders)) {
+                $headers = $requestHeaders;
+            }
+        }
+        if (!empty($headers)) {
+            if (is_array($headers)) {
+                $headers = implode(', ', $headers);
+            }
+
+            $this->response = $this->response
+                                ->withHeader(
+                                    'Access-Control-Allow-Headers',
+                                    $headers
+                                );
+        }
+
+        return $this;
     }
 }

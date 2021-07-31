@@ -105,6 +105,7 @@ class RouteMatchMiddleware implements MiddlewareInterface
         if (
             !$this->isAllowedMethod($request->getMethod())
             && !$route->isAllowedMethod($request->getMethod())
+            && $request->getMethod() !== 'OPTIONS'
         ) {
             $exception = new HttpMethodNotAllowedException($request);
             $exception->setAllowedMethods($route->getMethods());

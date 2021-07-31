@@ -11,9 +11,9 @@ use Platine\Framework\Http\Middleware\RouteMatchMiddleware;
 
     return [
         ErrorHandlerMiddleware::class,
-        CorsMiddleware::class, //Must be before Route match middleware
         CookieSendMiddleware::class,
         RouteMatchMiddleware::class,
+        CorsMiddleware::class, //Must be after Route match middleware
         CsrfMiddleware::class, //Must be after Route match middleware
         AuthenticationMiddleware::class, //Must be after Route match middleware
         AuthorizationMiddleware::class, //Must be after Authentication middleware
