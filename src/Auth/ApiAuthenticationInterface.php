@@ -29,67 +29,49 @@
  * SOFTWARE.
  */
 
+/**
+ *  @file ApiAuthenticationInterface.php
+ *
+ *  The API Authentication interface
+ *
+ *  @package    Platine\Framework\Auth
+ *  @author Platine Developers team
+ *  @copyright  Copyright (c) 2020
+ *  @license    http://opensource.org/licenses/MIT  MIT License
+ *  @link   http://www.iacademy.cf
+ *  @version 1.0.0
+ *  @filesource
+ */
+
 declare(strict_types=1);
 
-namespace Platine\Framework\Http\Exception;
+namespace Platine\Framework\Auth;
+
+use Platine\Http\ServerRequestInterface;
 
 /**
- * @class HttpMethodNotAllowedException
- * @package Platine\Framework\Http\Exception
+ * @class ApiAuthenticationInterface
+ * @package Platine\Framework\Auth
  */
-class HttpMethodNotAllowedException extends HttpSpecialException
+interface ApiAuthenticationInterface
 {
+
     /**
+     * Whether the request is authenticated
+     * @param ServerRequestInterface $request
+     * @return bool
+     */
+    public function isAuthenticated(ServerRequestInterface $request): bool;
+
+    /**
+     * Authenticate the user
+     * @param array<string, mixed> $credentials
+     * @return array<string, mixed>
      *
-     * @var int
+     * @throws MissingCredentialsException if the passed credentials is not correct
+     * @throws AccountNotFoundException if can not find the account information
+     * @throws InvalidCredentialsException if invalid credentials, like wrong password
+     * @throws AccountLockedException if account is locked
      */
-    protected $code = 405;
-
-    /**
-     *
-     * @var string
-     */
-    protected $message = 'Method not allowed.';
-
-    /**
-     * {@inheritdoc}
-     */
-    protected string $title = '405 Method Not Allowed';
-
-    /**
-     * {@inheritdoc}
-     */
-    protected string $description = 'The request method is not supported '
-            . 'for the requested resource.';
-
-    /**
-     * The list of allowed methods
-     * @var string[]
-     */
-    protected array $allowedMethods = [];
-
-    /**
-     * Return the list of allowed methods
-     * @return string[]
-     */
-    public function getAllowedMethods(): array
-    {
-        return $this->allowedMethods;
-    }
-
-    /**
-     * Set allowed methods
-     * @param string[] $methods
-     * @return $this
-     */
-    public function setAllowedMethods(array $methods): self
-    {
-        $this->allowedMethods = $methods;
-        $this->message = sprintf(
-            'Method not allowed. Must be one of: %s',
-            implode(', ', $methods)
-        );
-
-        return $this;
-    }
+    public function login(array $credentials = []): array;
 }

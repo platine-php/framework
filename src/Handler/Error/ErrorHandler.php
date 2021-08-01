@@ -309,8 +309,8 @@ class ErrorHandler implements ErrorHandlerInterface
     {
         $response = new Response($this->statusCode);
         if (
-                !empty($this->contentType)
-                && array_key_exists($this->contentType, $this->renderers)
+            !empty($this->contentType)
+            && array_key_exists($this->contentType, $this->renderers)
         ) {
             $response = $response->withHeader('Content-Type', $this->contentType);
         }

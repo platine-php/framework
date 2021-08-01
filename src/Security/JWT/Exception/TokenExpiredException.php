@@ -31,65 +31,12 @@
 
 declare(strict_types=1);
 
-namespace Platine\Framework\Http\Exception;
+namespace Platine\Framework\Security\JWT\Exception;
 
 /**
- * @class HttpMethodNotAllowedException
- * @package Platine\Framework\Http\Exception
+ * @class TokenExpiredException
+ * @package Platine\Framework\Security\JWT\Exception
  */
-class HttpMethodNotAllowedException extends HttpSpecialException
+class TokenExpiredException extends JWTException
 {
-    /**
-     *
-     * @var int
-     */
-    protected $code = 405;
-
-    /**
-     *
-     * @var string
-     */
-    protected $message = 'Method not allowed.';
-
-    /**
-     * {@inheritdoc}
-     */
-    protected string $title = '405 Method Not Allowed';
-
-    /**
-     * {@inheritdoc}
-     */
-    protected string $description = 'The request method is not supported '
-            . 'for the requested resource.';
-
-    /**
-     * The list of allowed methods
-     * @var string[]
-     */
-    protected array $allowedMethods = [];
-
-    /**
-     * Return the list of allowed methods
-     * @return string[]
-     */
-    public function getAllowedMethods(): array
-    {
-        return $this->allowedMethods;
-    }
-
-    /**
-     * Set allowed methods
-     * @param string[] $methods
-     * @return $this
-     */
-    public function setAllowedMethods(array $methods): self
-    {
-        $this->allowedMethods = $methods;
-        $this->message = sprintf(
-            'Method not allowed. Must be one of: %s',
-            implode(', ', $methods)
-        );
-
-        return $this;
-    }
 }

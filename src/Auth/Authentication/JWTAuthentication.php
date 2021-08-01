@@ -30,9 +30,9 @@
  */
 
 /**
- *  @file SessionAuthentication.php
+ *  @file JWTAuthentication.php
  *
- *  The Authentication using session feature class
+ *  The Authentication using JWT class
  *
  *  @package    Platine\Framework\Auth\Authentication
  *  @author Platine Developers team
@@ -47,30 +47,46 @@ declare(strict_types=1);
 
 namespace Platine\Framework\Auth\Authentication;
 
-use Platine\Framework\App\Application;
-use Platine\Framework\Auth\AuthenticationInterface;
-use Platine\Framework\Auth\Event\AuthInvalidPasswordEvent;
+use Platine\Config\Config;
+use Platine\Framework\Auth\ApiAuthenticationInterface;
 use Platine\Framework\Auth\Exception\AccountLockedException;
 use Platine\Framework\Auth\Exception\AccountNotFoundException;
 use Platine\Framework\Auth\Exception\InvalidCredentialsException;
 use Platine\Framework\Auth\Exception\MissingCredentialsException;
 use Platine\Framework\Auth\IdentityInterface;
 use Platine\Framework\Auth\Repository\UserRepository;
+use Platine\Framework\Security\JWT\Exception\JWTException;
+use Platine\Framework\Security\JWT\JWT;
+use Platine\Http\ServerRequestInterface;
+use Platine\Logger\LoggerInterface;
 use Platine\Security\Hash\HashInterface;
-use Platine\Session\Session;
+use Platine\Stdlib\Helper\Str;
 
 /**
- * class SessionAuthentication
+ * @class JWTAuthentication
  * @package Platine\Framework\Auth\Authentication
+ * @template T
  */
-class SessionAuthentication implements AuthenticationInterface
+class JWTAuthentication implements ApiAuthenticationInterface
 {
 
     /**
-     * The session instance to use
-     * @var Session
+     * The JWT instance
+     * @var JWT
      */
-    protected Session $session;
+    protected JWT $jwt;
+
+    /**
+     * The logger instance
+     * @var LoggerInterface
+     */
+    protected LoggerInterface $logger;
+
+    /**
+     * The configuration instance
+     * @var Config<T>
+     */
+    protected Config $config;
 
     /**
      * The user repository instance
@@ -85,27 +101,24 @@ class SessionAuthentication implements AuthenticationInterface
     protected HashInterface $hash;
 
     /**
-     * The application instance
-     * @var Application
-     */
-    protected Application $app;
-
-    /**
      * Create new instance
-     * @param Application $app
+     * @param JWT $jwt
+     * @param LoggerInterface $logger
+     * @param Config<T> $config
      * @param HashInterface $hash
-     * @param Session $session
      * @param UserRepository $userRepository
      */
     public function __construct(
-        Application $app,
+        JWT $jwt,
+        LoggerInterface $logger,
+        Config $config,
         HashInterface $hash,
-        Session $session,
         UserRepository $userRepository
     ) {
-        $this->app = $app;
+        $this->jwt = $jwt;
+        $this->logger = $logger;
+        $this->config = $config;
         $this->hash = $hash;
-        $this->session = $session;
         $this->userRepository = $userRepository;
     }
 
@@ -114,12 +127,12 @@ class SessionAuthentication implements AuthenticationInterface
      */
     public function getUser(): IdentityInterface
     {
-        if (!$this->isLogged()) {
-            throw new AccountNotFoundException('User not logged', 401);
-        }
+        //if (!$this->isLogged()) {
+           // throw new AccountNotFoundException('User not logged', 401);
+        //}
 
-        $id = $this->session->get('user.id');
-        $user = $this->userRepository->find($id);
+        // $id = $this->session->get('user.id');
+        $user = $this->userRepository->find(1);
 
         if (!$user) {
             throw new AccountNotFoundException(
@@ -134,15 +147,38 @@ class SessionAuthentication implements AuthenticationInterface
     /**
      * {@inheritdoc}
      */
-    public function isLogged(): bool
+    public function isAuthenticated(ServerRequestInterface $request): bool
     {
-        return $this->session->has('user');
+        $headerName = $this->config->get('api.auth.headers.name', 'Authorization');
+        $tokenHeader = $request->getHeaderLine($headerName);
+        if (empty($tokenHeader)) {
+            $this->logger->error('API authentication failed missing token header');
+
+            return false;
+        }
+        $tokenType = $this->config->get('api.auth.headers.token_type', 'Bearer');
+        $secret = $this->config->get('api.sign.secret', '');
+
+        $token = Str::replaceFirst($tokenType . ' ', '', $tokenHeader);
+
+        $this->jwt->setSecret($secret);
+        try {
+            $this->jwt->decode($token);
+
+            return true;
+        } catch (JWTException $ex) {
+            $this->logger->error('API authentication failed: {message}', [
+                'message' => $ex->getMessage(),
+            ]);
+        }
+
+        return false;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function login(array $credentials = [], bool $remeberMe = false): bool
+    public function login(array $credentials = []): array
     {
         if (!isset($credentials['username']) || !isset($credentials['password'])) {
             throw new MissingCredentialsException(
@@ -156,6 +192,7 @@ class SessionAuthentication implements AuthenticationInterface
         $user = $this->userRepository
                     ->with('roles.permissions')
                     ->findBy(['username' => $username]);
+
         if (!$user) {
             throw new AccountNotFoundException('Can not find the user with the given information', 401);
         } elseif ($user->status === 'D') {
@@ -166,8 +203,6 @@ class SessionAuthentication implements AuthenticationInterface
         }
 
         if (!$this->hash->verify($password, $user->password)) {
-            $this->app->dispatch(new AuthInvalidPasswordEvent($user));
-
             throw new InvalidCredentialsException(
                 'Invalid credentials',
                 401
@@ -184,17 +219,30 @@ class SessionAuthentication implements AuthenticationInterface
             }
         }
 
+        $secret = $this->config->get('api.sign.secret');
+        $expire = $this->config->get('api.auth.expire', 1800);
+        $tokenExpire = time() + $expire;
+        $this->jwt->setSecret($secret)
+                  ->setPayload([
+                      'id' => $user->id,
+                      'exp' => $tokenExpire,
+                  ])
+                  ->sign();
+
         $data = [
-          'id' => $user->id,
-          'username' => $user->username,
-          'lastname' => $user->lastname,
-          'firstname' => $user->firstname,
-          'permissions' => array_unique($permissions),
+          'user' => [
+            'id' => $user->id,
+            'username' => $user->username,
+            'lastname' => $user->lastname,
+            'firstname' => $user->firstname,
+            'permissions' => array_unique($permissions),
+          ],
+          'token' => $this->jwt->getToken(),
+          'refresh_token' => '',
+          'expire_at' => $tokenExpire,
         ];
 
-        $this->session->set('user', $data);
-
-        return $this->isLogged();
+        return $data;
     }
 
     /**
@@ -202,6 +250,5 @@ class SessionAuthentication implements AuthenticationInterface
      */
     public function logout(): void
     {
-        $this->session->remove('user');
     }
 }

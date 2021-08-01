@@ -56,7 +56,7 @@ use Platine\Route\Router;
 
 /**
  * @class PermissionServiceProvider
- * @package Platine\Framework
+ * @package Platine\Framework\Demo\Provider
  */
 class PermissionServiceProvider extends ServiceProvider
 {

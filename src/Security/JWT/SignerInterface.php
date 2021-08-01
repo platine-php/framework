@@ -3,8 +3,8 @@
 /**
  * Platine Framework
  *
- * Platine Framework is a lightweight, high-performance, simple and elegant
- * PHP Web framework
+ * Platine Framework is a lightweight, high-performance, simple and elegant PHP
+ * Web framework
  *
  * This content is released under the MIT License (MIT)
  *
@@ -29,67 +29,57 @@
  * SOFTWARE.
  */
 
+/**
+ *  @file SignerInterface.php
+ *
+ *  The Signer interface
+ *
+ *  @package    Platine\Framework\Security\JWT
+ *  @author Platine Developers team
+ *  @copyright  Copyright (c) 2020
+ *  @license    http://opensource.org/licenses/MIT  MIT License
+ *  @link   http://www.iacademy.cf
+ *  @version 1.0.0
+ *  @filesource
+ */
+
 declare(strict_types=1);
 
-namespace Platine\Framework\Http\Exception;
+namespace Platine\Framework\Security\JWT;
 
 /**
- * @class HttpMethodNotAllowedException
- * @package Platine\Framework\Http\Exception
+ * @class SignerInterface
+ * @package Platine\Framework\Security\JWT
  */
-class HttpMethodNotAllowedException extends HttpSpecialException
+interface SignerInterface
 {
-    /**
-     *
-     * @var int
-     */
-    protected $code = 405;
 
     /**
-     *
-     * @var string
+     * Sign the given data using the given key
+     * @param string $data
+     * @param string $key
+     * @return string
      */
-    protected $message = 'Method not allowed.';
+    public function sign(string $data, string $key): string;
 
     /**
-     * {@inheritdoc}
+     * Verify the signature for the given data
+     * @param string $key
+     * @param string $signature
+     * @param string $data
+     * @return bool
      */
-    protected string $title = '405 Method Not Allowed';
+    public function verify(string $key, string $signature, string $data): bool;
 
     /**
-     * {@inheritdoc}
+     * Return the algorithm used for signature
+     * @return string
      */
-    protected string $description = 'The request method is not supported '
-            . 'for the requested resource.';
+    public function getSignatureAlgo(): string;
 
     /**
-     * The list of allowed methods
-     * @var string[]
+     * Return the algorithm used in JWT token headers
+     * @return string
      */
-    protected array $allowedMethods = [];
-
-    /**
-     * Return the list of allowed methods
-     * @return string[]
-     */
-    public function getAllowedMethods(): array
-    {
-        return $this->allowedMethods;
-    }
-
-    /**
-     * Set allowed methods
-     * @param string[] $methods
-     * @return $this
-     */
-    public function setAllowedMethods(array $methods): self
-    {
-        $this->allowedMethods = $methods;
-        $this->message = sprintf(
-            'Method not allowed. Must be one of: %s',
-            implode(', ', $methods)
-        );
-
-        return $this;
-    }
+    public function getTokenAlgoName(): string;
 }

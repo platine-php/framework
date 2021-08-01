@@ -57,7 +57,7 @@ use Platine\Route\Router;
 
 /**
  * @class RoleServiceProvider
- * @package Platine\Framework
+ * @package Platine\Framework\Demo\Provider
  */
 class RoleServiceProvider extends ServiceProvider
 {

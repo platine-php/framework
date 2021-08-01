@@ -29,67 +29,39 @@
  * SOFTWARE.
  */
 
+/**
+ *  @file AppServiceProvider.php
+ *
+ *  Application base service provider class
+ *
+ *  @package    Platine\Framework\Demo\API\Provider
+ *  @author Platine Developers team
+ *  @copyright  Copyright (c) 2020
+ *  @license    http://opensource.org/licenses/MIT  MIT License
+ *  @link   http://www.iacademy.cf
+ *  @version 1.0.0
+ *  @filesource
+ */
+
 declare(strict_types=1);
 
-namespace Platine\Framework\Http\Exception;
+namespace Platine\Framework\Demo\API\Provider;
+
+use Platine\Framework\Http\Middleware\BodyParserMiddleware;
+use Platine\Framework\Service\ServiceProvider;
 
 /**
- * @class HttpMethodNotAllowedException
- * @package Platine\Framework\Http\Exception
+ * @class AppServiceProvider
+ * @package Platine\Framework\Demo\API\Provider
  */
-class HttpMethodNotAllowedException extends HttpSpecialException
+class AppServiceProvider extends ServiceProvider
 {
-    /**
-     *
-     * @var int
-     */
-    protected $code = 405;
-
-    /**
-     *
-     * @var string
-     */
-    protected $message = 'Method not allowed.';
 
     /**
      * {@inheritdoc}
      */
-    protected string $title = '405 Method Not Allowed';
-
-    /**
-     * {@inheritdoc}
-     */
-    protected string $description = 'The request method is not supported '
-            . 'for the requested resource.';
-
-    /**
-     * The list of allowed methods
-     * @var string[]
-     */
-    protected array $allowedMethods = [];
-
-    /**
-     * Return the list of allowed methods
-     * @return string[]
-     */
-    public function getAllowedMethods(): array
+    public function register(): void
     {
-        return $this->allowedMethods;
-    }
-
-    /**
-     * Set allowed methods
-     * @param string[] $methods
-     * @return $this
-     */
-    public function setAllowedMethods(array $methods): self
-    {
-        $this->allowedMethods = $methods;
-        $this->message = sprintf(
-            'Method not allowed. Must be one of: %s',
-            implode(', ', $methods)
-        );
-
-        return $this;
+        $this->app->bind(BodyParserMiddleware::class);
     }
 }

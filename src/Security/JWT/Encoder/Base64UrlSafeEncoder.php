@@ -3,8 +3,8 @@
 /**
  * Platine Framework
  *
- * Platine Framework is a lightweight, high-performance, simple and elegant
- * PHP Web framework
+ * Platine Framework is a lightweight, high-performance, simple and elegant PHP
+ * Web framework
  *
  * This content is released under the MIT License (MIT)
  *
@@ -29,67 +29,46 @@
  * SOFTWARE.
  */
 
+/**
+ *  @file Base64UrlSafeEncoder.php
+ *
+ *  The Base64 URL safe encoder class
+ *
+ *  @package    Platine\Framework\Security\JWT\Encoder
+ *  @author Platine Developers team
+ *  @copyright  Copyright (c) 2020
+ *  @license    http://opensource.org/licenses/MIT  MIT License
+ *  @link   http://www.iacademy.cf
+ *  @version 1.0.0
+ *  @filesource
+ */
+
 declare(strict_types=1);
 
-namespace Platine\Framework\Http\Exception;
+namespace Platine\Framework\Security\JWT\Encoder;
+
+use Platine\Framework\Security\JWT\EncoderInterface;
 
 /**
- * @class HttpMethodNotAllowedException
- * @package Platine\Framework\Http\Exception
+ * @class Base64UrlSafeEncoder
+ * @package Platine\Framework\Security\JWT\Encoder
  */
-class HttpMethodNotAllowedException extends HttpSpecialException
+class Base64UrlSafeEncoder implements EncoderInterface
 {
-    /**
-     *
-     * @var int
-     */
-    protected $code = 405;
-
-    /**
-     *
-     * @var string
-     */
-    protected $message = 'Method not allowed.';
 
     /**
      * {@inheritdoc}
      */
-    protected string $title = '405 Method Not Allowed';
-
-    /**
-     * {@inheritdoc}
-     */
-    protected string $description = 'The request method is not supported '
-            . 'for the requested resource.';
-
-    /**
-     * The list of allowed methods
-     * @var string[]
-     */
-    protected array $allowedMethods = [];
-
-    /**
-     * Return the list of allowed methods
-     * @return string[]
-     */
-    public function getAllowedMethods(): array
+    public function encode(string $data): string
     {
-        return $this->allowedMethods;
+        return rtrim(strtr(base64_encode($data), '+/', '-_'), '=');
     }
 
     /**
-     * Set allowed methods
-     * @param string[] $methods
-     * @return $this
+     * {@inheritdoc}
      */
-    public function setAllowedMethods(array $methods): self
+    public function decode(string $data): string
     {
-        $this->allowedMethods = $methods;
-        $this->message = sprintf(
-            'Method not allowed. Must be one of: %s',
-            implode(', ', $methods)
-        );
-
-        return $this;
+        return base64_decode(strtr($data, '-_', '+/'));
     }
 }

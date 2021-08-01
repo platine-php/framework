@@ -7,7 +7,7 @@
                 '/users/login',
                 '/users/logout',
                 '/api',
-            ]
+            ],
         ],
         'authorization' => [
             'unauthorized_route' => 'home',

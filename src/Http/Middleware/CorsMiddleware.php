@@ -109,16 +109,7 @@ class CorsMiddleware implements MiddlewareInterface
         ServerRequestInterface $request,
         RequestHandlerInterface $handler
     ): ResponseInterface {
-        //If no route has been match no need check for CORS
-        /** @var ?Route $route */
-        $route = $request->getAttribute(Route::class);
-        if (!$route) {
-            return $handler->handle($request);
-        }
-
-        //Check if the path match
-        $path = $this->config->get('security.cors.path', '/');
-        if (!preg_match('~^' . $path . '~', $route->getPattern())) {
+        if (!$this->shouldBeProcessed($request)) {
             return $handler->handle($request);
         }
 
@@ -143,6 +134,29 @@ class CorsMiddleware implements MiddlewareInterface
         $this->setCorsHeaders();
 
         return $this->response;
+    }
+
+    /**
+     * Whether we can process this request
+     * @param ServerRequestInterface $request
+     * @return bool
+     */
+    protected function shouldBeProcessed(ServerRequestInterface $request): bool
+    {
+        //If no route has been match no need check for CORS
+        /** @var ?Route $route */
+        $route = $request->getAttribute(Route::class);
+        if (!$route) {
+            return false;
+        }
+
+        //Check if the path match
+        $path = $this->config->get('security.cors.path', '/');
+        if (!preg_match('~^' . $path . '~', $route->getPattern())) {
+            return false;
+        }
+
+        return true;
     }
 
     /**

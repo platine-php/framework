@@ -30,11 +30,11 @@
  */
 
 /**
- *  @file AppServiceProvider.php
+ *  @file LoginValidator.php
  *
- *  Application base service provider class
+ *  The API Authentication validation class
  *
- *  @package    Platine\Framework\Demo\Provider
+ *  @package    Platine\Framework\Demo\API\Validator
  *  @author Platine Developers team
  *  @copyright  Copyright (c) 2020
  *  @license    http://opensource.org/licenses/MIT  MIT License
@@ -45,31 +45,58 @@
 
 declare(strict_types=1);
 
-namespace Platine\Framework\Demo\Provider;
+namespace Platine\Framework\Demo\API\Validator;
 
-use Platine\Framework\Demo\Action\DownloadAction;
-use Platine\Framework\Demo\Action\HomeAction;
-use Platine\Framework\Demo\Action\JsonAction;
-use Platine\Framework\Demo\Event\HandleAuthFailure;
-use Platine\Framework\Helper\Flash;
-use Platine\Framework\Service\ServiceProvider;
+use Platine\Framework\Demo\API\Param\LoginParam;
+use Platine\Framework\Form\Validator\AbstractValidator;
+use Platine\Lang\Lang;
+use Platine\Validator\Rule\MinLength;
+use Platine\Validator\Rule\NotEmpty;
 
 /**
- * @class AppServiceProvider
- * @package Platine\Framework\Demo\Provider
+ * @class LoginValidator
+ * @package Platine\Framework\Demo\API\Validator
  */
-class AppServiceProvider extends ServiceProvider
+class LoginValidator extends AbstractValidator
 {
+    /**
+     * The parameter instance
+     * @var LoginParam
+     */
+    protected LoginParam $param;
 
     /**
-     * {@inheritdoc}
+     * Create new instance
+     * @param LoginParam $param
+     * @param Lang $lang
      */
-    public function register(): void
+    public function __construct(LoginParam $param, Lang $lang)
     {
-        $this->app->bind(JsonAction::class);
-        $this->app->bind(DownloadAction::class);
-        $this->app->bind(HomeAction::class);
-        $this->app->bind(HandleAuthFailure::class);
-        $this->app->bind(Flash::class);
+        parent::__construct($lang);
+        $this->param = $param;
+    }
+
+    /**
+     * {@inheritodc}
+     */
+    public function setValidationData(): void
+    {
+        $this->addData('username', $this->param->getUsername());
+        $this->addData('password', $this->param->getPassword());
+    }
+
+    /**
+     * {@inheritodc}
+     */
+    public function setValidationRules(): void
+    {
+        $this->addRules('username', [
+           new NotEmpty(),
+           new MinLength(3)
+        ]);
+
+        $this->addRules('password', [
+           new NotEmpty(),
+        ]);
     }
 }

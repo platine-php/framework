@@ -3,8 +3,8 @@
 /**
  * Platine Framework
  *
- * Platine Framework is a lightweight, high-performance, simple and elegant
- * PHP Web framework
+ * Platine Framework is a lightweight, high-performance, simple and elegant PHP
+ * Web framework
  *
  * This content is released under the MIT License (MIT)
  *
@@ -30,11 +30,11 @@
  */
 
 /**
- *  @file AppServiceProvider.php
+ *  @file EncoderInterface.php
  *
- *  Application base service provider class
+ *  The encoder interface
  *
- *  @package    Platine\Framework\Demo\Provider
+ *  @package    Platine\Framework\Security\JWT
  *  @author Platine Developers team
  *  @copyright  Copyright (c) 2020
  *  @license    http://opensource.org/licenses/MIT  MIT License
@@ -45,31 +45,26 @@
 
 declare(strict_types=1);
 
-namespace Platine\Framework\Demo\Provider;
-
-use Platine\Framework\Demo\Action\DownloadAction;
-use Platine\Framework\Demo\Action\HomeAction;
-use Platine\Framework\Demo\Action\JsonAction;
-use Platine\Framework\Demo\Event\HandleAuthFailure;
-use Platine\Framework\Helper\Flash;
-use Platine\Framework\Service\ServiceProvider;
+namespace Platine\Framework\Security\JWT;
 
 /**
- * @class AppServiceProvider
- * @package Platine\Framework\Demo\Provider
+ * @class EncoderInterface
+ * @package Platine\Framework\Security\JWT
  */
-class AppServiceProvider extends ServiceProvider
+interface EncoderInterface
 {
 
     /**
-     * {@inheritdoc}
+     * Encode the given data
+     * @param string $data
+     * @return string
      */
-    public function register(): void
-    {
-        $this->app->bind(JsonAction::class);
-        $this->app->bind(DownloadAction::class);
-        $this->app->bind(HomeAction::class);
-        $this->app->bind(HandleAuthFailure::class);
-        $this->app->bind(Flash::class);
-    }
+    public function encode(string $data): string;
+
+    /**
+     * Decode the data
+     * @param string $data
+     * @return string
+     */
+    public function decode(string $data): string;
 }

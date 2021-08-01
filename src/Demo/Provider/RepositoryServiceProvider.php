@@ -51,7 +51,7 @@ use Platine\Framework\Service\ServiceProvider;
 
 /**
  * @class RepositoryServiceProvider
- * @package Platine\Framework
+ * @package Platine\Framework\Demo\Provider
  */
 class RepositoryServiceProvider extends ServiceProvider
 {

@@ -30,9 +30,9 @@
  */
 
 /**
- *  @file AuthenticationMiddleware.php
+ *  @file ApiAuthenticationMiddleware.php
  *
- *  The Authentication middleware class
+ *  The API Authentication middleware class
  *
  *  @package    Platine\Framework\Auth\Middleware
  *  @author Platine Developers team
@@ -48,9 +48,8 @@ declare(strict_types=1);
 namespace Platine\Framework\Auth\Middleware;
 
 use Platine\Config\Config;
-use Platine\Framework\Auth\AuthenticationInterface;
-use Platine\Framework\Http\Response\RedirectResponse;
-use Platine\Framework\Http\RouteHelper;
+use Platine\Framework\Auth\ApiAuthenticationInterface;
+use Platine\Framework\Http\Response\RestResponse;
 use Platine\Http\Handler\MiddlewareInterface;
 use Platine\Http\Handler\RequestHandlerInterface;
 use Platine\Http\ResponseInterface;
@@ -58,18 +57,18 @@ use Platine\Http\ServerRequestInterface;
 use Platine\Route\Route;
 
 /**
- * @class AuthenticationMiddleware
+ * @class ApiAuthenticationMiddleware
  * @package Platine\Framework\Auth\Middleware
  * @template T
  */
-class AuthenticationMiddleware implements MiddlewareInterface
+class ApiAuthenticationMiddleware implements MiddlewareInterface
 {
 
     /**
      * The Authentication instance
-     * @var AuthenticationInterface
+     * @var ApiAuthenticationInterface
      */
-    protected AuthenticationInterface $authentication;
+    protected ApiAuthenticationInterface $authentication;
 
     /**
      * The configuration instance
@@ -78,25 +77,16 @@ class AuthenticationMiddleware implements MiddlewareInterface
     protected Config $config;
 
     /**
-     * The route helper
-     * @var RouteHelper
-     */
-    protected RouteHelper $routeHelper;
-
-    /**
      * Create new instance
-     * @param AuthenticationInterface $authentication
+     * @param ApiAuthenticationInterface $authentication
      * @param Config<T> $config
-     * @param RouteHelper $routeHelper
      */
     public function __construct(
-        AuthenticationInterface $authentication,
-        Config $config,
-        RouteHelper $routeHelper
+        ApiAuthenticationInterface $authentication,
+        Config $config
     ) {
         $this->authentication = $authentication;
         $this->config = $config;
-        $this->routeHelper = $routeHelper;
     }
 
     /**
@@ -110,11 +100,8 @@ class AuthenticationMiddleware implements MiddlewareInterface
             return $handler->handle($request);
         }
 
-        if (!$this->authentication->isLogged()) {
-            $authRoute = $this->config->get('auth.authentication.login_route');
-            return new RedirectResponse(
-                $this->routeHelper->generateUrl($authRoute)
-            );
+        if (!$this->authentication->isAuthenticated($request)) {
+            return $this->unauthorizedResponse();
         }
 
         return $handler->handle($request);
@@ -134,8 +121,14 @@ class AuthenticationMiddleware implements MiddlewareInterface
             return false;
         }
 
+        //Check if the path match
+        $path = $this->config->get('api.auth.path', '/');
+        if (!preg_match('~^' . $path . '~', $route->getPattern())) {
+            return false;
+        }
+
         //check if is url whitelist
-        $urls = $this->config->get('auth.authentication.url_whitelist', []);
+        $urls = $this->config->get('api.auth.url_whitelist', []);
         foreach ($urls as $url) {
             /*
              * Route: /users/login, url: /users/login
@@ -147,5 +140,14 @@ class AuthenticationMiddleware implements MiddlewareInterface
         }
 
         return true;
+    }
+
+    /**
+     * Return an unauthorized response
+     * @return ResponseInterface
+     */
+    protected function unauthorizedResponse(): ResponseInterface
+    {
+        return new RestResponse([], [], false, 4010, 'User is not authenticated', 401);
     }
 }

@@ -29,66 +29,82 @@
  * SOFTWARE.
  */
 
+/**
+ *  @file LoginParam.php
+ *
+ *  The API Authentication parameter class
+ *
+ *  @package    Platine\Framework\Demo\API\Param
+ *  @author Platine Developers team
+ *  @copyright  Copyright (c) 2020
+ *  @license    http://opensource.org/licenses/MIT  MIT License
+ *  @link   http://www.iacademy.cf
+ *  @version 1.0.0
+ *  @filesource
+ */
+
 declare(strict_types=1);
 
-namespace Platine\Framework\Http\Exception;
+namespace Platine\Framework\Demo\API\Param;
+
+use Platine\Framework\Form\Param\BaseParam;
 
 /**
- * @class HttpMethodNotAllowedException
- * @package Platine\Framework\Http\Exception
+ * @class LoginParam
+ * @package Platine\Framework\Demo\API\Param
  */
-class HttpMethodNotAllowedException extends HttpSpecialException
+class LoginParam extends BaseParam
 {
     /**
-     *
-     * @var int
-     */
-    protected $code = 405;
-
-    /**
-     *
+     * The username
      * @var string
      */
-    protected $message = 'Method not allowed.';
+    protected string $username = '';
 
     /**
-     * {@inheritdoc}
+     * The password
+     * @var string
      */
-    protected string $title = '405 Method Not Allowed';
+    protected string $password = '';
 
     /**
-     * {@inheritdoc}
+     * Return the username
+     * @return string
      */
-    protected string $description = 'The request method is not supported '
-            . 'for the requested resource.';
-
-    /**
-     * The list of allowed methods
-     * @var string[]
-     */
-    protected array $allowedMethods = [];
-
-    /**
-     * Return the list of allowed methods
-     * @return string[]
-     */
-    public function getAllowedMethods(): array
+    public function getUsername(): string
     {
-        return $this->allowedMethods;
+        return $this->username;
     }
 
     /**
-     * Set allowed methods
-     * @param string[] $methods
+     * Set the username
+     * @param string $username
      * @return $this
      */
-    public function setAllowedMethods(array $methods): self
+    public function setUsername(string $username): self
     {
-        $this->allowedMethods = $methods;
-        $this->message = sprintf(
-            'Method not allowed. Must be one of: %s',
-            implode(', ', $methods)
-        );
+        $this->username = $username;
+
+        return $this;
+    }
+
+    /**
+     * Return the password
+     * @return string
+     */
+    public function getPassword(): string
+    {
+        return $this->password;
+    }
+
+    /**
+     * Set the password
+     * @param string $password
+     * @return $this
+     */
+    public function setPassword(string $password): self
+    {
+        $this->password = $password;
 
         return $this;
     }

@@ -29,67 +29,65 @@
  * SOFTWARE.
  */
 
+/**
+ *  @file RestResponse.php
+ *
+ *  This REST Response class
+ *
+ *  @package    Platine\Framework\Http\Response
+ *  @author Platine Developers team
+ *  @copyright  Copyright (c) 2020
+ *  @license    http://opensource.org/licenses/MIT  MIT License
+ *  @link   http://www.iacademy.cf
+ *  @version 1.0.0
+ *  @filesource
+ */
+
 declare(strict_types=1);
 
-namespace Platine\Framework\Http\Exception;
+namespace Platine\Framework\Http\Response;
 
 /**
- * @class HttpMethodNotAllowedException
- * @package Platine\Framework\Http\Exception
+ * @class RestResponse
+ * @package Platine\Framework\Http\Response
  */
-class HttpMethodNotAllowedException extends HttpSpecialException
+class RestResponse extends JsonResponse
 {
-    /**
-     *
-     * @var int
-     */
-    protected $code = 405;
 
     /**
-     *
-     * @var string
+     * Create new instance
+     * @param mixed $data
+     * @param array<string, mixed> $extras
+     * @param bool $success
+     * @param int $code
+     * @param string $message
+     * @param int $statusCode
+     * @param string $reasonPhrase
      */
-    protected $message = 'Method not allowed.';
+    public function __construct(
+        $data = [],
+        array $extras = [],
+        bool $success = true,
+        int $code = 0,
+        string $message = '',
+        int $statusCode = 200,
+        string $reasonPhrase = ''
+    ) {
+        $result = [
+            'success' => $success,
+            'timestamp' => time(),
+            'code' => $code,
+            'message' => $message
+        ];
 
-    /**
-     * {@inheritdoc}
-     */
-    protected string $title = '405 Method Not Allowed';
+        if ($data) {
+            $result['data'] = $data;
+        }
 
-    /**
-     * {@inheritdoc}
-     */
-    protected string $description = 'The request method is not supported '
-            . 'for the requested resource.';
+        if (!empty($extras)) {
+            $result = array_merge($result, $extras);
+        }
 
-    /**
-     * The list of allowed methods
-     * @var string[]
-     */
-    protected array $allowedMethods = [];
-
-    /**
-     * Return the list of allowed methods
-     * @return string[]
-     */
-    public function getAllowedMethods(): array
-    {
-        return $this->allowedMethods;
-    }
-
-    /**
-     * Set allowed methods
-     * @param string[] $methods
-     * @return $this
-     */
-    public function setAllowedMethods(array $methods): self
-    {
-        $this->allowedMethods = $methods;
-        $this->message = sprintf(
-            'Method not allowed. Must be one of: %s',
-            implode(', ', $methods)
-        );
-
-        return $this;
+        parent::__construct($result, $statusCode, $reasonPhrase);
     }
 }

@@ -124,29 +124,9 @@ class CsrfMiddleware implements MiddlewareInterface
         ServerRequestInterface $request,
         RequestHandlerInterface $handler
     ): ResponseInterface {
-        //If no route has been match no need check for CSRF
-        /** @var ?Route $route */
-        $route = $request->getAttribute(Route::class);
-        if (!$route) {
+
+        if (!$this->shouldBeProcessed($request)) {
             return $handler->handle($request);
-        }
-
-        $methods = $this->config->get('security.csrf.http_methods', []);
-
-        if (!in_array($request->getMethod(), $methods)) {
-            return $handler->handle($request);
-        }
-
-        //check if is url whitelist
-        $urls = $this->config->get('security.csrf.url_whitelist', []);
-        foreach ($urls as $url) {
-            /*
-             * Route: /users/login, url: /users/login
-             * Route: /users/detail/{id}, url: /users/detail/
-             */
-            if (preg_match('~^' . $url . '~', $route->getPattern())) {
-                return $handler->handle($request);
-            }
         }
 
         $this->request = $request;
@@ -192,6 +172,41 @@ class CsrfMiddleware implements MiddlewareInterface
         }
 
         $this->session->remove('csrf_data');
+
+        return true;
+    }
+
+    /**
+     * Whether we can process this request
+     * @param ServerRequestInterface $request
+     * @return bool
+     */
+    protected function shouldBeProcessed(ServerRequestInterface $request): bool
+    {
+       //If no route has been match no need check for CSRF
+        /** @var ?Route $route */
+        $route = $request->getAttribute(Route::class);
+        if (!$route) {
+            return false;
+        }
+
+        $methods = $this->config->get('security.csrf.http_methods', []);
+
+        if (!in_array($request->getMethod(), $methods)) {
+            return false;
+        }
+
+        //check if is url whitelist
+        $urls = $this->config->get('security.csrf.url_whitelist', []);
+        foreach ($urls as $url) {
+            /*
+             * Route: /users/login, url: /users/login
+             * Route: /users/detail/{id}, url: /users/detail/
+             */
+            if (preg_match('~^' . $url . '~', $route->getPattern())) {
+                return false;
+            }
+        }
 
         return true;
     }

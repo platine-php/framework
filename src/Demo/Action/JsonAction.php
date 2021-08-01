@@ -47,7 +47,7 @@ declare(strict_types=1);
 
 namespace Platine\Framework\Demo\Action;
 
-use Platine\Framework\Http\Response\JsonResponse;
+use Platine\Framework\Http\Response\RestResponse;
 use Platine\Http\Handler\RequestHandlerInterface;
 use Platine\Http\ResponseInterface;
 use Platine\Http\ServerRequestInterface;
@@ -81,8 +81,7 @@ class JsonAction implements RequestHandlerInterface
      */
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
-        $this->logger->info('Handle API Request {url}', ['url' => (string) $request->getUri()]);
-        return new JsonResponse([
+        return new RestResponse([
             [
                 'id' => 1,
                 'name' => 'Tony Ulrich NGUEREZA',
@@ -103,6 +102,6 @@ class JsonAction implements RequestHandlerInterface
                 'name' => 'Ingrid MBOUTOU',
                 'created_at' => '2021-04-16 08:19:08',
             ]
-        ]);
+        ], ['page' => ['first' => 1, 'last' => 45, 'total' => 748]]);
     }
 }

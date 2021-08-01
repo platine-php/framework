@@ -59,7 +59,7 @@ use Platine\Route\Router;
 
 /**
  * @class UserServiceProvider
- * @package Platine\Framework
+ * @package Platine\Framework\Demo\Provider
  */
 class UserServiceProvider extends ServiceProvider
 {
