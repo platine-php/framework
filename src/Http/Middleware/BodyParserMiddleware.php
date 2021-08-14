@@ -154,7 +154,7 @@ class BodyParserMiddleware implements MiddlewareInterface
     /**
      * Parse the body
      * @param ServerRequestInterface $request
-     * @return null|array<mixed>object
+     * @return null|array<mixed>|object
      */
     protected function parseBody(ServerRequestInterface $request)
     {
@@ -165,7 +165,7 @@ class BodyParserMiddleware implements MiddlewareInterface
 
         if (!$this->hasParser($contentType)) {
              // If not, look for a media type with a structured syntax suffix (RFC 6839)
-            $parts = expldoe('+', $contentType);
+            $parts = explode('+', $contentType);
 
             if (count($parts) >= 2) {
                 $contentType = 'application/' . $parts[count($parts) - 1];
@@ -179,7 +179,8 @@ class BodyParserMiddleware implements MiddlewareInterface
             $parsed = $parser($body);
             if (!is_null($parsed) && !is_array($parsed) && !is_object($parsed)) {
                 throw new RuntimeException(sprintf(
-                    'The return value of body parser must be an array, an object, or null, got [%s]',
+                    'The return value of body parser must be an array, an '
+                        . 'object, or null, got [%s]',
                     gettype($parsed)
                 ));
             }

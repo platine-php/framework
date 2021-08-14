@@ -238,7 +238,7 @@ class JWTAuthentication implements ApiAuthenticationInterface
             'permissions' => array_unique($permissions),
           ],
           'token' => $this->jwt->getToken(),
-          'refresh_token' => '',
+          //'refresh_token' => '',
           'expire_at' => $tokenExpire,
         ];
 

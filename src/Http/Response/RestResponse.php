@@ -77,8 +77,11 @@ class RestResponse extends JsonResponse
             'success' => $success,
             'timestamp' => time(),
             'code' => $code,
-            'message' => $message
         ];
+
+        if (!empty($message)) {
+            $result['message'] = $message;
+        }
 
         if ($data) {
             $result['data'] = $data;

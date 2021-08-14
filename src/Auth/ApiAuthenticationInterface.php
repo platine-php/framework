@@ -47,6 +47,10 @@ declare(strict_types=1);
 
 namespace Platine\Framework\Auth;
 
+use Platine\Framework\Auth\Exception\AccountLockedException;
+use Platine\Framework\Auth\Exception\AccountNotFoundException;
+use Platine\Framework\Auth\Exception\InvalidCredentialsException;
+use Platine\Framework\Auth\Exception\MissingCredentialsException;
 use Platine\Http\ServerRequestInterface;
 
 /**

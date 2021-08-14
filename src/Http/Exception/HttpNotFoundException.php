@@ -33,6 +33,9 @@ declare(strict_types=1);
 
 namespace Platine\Framework\Http\Exception;
 
+use Platine\Http\ServerRequestInterface;
+use Throwable;
+
 /**
  * @class HttpNotFoundException
  * @package Platine\Framework\Http\Exception
@@ -59,6 +62,17 @@ class HttpNotFoundException extends HttpSpecialException
     /**
      * {@inheritdoc}
      */
-    protected string $description = 'The requested resource could not be found.'
-            . ' Please verify the URI and try again';
+    public function __construct(
+        ServerRequestInterface $request,
+        ?string $message = null,
+        ?Throwable $previous = null
+    ) {
+        parent::__construct($request, $message, $previous);
+
+        $this->description = sprintf(
+            'The requested resource [%s] could not be found.'
+            . ' Please verify the URI and try again',
+            (string) $request->getUri()
+        );
+    }
 }
