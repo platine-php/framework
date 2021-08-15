@@ -61,7 +61,6 @@ use Platine\Http\ServerRequest;
 use Platine\Http\ServerRequestInterface;
 use Platine\Route\Router;
 
-
 /**
  * @class HttpKernel
  * @package Platine\Framework\Kernel
@@ -123,6 +122,11 @@ class HttpKernel extends BaseKernel implements RequestHandlerInterface
      */
     public function run(?ServerRequestInterface $request = null): void
     {
+        $req = $request ?? ServerRequest::createFromGlobals();
+
+        //Share the instance to use later
+        $this->app->instance($req, ServerRequestInterface::class);
+
         //bootstrap the application
         $this->bootstrap();
 
@@ -132,10 +136,6 @@ class HttpKernel extends BaseKernel implements RequestHandlerInterface
         //Load configured middlewares
         $this->registerConfiguredMiddlewares();
 
-        $req = $request ?? ServerRequest::createFromGlobals();
-
-        //Share the instance to use later
-        $this->app->instance($req, ServerRequestInterface::class);
 
         /** @var EmitterInterface $emitter */
         $emitter = $this->app->get(EmitterInterface::class);
@@ -178,10 +178,7 @@ class HttpKernel extends BaseKernel implements RequestHandlerInterface
         /** @var Config<T> $config */
         $config = $this->app->get(Config::class);
 
-        $basePath = $this->app->getBasePath();
-        if (empty($basePath)) {
-            $basePath = $config->get('app.base_path', '/');
-        }
+        $basePath = $this->determineBasePath();
         $this->router->setBasePath($basePath);
 
         $routes = $config->get('routes', []);
@@ -214,6 +211,45 @@ class HttpKernel extends BaseKernel implements RequestHandlerInterface
         foreach ($middlewares as $middleware) {
             $this->use($middleware);
         }
+    }
+
+    /**
+     * Will try to set application base path used somewhere in router,
+     * Firstly will check if Application::getBasePath is not empty, if empty
+     * check for application configuration and otherwise will try determine
+     *  using server variable.
+     * @return string
+     */
+    protected function determineBasePath(): string
+    {
+        $appBasePath = $this->app->getBasePath();
+        if (!empty($appBasePath)) {
+            return $appBasePath;
+        }
+
+        /** @var Config<T> $config */
+        $config = $this->app->get(Config::class);
+        $configBasePath = $config->get('app.base_path');
+
+        if (!empty($configBasePath)) {
+            $this->app->setBasePath($configBasePath);
+            return $configBasePath;
+        }
+
+        //TODO
+        /** @var ServerRequestInterface $request */
+        $request = $this->app->get(ServerRequestInterface::class);
+        $server = $request->getServerParams();
+        $autoBasePath = implode('/', array_slice(explode(
+            '/',
+            $server['SCRIPT_NAME'] ?? ''
+        ), 0, -1));
+        $this->app->setBasePath($autoBasePath);
+        if (!empty($autoBasePath)) {
+            return $autoBasePath;
+        }
+
+        return '/';
     }
 
     /**

@@ -138,7 +138,7 @@ class Application extends Container
     public function __construct(string $basePath = '')
     {
         parent::__construct();
-        
+
         $this->basePath = $basePath;
         $this->loadCoreServiceProviders();
 
