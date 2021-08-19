@@ -68,4 +68,19 @@ class Permission extends Entity
             'updated_at' => '?date',
         ]);
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function jsonSerialize()
+    {
+        return [
+          'id' =>  $this->mapper()->getColumn('id'),
+          'code' => $this->mapper()->getColumn('code'),
+          'description' => $this->mapper()->getColumn('description'),
+          'depend' => $this->mapper()->getColumn('depend'),
+          'created_at' => $this->mapper()->getColumn('created_at'),
+          'updated_at' => $this->mapper()->getColumn('updated_at'),
+        ];
+    }
 }

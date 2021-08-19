@@ -131,11 +131,11 @@ class User extends Entity implements IdentityInterface
     {
         return $this->mapper()->getColumn('username');
     }
-    
+
     /**
      * {@inheritdoc}
      */
-    public function toJson(): array
+    public function jsonSerialize()
     {
         return [
           'id' =>  $this->mapper()->getColumn('id'),
@@ -149,5 +149,4 @@ class User extends Entity implements IdentityInterface
           'updated_at' => $this->mapper()->getColumn('updated_at'),
         ];
     }
-
 }
