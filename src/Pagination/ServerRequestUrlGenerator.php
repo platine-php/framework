@@ -97,6 +97,14 @@ class ServerRequestUrlGenerator implements UrlGeneratorInterface
     }
 
     /**
+     * {@inheritdoc}
+     */
+    public function getUrlPattern(): string
+    {
+        return $this->url;
+    }
+
+    /**
      * Determine the pagination URL
      * @return void
      */
