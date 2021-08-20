@@ -97,18 +97,4 @@ class Role extends Entity
 
         return $this;
     }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function jsonSerialize()
-    {
-        return [
-          'id' =>  $this->mapper()->getColumn('id'),
-          'name' => $this->mapper()->getColumn('name'),
-          'description' => $this->mapper()->getColumn('description'),
-          'created_at' => $this->mapper()->getColumn('created_at'),
-          'updated_at' => $this->mapper()->getColumn('updated_at'),
-        ];
-    }
 }

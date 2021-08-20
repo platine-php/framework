@@ -131,22 +131,4 @@ class User extends Entity implements IdentityInterface
     {
         return $this->mapper()->getColumn('username');
     }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function jsonSerialize()
-    {
-        return [
-          'id' =>  $this->mapper()->getColumn('id'),
-          'username' => $this->mapper()->getColumn('username'),
-          'email' => $this->mapper()->getColumn('email'),
-          'status' => $this->mapper()->getColumn('status'),
-          'lastname' => $this->mapper()->getColumn('lastname'),
-          'firstname' => $this->mapper()->getColumn('firstname'),
-          'role' => $this->mapper()->getColumn('role'),
-          'created_at' => $this->mapper()->getColumn('created_at'),
-          'updated_at' => $this->mapper()->getColumn('updated_at'),
-        ];
-    }
 }
