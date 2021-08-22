@@ -72,8 +72,8 @@ class LangServiceProvider extends ServiceProvider
         $this->app->bind(Configuration::class, function (ContainerInterface $app) {
             return new Configuration($app->get(Config::class)->get('lang', []));
         });
-        $this->app->bind(StorageInterface::class, MemoryStorage::class);
-        $this->app->bind(TranslatorInterface::class, GettextTranslator::class);
+        $this->app->share(StorageInterface::class, MemoryStorage::class);
+        $this->app->share(TranslatorInterface::class, GettextTranslator::class);
         $this->app->share(Lang::class);
     }
 }
