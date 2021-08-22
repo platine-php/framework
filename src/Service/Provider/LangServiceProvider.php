@@ -74,6 +74,6 @@ class LangServiceProvider extends ServiceProvider
         });
         $this->app->bind(StorageInterface::class, MemoryStorage::class);
         $this->app->bind(TranslatorInterface::class, GettextTranslator::class);
-        $this->app->bind(Lang::class);
+        $this->app->share(Lang::class);
     }
 }
