@@ -49,6 +49,7 @@ namespace Platine\Framework\Auth\Entity;
 
 use Platine\Orm\Entity;
 use Platine\Orm\Mapper\EntityMapperInterface;
+use Platine\Orm\Query\Query;
 
 /**
  * @class Token
