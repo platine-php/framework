@@ -232,7 +232,9 @@ class JWTAuthentication implements ApiAuthenticationInterface
 
         $secret = $this->config->get('api.sign.secret');
         $expire = $this->config->get('api.auth.token_expire', 900);
+        $refreshExpire = $this->config->get('api.auth.refresh_token_expire', 30 * 86400);
         $tokenExpire = time() + $expire;
+        $refreshTokenExpire = time() + $refreshExpire;
         $this->jwt->setSecret($secret)
                   ->setPayload([
                       'sub' => $user->id,
@@ -245,7 +247,7 @@ class JWTAuthentication implements ApiAuthenticationInterface
         $token = $this->tokenRepository->create([
             'token' => $jwtToken,
             'refresh_token' => $refreshToken,
-            'expire_at' => (new DateTime())->setTimestamp($tokenExpire),
+            'expire_at' => (new DateTime())->setTimestamp($refreshTokenExpire),
             'user_id' => $user->id,
         ]);
 
