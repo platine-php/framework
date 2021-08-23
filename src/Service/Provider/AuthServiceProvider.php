@@ -58,6 +58,7 @@ use Platine\Framework\Auth\Middleware\AuthenticationMiddleware;
 use Platine\Framework\Auth\Middleware\AuthorizationMiddleware;
 use Platine\Framework\Auth\Repository\PermissionRepository;
 use Platine\Framework\Auth\Repository\RoleRepository;
+use Platine\Framework\Auth\Repository\TokenRepository;
 use Platine\Framework\Auth\Repository\UserRepository;
 use Platine\Framework\Security\JWT\Encoder\Base64UrlSafeEncoder;
 use Platine\Framework\Security\JWT\EncoderInterface;
@@ -90,6 +91,7 @@ class AuthServiceProvider extends ServiceProvider
         $this->app->bind(RoleRepository::class);
         $this->app->bind(PermissionRepository::class);
         $this->app->bind(UserRepository::class);
+        $this->app->bind(TokenRepository::class);
         $this->app->bind(AuthorizationMiddleware::class);
         $this->app->bind(AuthenticationMiddleware::class);
         $this->app->bind(AuthenticationInterface::class, SessionAuthentication::class);

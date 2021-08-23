@@ -47,6 +47,7 @@ declare(strict_types=1);
 
 namespace Platine\Framework\Auth\Authentication;
 
+use DateTime;
 use Platine\Config\Config;
 use Platine\Framework\Auth\ApiAuthenticationInterface;
 use Platine\Framework\Auth\Exception\AccountLockedException;
@@ -54,6 +55,7 @@ use Platine\Framework\Auth\Exception\AccountNotFoundException;
 use Platine\Framework\Auth\Exception\InvalidCredentialsException;
 use Platine\Framework\Auth\Exception\MissingCredentialsException;
 use Platine\Framework\Auth\IdentityInterface;
+use Platine\Framework\Auth\Repository\TokenRepository;
 use Platine\Framework\Auth\Repository\UserRepository;
 use Platine\Framework\Security\JWT\Exception\JWTException;
 use Platine\Framework\Security\JWT\JWT;
@@ -95,6 +97,12 @@ class JWTAuthentication implements ApiAuthenticationInterface
     protected UserRepository $userRepository;
 
     /**
+     * The token repository
+     * @var TokenRepository
+     */
+    protected TokenRepository $tokenRepository;
+
+    /**
      * Hash instance to use
      * @var HashInterface
      */
@@ -107,19 +115,22 @@ class JWTAuthentication implements ApiAuthenticationInterface
      * @param Config<T> $config
      * @param HashInterface $hash
      * @param UserRepository $userRepository
+     * @param TokenRepository $tokenRepository
      */
     public function __construct(
         JWT $jwt,
         LoggerInterface $logger,
         Config $config,
         HashInterface $hash,
-        UserRepository $userRepository
+        UserRepository $userRepository,
+        TokenRepository $tokenRepository
     ) {
         $this->jwt = $jwt;
         $this->logger = $logger;
         $this->config = $config;
         $this->hash = $hash;
         $this->userRepository = $userRepository;
+        $this->tokenRepository = $tokenRepository;
     }
 
     /**
@@ -220,14 +231,25 @@ class JWTAuthentication implements ApiAuthenticationInterface
         }
 
         $secret = $this->config->get('api.sign.secret');
-        $expire = $this->config->get('api.auth.expire', 1800);
+        $expire = $this->config->get('api.auth.token_expire', 900);
         $tokenExpire = time() + $expire;
         $this->jwt->setSecret($secret)
                   ->setPayload([
-                      'id' => $user->id,
+                      'sub' => $user->id,
                       'exp' => $tokenExpire,
                   ])
                   ->sign();
+        $refreshToken = Str::randomToken(24);
+        $jwtToken = $this->jwt->getToken();
+
+        $token = $this->tokenRepository->create([
+            'token' => $jwtToken,
+            'refresh_token' => $refreshToken,
+            'expire_at' => (new DateTime())->setTimestamp($tokenExpire),
+            'user_id' => $user->id,
+        ]);
+
+        $this->tokenRepository->save($token);
 
         $data = [
           'user' => [
@@ -237,9 +259,8 @@ class JWTAuthentication implements ApiAuthenticationInterface
             'firstname' => $user->firstname,
             'permissions' => array_unique($permissions),
           ],
-          'token' => $this->jwt->getToken(),
-          //'refresh_token' => '',
-          'expire_at' => $tokenExpire,
+          'token' => $jwtToken,
+          'refresh_token' => $refreshToken,
         ];
 
         return $data;
