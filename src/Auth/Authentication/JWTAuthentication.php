@@ -237,7 +237,9 @@ class JWTAuthentication implements ApiAuthenticationInterface
         foreach ($roles as $role) {
             $rolePermissions = $role->permissions;
             foreach ($rolePermissions as $permission) {
-                $permissions[] = $permission->code;
+                if(!in_array($permission->code, $permissions)){
+                    $permissions[] = $permission->code;
+                }
             }
         }
 
@@ -270,7 +272,7 @@ class JWTAuthentication implements ApiAuthenticationInterface
             'username' => $user->username,
             'lastname' => $user->lastname,
             'firstname' => $user->firstname,
-            'permissions' => array_unique($permissions),
+            'permissions' => $permissions,
           ],
           'token' => $jwtToken,
           'refresh_token' => $refreshToken,
