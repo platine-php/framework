@@ -109,6 +109,12 @@ class JWTAuthentication implements ApiAuthenticationInterface
     protected HashInterface $hash;
 
     /**
+     * The server request instance
+     * @var ServerRequestInterface
+     */
+    protected ServerRequestInterface $request;
+
+    /**
      * Create new instance
      * @param JWT $jwt
      * @param LoggerInterface $logger
@@ -116,6 +122,7 @@ class JWTAuthentication implements ApiAuthenticationInterface
      * @param HashInterface $hash
      * @param UserRepository $userRepository
      * @param TokenRepository $tokenRepository
+     * @param ServerRequestInterface $request
      */
     public function __construct(
         JWT $jwt,
@@ -123,7 +130,8 @@ class JWTAuthentication implements ApiAuthenticationInterface
         Config $config,
         HashInterface $hash,
         UserRepository $userRepository,
-        TokenRepository $tokenRepository
+        TokenRepository $tokenRepository,
+        ServerRequestInterface $request
     ) {
         $this->jwt = $jwt;
         $this->logger = $logger;
@@ -131,6 +139,7 @@ class JWTAuthentication implements ApiAuthenticationInterface
         $this->hash = $hash;
         $this->userRepository = $userRepository;
         $this->tokenRepository = $tokenRepository;
+        $this->request = $request;
     }
 
     /**
@@ -138,12 +147,14 @@ class JWTAuthentication implements ApiAuthenticationInterface
      */
     public function getUser(): IdentityInterface
     {
-        //if (!$this->isLogged()) {
-           // throw new AccountNotFoundException('User not logged', 401);
-        //}
+        if (!$this->isAuthenticated($this->request)) {
+            throw new AccountNotFoundException('User not logged', 401);
+        }
 
-        // $id = $this->session->get('user.id');
-        $user = $this->userRepository->find(1);
+        $payload = $this->jwt->getPayload();
+        $id = (int) $payload['sub'] ?? -1;
+
+        $user = $this->userRepository->find($id);
 
         if (!$user) {
             throw new AccountNotFoundException(
@@ -175,7 +186,6 @@ class JWTAuthentication implements ApiAuthenticationInterface
         $this->jwt->setSecret($secret);
         try {
             $this->jwt->decode($token);
-            $request = $request->withAttribute(JWT::class, $this->jwt);
 
             return true;
         } catch (JWTException $ex) {
@@ -267,12 +277,5 @@ class JWTAuthentication implements ApiAuthenticationInterface
         ];
 
         return $data;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function logout(): void
-    {
     }
 }

@@ -78,4 +78,12 @@ interface ApiAuthenticationInterface
      * @throws AccountLockedException if account is locked
      */
     public function login(array $credentials = []): array;
+
+    /**
+     * Return the current logged user
+     * @return IdentityInterface
+     *
+     * @throws AccountNotFoundException if can not find the account information
+     */
+    public function getUser(): IdentityInterface;
 }
