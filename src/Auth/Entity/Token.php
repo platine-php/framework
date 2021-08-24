@@ -70,7 +70,7 @@ class Token extends Entity
             'created_at' => 'date',
             'updated_at' => '?date',
         ]);
-        
+
         $mapper->filter('not_expire', function (Query $q, $date) {
             $q->where('expire_at')->gt($date);
         });

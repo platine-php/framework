@@ -175,6 +175,7 @@ class JWTAuthentication implements ApiAuthenticationInterface
         $this->jwt->setSecret($secret);
         try {
             $this->jwt->decode($token);
+            $request = $request->withAttribute(JWT::class, $this->jwt);
 
             return true;
         } catch (JWTException $ex) {
