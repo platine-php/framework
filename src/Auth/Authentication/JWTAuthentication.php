@@ -272,6 +272,7 @@ class JWTAuthentication implements ApiAuthenticationInterface
             'username' => $user->username,
             'lastname' => $user->lastname,
             'firstname' => $user->firstname,
+            'email' => $user->email,
             'permissions' => $permissions,
           ],
           'token' => $jwtToken,

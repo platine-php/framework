@@ -216,7 +216,7 @@ class RequestData
             }
             return $obj;
         }
-        return htmlspecialchars(strip_tags($str), ENT_COMPAT, 'UTF-8');
+        return htmlspecialchars(strip_tags((string) $str), ENT_COMPAT, 'UTF-8');
     }
 
     /**
