@@ -35,6 +35,7 @@
         "platine-php/mail": "1.0.x-dev",
         "platine-php/orm": "1.0.x-dev",
         "platine-php/pagination": "1.0.x-dev",
+        "platine-php/pdf": "1.0.x-dev",
         "platine-php/request-handler": "1.0.x-dev",
         "platine-php/router": "1.0.x-dev",
         "platine-php/security": "1.0.x-dev",
