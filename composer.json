@@ -27,6 +27,7 @@
         "platine-php/container": "1.0.x-dev",
         "platine-php/cookie": "1.0.x-dev",
         "platine-php/database": "1.0.x-dev",
+        "platine-php/docx-template": "1.0.x-dev",
         "platine-php/event-dispatcher": "1.0.x-dev",
         "platine-php/filesystem": "1.0.x-dev",
         "platine-php/http": "1.0.x-dev",
