@@ -8,8 +8,8 @@
         {
             "name": "NGUEREZA Tony",
             "email": "nguerezatony@gmail.com",
-	        "homepage": "http://www.iacademy.cf",
-	        "role": "developer"
+	    "homepage": "http://www.iacademy.cf",
+	    "role": "developer"
         }
     ],
 
@@ -68,7 +68,8 @@
     "autoload-dev": {
         "psr-4":{
             "Platine\\Test\\": "tests"
-        }
+        },
+        "files": ["tests/fixtures/fixtures.php"]
     },
     
     "config": {

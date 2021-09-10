@@ -237,7 +237,7 @@ class JWTAuthentication implements ApiAuthenticationInterface
         foreach ($roles as $role) {
             $rolePermissions = $role->permissions;
             foreach ($rolePermissions as $permission) {
-                if(!in_array($permission->code, $permissions)){
+                if (!in_array($permission->code, $permissions)) {
                     $permissions[] = $permission->code;
                 }
             }
