@@ -367,7 +367,7 @@ class VendorPublishCommand extends Command
      */
     protected function getPackageInfo(string $name): array
     {
-        $packages = Composer::parseLockFile($this->application->getAppPath());
+        $packages = Composer::parseLockFile($this->application->getRootPath());
         foreach ($packages as $package) {
             $packageName = $package['name'] ?? '';
             if ($name === $packageName) {

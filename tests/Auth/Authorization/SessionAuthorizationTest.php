@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Platine\Test\Auth\Authorization;
+namespace Platine\Test\Framework\Auth\Authorization;
 
 use Platine\Dev\PlatineTestCase;
 use Platine\Framework\Auth\Authorization\SessionAuthorization;

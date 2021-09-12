@@ -166,7 +166,7 @@ abstract class MakeCommand extends Command
         $class = Str::replaceFirst($this->rootNamespace, '', $this->name);
 
         $path = sprintf(
-            '%s/src/%s.php',
+            '%s/%s.php',
             $this->application->getAppPath(),
             str_replace('\\', '/', $class)
         );
@@ -217,7 +217,6 @@ abstract class MakeCommand extends Command
      */
     protected function fileExists(): bool
     {
-        $className = $this->getFullClassName($this->name);
         $path = $this->getPath();
 
         return $this->filesystem->file($path)->exists();
@@ -234,9 +233,9 @@ abstract class MakeCommand extends Command
 
         $file = $this->filesystem->file($path);
 
-        $content = $this->replaceNamespace($template);
-        $content = $this->replaceClasses($content);
-        $file->write($content);
+        $replaceNamespace = $this->replaceNamespace($template);
+        $replaceClasses = $this->replaceClasses($replaceNamespace);
+        $file->write($replaceClasses);
     }
 
     /**

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Platine\Test\Auth\Entity;
+namespace Platine\Test\Framework\Auth\Entity;
 
 use Platine\Dev\PlatineTestCase;
 use Platine\Framework\Auth\Entity\Permission;

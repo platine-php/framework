@@ -96,6 +96,12 @@ class Application extends Container
     protected string $appPath = '';
 
     /**
+     * The application root path
+     * @var string
+     */
+    protected string $rootPath = '';
+
+    /**
      * The application configuration path
      * @var string
      */
@@ -152,6 +158,27 @@ class Application extends Container
     public function version(): string
     {
         return self::VERSION;
+    }
+
+    /**
+     * Return the root path
+     * @return string
+     */
+    public function getRootPath(): string
+    {
+        return $this->rootPath;
+    }
+
+    /**
+     * Set root path
+     * @param string $rootPath
+     * @return $this
+     */
+    public function setRootPath(string $rootPath): self
+    {
+        $this->rootPath = $rootPath;
+
+        return $this;
     }
 
     /**

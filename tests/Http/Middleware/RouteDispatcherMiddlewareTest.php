@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Platine\Test\Http\Middleware;
+namespace Platine\Test\Framework\Http\Middleware;
 
 use Platine\Container\Container;
 use Platine\Dev\PlatineTestCase;

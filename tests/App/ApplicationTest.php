@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Platine\Test\App;
+namespace Platine\Test\Framework\App;
 
 use InvalidArgumentException;
 use Platine\Config\Config;
@@ -45,6 +45,7 @@ class ApplicationTest extends PlatineTestCase
         $app->setNamespace('MyApp');
         $app->setStoragePath('/storagepath');
         $app->setVendorPath('/vendorpath');
+        $app->setRootPath('/rootpath');
         $this->assertEquals('/app', $app->getAppPath());
         $this->assertEquals('/basepath', $app->getBasePath());
         $this->assertEquals('staging', $app->getEnvironment());
@@ -52,6 +53,7 @@ class ApplicationTest extends PlatineTestCase
         $this->assertEquals('MyApp', $app->getNamespace());
         $this->assertEquals('/storagepath', $app->getStoragePath());
         $this->assertEquals('/vendorpath', $app->getVendorPath());
+        $this->assertEquals('/rootpath', $app->getRootPath());
     }
 
     public function testDispatchAndListenUsingCallable(): void

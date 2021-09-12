@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Platine\Test\Auth\Authentication;
+namespace Platine\Test\Framework\Auth\Authentication;
 
 use Platine\Config\Config;
 use Platine\Dev\PlatineTestCase;
