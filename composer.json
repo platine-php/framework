@@ -70,7 +70,10 @@
         "psr-4":{
             "Platine\\Test\\Framework\\": "tests"
         },
-        "files": ["tests/fixtures/fixtures.php"]
+        "files": [
+            "tests/fixtures/mocks.php",
+            "tests/fixtures/fixtures.php"
+        ]
     },
     
     "config": {

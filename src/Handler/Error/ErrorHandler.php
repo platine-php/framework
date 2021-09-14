@@ -49,6 +49,8 @@ namespace Platine\Framework\Handler\Error;
 
 use Platine\Framework\Handler\Error\Renderer\HtmlErrorRenderer;
 use Platine\Framework\Handler\Error\Renderer\JsonErrorRenderer;
+use Platine\Framework\Handler\Error\Renderer\TextPlainErrorRenderer;
+use Platine\Framework\Handler\Error\Renderer\XmlErrorRenderer;
 use Platine\Framework\Http\Exception\HttpException;
 use Platine\Framework\Http\Exception\HttpMethodNotAllowedException;
 use Platine\Http\Response;
@@ -321,8 +323,8 @@ class ErrorHandler implements ErrorHandlerInterface
         }
 
         $renderer = $this->determineRenderer();
-        $body = $renderer->render($this->exception, $this->detail, false);
 
+        $body = $renderer->render($this->exception, $this->detail, false);
         $response->getBody()->write($body);
 
         return $response;
@@ -335,8 +337,8 @@ class ErrorHandler implements ErrorHandlerInterface
     protected function addDefaultsRenderer(): void
     {
         $this->addErrorRenderer('text/html', new HtmlErrorRenderer());
-        $this->addErrorRenderer('text/plain', new HtmlErrorRenderer());
-        $this->addErrorRenderer('application/xml', new HtmlErrorRenderer());
+        $this->addErrorRenderer('text/plain', new TextPlainErrorRenderer());
+        $this->addErrorRenderer('application/xml', new XmlErrorRenderer());
         $this->addErrorRenderer('application/json', new JsonErrorRenderer());
     }
 }

@@ -136,22 +136,12 @@ class HtmlErrorRenderer extends AbstractErrorRenderer
     protected function renderBody(string $title = '', string $content = ''): string
     {
         return sprintf(
-            '<html>' .
-            '   <head>' .
-            "       <meta http-equiv='Content-Type' content='text/html; charset=utf-8'>" .
-            '       <title>%s</title>' .
-            '       <style>' .
-            '           body{margin:0;padding:30px;font:12px/1.5 Helvetica,Arial,Verdana,sans-serif}' .
-            '           h1{margin:0;font-size:48px;font-weight:normal;line-height:48px}' .
-            '           strong{display:inline-block;width:65px}' .
-            '       </style>' .
-            '   </head>' .
-            '   <body>' .
-            '       <h1>%s</h1>' .
-            '       <div>%s</div>' .
-            '       <a href="#" onClick="window.history.go(-1)">Go Back</a>' .
-            '   </body>' .
-            '</html>',
+            '<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8">'
+                . '<title>%s</title><style>body{margin:0;padding:30px;font:12px/1.5 Helvetica,Arial,Verdana,sans-serif}'
+                . 'h1{margin:0;font-size:48px;font-weight:normal;line-height:48px}'
+                . 'strong{display:inline-block;width:65px}</style></head><body>'
+                . '<h1>%s</h1><div>%s</div><a href="#" onClick="window.history.go(-1)">Go Back</a>'
+                . '</body></html>',
             $title,
             $title,
             $content
