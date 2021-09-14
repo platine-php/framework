@@ -29,40 +29,36 @@
  * SOFTWARE.
  */
 
-/**
- *  @file RedirectResponse.php
- *
- *  This Redirect Response class
- *
- *  @package    Platine\Framework\Http\Response
- *  @author Platine Developers team
- *  @copyright  Copyright (c) 2020
- *  @license    http://opensource.org/licenses/MIT  MIT License
- *  @link   http://www.iacademy.cf
- *  @version 1.0.0
- *  @filesource
- */
-
 declare(strict_types=1);
 
-namespace Platine\Framework\Http\Response;
-
-use Platine\Http\Response;
+namespace Platine\Framework\Http\Exception;
 
 /**
- * @class RedirectResponse
- * @package Platine\Framework\Http\Response
+ * @class HttpInternalServerErrorException
+ * @package Platine\Framework\Http\Exception
  */
-class RedirectResponse extends Response
+class HttpInternalServerErrorException extends HttpSpecialException
 {
+    /**
+     *
+     * @var int
+     */
+    protected $code = 500;
 
     /**
-     * Create new instance
-     * @param string $url
+     *
+     * @var string
      */
-    public function __construct(string $url = '/')
-    {
-        parent::__construct(302);
-        $this->headers['location'] = [$url];
-    }
+    protected $message = 'Internal server error';
+
+    /**
+     * {@inheritdoc}
+     */
+    protected string $title = '500 Internal Server Error';
+
+    /**
+     * {@inheritdoc}
+     */
+    protected string $description = 'Unexpected condition encountered preventing server'
+            . ' from fulfilling request.';
 }

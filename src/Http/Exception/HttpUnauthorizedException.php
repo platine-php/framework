@@ -29,40 +29,35 @@
  * SOFTWARE.
  */
 
-/**
- *  @file DatabaseConfigRepository.php
- *
- *  The Database Configuration Repository class
- *
- *  @package    Platine\Framework\Config\Model
- *  @author Platine Developers team
- *  @copyright  Copyright (c) 2020
- *  @license    http://opensource.org/licenses/MIT  MIT License
- *  @link   http://www.iacademy.cf
- *  @version 1.0.0
- *  @filesource
- */
-
 declare(strict_types=1);
 
-namespace Platine\Framework\Config\Model;
-
-use Platine\Orm\EntityManager;
-use Platine\Orm\Repository;
+namespace Platine\Framework\Http\Exception;
 
 /**
- * @class DatabaseConfigRepository
- * @package Platine\Framework\Config\Model
+ * @class HttpUnauthorizedException
+ * @package Platine\Framework\Http\Exception
  */
-class DatabaseConfigRepository extends Repository
+class HttpUnauthorizedException extends HttpSpecialException
 {
+    /**
+     *
+     * @var int
+     */
+    protected $code = 401;
 
     /**
-     * Create new instance
-     * @param EntityManager $manager
+     *
+     * @var string
      */
-    public function __construct(EntityManager $manager)
-    {
-        parent::__construct($manager, ConfigEntity::class);
-    }
+    protected $message = 'Unauthorized';
+
+    /**
+     * {@inheritdoc}
+     */
+    protected string $title = '401 Unauthorized';
+
+    /**
+     * {@inheritdoc}
+     */
+    protected string $description = 'The request requires valid user authentication.';
 }

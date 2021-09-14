@@ -70,7 +70,7 @@ class JsonResponse extends Response
     ) {
         parent::__construct($statusCode, $reasonPhrase);
 
-        $this->headers['Content-Type'] = ['application/json'];
+        $this->headers['content-type'] = ['application/json'];
         $this->getBody()->write(Json::encode($data));
     }
 }

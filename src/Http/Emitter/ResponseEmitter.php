@@ -86,7 +86,7 @@ class ResponseEmitter implements EmitterInterface
     /**
      * {@inheritdoc}
      */
-    public function emit(ResponseInterface $response, bool $body = true): void
+    public function emit(ResponseInterface $response, bool $withBody = true): void
     {
         if (headers_sent()) {
             throw HeadersAlreadySentException::create();
@@ -99,7 +99,7 @@ class ResponseEmitter implements EmitterInterface
         $this->emitHeaders($response);
         $this->emitStatusLine($response);
 
-        if ($body && $response->getBody()->isReadable()) {
+        if ($withBody && $response->getBody()->isReadable()) {
             $this->emitBody($response);
         }
     }

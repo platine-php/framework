@@ -79,6 +79,7 @@ class TemplateResponse extends Response
         string $reasonPhrase = ''
     ) {
         parent::__construct($statusCode, $reasonPhrase);
+        $this->template = $template;
         $this->getBody()->write($template->render($name, $context));
     }
 

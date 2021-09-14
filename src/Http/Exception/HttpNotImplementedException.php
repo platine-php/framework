@@ -29,58 +29,36 @@
  * SOFTWARE.
  */
 
-/**
- *  @file DatabaseConfigLoaderInterface.php
- *
- *  The Database Configuration loader interface
- *
- *  @package    Platine\Framework\Config
- *  @author Platine Developers team
- *  @copyright  Copyright (c) 2020
- *  @license    http://opensource.org/licenses/MIT  MIT License
- *  @link   http://www.iacademy.cf
- *  @version 1.0.0
- *  @filesource
- */
-
 declare(strict_types=1);
 
-namespace Platine\Framework\Config;
-
-use Platine\Config\LoaderInterface;
-use Platine\Orm\Entity;
+namespace Platine\Framework\Http\Exception;
 
 /**
- * @class DatabaseConfigLoaderInterface
- * @package Platine\Framework\Config
+ * @class HttpNotImplementedException
+ * @package Platine\Framework\Http\Exception
  */
-interface DatabaseConfigLoaderInterface extends LoaderInterface
+class HttpNotImplementedException extends HttpSpecialException
 {
+    /**
+     *
+     * @var int
+     */
+    protected $code = 501;
 
     /**
-     * Load the configuration from database
-     * @param array<string, mixed> $where
-     * return array<string, mixed>
+     *
+     * @var string
      */
-    public function loadConfig(array $where = []): ?Entity;
+    protected $message = 'Not implemented';
 
     /**
-     * Insert new configuration
-     * @param array<string, mixed> $data
-     * return mixed
+     * {@inheritdoc}
      */
-    public function insertConfig(array $data);
+    protected string $title = '501 Not Implemented';
 
     /**
-     * Update the configuration
-     * @param Entity $entity
-     * @return bool
+     * {@inheritdoc}
      */
-    public function updateConfig(Entity $entity): bool;
-
-    /**
-     * Return all the configuration
-     * @return Entity[]
-     */
-    public function all(): array;
+    protected string $description = 'The server does not support the functionality '
+            . 'required to fulfill the request.';
 }

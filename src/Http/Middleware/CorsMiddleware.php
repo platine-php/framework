@@ -128,7 +128,6 @@ class CorsMiddleware implements MiddlewareInterface
         } else {
             $response = $handler->handle($request);
         }
-
         $this->response = $response;
 
         $this->setCorsHeaders();
@@ -221,7 +220,6 @@ class CorsMiddleware implements MiddlewareInterface
     {
 
         $headers = $this->config->get('security.cors.expose_headers', []);
-
         if (!empty($headers)) {
             $this->response = $this->response
                                 ->withHeader(

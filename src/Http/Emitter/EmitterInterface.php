@@ -66,8 +66,8 @@ interface EmitterInterface
      * e.g., if headers already sent or output has been emitted previously.
      *
      * @param ResponseInterface $response
-     * @param bool $body
+     * @param bool $withBody
      * @return void
      */
-    public function emit(ResponseInterface $response, bool $body = true): void;
+    public function emit(ResponseInterface $response, bool $withBody = true): void;
 }

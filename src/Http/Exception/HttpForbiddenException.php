@@ -29,39 +29,37 @@
  * SOFTWARE.
  */
 
-/**
- *  @file ConfigEntity.php
- *
- *  The Database configuration Entity class
- *
- *  @package    Platine\Framework\Config\Model
- *  @author Platine Developers team
- *  @copyright  Copyright (c) 2020
- *  @license    http://opensource.org/licenses/MIT  MIT License
- *  @link   http://www.iacademy.cf
- *  @version 1.0.0
- *  @filesource
- */
-
 declare(strict_types=1);
 
-namespace Platine\Framework\Config\Model;
+namespace Platine\Framework\Http\Exception;
 
-use Platine\Orm\Entity;
-use Platine\Orm\Mapper\EntityMapperInterface;
+use Platine\Framework\Http\Exception\HttpSpecialException;
 
 /**
- * @class ConfigEntity
- * @package Platine\Framework\Config\Model
+ * @class HttpForbiddenException
+ * @package Platine\Framework\Http\Exception
  */
-class ConfigEntity extends Entity
+class HttpForbiddenException extends HttpSpecialException
 {
+    /**
+     *
+     * @var int
+     */
+    protected $code = 403;
+
+    /**
+     *
+     * @var string
+     */
+    protected $message = 'Forbidden';
 
     /**
      * {@inheritdoc}
      */
-    public static function mapEntity(EntityMapperInterface $mapper): void
-    {
-        $mapper->table('config');
-    }
+    protected string $title = '403 Forbidden';
+
+    /**
+     * {@inheritdoc}
+     */
+    protected string $description = 'You are not permitted to perform the requested operation.';
 }

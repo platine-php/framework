@@ -75,18 +75,18 @@ class FileResponse extends Response
         }
 
         if (empty($filename)) {
-            $filename = basename($path);
+            $filename = basename($realpath);
         }
 
         $body = new Stream($realpath);
 
-        $this->headers['Content-Description'] = ['File Transfer'];
-        $this->headers['Content-Type'] = [$mimetype];
-        $this->headers['Content-Disposition'] = ['attachment; filename="' . $filename  . '"'];
-        $this->headers['Expires'] = ['0'];
-        $this->headers['Cache-Control'] = ['must-revalidate'];
-        $this->headers['Pragma'] = ['public'];
-        $this->headers['Content-Length'] = [(string) $body->getSize()];
+        $this->headers['content-description'] = ['File Transfer'];
+        $this->headers['content-type'] = [$mimetype];
+        $this->headers['content-disposition'] = ['attachment; filename="' . $filename  . '"'];
+        $this->headers['expires'] = ['0'];
+        $this->headers['cache-control'] = ['must-revalidate'];
+        $this->headers['pragma'] = ['public'];
+        $this->headers['content-length'] = [(string) $body->getSize()];
 
         $this->body = $body;
     }

@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Platine\Test\Framework\Fixture;
 
+use ArrayIterator;
+use IteratorAggregate;
 use Platine\Console\Command\Command;
 use Platine\Event\EventInterface;
 use Platine\Event\ListenerInterface;
@@ -20,6 +22,42 @@ use Platine\Orm\Entity;
 use Platine\Route\Router;
 use Platine\Validator\Rule\MinLength;
 use Platine\Validator\Rule\NotEmpty;
+use Traversable;
+
+class MyIterableObject implements IteratorAggregate
+{
+    protected array $data = [];
+
+    public function __construct(array $data)
+    {
+        $this->data = $data;
+    }
+    public function getIterator(): Traversable
+    {
+        return new ArrayIterator($this->data);
+    }
+
+    public function getData(): array
+    {
+        return $this->data;
+    }
+}
+
+class MyDefaultPhpErrorRequestHandler implements RequestHandlerInterface
+{
+    public function handle(ServerRequestInterface $request): ResponseInterface
+    {
+        trigger_error('my error', E_USER_ERROR);
+    }
+}
+
+class MyResponse extends Response
+{
+    public function __construct()
+    {
+        parent::__construct(300);
+    }
+}
 
 class MyParam extends BaseParam
 {
