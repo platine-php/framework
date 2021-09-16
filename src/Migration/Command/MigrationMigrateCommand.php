@@ -96,7 +96,8 @@ class MigrationMigrateCommand extends AbstractCommand
 
         $writer->bold('Migration list to be upgraded:', true);
         foreach ($diff as $version => $value) {
-            $writer->boldGreen(sprintf(' * %s - %s', $version, $value), true);
+            $cleanDescription = str_replace('_', ' ', $value);
+            $writer->boldGreen(sprintf(' * %s - %s', $version, $cleanDescription), true);
         }
 
         $writer->write('', true);

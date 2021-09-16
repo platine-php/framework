@@ -6,23 +6,172 @@ namespace Platine\Test\Framework\Fixture;
 
 use ArrayIterator;
 use IteratorAggregate;
+use Platine\Config\Config;
 use Platine\Console\Command\Command;
 use Platine\Event\EventInterface;
 use Platine\Event\ListenerInterface;
 use Platine\Event\SubscriberInterface;
+use Platine\Framework\App\Application;
 use Platine\Framework\Form\Param\BaseParam;
 use Platine\Framework\Form\Validator\AbstractValidator;
+use Platine\Framework\Http\RouteHelper;
 use Platine\Framework\Service\ServiceProvider;
+use Platine\Http\Handler\MiddlewareInterface;
 use Platine\Http\Handler\RequestHandlerInterface;
 use Platine\Http\Response;
 use Platine\Http\ResponseInterface;
+use Platine\Http\ServerRequest;
 use Platine\Http\ServerRequestInterface;
+use Platine\Http\Uri;
+use Platine\Http\UriInterface;
 use Platine\Lang\Lang;
+use Platine\Logger\Configuration;
+use Platine\Logger\Formatter\DefaultFormatter;
+use Platine\Logger\Logger;
+use Platine\Logger\LoggerFormatterInterface;
+use Platine\Logger\LoggerInterface;
 use Platine\Orm\Entity;
 use Platine\Route\Router;
+use Platine\Session\Session;
 use Platine\Validator\Rule\MinLength;
 use Platine\Validator\Rule\NotEmpty;
 use Traversable;
+
+class MyLang extends Lang
+{
+    protected array $mockMethods = [];
+
+    public function __construct($mockMethods = [])
+    {
+        $this->mockMethods = (array) $mockMethods;
+    }
+
+    public function tr(string $message, $args = []): string
+    {
+        return $this->mockMethods['tr'] ?? '';
+    }
+}
+
+class MyRouteHelper extends RouteHelper
+{
+    protected array $mockMethods = [];
+
+    public function __construct($mockMethods = [])
+    {
+        $this->mockMethods = (array) $mockMethods;
+    }
+
+    public function generateUrl(string $name, array $parameters = []): string
+    {
+        return $this->mockMethods['generateUrl'] ?? '';
+    }
+}
+
+class MyServerRequest extends ServerRequest
+{
+    protected array $mockMethods = [];
+
+    public function __construct($mockMethods = [])
+    {
+        $this->mockMethods = (array) $mockMethods;
+    }
+
+    public function getUri(): UriInterface
+    {
+        $url = $this->mockMethods['getUri'] ?? '';
+
+        return new Uri($url);
+    }
+}
+
+class MyApp extends Application
+{
+    public function __construct(string $basePath = '')
+    {
+        parent::__construct($basePath);
+        //Most of binding use config, logger
+        $this->registerLogger();
+        $this->registerConfiguration();
+    }
+
+    protected function registerLogger(): void
+    {
+        $this->bind(Configuration::class);
+        $this->bind(LoggerInterface::class, Logger::class);
+        $this->bind(LoggerFormatterInterface::class, DefaultFormatter::class);
+    }
+}
+
+class MySession extends Session
+{
+
+    protected array $has = [];
+    protected array $items = [];
+    protected array $flash = [];
+
+    public function __construct($has = [], $items = [], $flash = [])
+    {
+        $this->has = (array) $has;
+        $this->items = (array) $items;
+        $this->flash = (array) $flash;
+    }
+
+    public function get(string $key, $default = null)
+    {
+        return isset($this->items[$key])
+                ? $this->items[$key]
+                : $default;
+    }
+
+    public function has(string $key): bool
+    {
+        return isset($this->has[$key]);
+    }
+
+    public function set(string $key, $value): void
+    {
+    }
+
+    public function getFlash(string $key, $default = null)
+    {
+        return isset($this->flash[$key])
+                ? $this->flash[$key]
+                : $default;
+    }
+}
+
+class MyConfig extends Config
+{
+    protected array $config = [
+      'database.migration.table' => 'table'
+    ];
+
+    public function __construct($items = [])
+    {
+        $this->config = array_merge($this->config, (array) $items);
+    }
+
+    public function get(string $key, $default = null)
+    {
+        return array_key_exists($key, $this->config)
+               ? $this->config[$key]
+                : null;
+    }
+}
+
+class MyMiddleware implements MiddlewareInterface
+{
+    public function process(
+        ServerRequestInterface $request,
+        RequestHandlerInterface $handler
+    ): ResponseInterface {
+        $request = $request->withAttribute(
+            __CLASS__,
+            sprintf('%s::%s', __CLASS__, __METHOD__)
+        );
+        return $handler->handle($request);
+    }
+}
 
 class MyIterableObject implements IteratorAggregate
 {

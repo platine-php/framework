@@ -99,3 +99,212 @@ function time()
 
     return \time();
 }
+
+namespace Platine\Framework\Kernel;
+
+$mock_current_to_false = false;
+
+function current($a)
+{
+    global $mock_current_to_false;
+
+    if ($mock_current_to_false) {
+        return false;
+    }
+
+    return \current($a);
+}
+
+namespace Platine\Framework\Migration;
+use Platine\Test\Framework\Fixture\MyConfig as MyConfigMigration;
+
+$mock_app_to_config_instance = false;
+$mock_app_config_items = [];
+
+function app(string $id)
+{
+    global $mock_app_to_config_instance,
+           $mock_app_config_items;
+
+    if ($mock_app_to_config_instance) {
+        return new MyConfigMigration($mock_app_config_items);
+    }
+
+    return \app($id);
+}
+
+namespace Platine\Framework\Template\Tag;
+
+use Platine\Config\Config;
+use Platine\Framework\Http\RouteHelper;
+use Platine\Http\ServerRequestInterface;
+use Platine\Lang\Lang;
+use Platine\Session\Session;
+use Platine\Test\Framework\Fixture\MyConfig;
+use Platine\Test\Framework\Fixture\MyLang;
+use Platine\Test\Framework\Fixture\MyRouteHelper;
+use Platine\Test\Framework\Fixture\MyServerRequest;
+use Platine\Test\Framework\Fixture\MySession;
+
+$mock_app_to_instance = false;
+$mock_app_lang_methods = [];
+$mock_app_route_helper_methods = [];
+$mock_app_server_request_methods = [];
+$mock_app_session_items = [];
+$mock_app_session_flash = [];
+$mock_app_session_has = [];
+$mock_app_config_items = [];
+$mock_app_config_items = [];
+$mock_sha1_foo = true;
+
+function sha1(string $str)
+{
+    global $mock_sha1_foo;
+    if ($mock_sha1_foo) {
+        return 'foo';
+    }
+
+    return \sha1($str);
+}
+
+function app(string $id)
+{
+    global $mock_app_to_instance,
+           $mock_app_session_items,
+           $mock_app_session_has,
+           $mock_app_config_items,
+           $mock_app_server_request_methods,
+           $mock_app_lang_methods,
+           $mock_app_route_helper_methods,
+           $mock_app_session_flash;
+
+    if ($mock_app_to_instance) {
+        if ($id === Config::class) {
+            return new MyConfig($mock_app_config_items);
+        }
+
+        if ($id === Session::class) {
+            return new MySession(
+                $mock_app_session_has,
+                $mock_app_session_items,
+                $mock_app_session_flash
+            );
+        }
+
+        if ($id === ServerRequestInterface::class) {
+            return new MyServerRequest(
+                $mock_app_server_request_methods
+            );
+        }
+
+        if ($id === Lang::class) {
+            return new MyLang(
+                $mock_app_lang_methods
+            );
+        }
+
+        if ($id === RouteHelper::class) {
+            return new MyRouteHelper(
+                $mock_app_route_helper_methods
+            );
+        }
+    }
+
+    return \app($id);
+}
+
+namespace Platine\Framework\Migration\Command;
+
+$mock_date_to_sample = false;
+
+function date(string $format)
+{
+    global $mock_date_to_sample;
+
+    if ($mock_date_to_sample) {
+        return '20210915_100000';
+    }
+
+    return \date($format);
+}
+
+
+namespace Platine\Framework\Security\JWT\Encoder;
+$mock_base64_encode_to_same = false;
+$mock_base64_decode_to_same = false;
+
+function base64_encode(string $data)
+{
+    global $mock_base64_encode_to_same;
+
+    if ($mock_base64_encode_to_same) {
+        return $data;
+    }
+
+    return \base64_encode($data);
+}
+
+function base64_decode(string $data)
+{
+    global $mock_base64_decode_to_same;
+
+    if ($mock_base64_decode_to_same) {
+        return $data;
+    }
+
+    return \base64_decode($data);
+}
+
+namespace Platine\Framework\Security\JWT\Signer;
+$mock_hash_hmac_algos_to_empty = false;
+$mock_hash_hmac_algos_to_foo = false;
+$mock_hash_hmac_to_same = false;
+$mock_hash_equals_to_false = false;
+$mock_hash_equals_to_true = false;
+
+function hash_hmac_algos()
+{
+    global $mock_hash_hmac_algos_to_empty, $mock_hash_hmac_algos_to_foo;
+
+    if ($mock_hash_hmac_algos_to_foo) {
+        return ['foo'];
+    }
+
+    if ($mock_hash_hmac_algos_to_empty) {
+        return [];
+    }
+
+    return \hash_hmac_algos();
+}
+
+function hash_hmac($algo, $data, $key, $raw_output)
+{
+    global $mock_hash_hmac_to_same;
+
+    if ($mock_hash_hmac_to_same) {
+        return sprintf(
+            '%s|%s|%s|%s',
+            $algo,
+            $data,
+            $key,
+            $raw_output ? 'true' : 'false'
+        );
+    }
+
+    return \hash_hmac($algo, $data, $key, $raw_output);
+}
+
+function hash_equals($known_string, $user_string)
+{
+    global $mock_hash_equals_to_false, $mock_hash_equals_to_true;
+
+    if ($mock_hash_equals_to_false) {
+        return false;
+    }
+
+    if ($mock_hash_equals_to_true) {
+        return true;
+    }
+
+    return \hash_equals($known_string, $user_string);
+}

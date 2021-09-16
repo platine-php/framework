@@ -103,7 +103,6 @@ class MigrationExecuteCommand extends AbstractCommand
 
         $migrations = $this->getMigrations();
         $executed = $this->getExecuted('DESC');
-
         $version = $this->getOptionValue('id');
 
         if ($type === 'up') {

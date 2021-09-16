@@ -135,7 +135,6 @@ class JWT
     public function decode(string $token): self
     {
         $parts = explode('.', $token);
-
         if (count($parts) === 3) {
             $headers = json_decode($this->encoder->decode($parts[0]), true);
             $payload = json_decode($this->encoder->decode($parts[1]), true);

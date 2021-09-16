@@ -115,6 +115,7 @@ class MigrationCreateCommand extends AbstractCommand
         $io = $this->io();
 
         if ($io->confirm('Are you confirm the generation of new migration?', 'n')) {
+            $this->checkMigrationPath();
             $this->generateClass($fullPath, $className);
             $writer->boldGreen(sprintf(
                 'Migration [%s] generated successfully',
@@ -165,7 +166,7 @@ class MigrationCreateCommand extends AbstractCommand
 
         use Platine\Framework\Migration\AbstractMigration;
 
-        class %classname% extends AbstractMigration
+        class AddUserTable20210915100000 extends AbstractMigration
         {
 
             public function up(): void

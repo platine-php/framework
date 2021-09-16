@@ -160,7 +160,7 @@ abstract class AbstractCommand extends Command
         $fullPath = $this->migrationPath . $filename;
 
         $file = $this->filesystem->file($fullPath);
-        $fullClasName = 'Platine\\Framework\\Migration\\' . $className;
+        $fullClassName = 'Platine\\Framework\\Migration\\' . $className;
 
         if (!$file->exists()) {
             throw new RuntimeException(sprintf(
@@ -171,16 +171,16 @@ abstract class AbstractCommand extends Command
 
         require_once $fullPath;
 
-        if (!class_exists($fullClasName)) {
+        if (!class_exists($fullClassName)) {
             throw new RuntimeException(sprintf(
                 'Migration class [%s] does not exist',
-                $fullClasName
+                $fullClassName
             ));
         }
 
         $connection = $this->application->get(Connection::class);
 
-        return new $fullClasName($connection);
+        return new $fullClassName($connection);
     }
 
     /**

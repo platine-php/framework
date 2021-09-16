@@ -73,7 +73,7 @@ class ErrorHandlerServiceProvider extends ServiceProvider
 
         $this->app->bind(ErrorHandlerMiddleware::class, function (ContainerInterface $app) {
             return new ErrorHandlerMiddleware(
-                $app->get(Config::class)->get('app.debug'),
+                $app->get(Config::class)->get('app.debug', false),
                 $app->get(LoggerInterface::class)
             );
         });

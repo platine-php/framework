@@ -50,7 +50,6 @@ namespace Platine\Framework\Migration;
 use Platine\Config\Config;
 use Platine\Orm\Entity;
 use Platine\Orm\Mapper\EntityMapperInterface;
-use function app;
 
 /**
  * @class MigrationEntity

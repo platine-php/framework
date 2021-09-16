@@ -159,7 +159,6 @@ class HttpKernel extends BaseKernel implements RequestHandlerInterface
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
         $handler = clone $this;
-
         $middleware = current($handler->middlewares);
         if ($middleware === false) {
             throw new HttpNotFoundException($request);
