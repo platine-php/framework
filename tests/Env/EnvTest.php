@@ -27,15 +27,23 @@ class EnvTest extends PlatineTestCase
         $this->assertEquals('foo', Env::get('getenv_key'));
     }
 
-    public function testGetEnvSuperGloba(): void
+    public function testGetEnvSuperGlobal(): void
     {
         $_ENV['env_key'] = 'foo';
         $this->assertEquals('foo', Env::get('env_key'));
     }
 
-    public function testGetServerSuperGloba(): void
+    public function testGetServerSuperGlobal(): void
     {
         $_SERVER['server_key'] = 'foo';
         $this->assertEquals('foo', Env::get('server_key'));
+    }
+
+    public function testGetUsingResolved(): void
+    {
+        $_SERVER['server_key1'] = 'foo';
+        $_SERVER['server_key2'] = '${server_key1}/bar';
+        $this->assertEquals('foo', Env::get('server_key1'));
+        $this->assertEquals('foo/bar', Env::get('server_key2'));
     }
 }
