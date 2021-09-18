@@ -55,6 +55,7 @@ use Platine\Event\DispatcherInterface;
 use Platine\Event\EventInterface;
 use Platine\Event\ListenerInterface;
 use Platine\Event\SubscriberInterface;
+use Platine\Framework\Env\Loader;
 use Platine\Framework\Service\Provider\BaseServiceProvider;
 use Platine\Framework\Service\Provider\EventServiceProvider;
 use Platine\Framework\Service\ServiceProvider;
@@ -138,6 +139,12 @@ class Application extends Container
     protected string $env = 'dev';
 
     /**
+     * The environment file path
+     * @var string
+     */
+    protected string $environmentFile = '';
+
+    /**
      * Create new instance
      * @param string $basePath
      */
@@ -158,6 +165,28 @@ class Application extends Container
     public function version(): string
     {
         return self::VERSION;
+    }
+
+    /**
+     * Return the environment file
+     * @return string
+     */
+    public function getEnvironmentFile(): string
+    {
+        return $this->environmentFile;
+    }
+
+
+    /**
+     * Set the environment file
+     * @param string $environmentFile
+     * @return $this
+     */
+    public function setEnvironmentFile(string $environmentFile): self
+    {
+        $this->environmentFile = $environmentFile;
+
+        return $this;
     }
 
     /**
@@ -507,6 +536,22 @@ class Application extends Container
         $this->instance($config);
 
         date_default_timezone_set($config->get('app.timezone', 'UTC'));
+    }
+
+    /**
+     * Load the environment variables if the file exists
+     * @return void
+     */
+    public function registerEnvironmentVariables(): void
+    {
+        if (!empty($this->environmentFile)) {
+            (new Loader())
+                ->load(
+                    $this->environmentFile,
+                    false,
+                    Loader::ENV | Loader::PUTENV
+                );
+        }
     }
 
     /**

@@ -2,6 +2,31 @@
 
 declare(strict_types=1);
 
+namespace Platine\Framework\Env;
+
+$mock_parse_ini_string_to_false = false;
+$mock_getenv_to_foo = false;
+
+function parse_ini_string(string $ini_string, bool $process_sections = false, int $scanner_mode = INI_SCANNER_NORMAL)
+{
+    global $mock_parse_ini_string_to_false;
+    if ($mock_parse_ini_string_to_false) {
+        return false;
+    }
+
+    return \parse_ini_string($ini_string, $process_sections, $scanner_mode);
+}
+
+function getenv(string $key)
+{
+    global $mock_getenv_to_foo;
+    if ($mock_getenv_to_foo) {
+        return 'foo';
+    }
+
+    return \getenv($key);
+}
+
 namespace Platine\Framework\Handler\Error\Renderer;
 
 $mock_htmlentities_to_empty = false;

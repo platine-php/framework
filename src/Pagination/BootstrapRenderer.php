@@ -69,7 +69,8 @@ class BootstrapRenderer implements RendererInterface
         $html = '<ul class = "pagination">';
 
         if ($pagination->hasPreviousPage()) {
-            $html .= '<li class = "page-item"><a href = "' . $pagination->getPreviousUrl() . '" class="page-link">&laquo; '
+            $html .= '<li class = "page-item"><a href = "'
+                    . $pagination->getPreviousUrl() . '" class="page-link">&laquo; '
                     . $pagination->getPreviousText() . '</a></li>';
         }
 
@@ -88,7 +89,8 @@ class BootstrapRenderer implements RendererInterface
         }
 
         if ($pagination->hasNextPage()) {
-            $html .= '<li class = "page-item"><a href = "' . $pagination->getNextUrl() . '" class="page-link">'
+            $html .= '<li class = "page-item"><a href = "'
+                    . $pagination->getNextUrl() . '" class="page-link">'
                     . $pagination->getNextText() . ' &raquo;</a></li>';
         }
 

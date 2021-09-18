@@ -5,12 +5,14 @@ declare(strict_types=1);
 namespace Platine\Test\Framework\App;
 
 use InvalidArgumentException;
+use org\bovigo\vfs\vfsStream;
 use Platine\Config\Config;
 use Platine\Config\FileLoader;
 use Platine\Dev\PlatineTestCase;
 use Platine\Event\DispatcherInterface;
 use Platine\Event\EventInterface;
 use Platine\Framework\App\Application;
+use Platine\Framework\Env\Env;
 use Platine\Test\Framework\Fixture\MyCommand;
 use Platine\Test\Framework\Fixture\MyEventListener;
 use Platine\Test\Framework\Fixture\MyEventSubscriber;
@@ -46,6 +48,7 @@ class ApplicationTest extends PlatineTestCase
         $app->setStoragePath('/storagepath');
         $app->setVendorPath('/vendorpath');
         $app->setRootPath('/rootpath');
+        $app->setEnvironmentFile('.envfile');
         $this->assertEquals('/app', $app->getAppPath());
         $this->assertEquals('/basepath', $app->getBasePath());
         $this->assertEquals('staging', $app->getEnvironment());
@@ -54,6 +57,7 @@ class ApplicationTest extends PlatineTestCase
         $this->assertEquals('/storagepath', $app->getStoragePath());
         $this->assertEquals('/vendorpath', $app->getVendorPath());
         $this->assertEquals('/rootpath', $app->getRootPath());
+        $this->assertEquals('.envfile', $app->getEnvironmentFile());
     }
 
     public function testDispatchAndListenUsingCallable(): void
@@ -194,6 +198,17 @@ class ApplicationTest extends PlatineTestCase
         $this->assertCount(2, $app->getProviders());
         $app->registerConfiguredServiceProviders();
         $this->assertCount(3, $app->getProviders());
+    }
+
+    public function testRegisterEnvironmentVariables(): void
+    {
+        $vfsRoot = vfsStream::setup();
+        $vfsPath = vfsStream::newDirectory('my_tests')->at($vfsRoot);
+        $file = $this->createVfsFile('.env', $vfsPath, 'foo=bar');
+        $app = new Application('');
+        $app->setEnvironmentFile($file->url());
+        $app->registerEnvironmentVariables();
+        $this->assertEquals('bar', Env::get('foo'));
     }
 
     public function testRegisterConfiguredEvents(): void

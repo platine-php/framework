@@ -20,7 +20,10 @@ class BaseKernelTest extends PlatineTestCase
         $app = $this->getMockInstance(Application::class);
 
         $app->expects($this->exactly(1))
-                ->method('registerConfiguration');
+                ->method('registerEnvironmentVariables');
+
+        $app->expects($this->exactly(1))
+                ->method('boot');
 
         $app->expects($this->exactly(1))
                 ->method('registerConfiguredServiceProviders');

@@ -45,6 +45,8 @@
 declare(strict_types=1);
 
 use Platine\Framework\App\Application;
+use Platine\Framework\Env\Env;
+
 
 if (!function_exists('app')) {
     /**
@@ -58,5 +60,25 @@ if (!function_exists('app')) {
         $app = Application::getInstance();
 
         return $identifier ? $app->get($identifier) : $app;
+    }
+}
+
+
+if (!function_exists('env')) {
+    /**
+     * Return the environment value. This is the alias to Env::get
+     * @param string $key
+     * @param mixed $default
+     * @param string|null $filter
+     * @param int|array<string, mixed> $options Additional options to filter.
+     * @return mixed
+     */
+    function env(
+        string $key,
+        $default = null,
+        ?string $filter = null,
+        $options = 0
+    ) {
+        return Env::get($key, $default, $filter, $options);
     }
 }

@@ -77,6 +77,7 @@ class BaseKernel
      */
     public function bootstrap(): void
     {
+        $this->app->registerEnvironmentVariables();
         $this->app->registerConfiguration();
         $this->app->registerConfiguredServiceProviders();
         $this->app->registerConfiguredEvents();
