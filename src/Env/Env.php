@@ -124,15 +124,35 @@ class Env
           'NULL' => null,
         ];
 
-        // strlen($value) < 6.
-        if (!isset($value[5]) && array_key_exists($value, $special)) {
+        $valueResolved = static::resolveReference($value);
+
+        // strlen($valueResolved) < 6.
+        if (!isset($valueResolved[5]) && array_key_exists($valueResolved, $special)) {
             return $special[$value];
         }
 
         if ($filter === null || !function_exists('filter_var')) {
+            return $valueResolved;
+        }
+
+        return filter_var($valueResolved, $filter, $options);
+    }
+
+    /**
+     * Resolve variable reference like ${VAR_NAME}
+     * @param string $value
+     * @return string
+     */
+    protected static function resolveReference(string $value): string
+    {
+        if (!$value || strpos($value, '${') === false) {
             return $value;
         }
 
-        return filter_var($value, $filter, $options);
+        $valueResolved = preg_replace_callback('~\$\{(\w+)\}~', function ($m) {
+            return (null === $ref = static::get($m[1], null)) ? $m[0] : $ref;
+        }, $value);
+
+        return $valueResolved;
     }
 }
