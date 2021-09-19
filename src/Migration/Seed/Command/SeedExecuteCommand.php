@@ -71,7 +71,7 @@ class SeedExecuteCommand extends AbstractSeedCommand
     ) {
         parent::__construct($app, $config, $filesystem);
         $this->setName('seed:exec')
-             ->setDescription('Command to execute only one seed at a time');
+             ->setDescription('Command to execute seed');
 
         $this->addOption('-n|--name', 'the seed name', null, false, true);
     }
