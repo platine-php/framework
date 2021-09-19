@@ -99,6 +99,8 @@ class SeedExecuteCommand extends AbstractSeedCommand
                 $this->executeSeed($seeds[$index - 1]);
             }
         }
+        
+        $writer->boldGreen('Command finished successfully')->eol();
     }
 
     /**
@@ -110,7 +112,7 @@ class SeedExecuteCommand extends AbstractSeedCommand
     {
         $writer = $this->io()->writer();
         $writer->boldGreen(sprintf(
-            '* Execute seed up for %s',
+            '* Execute seed for [%s]',
             $description,
         ))->eol();
 
