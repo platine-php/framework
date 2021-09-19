@@ -90,8 +90,9 @@ class SeedStatusCommand extends AbstractSeedCommand
         $writer->boldYellow('SEED LIST', true);
 
         $rows = [];
-        foreach ($seeds as $description) {
+        foreach ($seeds as $index => $description) {
             $rows[] = [
+                'No.' => $index + 1,
                 'Seed' => $description
             ];
         }
