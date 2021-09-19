@@ -90,11 +90,14 @@ class SeedStatusCommand extends AbstractSeedCommand
         $writer->boldYellow('SEED LIST', true);
 
         $rows = [];
-        foreach ($seeds as $index => $description) {
+        $index = 1;
+        foreach ($seeds as $description) {
             $rows[] = [
-                'No.' => (string) ($index + 1),
+                'No.' => (string) $index,
                 'Seed' => $description
             ];
+            
+            $index++;
         }
 
         $writer->table($rows);
