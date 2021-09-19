@@ -88,11 +88,15 @@ class SeedExecuteCommand extends AbstractSeedCommand
         if (empty($seeds)) {
             $writer->boldGreen('No seed available for execution');
         } else {
-            $name = $io->choice('Choose which seed to execute', $seeds);
-            if (!isset($seeds[$name])) {
+            $choices = [];
+            foreach ($seeds as $key => $seed) {
+                $choices[$key + 1] = $seed;
+            }
+            $index = $io->choice('Choose which seed to execute', $choices);
+            if (!isset($seeds[$index - 1])) {
                 $writer->boldRed('Please select the correct seed to be executed');
             } else {
-                $this->executeSeed($seeds[$name]);
+                $this->executeSeed($seeds[$index - 1]);
             }
         }
     }
