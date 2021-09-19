@@ -100,6 +100,7 @@ class SeedExecuteCommand extends AbstractSeedCommand
             }
         }
         
+        $writer->eol();
         $writer->boldGreen('Command finished successfully')->eol();
     }
 
