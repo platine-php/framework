@@ -177,7 +177,7 @@ abstract class AbstractSeedCommand extends Command
         $files = $directory->read(DirectoryInterface::FILE);
         foreach ($files as $file) {
             $matches = [];
-            if (preg_match('/^([a-z_]+)Seed\.php$/i', $file->getName(), $matches)) {
+            if (preg_match('/^([a-z]+)Seed\.php$/i', $file->getName(), $matches)) {
                 $result[Str::camel($matches[1])] = str_replace('_', ' ', Str::snake($matches[1]));
             }
         }
@@ -194,7 +194,11 @@ abstract class AbstractSeedCommand extends Command
      */
     protected function getSeedClassName(string $description): string
     {
-        return Str::camel($description, false) . 'Seed';
+        $desc = Str::camel($description, false);
+        if(!Str::endsWith('Seed', $desc)){
+            $desc .= 'Seed';
+        }
+        return $desc;
     }
 
     /**
@@ -206,7 +210,7 @@ abstract class AbstractSeedCommand extends Command
     {
         return $filename = sprintf(
             '%s.php',
-            Str::snake($className)
+            $className
         );
     }
 }

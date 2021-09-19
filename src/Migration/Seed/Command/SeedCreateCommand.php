@@ -158,6 +158,8 @@ class SeedCreateCommand extends AbstractSeedCommand
     {
         return <<<EOF
         <?php
+        declare(strict_types=1);
+        
         namespace Platine\Framework\Migration\Seed;
 
         use Platine\Framework\Migration\Seed\AbstractSeed;

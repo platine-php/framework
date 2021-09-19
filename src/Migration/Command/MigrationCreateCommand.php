@@ -162,6 +162,8 @@ class MigrationCreateCommand extends AbstractCommand
     {
         return <<<EOF
         <?php
+        declare(strict_types=1);
+        
         namespace Platine\Framework\Migration;
 
         use Platine\Framework\Migration\AbstractMigration;
