@@ -54,6 +54,9 @@ use Platine\Framework\Migration\Command\MigrationMigrateCommand;
 use Platine\Framework\Migration\Command\MigrationResetCommand;
 use Platine\Framework\Migration\Command\MigrationStatusCommand;
 use Platine\Framework\Migration\MigrationRepository;
+use Platine\Framework\Migration\Seed\Command\SeedCreateCommand;
+use Platine\Framework\Migration\Seed\Command\SeedExecuteCommand;
+use Platine\Framework\Migration\Seed\Command\SeedStatusCommand;
 use Platine\Framework\Service\ServiceProvider;
 
 /**
@@ -75,6 +78,9 @@ class MigrationServiceProvider extends ServiceProvider
         $this->app->bind(MigrationMigrateCommand::class);
         $this->app->bind(MigrationResetCommand::class);
         $this->app->bind(MigrationInitCommand::class);
+        $this->app->bind(SeedStatusCommand::class);
+        $this->app->bind(SeedCreateCommand::class);
+        $this->app->bind(SeedExecuteCommand::class);
 
         //Commands
         $this->addCommand(MigrationStatusCommand::class);
@@ -83,5 +89,8 @@ class MigrationServiceProvider extends ServiceProvider
         $this->addCommand(MigrationMigrateCommand::class);
         $this->addCommand(MigrationResetCommand::class);
         $this->addCommand(MigrationInitCommand::class);
+        $this->addCommand(SeedStatusCommand::class);
+        $this->addCommand(SeedExecuteCommand::class);
+        $this->addCommand(SeedCreateCommand::class);
     }
 }

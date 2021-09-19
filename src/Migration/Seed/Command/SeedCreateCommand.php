@@ -30,11 +30,11 @@
  */
 
 /**
- *  @file MigrationCreateCommand.php
+ *  @file SeedCreateCommand.php
  *
- *  The migration generation command class
+ *  The seed generation command class
  *
- *  @package    Platine\Framework\Migration\Command
+ *  @package    Platine\Framework\Migration\Seed\Command
  *  @author Platine Developers team
  *  @copyright  Copyright (c) 2020
  *  @license    http://opensource.org/licenses/MIT  MIT License
@@ -45,27 +45,27 @@
 
 declare(strict_types=1);
 
-namespace Platine\Framework\Migration\Command;
+namespace Platine\Framework\Migration\Seed\Command;
 
 use Platine\Config\Config;
 use Platine\Console\Input\Reader;
 use Platine\Console\Output\Writer;
 use Platine\Filesystem\Filesystem;
 use Platine\Framework\App\Application;
-use Platine\Framework\Migration\MigrationRepository;
+use Platine\Framework\Migration\Seed\Command\AbstractSeedCommand;
 use Platine\Stdlib\Helper\Str;
 
 /**
- * @class MigrationCreateCommand
- * @package Platine\Framework\Migration\Command
+ * @class SeedCreateCommand
+ * @package Platine\Framework\Migration\Seed\Command
  * @template T
- * @extends AbstractCommand<T>
+ * @extends AbstractSeedCommand<T>
  */
-class MigrationCreateCommand extends AbstractCommand
+class SeedCreateCommand extends AbstractSeedCommand
 {
 
     /**
-     * The migration name
+     * The seed name
      * @var string
      */
     protected string $name = '';
@@ -76,15 +76,14 @@ class MigrationCreateCommand extends AbstractCommand
      */
     public function __construct(
         Application $app,
-        MigrationRepository $repository,
         Config $config,
         Filesystem $filesystem
     ) {
-        parent::__construct($app, $repository, $config, $filesystem);
-        $this->setName('migration:create')
-             ->setDescription('Create a new migration');
+        parent::__construct($app, $config, $filesystem);
+        $this->setName('seed:create')
+             ->setDescription('Create a new seed');
 
-        $this->addArgument('name', 'name of migration', null, false, true);
+        $this->addArgument('name', 'name of seed', null, false, true);
     }
 
     /**
@@ -94,16 +93,13 @@ class MigrationCreateCommand extends AbstractCommand
     {
         $writer = $this->io()->writer();
 
-        $version = date('Ymd_His');
-        $className = $this->getMigrationClassName($this->name, $version);
-        $filename = $this->getFilenameFromClass($className, $version);
-        $fullPath = $this->migrationPath . $filename;
+        $className = $this->getSeedClassName($this->name);
+        $filename = $this->getFilenameFromClass($className);
+        $fullPath = $this->seedPath . $filename;
 
-        $writer->boldGreen('Migration detail: ')->eol();
+        $writer->boldGreen('Seed detail: ')->eol();
         $writer->bold('Name: ');
         $writer->boldBlueBgBlack($this->name, true);
-        $writer->bold('Version: ');
-        $writer->boldBlueBgBlack($version, true);
         $writer->bold('Class name: ');
         $writer->boldBlueBgBlack($className, true);
         $writer->bold('Filename: ');
@@ -114,11 +110,11 @@ class MigrationCreateCommand extends AbstractCommand
 
         $io = $this->io();
 
-        if ($io->confirm('Are you confirm the generation of new migration?', 'n')) {
-            $this->checkMigrationPath();
+        if ($io->confirm('Are you confirm the generation of new seed?', 'n')) {
+            $this->checkSeedPath();
             $this->generateClass($fullPath, $className);
             $writer->boldGreen(sprintf(
-                'Migration [%s] generated successfully',
+                'Seed [%s] generated successfully',
                 $this->name
             ))->eol();
         }
@@ -129,12 +125,12 @@ class MigrationCreateCommand extends AbstractCommand
      */
     public function interact(Reader $reader, Writer $writer): void
     {
-        $writer->boldYellow('MIGRATION GENERATION', true)->eol();
+        $writer->boldYellow('SEED GENERATION', true)->eol();
 
         $name = $this->getArgumentValue('name');
         if (!$name) {
             $io = $this->io();
-            $name = $io->prompt('Enter the name of the migration', 'Migration description');
+            $name = $io->prompt('Enter the name of the seed', 'Seed description');
         }
         $this->name = $name;
     }
@@ -155,29 +151,23 @@ class MigrationCreateCommand extends AbstractCommand
     }
 
     /**
-     * Return the migration template class
+     * Return the seed template class
      * @return string
      */
     private function getTemplateClass(): string
     {
         return <<<EOF
         <?php
-        namespace Platine\Framework\Migration;
+        namespace Platine\Framework\Migration\Seed;
 
-        use Platine\Framework\Migration\AbstractMigration;
+        use Platine\Framework\Migration\Seed\AbstractSeed;
 
-        class %classname% extends AbstractMigration
+        class %classname% extends AbstractSeed
         {
 
-            public function up(): void
+            public function run(): void
             {
-              //Action when migrate up
-
-            }
-
-            public function down(): void
-            {
-              //Action when migrate down
+              //Action when run the seed
 
             }
         }
