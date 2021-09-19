@@ -195,7 +195,7 @@ abstract class AbstractSeedCommand extends Command
     protected function getSeedClassName(string $description): string
     {
         $desc = Str::camel($description, false);
-        if(!Str::endsWith('Seed', $desc)){
+        if (!Str::endsWith('Seed', $desc)) {
             $desc .= 'Seed';
         }
         return $desc;

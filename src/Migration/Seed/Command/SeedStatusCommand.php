@@ -96,7 +96,7 @@ class SeedStatusCommand extends AbstractSeedCommand
                 'No.' => (string) $index,
                 'Seed' => $description
             ];
-            
+
             $index++;
         }
 

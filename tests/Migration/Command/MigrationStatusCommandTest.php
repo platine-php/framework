@@ -44,11 +44,9 @@ class MigrationStatusCommandTest extends BaseCommandTestCase
         ]);
         $writer = $this->getWriterInstance();
         $cnx =  $this->getMockInstance(Connection::class);
-        $execCmd =  $this->getMockInstance(MigrationExecuteCommand::class);
         $application =  $this->getMockInstanceMap(Application::class, [
             'get' => [
                 [Connection::class, $cnx],
-                [MigrationExecuteCommand::class, $execCmd]
             ]
         ]);
         $entityQueryMiddle = $this->getMockInstance(EntityQuery::class, [
@@ -62,7 +60,6 @@ class MigrationStatusCommandTest extends BaseCommandTestCase
         ]);
         $interactor = $this->getMockInstance(Interactor::class, [
             'writer' => $writer,
-            'confirm' => true,
         ]);
         $app = $this->getMockInstance(ConsoleApp::class, [
             'io' => $interactor

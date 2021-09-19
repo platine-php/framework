@@ -93,11 +93,11 @@ class SeedExecuteCommand extends AbstractSeedCommand
                 $choices[$key + 1] = $seed;
             }
             $indexes = $io->choices('Choose which seed to execute', $choices, []);
-            foreach ($indexes as $index){
+            foreach ($indexes as $index) {
                 $this->executeSeed($seeds[$index - 1]);
             }
         }
-        
+
         $writer->eol();
         $writer->boldGreen('Command finished successfully')->eol();
     }
