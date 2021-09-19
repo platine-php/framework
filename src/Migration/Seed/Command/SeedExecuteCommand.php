@@ -92,10 +92,8 @@ class SeedExecuteCommand extends AbstractSeedCommand
             foreach ($seeds as $key => $seed) {
                 $choices[$key + 1] = $seed;
             }
-            $index = $io->choice('Choose which seed to execute', $choices);
-            if (!isset($seeds[$index - 1])) {
-                $writer->boldRed('Please select the correct seed to be executed');
-            } else {
+            $indexes = $io->choices('Choose which seed to execute', $choices, []);
+            foreach ($indexes as $index){
                 $this->executeSeed($seeds[$index - 1]);
             }
         }
