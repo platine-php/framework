@@ -50,8 +50,6 @@ namespace Platine\Framework\Migration\Seed\Command;
 use Platine\Config\Config;
 use Platine\Filesystem\Filesystem;
 use Platine\Framework\App\Application;
-use Platine\Framework\Migration\MigrationRepository;
-use RuntimeException;
 
 /**
  * @class SeedExecuteCommand
@@ -72,7 +70,7 @@ class SeedExecuteCommand extends AbstractSeedCommand
         Filesystem $filesystem
     ) {
         parent::__construct($app, $config, $filesystem);
-        $this->setName('migration:exec')
+        $this->setName('seed:exec')
              ->setDescription('Command to execute only one seed at a time');
 
         $this->addOption('-n|--name', 'the seed name', null, false, true);
