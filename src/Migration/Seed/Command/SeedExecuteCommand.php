@@ -72,8 +72,6 @@ class SeedExecuteCommand extends AbstractSeedCommand
         parent::__construct($app, $config, $filesystem);
         $this->setName('seed:exec')
              ->setDescription('Command to execute seed');
-
-        $this->addOption('-n|--name', 'the seed name', null, false, true);
     }
 
     /**
@@ -85,24 +83,16 @@ class SeedExecuteCommand extends AbstractSeedCommand
         $writer = $io->writer();
         $writer->boldYellow('SEED EXECUTION', true)->eol();
 
-        $seeds = $this->getAvailableSeeds();
-        $name = $this->getOptionValue('name');
+        $seeds = array_values($this->getAvailableSeeds());
 
         if (empty($seeds)) {
-            $writer->boldGreen('No seed available to execute');
+            $writer->boldGreen('No seed available for execution');
         } else {
-            if (empty($name)) {
-                $name = $io->choice('Choose which seed to execute', $seeds);
-            }
-            $className = $this->getSeedClassName($name);
-
-            if (!isset($seeds[$className])) {
-                $writer->boldRed(sprintf(
-                    'Invalid seed [%s]',
-                    $name
-                ));
+            $name = $io->choice('Choose which seed to execute', $seeds);
+            if (!isset($seeds[$name])) {
+                $writer->boldRed('Please select the correct seed to be executed');
             } else {
-                $this->executeSeed($seeds[$className]);
+                $this->executeSeed($seeds[$name]);
             }
         }
     }

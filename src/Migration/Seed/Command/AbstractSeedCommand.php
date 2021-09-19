@@ -178,7 +178,7 @@ abstract class AbstractSeedCommand extends Command
         foreach ($files as $file) {
             $matches = [];
             if (preg_match('/^([a-z_]+)Seed\.php$/i', $file->getName(), $matches)) {
-                $result[$matches[1]] = str_replace('_', ' ', Str::snake($matches[1]));
+                $result[Str::camel($matches[1])] = str_replace('_', ' ', Str::snake($matches[1]));
             }
         }
 
