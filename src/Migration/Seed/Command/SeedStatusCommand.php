@@ -92,7 +92,7 @@ class SeedStatusCommand extends AbstractSeedCommand
         $rows = [];
         foreach ($seeds as $index => $description) {
             $rows[] = [
-                'No.' => (string) $index + 1,
+                'No.' => (string) ($index + 1),
                 'Seed' => $description
             ];
         }
