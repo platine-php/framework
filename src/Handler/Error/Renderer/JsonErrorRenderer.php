@@ -64,7 +64,8 @@ class JsonErrorRenderer extends AbstractErrorRenderer
     public function render(Throwable $exception, bool $detail, bool $isLog = false): string
     {
         $error = [
-            'message' => $this->getErrorTitle($exception)
+            'title' => $this->getErrorTitle($exception),
+            'message' => $this->getErrorDescription($exception),
         ];
 
         if ($detail) {

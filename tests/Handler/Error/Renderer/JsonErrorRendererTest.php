@@ -20,7 +20,8 @@ class JsonErrorRendererTest extends BaseErrorHandlerTestCase
         $ex = $this->throwTestException();
         $file = $this->getExceptionThrownFilePath();
         $expected = '{
-    "message": "Platine Application Error",
+    "title": "Platine Application Error",
+    "message": "An error has occurred. Sorry for the temporary inconvenience.",
     "exception": [
         {
             "type": "Exception",
