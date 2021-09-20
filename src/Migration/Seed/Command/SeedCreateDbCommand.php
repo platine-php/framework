@@ -233,7 +233,7 @@ class SeedCreateDbCommand extends AbstractSeedCommand
         $content .= '
         $data = ' . var_export($data, true) . ';
         foreach ($data as $row) {
-            $this->insert($row)->into(' . $this->table . ');
+            $this->insert($row)->into(\'' . $this->table . '\');
         }
         ';
 
