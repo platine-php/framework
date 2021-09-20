@@ -192,7 +192,7 @@ class SeedCreateDbCommand extends AbstractSeedCommand
      * Return the seed template class
      * @return string
      */
-    private function getTemplateClass(): string
+    protected function getTemplateClass(): string
     {
         return <<<EOF
         <?php
@@ -218,7 +218,7 @@ class SeedCreateDbCommand extends AbstractSeedCommand
      * Generate the seed content using the current table data
      * @return string
      */
-    private function generateSeedFromTableData(): string
+    protected function generateSeedFromTableData(): string
     {
         $content = '';
         $data = $this->queryBuilder->from($this->table)
@@ -231,12 +231,32 @@ class SeedCreateDbCommand extends AbstractSeedCommand
         }
 
         $content .= '
-        $data = ' . var_export($data, true) . ';
+        $data = ' . $this->exportSeedData($data) . ';
         foreach ($data as $row) {
             $this->insert($row)->into(\'' . $this->table . '\');
         }
         ';
 
         return $content;
+    }
+    
+    /**
+     * Export the data to string representation
+     * @param array<array<string, mixed>> $data
+     * @return string
+     */
+    protected function exportSeedData(array $data):string
+    {
+        $export = var_export($data, true);
+        $export = preg_replace('/^([ ]*)(.*)/m', '$1$1$2', $export);
+        $array = preg_split("/\r\n|\n|\r/", $export);
+        $array = preg_replace(
+            ["/\s*array\s\($/", "/\)(,)?$/", "/\s=>\s$/"], 
+            [null, ']$1', ' => ['], 
+            $array
+        );
+        $export = join(PHP_EOL, array_filter(['['] + $array));
+        
+        return $export;
     }
 }
