@@ -119,14 +119,6 @@ class SeedCreateDbCommand extends AbstractSeedCommand
     {
         $writer = $this->io()->writer();
 
-        if (!$this->schema->hasTable($this->table, true)) {
-            $writer->boldRed(sprintf(
-                'Database table [%s] does not exist',
-                $this->table
-            ));
-            return;
-        }
-
         $this->table = $this->getArgumentValue('table');
         $className = $this->getSeedClassName($this->name);
         $filename = $this->getFilenameFromClass($className);
@@ -148,6 +140,13 @@ class SeedCreateDbCommand extends AbstractSeedCommand
         $io = $this->io();
 
         if ($io->confirm('Are you confirm the generation of new seed?', 'n')) {
+            if (!$this->schema->hasTable($this->table, true)) {
+                $writer->boldRed(sprintf(
+                    'Database table [%s] does not exist',
+                    $this->table
+                ));
+                return;
+            }
             $this->checkSeedPath();
             $this->generateClass($fullPath, $className);
             $writer->boldGreen(sprintf(
