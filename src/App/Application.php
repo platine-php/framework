@@ -59,6 +59,7 @@ use Platine\Framework\Env\Loader;
 use Platine\Framework\Service\Provider\BaseServiceProvider;
 use Platine\Framework\Service\Provider\EventServiceProvider;
 use Platine\Framework\Service\ServiceProvider;
+use Platine\Stdlib\Helper\Path;
 
 /**
  * @class Application
@@ -139,10 +140,10 @@ class Application extends Container
     protected string $env = 'dev';
 
     /**
-     * The environment file path
+     * The environment file name
      * @var string
      */
-    protected string $environmentFile = '';
+    protected string $environmentFile = '.env';
 
     /**
      * Create new instance
@@ -544,13 +545,19 @@ class Application extends Container
      */
     public function registerEnvironmentVariables(): void
     {
-        if (!empty($this->environmentFile)) {
-            (new Loader())
-                ->load(
-                    $this->environmentFile,
-                    false,
-                    Loader::ENV | Loader::PUTENV
-                );
+        if (!empty($this->rootPath)) {
+            $path = Path::normalizePath($this->rootPath);
+            $file = rtrim($path, DIRECTORY_SEPARATOR)
+                    . DIRECTORY_SEPARATOR . $this->environmentFile;
+
+            if (is_file($file)) {
+                (new Loader())
+                    ->load(
+                        $file,
+                        false,
+                        Loader::ENV | Loader::PUTENV
+                    );
+            }
         }
     }
 

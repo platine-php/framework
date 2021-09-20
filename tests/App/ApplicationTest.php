@@ -206,7 +206,7 @@ class ApplicationTest extends PlatineTestCase
         $vfsPath = vfsStream::newDirectory('my_tests')->at($vfsRoot);
         $file = $this->createVfsFile('.env', $vfsPath, 'foo=bar');
         $app = new Application('');
-        $app->setEnvironmentFile($file->url());
+        $app->setRootPath($vfsPath->url());
         $app->registerEnvironmentVariables();
         $this->assertEquals('bar', Env::get('foo'));
     }
