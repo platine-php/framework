@@ -239,24 +239,24 @@ class SeedCreateDbCommand extends AbstractSeedCommand
 
         return $content;
     }
-    
+
     /**
      * Export the data to string representation
      * @param array<array<string, mixed>> $data
      * @return string
      */
-    protected function exportSeedData(array $data):string
+    protected function exportSeedData(array $data): string
     {
         $export = var_export($data, true);
         $export = preg_replace('/^([ ]*)(.*)/m', '$1$1$2', $export);
         $array = preg_split("/\r\n|\n|\r/", $export);
         $array = preg_replace(
-            ["/\s*array\s\($/", "/\)(,)?$/", "/\s=>\s$/"], 
-            [null, ']$1', ' => ['], 
+            ["/\s*array\s\($/", "/\)(,)?$/", "/\s=>\s$/"],
+            [null, ']$1', ' => ['],
             $array
         );
         $export = join(PHP_EOL, array_filter(['['] + $array));
-        
+
         return $export;
     }
 }
