@@ -81,6 +81,7 @@ class BaseServiceProvider extends ServiceProvider
         });
         $this->app->share(ContainerInterface::class, $this->app);
         $this->app->bind(ResolverInterface::class, ConstructorResolver::class);
+        $this->app->share(Router::class);
         $this->app->bind(RouteCollectionInterface::class, RouteCollection::class);
         $this->app->bind(MiddlewareResolverInterface::class, MiddlewareResolver::class);
         $this->app->bind(EmitterInterface::class, function (ContainerInterface $app) {

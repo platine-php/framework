@@ -20,9 +20,6 @@ class RoutingServiceProviderTest extends PlatineTestCase
 
         $app->expects($this->exactly(3))
                 ->method('bind');
-        
-        $app->expects($this->exactly(1))
-                ->method('share');
 
         $o = new RoutingServiceProvider($app);
         $o->register();

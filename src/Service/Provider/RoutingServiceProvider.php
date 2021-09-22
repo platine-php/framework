@@ -51,7 +51,6 @@ use Platine\Framework\Http\Middleware\RouteDispatcherMiddleware;
 use Platine\Framework\Http\Middleware\RouteMatchMiddleware;
 use Platine\Framework\Http\RouteHelper;
 use Platine\Framework\Service\ServiceProvider;
-use Platine\Route\Router;
 
 /**
  * @class RoutingServiceProvider
@@ -65,7 +64,6 @@ class RoutingServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        $this->app->share(Router::class);
         $this->app->bind(RouteMatchMiddleware::class);
         $this->app->bind(RouteDispatcherMiddleware::class);
         $this->app->bind(RouteHelper::class);
