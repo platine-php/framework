@@ -80,6 +80,12 @@ class RequestData
      * @var array<string, mixed>
      */
     protected array $cookies = [];
+    
+    /**
+     * The request files data
+     * @var array<string, mixed>
+     */
+    protected array $files = [];
 
     /**
      * Whether to apply input cleanup
@@ -97,6 +103,7 @@ class RequestData
         $this->gets = $request->getQueryParams();
         $this->servers = $request->getServerParams();
         $this->cookies = $request->getCookieParams();
+        $this->files = $request->getUploadedFiles();
     }
 
     /**
@@ -127,6 +134,15 @@ class RequestData
     public function gets(): array
     {
         return $this->applyInputClean($this->gets);
+    }
+    
+    /**
+     * Return the files data
+     * @return array<string, mixed>
+     */
+    public function files(): array
+    {
+        return $this->files;
     }
 
     /**
@@ -197,6 +213,18 @@ class RequestData
     {
         $cookies = $this->applyInputClean($this->cookies);
         return Arr::get($cookies, $key, $default);
+    }
+    
+    /**
+     * Return the request uploaded file for the given key
+     * @param string $key the key to fetch also support for dot notation
+     *
+     * @return mixed
+     */
+    public function file(string $key)
+    {
+        $files = $this->files;
+        return Arr::get($files, $key, null);
     }
 
     /**

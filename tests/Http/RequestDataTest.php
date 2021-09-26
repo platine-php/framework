@@ -7,6 +7,7 @@ namespace Platine\Test\Framework\Http;
 use Platine\Dev\PlatineTestCase;
 use Platine\Framework\Http\RequestData;
 use Platine\Http\ServerRequest;
+use Platine\Http\UploadedFile;
 use Platine\Test\Framework\Fixture\MyIterableObject;
 
 /*
@@ -27,6 +28,20 @@ class RequestDataTest extends PlatineTestCase
         $this->assertCount(1, $o->posts());
         $this->assertNull($o->post('bar'));
         $this->assertEquals('bar', $o->post('foo'));
+    }
+    
+    public function testFiles(): void
+    {
+        $file = $this->getMockInstance(UploadedFile::class);
+        $request = $this->getMockInstance(ServerRequest::class, [
+            'getUploadedFiles' => [
+                'foo' => $file
+            ]
+        ]);
+        $o = new RequestData($request);
+        $this->assertCount(1, $o->files());
+        $this->assertInstanceOf(UploadedFile::class, $o->file('foo'));
+        $this->assertEquals($file, $o->file('foo'));
     }
 
     public function testGets(): void
