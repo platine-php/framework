@@ -65,7 +65,6 @@ use Throwable;
  */
 class ErrorHandler implements ErrorHandlerInterface
 {
-
     /**
      * The content type
      * @var string

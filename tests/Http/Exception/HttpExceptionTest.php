@@ -11,8 +11,6 @@ use Platine\Http\ServerRequestInterface;
 
 class HttpExceptionTest extends PlatineTestCase
 {
-
-
     public function testConstructor(): void
     {
         $request = $this->getMockInstance(ServerRequest::class);

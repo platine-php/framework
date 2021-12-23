@@ -58,7 +58,6 @@ use Throwable;
  */
 interface ErrorHandlerInterface
 {
-
     /**
      * Handle error and generate the response
      * @param ServerRequestInterface $request

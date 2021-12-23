@@ -15,7 +15,6 @@ use Platine\Http\Uri;
  */
 class ServerRequestUrlGeneratorTest extends PlatineTestCase
 {
-
     public function testGeneratePageUrlDefault(): void
     {
         $uri = $this->getMockInstance(Uri::class, [

@@ -65,7 +65,6 @@ use Platine\Session\Session;
  */
 class SessionAuthentication implements AuthenticationInterface
 {
-
     /**
      * The session instance to use
      * @var Session

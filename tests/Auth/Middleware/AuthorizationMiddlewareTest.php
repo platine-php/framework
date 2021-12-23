@@ -20,7 +20,6 @@ use Platine\Route\Route;
  */
 class AuthorizationMiddlewareTest extends PlatineTestCase
 {
-
     public function testProcessRouteNotMatch(): void
     {
         $request = $this->getMockInstance(ServerRequest::class);

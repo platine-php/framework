@@ -55,7 +55,6 @@ use Platine\Http\Response;
  */
 class RedirectResponse extends Response
 {
-
     /**
      * Create new instance
      * @param string $url

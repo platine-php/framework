@@ -59,7 +59,6 @@ use Platine\Framework\Security\JWT\Exception\TokenExpiredException;
  */
 class JWT
 {
-
     /**
      * The payload
      * @var array<string, mixed>

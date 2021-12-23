@@ -20,8 +20,6 @@ use Platine\Test\Framework\Handler\Error\BaseErrorHandlerTestCase;
  */
 class ErrorHandlerMiddlewareTest extends BaseErrorHandlerTestCase
 {
-
-
     public function testProcessErrorHttpException(): void
     {
         $logger = $this->getMockInstance(Logger::class);

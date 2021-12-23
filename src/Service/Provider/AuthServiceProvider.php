@@ -75,7 +75,6 @@ use Platine\Security\Hash\HashInterface;
  */
 class AuthServiceProvider extends ServiceProvider
 {
-
     /**
      * {@inheritdoc}
      */

@@ -63,7 +63,6 @@ use Platine\Stdlib\Helper\Str;
  */
 class MigrationCreateCommand extends AbstractCommand
 {
-
     /**
      * The migration name
      * @var string

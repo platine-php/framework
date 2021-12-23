@@ -57,7 +57,6 @@ use Throwable;
  */
 class JsonErrorRenderer extends AbstractErrorRenderer
 {
-
     /**
      * {@inheritdoc}
      */

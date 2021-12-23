@@ -27,7 +27,6 @@ use RuntimeException;
  */
 class MigrationExecuteCommandTest extends BaseCommandTestCase
 {
-
     public function testExecuteInvalidMigrationAction(): void
     {
         $migrationDir = $this->createVfsDirectory('migrations', $this->vfsPath);

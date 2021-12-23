@@ -10,7 +10,6 @@ use Platine\Http\Handler\MiddlewareResolverInterface;
 
 class FunctionAppTest extends PlatineTestCase
 {
-
     public function testDefault(): void
     {
         $o = app();

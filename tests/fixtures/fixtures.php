@@ -104,7 +104,6 @@ class MyApp extends Application
 
 class MySession extends Session
 {
-
     protected array $has = [];
     protected array $items = [];
     protected array $flash = [];
@@ -245,9 +244,14 @@ class MyParam2 extends BaseParam
     protected string $status;
 }
 
+class MyParam3 extends BaseParam
+{
+    protected string $name;
+    protected string $fooBar;
+}
+
 class MyValidator extends AbstractValidator
 {
-
     protected MyParam $param;
 
     public function __construct(MyParam $param, Lang $lang)

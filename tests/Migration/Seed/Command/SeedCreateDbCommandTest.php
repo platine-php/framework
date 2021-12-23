@@ -24,7 +24,6 @@ use Platine\Test\Framework\Console\BaseCommandTestCase;
  */
 class SeedCreateDbCommandTest extends BaseCommandTestCase
 {
-
     public function testExecuteTableNotExists(): void
     {
         $seedDir = $this->createVfsDirectory('seed', $this->vfsPath);

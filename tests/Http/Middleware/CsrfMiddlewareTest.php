@@ -22,8 +22,6 @@ use Platine\Test\Framework\Fixture\MyResponse;
  */
 class CsrfMiddlewareTest extends PlatineTestCase
 {
-
-
     public function testProcessRouteNotMatch(): void
     {
         $session = $this->getMockInstance(Session::class);

@@ -60,7 +60,6 @@ use Platine\PDF\PDFGeneratorInterface;
  */
 class PDFServiceProvider extends ServiceProvider
 {
-
     /**
      * {@inheritdoc}
      */

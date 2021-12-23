@@ -61,7 +61,6 @@ use Platine\Template\Parser\Token;
  */
 class LangTag extends AbstractTag
 {
-
     /**
      * Value to debug
      * @var string

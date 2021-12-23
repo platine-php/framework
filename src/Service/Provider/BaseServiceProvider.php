@@ -68,7 +68,6 @@ use Platine\Route\Router;
  */
 class BaseServiceProvider extends ServiceProvider
 {
-
     /**
      * {@inheritdoc}
      */

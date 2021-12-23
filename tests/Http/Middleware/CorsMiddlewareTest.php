@@ -19,8 +19,6 @@ use Platine\Test\Framework\Fixture\MyResponse;
  */
 class CorsMiddlewareTest extends PlatineTestCase
 {
-
-
     public function testProcessRouteNotMatch(): void
     {
         $logger = $this->getMockInstance(Logger::class);

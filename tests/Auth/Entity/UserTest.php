@@ -20,7 +20,6 @@ use Platine\Orm\Relation\PrimaryKey;
  */
 class UserTest extends PlatineTestCase
 {
-
     public function testMapEntity(): void
     {
         $entityMapper = $this->getMockInstance(EntityMapper::class);

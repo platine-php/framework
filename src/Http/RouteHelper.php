@@ -57,7 +57,6 @@ use Platine\Route\Router;
  */
 class RouteHelper
 {
-
     /**
      * The router instance
      * @var Router

@@ -8,7 +8,6 @@ use Platine\Dev\PlatineTestCase;
 
 class FunctionEnvTest extends PlatineTestCase
 {
-
     public function testDefault(): void
     {
         global $mock_getenv_to_foo;

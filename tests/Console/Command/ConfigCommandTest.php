@@ -16,7 +16,6 @@ use Platine\Test\Framework\Console\BaseCommandTestCase;
  */
 class ConfigCommandTest extends BaseCommandTestCase
 {
-
     public function testExecuteDefault(): void
     {
         $writer = $this->getWriterInstance();

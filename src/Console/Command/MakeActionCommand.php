@@ -57,7 +57,6 @@ use Platine\Framework\Console\MakeCommand;
  */
 class MakeActionCommand extends MakeCommand
 {
-
     /**
      * {@inheritodc}
      */

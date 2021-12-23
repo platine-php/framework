@@ -59,7 +59,6 @@ use Platine\Route\Router;
  */
 class ServiceProvider
 {
-
     /**
      * The Application instance
      * @var Application

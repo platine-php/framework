@@ -14,7 +14,6 @@ use Platine\Framework\Http\Response\FileResponse;
  */
 class FileResponseTest extends PlatineTestCase
 {
-
     protected $vfsRoot;
     protected $vfsPath;
 

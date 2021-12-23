@@ -13,7 +13,6 @@ use Platine\Test\Framework\Handler\Error\BaseErrorHandlerTestCase;
  */
 class HtmlErrorRendererTest extends BaseErrorHandlerTestCase
 {
-
     public function testRenderWithoutDetail(): void
     {
         $o = new HtmlErrorRenderer();

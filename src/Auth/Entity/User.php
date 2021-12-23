@@ -58,7 +58,6 @@ use Platine\Orm\Query\Query;
  */
 class User extends Entity implements IdentityInterface
 {
-
     /**
      * {@inheritdoc}
      */

@@ -61,7 +61,6 @@ use Platine\Template\Parser\Token;
  */
 class SessionFlashTag extends AbstractTag
 {
-
     /**
      * The key of the session
      * @var string

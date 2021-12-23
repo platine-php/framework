@@ -59,7 +59,6 @@ use Platine\Template\Parser\Context;
  */
 class CsrfTag extends AbstractTag
 {
-
     /**
      * {@inheritdoc}
      */

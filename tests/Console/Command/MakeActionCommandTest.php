@@ -18,7 +18,6 @@ use Platine\Test\Framework\Console\BaseCommandTestCase;
  */
 class MakeActionCommandTest extends BaseCommandTestCase
 {
-
     public function testExecuteDefault(): void
     {
         $dir = $this->createVfsDirectory('app', $this->vfsRoot);

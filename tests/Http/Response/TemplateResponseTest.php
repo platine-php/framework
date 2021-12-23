@@ -14,7 +14,6 @@ use Platine\Template\Template;
  */
 class TemplateResponseTest extends PlatineTestCase
 {
-
     public function testAll(): void
     {
         $template = $this->getMockInstance(Template::class, [

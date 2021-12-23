@@ -63,7 +63,6 @@ use Platine\Lang\Translator\TranslatorInterface;
  */
 class LangServiceProvider extends ServiceProvider
 {
-
     /**
      * {@inheritdoc}
      */

@@ -61,7 +61,6 @@ use Platine\Template\Parser\Token;
  */
 class RouteUrlTag extends AbstractTag
 {
-
     /**
      * The name of the route
      * @var string

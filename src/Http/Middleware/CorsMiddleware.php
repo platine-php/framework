@@ -64,7 +64,6 @@ use Platine\Stdlib\Helper\Str;
  */
 class CorsMiddleware implements MiddlewareInterface
 {
-
     /**
      * The configuration instance
      * @var Config<T>

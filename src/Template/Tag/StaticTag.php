@@ -61,7 +61,6 @@ use Platine\Template\Parser\Token;
  */
 class StaticTag extends AbstractTag
 {
-
     /**
      * The static path
      * @var string

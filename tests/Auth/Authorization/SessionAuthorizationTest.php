@@ -14,7 +14,6 @@ use Platine\Session\Session;
  */
 class SessionAuthorizationTest extends PlatineTestCase
 {
-
     public function testGetPermissions(): void
     {
         $session = $this->getMockInstance(Session::class, [

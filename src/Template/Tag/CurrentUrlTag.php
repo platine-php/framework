@@ -57,7 +57,6 @@ use Platine\Template\Parser\Context;
  */
 class CurrentUrlTag extends AbstractTag
 {
-
     /**
      * {@inheritdoc}
      */

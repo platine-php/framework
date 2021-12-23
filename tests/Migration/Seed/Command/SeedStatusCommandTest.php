@@ -20,7 +20,6 @@ use Platine\Test\Framework\Console\BaseCommandTestCase;
  */
 class SeedStatusCommandTest extends BaseCommandTestCase
 {
-
     public function testExecute(): void
     {
         $seedDir = $this->createVfsDirectory('seeds', $this->vfsPath);

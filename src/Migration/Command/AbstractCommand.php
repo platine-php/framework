@@ -67,7 +67,6 @@ use RuntimeException;
  */
 abstract class AbstractCommand extends Command
 {
-
     /**
      * The migration repository
      * @var MigrationRepository

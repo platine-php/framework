@@ -56,7 +56,6 @@ use Platine\Stdlib\Helper\Arr;
  */
 class RequestData
 {
-
     /**
      * The request body or post data
      * @var array<string, mixed>
@@ -80,7 +79,7 @@ class RequestData
      * @var array<string, mixed>
      */
     protected array $cookies = [];
-    
+
     /**
      * The request files data
      * @var array<string, mixed>
@@ -135,7 +134,7 @@ class RequestData
     {
         return $this->applyInputClean($this->gets);
     }
-    
+
     /**
      * Return the files data
      * @return array<string, mixed>
@@ -214,7 +213,7 @@ class RequestData
         $cookies = $this->applyInputClean($this->cookies);
         return Arr::get($cookies, $key, $default);
     }
-    
+
     /**
      * Return the request uploaded file for the given key
      * @param string $key the key to fetch also support for dot notation

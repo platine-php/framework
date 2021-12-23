@@ -60,7 +60,6 @@ use Platine\Http\StreamInterface;
  */
 class ResponseEmitter implements EmitterInterface
 {
-
     /**
      * The response before length
      * @var int|null

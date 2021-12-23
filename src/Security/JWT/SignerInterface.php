@@ -53,7 +53,6 @@ namespace Platine\Framework\Security\JWT;
  */
 interface SignerInterface
 {
-
     /**
      * Sign the given data using the given key
      * @param string $data

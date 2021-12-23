@@ -65,7 +65,6 @@ use Platine\Framework\Service\ServiceProvider;
  */
 class CacheServiceProvider extends ServiceProvider
 {
-
     /**
      * {@inheritdoc}
      */

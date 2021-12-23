@@ -58,7 +58,6 @@ use Platine\Framework\Service\ServiceProvider;
  */
 class RoutingServiceProvider extends ServiceProvider
 {
-
     /**
      * {@inheritdoc}
      */

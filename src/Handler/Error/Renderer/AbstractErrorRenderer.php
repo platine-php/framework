@@ -57,7 +57,6 @@ use Throwable;
  */
 abstract class AbstractErrorRenderer implements ErrorRenderInterface
 {
-
     /**
      * The default error title
      * @var string

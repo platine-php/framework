@@ -60,7 +60,6 @@ use Platine\Framework\Migration\MigrationRepository;
  */
 class MigrationMigrateCommand extends AbstractCommand
 {
-
     /**
      * Create new instance
      * {@inheritodc}

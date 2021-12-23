@@ -57,7 +57,6 @@ use Platine\Orm\Repository;
  */
 class RoleRepository extends Repository
 {
-
     /**
      * Create new instance
      * @param EntityManager $manager

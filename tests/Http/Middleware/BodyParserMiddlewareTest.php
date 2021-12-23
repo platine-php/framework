@@ -17,7 +17,6 @@ use RuntimeException;
  */
 class BodyParserMiddlewareTest extends PlatineTestCase
 {
-
     public function testProcess(): void
     {
         $request = $this->getMockInstance(ServerRequest::class, [

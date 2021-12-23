@@ -13,7 +13,6 @@ use Throwable;
 
 class BaseErrorHandlerTestCase extends PlatineTestCase
 {
-
     protected function throwTestException(): Throwable
     {
         $exception = new Exception('Foo exception');

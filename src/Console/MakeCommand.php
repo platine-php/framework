@@ -59,7 +59,6 @@ use Platine\Stdlib\Helper\Str;
  */
 abstract class MakeCommand extends Command
 {
-
     /**
      * The Application instance
      * @var Application

@@ -11,7 +11,6 @@ use Platine\Session\Session;
 
 class FlashTest extends PlatineTestCase
 {
-
     /**
      * @dataProvider flashDataProvider
      * @param string $key

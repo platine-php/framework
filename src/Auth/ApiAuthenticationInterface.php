@@ -59,7 +59,6 @@ use Platine\Http\ServerRequestInterface;
  */
 interface ApiAuthenticationInterface
 {
-
     /**
      * Whether the request is authenticated
      * @param ServerRequestInterface $request

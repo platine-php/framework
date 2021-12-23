@@ -53,7 +53,6 @@ namespace Platine\Framework\Http\Response;
  */
 class RestResponse extends JsonResponse
 {
-
     /**
      * Create new instance
      * @param mixed $data

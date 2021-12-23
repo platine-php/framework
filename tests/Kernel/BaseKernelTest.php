@@ -14,7 +14,6 @@ use Platine\Framework\Kernel\BaseKernel;
  */
 class BaseKernelTest extends PlatineTestCase
 {
-
     public function testBootstrap(): void
     {
         $app = $this->getMockInstance(Application::class);

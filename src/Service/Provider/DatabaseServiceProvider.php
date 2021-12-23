@@ -64,7 +64,6 @@ use Platine\Orm\EntityManager;
  */
 class DatabaseServiceProvider extends ServiceProvider
 {
-
     /**
      * {@inheritdoc}
      */

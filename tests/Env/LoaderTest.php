@@ -17,7 +17,6 @@ use RuntimeException;
  */
 class LoaderTest extends PlatineTestCase
 {
-
     protected $vfsRoot;
     protected $vfsPath;
 

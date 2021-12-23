@@ -17,7 +17,6 @@ use Platine\Orm\Mapper\EntityMapper;
  */
 class RoleTest extends PlatineTestCase
 {
-
     public function testMapEntity(): void
     {
         $entityMapper = $this->getMockInstance(EntityMapper::class);

@@ -61,7 +61,6 @@ use Platine\Logger\LoggerInterface;
  */
 class ErrorHandlerServiceProvider extends ServiceProvider
 {
-
     /**
      * {@inheritdoc}
      */

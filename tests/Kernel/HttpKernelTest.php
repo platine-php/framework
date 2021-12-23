@@ -25,7 +25,6 @@ use Platine\Test\Framework\Fixture\MyServiceProvider;
  */
 class HttpKernelTest extends PlatineTestCase
 {
-
     public function testUse(): void
     {
         $router = $this->getMockInstance(Router::class);

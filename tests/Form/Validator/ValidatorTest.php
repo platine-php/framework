@@ -16,7 +16,6 @@ use Platine\Test\Framework\Fixture\MyValidator;
  */
 class ValidatorTest extends PlatineTestCase
 {
-
     public function testValidate(): void
     {
         $param = new MyParam([

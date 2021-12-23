@@ -57,7 +57,6 @@ use Platine\Stdlib\Helper\Path;
  */
 class FileResponse extends Response
 {
-
     /**
      * Create new instance
      * @param string $path

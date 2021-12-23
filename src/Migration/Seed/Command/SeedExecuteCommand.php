@@ -59,7 +59,6 @@ use Platine\Framework\App\Application;
  */
 class SeedExecuteCommand extends AbstractSeedCommand
 {
-
     /**
      * Create new instance
      * {@inheritodc}

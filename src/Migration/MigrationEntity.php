@@ -57,7 +57,6 @@ use Platine\Orm\Mapper\EntityMapperInterface;
  */
 class MigrationEntity extends Entity
 {
-
     /**
      * {@inheritdoc}
      */

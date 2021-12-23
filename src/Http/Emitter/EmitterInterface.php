@@ -56,7 +56,6 @@ use Platine\Http\ResponseInterface;
  */
 interface EmitterInterface
 {
-
     /**
      * Emits a HTTP response, that including status line, headers and message
      * body, according to the environment.

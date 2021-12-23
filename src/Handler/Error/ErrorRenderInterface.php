@@ -56,7 +56,6 @@ use Throwable;
  */
 interface ErrorRenderInterface
 {
-
     /**
      * Render the error
      * @param Throwable $exception

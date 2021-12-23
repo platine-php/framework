@@ -66,7 +66,6 @@ use Platine\Framework\Service\ServiceProvider;
  */
 class MigrationServiceProvider extends ServiceProvider
 {
-
     /**
      * {@inheritdoc}
      */

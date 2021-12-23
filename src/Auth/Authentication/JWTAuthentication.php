@@ -71,7 +71,6 @@ use Platine\Stdlib\Helper\Str;
  */
 class JWTAuthentication implements ApiAuthenticationInterface
 {
-
     /**
      * The JWT instance
      * @var JWT

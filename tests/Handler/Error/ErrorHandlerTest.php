@@ -11,7 +11,6 @@ use Platine\Logger\Logger;
 
 class ErrorHandlerTest extends BaseErrorHandlerTestCase
 {
-
     public function testHandle(): void
     {
         $request = $this->getMockInstance(ServerRequest::class);

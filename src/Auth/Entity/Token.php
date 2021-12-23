@@ -57,7 +57,6 @@ use Platine\Orm\Query\Query;
  */
 class Token extends Entity
 {
-
     /**
      * {@inheritdoc}
      */

@@ -16,7 +16,6 @@ use Platine\Orm\Mapper\EntityMapper;
  */
 class MigrationEntityTest extends PlatineTestCase
 {
-
     public function testMapEntity(): void
     {
         global $mock_app_to_config_instance;

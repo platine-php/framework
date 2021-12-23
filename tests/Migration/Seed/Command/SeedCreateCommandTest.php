@@ -23,7 +23,6 @@ use RuntimeException;
  */
 class SeedCreateCommandTest extends BaseCommandTestCase
 {
-
     public function testExecute(): void
     {
         $seedDir = $this->createVfsDirectory('seed', $this->vfsPath);

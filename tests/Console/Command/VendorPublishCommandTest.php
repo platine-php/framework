@@ -19,7 +19,6 @@ use Platine\Test\Framework\Console\BaseCommandTestCase;
  */
 class VendorPublishCommandTest extends BaseCommandTestCase
 {
-
     public function testExecuteDefault(): void
     {
 

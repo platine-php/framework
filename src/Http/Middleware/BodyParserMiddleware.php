@@ -60,7 +60,6 @@ use RuntimeException;
  */
 class BodyParserMiddleware implements MiddlewareInterface
 {
-
     /**
      * List of body parser to use
      * @var array<string, callable>

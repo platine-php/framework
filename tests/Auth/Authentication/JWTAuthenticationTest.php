@@ -29,7 +29,6 @@ use Platine\Security\Hash\BcryptHash;
  */
 class JWTAuthenticationTest extends PlatineTestCase
 {
-
     public function testGetUserFailed(): void
     {
         $jwt = $this->getMockInstance(JWT::class);

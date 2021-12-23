@@ -58,7 +58,6 @@ use Platine\Framework\Service\ServiceProvider;
  */
 class FilesystemServiceProvider extends ServiceProvider
 {
-
     /**
      * {@inheritdoc}
      */

@@ -21,7 +21,6 @@ use Platine\Test\Framework\Fixture\MyServiceProvider;
  */
 class RouteCommandTest extends BaseCommandTestCase
 {
-
     public function testExecuteDefault(): void
     {
         $route = $this->getMockInstance(Route::class, [

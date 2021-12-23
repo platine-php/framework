@@ -25,7 +25,6 @@ use Platine\Session\Session;
  */
 class SessionAuthenticationTest extends PlatineTestCase
 {
-
     public function testGetUserNotLogged(): void
     {
         $app = $this->getMockInstance(Application::class);

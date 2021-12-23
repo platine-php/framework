@@ -14,7 +14,6 @@ use Platine\Route\Router;
  */
 class RouteHelperTest extends PlatineTestCase
 {
-
     public function testAll(): void
     {
         $router = $this->getMockInstance(Router::class, [

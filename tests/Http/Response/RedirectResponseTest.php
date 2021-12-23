@@ -13,7 +13,6 @@ use Platine\Framework\Http\Response\RedirectResponse;
  */
 class RedirectResponseTest extends PlatineTestCase
 {
-
     public function testAll(): void
     {
         $o = new RedirectResponse('foo/bar');

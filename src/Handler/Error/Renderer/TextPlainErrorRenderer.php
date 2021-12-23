@@ -56,7 +56,6 @@ use Throwable;
  */
 class TextPlainErrorRenderer extends AbstractErrorRenderer
 {
-
     /**
      * {@inheritdoc}
      */

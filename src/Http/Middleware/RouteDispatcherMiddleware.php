@@ -61,7 +61,6 @@ use Platine\Route\Route;
  */
 class RouteDispatcherMiddleware implements MiddlewareInterface
 {
-
     /**
      * The Middleware resolver instance
      * @var MiddlewareResolverInterface

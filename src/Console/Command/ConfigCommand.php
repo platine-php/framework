@@ -58,7 +58,6 @@ use Platine\Stdlib\Helper\Str;
  */
 class ConfigCommand extends Command
 {
-
     /**
      * The configuration instance
      * @var Config<T>

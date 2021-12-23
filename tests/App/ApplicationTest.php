@@ -24,7 +24,6 @@ use Platine\Test\Framework\Fixture\MyServiceProvider;
  */
 class ApplicationTest extends PlatineTestCase
 {
-
     public function testConstructor(): void
     {
         $app = new Application('');

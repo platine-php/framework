@@ -56,7 +56,6 @@ use Platine\Stdlib\Helper\Str;
  */
 class BaseParam
 {
-
     /**
      * Create new instance
      * @param array<string, mixed> $data
@@ -114,6 +113,12 @@ class BaseParam
     {
         if (property_exists($this, $name)) {
             return $this->{$name};
+        }
+
+        //convert to camel
+        $key = Str::camel($name, true);
+        if (property_exists($this, $key)) {
+            return $this->{$key};
         }
 
         return null;

@@ -58,7 +58,6 @@ use Platine\Framework\Auth\Exception\MissingCredentialsException;
  */
 interface AuthenticationInterface
 {
-
     /**
      * Authenticate the user
      * @param array<string, mixed> $credentials

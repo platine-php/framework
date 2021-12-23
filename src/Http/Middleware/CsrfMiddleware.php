@@ -67,7 +67,6 @@ use Platine\Session\Session;
  */
 class CsrfMiddleware implements MiddlewareInterface
 {
-
     /**
      * The configuration instance
      * @var Config<T>

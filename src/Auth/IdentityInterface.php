@@ -53,7 +53,6 @@ namespace Platine\Framework\Auth;
  */
 interface IdentityInterface
 {
-
     /**
      * Return the id of the current user
      * @return mixed

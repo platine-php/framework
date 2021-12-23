@@ -65,7 +65,6 @@ use Throwable;
  */
 class ErrorHandlerMiddleware implements MiddlewareInterface
 {
-
     /**
      * The logger instance to use to save error
      * @var LoggerInterface

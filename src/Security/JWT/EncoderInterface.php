@@ -53,7 +53,6 @@ namespace Platine\Framework\Security\JWT;
  */
 interface EncoderInterface
 {
-
     /**
      * Encode the given data
      * @param string $data

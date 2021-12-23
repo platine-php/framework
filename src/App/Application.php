@@ -67,7 +67,6 @@ use Platine\Stdlib\Helper\Path;
  */
 class Application extends Container
 {
-
     /**
      * The application version
      */

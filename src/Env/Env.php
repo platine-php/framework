@@ -54,7 +54,6 @@ namespace Platine\Framework\Env;
  */
 class Env
 {
-
     /**
      * Get the environment variable by its key/name.
      * @param string $key

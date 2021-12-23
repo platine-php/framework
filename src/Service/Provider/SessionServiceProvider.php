@@ -62,7 +62,6 @@ use SessionHandlerInterface;
  */
 class SessionServiceProvider extends ServiceProvider
 {
-
     /**
      * {@inheritdoc}
      */

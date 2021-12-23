@@ -22,7 +22,6 @@ use RuntimeException;
  */
 class MigrationCreateCommandTest extends BaseCommandTestCase
 {
-
     public function testExecute(): void
     {
         global $mock_date_to_sample;

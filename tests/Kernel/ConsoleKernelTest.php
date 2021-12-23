@@ -18,7 +18,6 @@ use Platine\Test\Framework\Fixture\MyCommand;
  */
 class ConsoleKernelTest extends PlatineTestCase
 {
-
     public function testConstruct(): void
     {
         $app = $this->getMockInstance(Application::class);

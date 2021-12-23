@@ -15,7 +15,6 @@ use Platine\Http\Stream;
 
 class ResponseEmitterTest extends PlatineTestCase
 {
-
     protected $vfsRoot;
     protected $vfsPath;
 

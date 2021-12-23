@@ -66,7 +66,6 @@ use RuntimeException;
  */
 abstract class AbstractSeedCommand extends Command
 {
-
     /**
      * The configuration to use
      * @var Config<T>

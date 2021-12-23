@@ -60,7 +60,6 @@ use Platine\Framework\App\Application;
  */
 class ConsoleKernel extends BaseKernel
 {
-
     protected ConsoleApp $console;
 
     /**

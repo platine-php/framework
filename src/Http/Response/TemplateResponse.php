@@ -56,7 +56,6 @@ use Platine\Template\Template;
  */
 class TemplateResponse extends Response
 {
-
     /**
      * The template instance
      * @var Template

@@ -64,7 +64,6 @@ use Platine\Route\Route;
  */
 class AuthenticationMiddleware implements MiddlewareInterface
 {
-
     /**
      * The Authentication instance
      * @var AuthenticationInterface

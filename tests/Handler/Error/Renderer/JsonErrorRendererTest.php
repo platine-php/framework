@@ -13,7 +13,6 @@ use Platine\Test\Framework\Handler\Error\BaseErrorHandlerTestCase;
  */
 class JsonErrorRendererTest extends BaseErrorHandlerTestCase
 {
-
     public function testRender(): void
     {
         $o = new JsonErrorRenderer();

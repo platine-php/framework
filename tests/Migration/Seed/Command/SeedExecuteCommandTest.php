@@ -24,8 +24,6 @@ use RuntimeException;
  */
 class SeedExecuteCommandTest extends BaseCommandTestCase
 {
-
-
     public function testExecuteNoSeedAvailable(): void
     {
         $seedDir = $this->createVfsDirectory('migrations', $this->vfsPath);

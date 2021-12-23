@@ -63,7 +63,6 @@ use Platine\Template\Template;
  */
 class TemplateServiceProvider extends ServiceProvider
 {
-
     /**
      * {@inheritdoc}
      */

@@ -55,7 +55,6 @@ use Platine\Framework\App\Application;
  */
 class BaseKernel
 {
-
     /**
      * Application instance
      * @var Application

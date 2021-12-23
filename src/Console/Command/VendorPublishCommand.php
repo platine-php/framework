@@ -63,7 +63,6 @@ use Platine\Stdlib\Helper\Path;
  */
 class VendorPublishCommand extends Command
 {
-
     /**
      * Application instance
      * @var Application

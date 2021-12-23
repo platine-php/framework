@@ -56,7 +56,6 @@ use Throwable;
  */
 class XmlErrorRenderer extends AbstractErrorRenderer
 {
-
     /**
      * {@inheritdoc}
      */

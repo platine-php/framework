@@ -23,7 +23,6 @@ use Platine\Route\Route;
  */
 class RouteDispatcherMiddlewareTest extends PlatineTestCase
 {
-
     public function testConstructor(): void
     {
         $container = $this->getMockBuilder(Container::class)

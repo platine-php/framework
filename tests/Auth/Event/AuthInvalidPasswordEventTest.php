@@ -14,7 +14,6 @@ use Platine\Framework\Auth\Event\AuthInvalidPasswordEvent;
  */
 class AuthInvalidPasswordEventTest extends PlatineTestCase
 {
-
     public function testAll(): void
     {
         $user = $this->getMockInstance(User::class);

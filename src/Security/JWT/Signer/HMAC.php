@@ -58,7 +58,6 @@ use Platine\Framework\Security\JWT\SignerInterface;
  */
 class HMAC implements SignerInterface
 {
-
     /**
      * The configuration instance
      * @var Config<T>

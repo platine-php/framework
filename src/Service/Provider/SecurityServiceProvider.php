@@ -57,7 +57,6 @@ use Platine\Framework\Service\ServiceProvider;
  */
 class SecurityServiceProvider extends ServiceProvider
 {
-
     /**
      * {@inheritdoc}
      */

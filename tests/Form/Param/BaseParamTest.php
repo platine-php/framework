@@ -8,6 +8,7 @@ use Platine\Dev\PlatineTestCase;
 use Platine\Orm\Entity;
 use Platine\Test\Framework\Fixture\MyParam;
 use Platine\Test\Framework\Fixture\MyParam2;
+use Platine\Test\Framework\Fixture\MyParam3;
 
 /*
  * @group core
@@ -15,7 +16,6 @@ use Platine\Test\Framework\Fixture\MyParam2;
  */
 class BaseParamTest extends PlatineTestCase
 {
-
     public function testConstructor(): void
     {
         $o = new MyParam([]);
@@ -71,5 +71,16 @@ class BaseParamTest extends PlatineTestCase
         $o->fromEntity($entity);
         $this->assertEmpty($o->name);
         $this->assertEmpty($o->status);
+    }
+
+    public function testMagicGetSnake(): void
+    {
+        $o = new MyParam3([
+            'name' => '',
+            'foo_bar' => 'baz',
+        ]);
+
+        $this->assertEquals($o->foo_bar, 'baz');
+        $this->assertEquals($o->fooBar, 'baz');
     }
 }

@@ -13,7 +13,6 @@ use Platine\Framework\Http\Response\JsonResponse;
  */
 class JsonResponseTest extends PlatineTestCase
 {
-
     public function testAll(): void
     {
         $o = new JsonResponse(['foo' => 'bar']);

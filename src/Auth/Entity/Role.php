@@ -56,7 +56,6 @@ use Platine\Orm\Mapper\EntityMapperInterface;
  */
 class Role extends Entity
 {
-
     /**
      * {@inheritdoc}
      */

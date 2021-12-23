@@ -62,7 +62,6 @@ use Platine\Route\Router;
  */
 class RouteMatchMiddleware implements MiddlewareInterface
 {
-
     /**
      * The Router instance
      * @var Router

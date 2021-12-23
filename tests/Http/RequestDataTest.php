@@ -16,7 +16,6 @@ use Platine\Test\Framework\Fixture\MyIterableObject;
  */
 class RequestDataTest extends PlatineTestCase
 {
-
     public function testPosts(): void
     {
         $request = $this->getMockInstance(ServerRequest::class, [
@@ -29,7 +28,7 @@ class RequestDataTest extends PlatineTestCase
         $this->assertNull($o->post('bar'));
         $this->assertEquals('bar', $o->post('foo'));
     }
-    
+
     public function testFiles(): void
     {
         $file = $this->getMockInstance(UploadedFile::class);

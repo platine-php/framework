@@ -61,7 +61,6 @@ use RuntimeException;
  */
 class MigrationExecuteCommand extends AbstractCommand
 {
-
     /**
      * Create new instance
      * {@inheritodc}

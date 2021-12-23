@@ -16,7 +16,6 @@ use Platine\Orm\Mapper\EntityMapper;
  */
 class PermissionTest extends PlatineTestCase
 {
-
     public function testMapEntity(): void
     {
         $entityMapper = $this->getMockInstance(EntityMapper::class);

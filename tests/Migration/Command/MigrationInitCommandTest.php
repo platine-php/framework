@@ -22,7 +22,6 @@ use Platine\Test\Framework\Console\BaseCommandTestCase;
  */
 class MigrationInitCommandTest extends BaseCommandTestCase
 {
-
     public function testExecuteAlreadyCreateTable(): void
     {
         $migrationDir = $this->createVfsDirectory('migrations', $this->vfsPath);

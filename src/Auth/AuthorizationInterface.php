@@ -53,7 +53,6 @@ namespace Platine\Framework\Auth;
  */
 interface AuthorizationInterface
 {
-
     /**
      * Check if user is granted the given permission
      * @param string $permission the permission to check

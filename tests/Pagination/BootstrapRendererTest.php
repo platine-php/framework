@@ -15,7 +15,6 @@ use Platine\Pagination\Pagination;
  */
 class BootstrapRendererTest extends PlatineTestCase
 {
-
     public function testRenderEmpty(): void
     {
         $pagination = $this->getMockInstance(Pagination::class, [

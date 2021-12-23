@@ -59,7 +59,6 @@ use Platine\Framework\Service\ServiceProvider;
  */
 class EventServiceProvider extends ServiceProvider
 {
-
     /**
      * {@inheritdoc}
      */

@@ -57,7 +57,6 @@ use Throwable;
  */
 class HtmlErrorRenderer extends AbstractErrorRenderer
 {
-
     /**
      * {@inheritdoc}
      */

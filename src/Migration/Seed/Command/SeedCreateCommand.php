@@ -63,7 +63,6 @@ use Platine\Stdlib\Helper\Str;
  */
 class SeedCreateCommand extends AbstractSeedCommand
 {
-
     /**
      * The seed name
      * @var string

@@ -56,7 +56,6 @@ use Platine\Pagination\RendererInterface;
  */
 class BootstrapRenderer implements RendererInterface
 {
-
     /**
      * {@inheritdoc}
      */

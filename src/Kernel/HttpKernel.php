@@ -68,7 +68,6 @@ use Platine\Route\Router;
  */
 class HttpKernel extends BaseKernel implements RequestHandlerInterface
 {
-
     /**
      * The router instance
      * @var Router

@@ -61,7 +61,6 @@ use Platine\Framework\Migration\MigrationRepository;
  */
 class MigrationStatusCommand extends AbstractCommand
 {
-
     /**
      * Create new instance
      * {@inheritodc}

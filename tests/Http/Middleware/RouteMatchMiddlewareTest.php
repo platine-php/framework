@@ -24,7 +24,6 @@ use Platine\Route\Router;
  */
 class RouteMatchMiddlewareTest extends PlatineTestCase
 {
-
     public function testConstructor(): void
     {
         $router = $this->getMockBuilder(Router::class)

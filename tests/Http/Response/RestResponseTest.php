@@ -13,7 +13,6 @@ use Platine\Framework\Http\Response\RestResponse;
  */
 class RestResponseTest extends PlatineTestCase
 {
-
     public function testAll(): void
     {
         global $mock_time_to_1000;

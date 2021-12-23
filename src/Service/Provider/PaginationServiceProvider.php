@@ -63,7 +63,6 @@ use Platine\Pagination\UrlGeneratorInterface;
  */
 class PaginationServiceProvider extends ServiceProvider
 {
-
     /**
      * {@inheritdoc}
      */

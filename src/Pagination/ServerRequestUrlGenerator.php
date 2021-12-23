@@ -56,7 +56,6 @@ use Platine\Pagination\UrlGeneratorInterface;
  */
 class ServerRequestUrlGenerator implements UrlGeneratorInterface
 {
-
     /**
      * The server request instance
      * @var ServerRequestInterface

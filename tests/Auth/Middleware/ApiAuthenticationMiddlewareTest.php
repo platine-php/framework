@@ -19,7 +19,6 @@ use Platine\Route\Route;
  */
 class ApiAuthenticationMiddlewareTest extends PlatineTestCase
 {
-
     public function testProcessRouteNotMatch(): void
     {
         $request = $this->getMockInstance(ServerRequest::class);

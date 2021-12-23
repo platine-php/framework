@@ -62,7 +62,6 @@ use Platine\Framework\Migration\MigrationRepository;
  */
 class MigrationInitCommand extends AbstractCommand
 {
-
     /**
      * The schema to use
      * @var Schema

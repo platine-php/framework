@@ -63,7 +63,6 @@ use Platine\Route\Route;
  */
 class ApiAuthenticationMiddleware implements MiddlewareInterface
 {
-
     /**
      * The Authentication instance
      * @var ApiAuthenticationInterface

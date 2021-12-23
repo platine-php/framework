@@ -56,7 +56,6 @@ use Platine\Orm\Repository;
  */
 class MigrationRepository extends Repository
 {
-
     /**
      * Create new instance
      * @param EntityManager $manager

@@ -55,7 +55,6 @@ use Platine\Framework\Security\JWT\EncoderInterface;
  */
 class Base64UrlSafeEncoder implements EncoderInterface
 {
-
     /**
      * {@inheritdoc}
      */

@@ -56,7 +56,6 @@ use Platine\Framework\Auth\Entity\User;
  */
 class AuthInvalidPasswordEvent extends Event
 {
-
     /**
      * The authentication user
      * @var User

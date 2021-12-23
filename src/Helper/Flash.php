@@ -55,7 +55,6 @@ use Platine\Session\Session;
  */
 class Flash
 {
-
     /**
      * The session instance
      * @var Session

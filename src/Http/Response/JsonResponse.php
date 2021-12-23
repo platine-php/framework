@@ -56,7 +56,6 @@ use Platine\Stdlib\Helper\Json;
  */
 class JsonResponse extends Response
 {
-
     /**
      * Create new instance
      * @param mixed $data

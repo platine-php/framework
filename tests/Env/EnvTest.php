@@ -14,7 +14,6 @@ use Platine\Framework\Env\Env;
  */
 class EnvTest extends PlatineTestCase
 {
-
     public function testGetDefault(): void
     {
         $this->assertEquals(100, Env::get('not found env key', 100, 'int'));

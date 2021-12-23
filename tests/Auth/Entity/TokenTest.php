@@ -19,7 +19,6 @@ use Platine\Orm\Relation\PrimaryKey;
  */
 class TokenTest extends PlatineTestCase
 {
-
     public function testMapEntity(): void
     {
         $entityMapper = $this->getMockInstance(EntityMapper::class, [], [
