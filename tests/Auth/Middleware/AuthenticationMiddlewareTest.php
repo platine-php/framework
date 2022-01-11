@@ -42,7 +42,7 @@ class AuthenticationMiddlewareTest extends PlatineTestCase
     public function testProcessUrlIsWhiteList(): void
     {
         $route = $this->getMockInstance(Route::class, [
-            'getPattern' => '/login'
+            'getName' => 'login'
         ]);
         $request = $this->getMockInstance(ServerRequest::class, [
             'getAttribute' => $route
@@ -53,7 +53,7 @@ class AuthenticationMiddlewareTest extends PlatineTestCase
         $authentication = $this->getMockInstance(SessionAuthentication::class);
         $config = $this->getMockInstanceMap(Config::class, [
             'get' => [
-                ['auth.authentication.url_whitelist', [], ['/login']],
+                ['auth.authentication.url_whitelist', [], ['login']],
             ]
         ]);
 

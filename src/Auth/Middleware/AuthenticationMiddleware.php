@@ -135,15 +135,10 @@ class AuthenticationMiddleware implements MiddlewareInterface
 
         //check if is url whitelist
         $urls = $this->config->get('auth.authentication.url_whitelist', []);
-        foreach ($urls as $url) {
-            /*
-             * Route: /users/login, url: /users/login
-             * Route: /users/detail/{id}, url: /users/detail/
-             */
-            if (preg_match('~^' . $url . '~', $route->getPattern())) {
-                return false;
-            }
+        if (in_array($route->getName(), $urls)) {
+            return false;
         }
+
 
         return true;
     }
