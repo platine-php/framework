@@ -27,14 +27,14 @@ class JsonErrorRendererTest extends BaseErrorHandlerTestCase
             "code": 100,
             "message": "Foo exception 2",
             "file": "' . $file . '",
-            "line": 24
+            "line": 23
         },
         {
             "type": "Exception",
             "code": 0,
             "message": "Foo exception 1",
             "file": "' . $file . '",
-            "line": 21
+            "line": 20
         }
     ]
 }';

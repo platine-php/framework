@@ -6,7 +6,6 @@ namespace Platine\Test\Framework\Http\Middleware;
 
 use Platine\Config\Config;
 use Platine\Dev\PlatineTestCase;
-use Platine\Framework\Http\Middleware\CorsMiddleware;
 use Platine\Framework\Http\Middleware\CsrfMiddleware;
 use Platine\Framework\Kernel\HttpKernel;
 use Platine\Http\ServerRequest;
@@ -14,7 +13,6 @@ use Platine\Lang\Lang;
 use Platine\Logger\Logger;
 use Platine\Route\Route;
 use Platine\Session\Session;
-use Platine\Test\Framework\Fixture\MyResponse;
 
 /*
  * @group core
@@ -71,7 +69,8 @@ class CsrfMiddlewareTest extends PlatineTestCase
     public function testProcessUrlWhitelist(): void
     {
         $route = $this->getMockInstance(Route::class, [
-            'getPattern' => '/api/foo'
+            'getPattern' => '/api/foo',
+            'getName' => 'api',
         ]);
         $request = $this->getMockInstance(ServerRequest::class, [
             'getAttribute' => $route,
@@ -85,7 +84,7 @@ class CsrfMiddlewareTest extends PlatineTestCase
         $config = $this->getMockInstanceMap(Config::class, [
             'get' => [
                 ['security.csrf.http_methods', [], ['POST']],
-                ['security.csrf.url_whitelist', [], ['/api']],
+                ['security.csrf.url_whitelist', [], ['api']],
             ]
         ]);
 

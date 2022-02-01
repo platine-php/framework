@@ -145,14 +145,14 @@ Type: Exception
 Code: 100
 Message: Foo exception 2
 File: ' . $file . '
-Line: 24
+Line: 23
 
 Previous Error:
 Type: Exception
 Code: 0
 Message: Foo exception 1
 File: ' . $file . '
-Line: 21
+Line: 20
 ';
         $this->assertEquals($expected, (string) $resp->getBody());
     }

@@ -35,7 +35,7 @@ class HtmlErrorRendererTest extends BaseErrorHandlerTestCase
         $ex = $this->throwTestException();
         $expected = 'Platine Application Error: An error has occurred. Sorry for'
                 . ' the temporary inconvenience., Exception(code:100) '
-                . 'Foo exception 2 at ' . $file . ' line 24';
+                . 'Foo exception 2 at ' . $file . ' line 23';
         $this->assertEquals($expected, $o->render($ex, false, true));
     }
 
@@ -56,7 +56,7 @@ class HtmlErrorRendererTest extends BaseErrorHandlerTestCase
                 . '<h2>Details</h2><div><strong>Type:</strong> Exception</div>'
                 . '<div><strong>Code:</strong> 100</div><div><strong>Message:</strong> '
                 . '</div><div><strong>File:</strong> ' . $file
-                . '</div><div><strong>Line:</strong> 24</div><h2>Trace</h2><pre></pre>'
+                . '</div><div><strong>Line:</strong> 23</div><h2>Trace</h2><pre></pre>'
                 . '</div><a href="#" onClick="window.history.go(-1)">Go Back</a></body></html>';
         $this->assertEquals($expected, $o->render($ex, true, false));
     }
@@ -71,7 +71,7 @@ class HtmlErrorRendererTest extends BaseErrorHandlerTestCase
         $expected = '404 Not found: The requested resource [] could not be found. '
                 . 'Please verify the URI and try again, '
                 . 'Platine\Framework\Http\Exception\HttpNotFoundException(code:404) '
-                . 'not found at ' . $file . ' line 40';
+                . 'not found at ' . $file . ' line 39';
         $this->assertEquals($expected, $o->render($ex, true, true));
     }
 }

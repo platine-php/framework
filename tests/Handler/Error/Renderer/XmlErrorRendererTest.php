@@ -22,9 +22,9 @@ class XmlErrorRendererTest extends BaseErrorHandlerTestCase
 <error><message><![CDATA[Foo exception 2]]></message><exceptions><exception>'
                 . '<type>Exception</type><code>100</code><message><![CDATA[Foo exception 2]]>'
                 . '</message><file>' . $file . '</file>'
-                . '<line>24</line></exception><exception><type>Exception</type><code>0</code>'
+                . '<line>23</line></exception><exception><type>Exception</type><code>0</code>'
                 . '<message><![CDATA[Foo exception 1]]></message><file>' . $file . '</file>'
-                . '<line>21</line></exception></exceptions></error>';
+                . '<line>20</line></exception></exceptions></error>';
         $this->assertEquals($expected, $o->render($ex, true, false));
     }
 }
