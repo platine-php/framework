@@ -71,7 +71,7 @@ class SeedCreateCommand extends AbstractSeedCommand
 
     /**
      * Create new instance
-     * {@inheritodc}
+     * {@inheritdoc}
      */
     public function __construct(
         Application $app,
@@ -86,7 +86,7 @@ class SeedCreateCommand extends AbstractSeedCommand
     }
 
     /**
-     * {@inheritodc}
+     * {@inheritdoc}
      */
     public function execute()
     {
@@ -120,7 +120,7 @@ class SeedCreateCommand extends AbstractSeedCommand
     }
 
     /**
-     * {@inheritodc}
+     * {@inheritdoc}
      */
     public function interact(Reader $reader, Writer $writer): void
     {

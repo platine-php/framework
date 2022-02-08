@@ -71,7 +71,7 @@ class MigrationCreateCommand extends AbstractCommand
 
     /**
      * Create new instance
-     * {@inheritodc}
+     * {@inheritdoc}
      */
     public function __construct(
         Application $app,
@@ -87,7 +87,7 @@ class MigrationCreateCommand extends AbstractCommand
     }
 
     /**
-     * {@inheritodc}
+     * {@inheritdoc}
      */
     public function execute()
     {
@@ -124,7 +124,7 @@ class MigrationCreateCommand extends AbstractCommand
     }
 
     /**
-     * {@inheritodc}
+     * {@inheritdoc}
      */
     public function interact(Reader $reader, Writer $writer): void
     {

@@ -61,7 +61,7 @@ class SeedExecuteCommand extends AbstractSeedCommand
 {
     /**
      * Create new instance
-     * {@inheritodc}
+     * {@inheritdoc}
      */
     public function __construct(
         Application $app,
@@ -74,7 +74,7 @@ class SeedExecuteCommand extends AbstractSeedCommand
     }
 
     /**
-     * {@inheritodc}
+     * {@inheritdoc}
      */
     public function execute()
     {

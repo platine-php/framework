@@ -66,7 +66,7 @@ abstract class AbstractValidator extends Validator
     }
 
     /**
-     * {@inheritodc}
+     * {@inheritdoc}
      * @return bool
      */
     public function validate(array $data = []): bool

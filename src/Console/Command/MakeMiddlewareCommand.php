@@ -30,9 +30,9 @@
  */
 
 /**
- *  @file ConfigCommand.php
+ *  @file MakeMiddlewareCommand.php
  *
- *  The Configuration management command class
+ *  The Make middleware Command class
  *
  *  @package    Platine\Framework\Console\Command
  *  @author Platine Developers team
@@ -47,77 +47,79 @@ declare(strict_types=1);
 
 namespace Platine\Framework\Console\Command;
 
-use Platine\Config\Config;
-use Platine\Console\Command\Command;
-use Platine\Stdlib\Helper\Str;
+use Platine\Filesystem\Filesystem;
+use Platine\Framework\App\Application;
+use Platine\Framework\Console\MakeCommand;
 
 /**
- * @class ConfigCommand
+ * @class MakeMiddlewareCommand
  * @package Platine\Framework\Console\Command
- * @template T
  */
-class ConfigCommand extends Command
+class MakeMiddlewareCommand extends MakeCommand
 {
     /**
-     * The configuration instance
-     * @var Config<T>
+     * {@inheritdoc}
      */
-    protected Config $config;
+    protected string $type = 'middleware';
 
     /**
      * Create new instance
-     * @param Config<T> $config
+     * @param Application $application
+     * @param Filesystem $filesystem
      */
-    public function __construct(Config $config)
-    {
-        parent::__construct('config', 'Command to manage configuration');
-
-        $this->addOption('-l|--list', 'List the configuration', '', false);
-        $this->addOption('-t|--type', 'Configuration type', 'app', true);
-
-        $this->config = $config;
+    public function __construct(
+        Application $application,
+        Filesystem $filesystem
+    ) {
+        parent::__construct($application, $filesystem);
+        $this->setName('make:middleware')
+               ->setDescription('Command to generate new middleware class');
     }
 
     /**
      * {@inheritdoc}
      */
-    public function execute()
+    public function getClassTemplate(): string
     {
-        if ($this->getOptionValue('list')) {
-            $this->showConfigList();
+        return <<<EOF
+        <?php
+        
+        declare(strict_types=1);
+        
+        namespace %namespace%;
+        
+        use Platine\Http\Handler\MiddlewareInterface;
+        use Platine\Http\Handler\RequestHandlerInterface;
+        use Platine\Http\ResponseInterface;
+        use Platine\Http\ServerRequestInterface;
+        %uses%
+
+        /**
+        * @class %classname%
+        * @package %namespace%
+        */
+        class %classname% implements MiddlewareInterface
+        {
+            /**
+            * {@inheritdoc}
+            */
+           public function process(
+               ServerRequestInterface \$request,
+               RequestHandlerInterface \$handler
+           ): ResponseInterface {
+               
+               return \$handler->handle(\$request);
+           }
         }
+        
+        EOF;
     }
 
     /**
-     * Show the configuration list
-     * @return void
+     * {@inheritdoc}
      */
-    protected function showConfigList(): void
+    protected function getUsesContent(): string
     {
-        $writer = $this->io()->writer();
-        $type = $this->getOptionValue('type');
-
-        $writer->boldGreen(sprintf('Show configuration for [%s]', $type), true)->eol();
-
-        $items = (array) $this->config->get($type, []);
-        /** @var array<int, array<int, array<string, string>>> $rows*/
-        $rows = [];
-        foreach ($items as $name => $value) {
-            $valueStr = Str::stringify($value);
-            if (is_int($name)) {
-                $rows[] = [
-                    'value' => $valueStr
-                ];
-            } else {
-                $rows[] = [
-                    'name' => $name,
-                    'value' => $valueStr
-                ];
-            }
-        }
-
-        $writer->table($rows);
-
-        $writer->green('Command finished successfully')->eol();
+        return '';
     }
 }

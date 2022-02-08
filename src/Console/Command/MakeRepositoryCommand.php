@@ -30,9 +30,9 @@
  */
 
 /**
- *  @file MakeActionCommand.php
+ *  @file MakeRepositoryCommand.php
  *
- *  The Make Action (Request Handler) Command class
+ *  The Make Repository Command class
  *
  *  @package    Platine\Framework\Console\Command
  *  @author Platine Developers team
@@ -52,18 +52,23 @@ use Platine\Console\Output\Writer;
 use Platine\Filesystem\Filesystem;
 use Platine\Framework\App\Application;
 use Platine\Framework\Console\MakeCommand;
-use Platine\Stdlib\Helper\Str;
 
 /**
- * @class MakeActionCommand
+ * @class MakeRepositoryCommand
  * @package Platine\Framework\Console\Command
  */
-class MakeActionCommand extends MakeCommand
+class MakeRepositoryCommand extends MakeCommand
 {
     /**
      * {@inheritdoc}
      */
-    protected string $type = 'action';
+    protected string $type = 'repository';
+
+    /**
+     * The entity class name
+     * @var string
+     */
+    protected string $entityClass;
 
     /**
      * Create new instance
@@ -75,8 +80,8 @@ class MakeActionCommand extends MakeCommand
         Filesystem $filesystem
     ) {
         parent::__construct($application, $filesystem);
-        $this->setName('make:action')
-               ->setDescription('Command to generate new request handler class');
+        $this->setName('make:repository')
+               ->setDescription('Command to generate new repository class');
     }
 
     /**
@@ -86,32 +91,15 @@ class MakeActionCommand extends MakeCommand
     {
         parent::interact($reader, $writer);
 
-        $properties = [];
 
         $io = $this->io();
-        $writer->boldYellow('Enter the properties list (empty value to finish):', true);
-        $value = '';
-        while ($value !== null) {
-            $value = $io->prompt('Property full class name', null, null, false);
 
-            if (!empty($value)) {
-                $value = trim($value);
-                if (!class_exists($value) && !interface_exists($value)) {
-                    $writer->boldWhiteBgRed(sprintf('The class [%s] does not exists', $value), true);
-                } else {
-                    $shortClass = basename($value);
-                    $name = Str::camel($shortClass, true);
-                    //replace"interface", "abstract"
-                    $nameClean = str_ireplace(['interface', 'abstract'], '', $name);
-
-                    $properties[$value] = [
-                        'name' => $nameClean,
-                        'short' => $shortClass,
-                    ];
-                }
-            }
+        $entityClass = $io->prompt('Enter the entity full class name', null);
+        while (!class_exists($entityClass)) {
+            $entityClass = $io->prompt('Class does not exists, please enter the entity full class name', null);
         }
-        $this->properties = $properties;
+
+        $this->entityClass = $entityClass;
     }
 
     /**
@@ -126,30 +114,57 @@ class MakeActionCommand extends MakeCommand
         
         namespace %namespace%;
         
-        use Platine\Http\Handler\RequestHandlerInterface;
-        use Platine\Http\ResponseInterface;
-        use Platine\Http\ServerRequestInterface;
+        use Platine\Orm\EntityManager;
+        use Platine\Orm\Repository;
         %uses%
 
         /**
         * @class %classname%
         * @package %namespace%
         */
-        class %classname% implements RequestHandlerInterface
+        class %classname% extends Repository
         {
             
-            %properties%
-        
-            %constructor%
-        
             /**
-            * {@inheritdoc}
+            * Create new instance
+            * @param EntityManager \$manager
             */
-            public function handle(ServerRequestInterface \$request): ResponseInterface
-            {
-            }
+           public function __construct(EntityManager \$manager)
+           {
+               parent::__construct(\$manager, %entity_class%);
+           }
         }
         
         EOF;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function createClass(): string
+    {
+        $content = parent::createClass();
+
+        return $this->getEntityBody($content);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function getUsesContent(): string
+    {
+        return $this->getUsesTemplate($this->entityClass);
+    }
+
+    /**
+     * Return the entity body
+     * @param string $content
+     * @return string
+     */
+    protected function getEntityBody(string $content): string
+    {
+        $entityName = basename($this->entityClass) . '::class';
+
+        return str_replace('%entity_class%', $entityName, $content);
     }
 }

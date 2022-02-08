@@ -62,7 +62,7 @@ class MigrationMigrateCommand extends AbstractCommand
 {
     /**
      * Create new instance
-     * {@inheritodc}
+     * {@inheritdoc}
      */
     public function __construct(
         Application $app,
@@ -76,7 +76,7 @@ class MigrationMigrateCommand extends AbstractCommand
     }
 
     /**
-     * {@inheritodc}
+     * {@inheritdoc}
      */
     public function execute()
     {

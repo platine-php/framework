@@ -30,9 +30,9 @@
  */
 
 /**
- *  @file MakeActionCommand.php
+ *  @file MakeListenerCommand.php
  *
- *  The Make Action (Request Handler) Command class
+ *  The Make listener Command class
  *
  *  @package    Platine\Framework\Console\Command
  *  @author Platine Developers team
@@ -52,18 +52,23 @@ use Platine\Console\Output\Writer;
 use Platine\Filesystem\Filesystem;
 use Platine\Framework\App\Application;
 use Platine\Framework\Console\MakeCommand;
-use Platine\Stdlib\Helper\Str;
 
 /**
- * @class MakeActionCommand
+ * @class MakeListenerCommand
  * @package Platine\Framework\Console\Command
  */
-class MakeActionCommand extends MakeCommand
+class MakeListenerCommand extends MakeCommand
 {
     /**
      * {@inheritdoc}
      */
-    protected string $type = 'action';
+    protected string $type = 'event listener';
+
+    /**
+     * The event class name
+     * @var string
+     */
+    protected string $eventClass;
 
     /**
      * Create new instance
@@ -75,8 +80,8 @@ class MakeActionCommand extends MakeCommand
         Filesystem $filesystem
     ) {
         parent::__construct($application, $filesystem);
-        $this->setName('make:action')
-               ->setDescription('Command to generate new request handler class');
+        $this->setName('make:listener')
+               ->setDescription('Command to generate new event listener class');
     }
 
     /**
@@ -86,32 +91,15 @@ class MakeActionCommand extends MakeCommand
     {
         parent::interact($reader, $writer);
 
-        $properties = [];
 
         $io = $this->io();
-        $writer->boldYellow('Enter the properties list (empty value to finish):', true);
-        $value = '';
-        while ($value !== null) {
-            $value = $io->prompt('Property full class name', null, null, false);
 
-            if (!empty($value)) {
-                $value = trim($value);
-                if (!class_exists($value) && !interface_exists($value)) {
-                    $writer->boldWhiteBgRed(sprintf('The class [%s] does not exists', $value), true);
-                } else {
-                    $shortClass = basename($value);
-                    $name = Str::camel($shortClass, true);
-                    //replace"interface", "abstract"
-                    $nameClean = str_ireplace(['interface', 'abstract'], '', $name);
-
-                    $properties[$value] = [
-                        'name' => $nameClean,
-                        'short' => $shortClass,
-                    ];
-                }
-            }
+        $eventClass = $io->prompt('Enter the event full class name', null);
+        while (!class_exists($eventClass)) {
+            $eventClass = $io->prompt('Class does not exists, please enter the event full class name', null);
         }
-        $this->properties = $properties;
+
+        $this->eventClass = $eventClass;
     }
 
     /**
@@ -119,6 +107,8 @@ class MakeActionCommand extends MakeCommand
      */
     public function getClassTemplate(): string
     {
+        $eventShortName = basename($this->eventClass);
+
         return <<<EOF
         <?php
         
@@ -126,30 +116,36 @@ class MakeActionCommand extends MakeCommand
         
         namespace %namespace%;
         
-        use Platine\Http\Handler\RequestHandlerInterface;
-        use Platine\Http\ResponseInterface;
-        use Platine\Http\ServerRequestInterface;
+        use Platine\Event\EventInterface;
+        use Platine\Event\ListenerInterface;
         %uses%
 
         /**
         * @class %classname%
         * @package %namespace%
         */
-        class %classname% implements RequestHandlerInterface
+        class %classname% implements ListenerInterface
         {
             
-            %properties%
-        
-            %constructor%
-        
             /**
             * {@inheritdoc}
             */
-            public function handle(ServerRequestInterface \$request): ResponseInterface
+            public function handle(EventInterface \$event)
             {
+               if (\$event instanceof $eventShortName) {
+                   
+               }
             }
         }
         
         EOF;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function getUsesContent(): string
+    {
+        return $this->getUsesTemplate($this->eventClass);
     }
 }

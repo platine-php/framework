@@ -48,6 +48,8 @@ declare(strict_types=1);
 namespace Platine\Framework\Console;
 
 use Platine\Console\Command\Command;
+use Platine\Console\Input\Reader;
+use Platine\Console\Output\Writer;
 use Platine\Filesystem\Filesystem;
 use Platine\Framework\App\Application;
 use Platine\Stdlib\Helper\Path;
@@ -87,7 +89,13 @@ abstract class MakeCommand extends Command
      * The class full name given by user
      * @var string
      */
-    protected string $name = '';
+    protected string $className = '';
+
+    /**
+     * The action properties
+     * @var array<string, array<string, string>>
+     */
+    protected array $properties = [];
 
     /**
      * Create new instance
@@ -102,31 +110,29 @@ abstract class MakeCommand extends Command
         $this->application = $application;
         $this->filesystem = $filesystem;
         $this->rootNamespace = $application->getNamespace();
-
-        $this->addArgument('name', 'The full class name (can include root namespace', null, true);
+        $this->addArgument('name', 'The full class name (can include root namespace', null, false);
         $this->addOption('-f|--force', 'Overwrite existing files.', false, false);
     }
 
     /**
-     * {@inheritodc}
+     * {@inheritdoc}
      */
     public function execute()
     {
-        $writer = $this->io()->writer();
-        $name = $this->getArgumentValue('name');
-        $cleanName = str_replace('/', '\\', $name);
-
-        $this->name = $name;
-
-        $writer->boldGreen(sprintf(
-            'Generation of new %s class [%s]',
-            $this->type,
-            $cleanName
-        ), true)->eol();
+        $io = $this->io();
+        $writer = $io->writer();
+        $name = $this->className;
 
         $className = $this->getFullClassName($name);
         $path = $this->getPath();
         $namespace = $this->getNamespace();
+
+        $writer->boldGreen(sprintf(
+            'Generation of new %s class [%s]',
+            $this->type,
+            $className
+        ), true)->eol();
+
 
         if ($this->fileExists() && !$this->getOptionValue('force')) {
             $writer->red(sprintf(
@@ -146,8 +152,29 @@ abstract class MakeCommand extends Command
         $writer->bold('Namespace: ');
         $writer->boldBlueBgBlack($namespace, true);
 
-        $this->createParentDirectory($path);
-        $this->createClass();
+        if ($io->confirm(sprintf('Are you confirm the generation of [%s] ?', $className), 'y')) {
+            $this->createParentDirectory($path);
+            $content = $this->createClass();
+
+            $file = $this->filesystem->file($path);
+            $file->write($content);
+            $writer->boldGreen(sprintf('Class [%s] generated successfully.', $className), true);
+        }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function interact(Reader $reader, Writer $writer): void
+    {
+        $writer->boldYellow('GENERATION OF NEW CLASS', true)->eol();
+        $name = $this->getArgumentValue('name');
+        if (empty($name)) {
+            $io = $this->io();
+            $name = $io->prompt('Enter the full class name (can include root namespace)', null);
+        }
+
+        $this->className = $name;
     }
 
     /**
@@ -162,7 +189,7 @@ abstract class MakeCommand extends Command
      */
     protected function getPath(): string
     {
-        $class = Str::replaceFirst($this->rootNamespace, '', $this->name);
+        $class = Str::replaceFirst($this->rootNamespace, '', $this->className);
 
         $path = sprintf(
             '%s/%s.php',
@@ -202,7 +229,7 @@ abstract class MakeCommand extends Command
      */
     protected function getNamespace(): string
     {
-        $class = str_replace('/', '\\', $this->name);
+        $class = str_replace('/', '\\', $this->className);
 
         return $this->rootNamespace . trim(implode(
             '\\',
@@ -223,18 +250,19 @@ abstract class MakeCommand extends Command
 
     /**
      * Create the class for the given name
-     * @return void
+     * @return string
      */
-    protected function createClass(): void
+    protected function createClass(): string
     {
         $template = $this->getClassTemplate();
-        $path = $this->getPath();
-
-        $file = $this->filesystem->file($path);
 
         $replaceNamespace = $this->replaceNamespace($template);
-        $replaceClasses = $this->replaceClasses($replaceNamespace);
-        $file->write($replaceClasses);
+        $replaceUses = $this->replaceClassUses($replaceNamespace);
+        $replaceClasses = $this->replaceClasses($replaceUses);
+        $replaceProperties = $this->replaceProperties($replaceClasses);
+        $replaceConstructor = $this->replaceConstructor($replaceProperties);
+
+        return $replaceConstructor;
     }
 
     /**
@@ -248,7 +276,7 @@ abstract class MakeCommand extends Command
         return Str::replaceFirst(
             $namespace . '\\',
             '',
-            $this->getFullClassName($this->name)
+            $this->getFullClassName($this->className)
         );
     }
 
@@ -281,6 +309,40 @@ abstract class MakeCommand extends Command
     }
 
     /**
+     * Replace the properties
+     * @param string $content
+     * @return string
+     */
+    protected function replaceProperties(string $content): string
+    {
+        $replaceContent = $this->getPropertiesContent();
+        return str_replace('%properties%', $replaceContent, $content);
+    }
+
+    /**
+     * Replace the constructor
+     * @param string $content
+     * @return string
+     */
+    protected function replaceConstructor(string $content): string
+    {
+        $replaceContent = $this->getConstructorContent();
+
+        return str_replace('%constructor%', $replaceContent, $content);
+    }
+
+    /**
+     * Replace the class uses instructions
+     * @param string $content
+     * @return string
+     */
+    protected function replaceClassUses(string $content): string
+    {
+        $replaceContent = $this->getUsesContent();
+        return str_replace('%uses%', $replaceContent, $content);
+    }
+
+    /**
      * Replace the classes
      * @param string $content
      * @return string
@@ -288,10 +350,229 @@ abstract class MakeCommand extends Command
     protected function replaceClasses(string $content): string
     {
         $shortClassName = $this->getShortClassName();
-        $fullClassName = $this->getFullClassName($this->name);
+        $fullClassName = $this->getFullClassName($this->className);
 
         $replaced = str_replace('%classname%', $shortClassName, $content);
 
         return str_replace('%fullclassname%', $fullClassName, $replaced);
+    }
+
+    /**
+     * Return the properties content
+     * @return string
+     */
+    protected function getPropertiesContent(): string
+    {
+        if (empty($this->properties)) {
+            return '';
+        }
+
+        $content = '';
+
+        foreach ($this->properties as $className => $info) {
+            $content .= $this->getPropertyTemplate($className, $info);
+        }
+
+        return $content;
+    }
+
+    /**
+     * Return the name space uses content
+     * @return string
+     */
+    protected function getUsesContent(): string
+    {
+        if (empty($this->properties)) {
+            return '';
+        }
+
+        $content = '';
+
+        foreach ($this->properties as $className => $info) {
+            $content .= $this->getUsesTemplate($className);
+        }
+
+        return $content;
+    }
+
+
+    /**
+     * Return the constructor content
+     * @return string
+     */
+    protected function getConstructorContent(): string
+    {
+        if (empty($this->properties)) {
+            return '';
+        }
+
+        $docblock = $this->getConstructorDocBlockContent();
+        $params = $this->getConstructorParamsContent();
+        $body = $this->getConstructorBodyContent();
+
+        return <<<EOF
+        $docblock
+            public function __construct(
+               $params
+            ){
+                $body
+            }
+        EOF;
+    }
+
+
+    /**
+     * Return the constructor document block comment content
+     * @return string
+     */
+    protected function getConstructorDocBlockContent(): string
+    {
+        $content = '';
+        foreach ($this->properties as $className => $info) {
+            $content .= $this->getConstructorDocBlockTemplate($className, $info);
+        }
+
+        return <<<EOF
+        /**
+            * Create new instance
+            $content*/
+        EOF;
+    }
+
+    /**
+     * Return the constructor parameters content
+     * @return string
+     */
+    protected function getConstructorParamsContent(): string
+    {
+        $content = '';
+        $i = 1;
+        $count = count($this->properties);
+        foreach ($this->properties as $className => $info) {
+            $content .= $this->getConstructorParamsTemplate($className, $info, $i === $count);
+            $i++;
+        }
+
+        return $content;
+    }
+
+    /**
+     * Return the constructor body content
+     * @return string
+     */
+    protected function getConstructorBodyContent(): string
+    {
+        $content = '';
+        $i = 1;
+        $count = count($this->properties);
+        foreach ($this->properties as $className => $info) {
+            $content .= $this->getConstructorBodyTemplate($className, $info, $i === $count);
+            $i++;
+        }
+
+        return $content;
+    }
+
+    /**
+     * Return the constructor document block template for the given class
+     * @param string $className
+     * @param array<string, string> $info
+     * @return string
+     */
+    protected function getConstructorDocBlockTemplate(string $className, array $info): string
+    {
+        $shortClass = $info['short'];
+        $name = $info['name'];
+
+        return <<<EOF
+        * @param $shortClass \$$name 
+            
+        EOF;
+    }
+
+    /**
+     * Return the constructor arguments template for the given class
+     * @param string $className
+     * @param array<string, string> $info
+     * @param bool $isLast
+     * @return string
+     */
+    protected function getConstructorParamsTemplate(
+        string $className,
+        array $info,
+        bool $isLast = false
+    ): string {
+        $shortClass = $info['short'];
+        $name = $info['name'];
+        $comma = $isLast ? '' : ',';
+
+        if ($isLast) {
+            return <<<EOF
+            $shortClass \$$name$comma
+            EOF;
+        }
+
+        return <<<EOF
+        $shortClass \$$name$comma
+               
+        EOF;
+    }
+
+    /**
+     * Return the constructor body template for the given class
+     * @param string $className
+     * @param array<string, string> $info
+     * @param bool $isLast
+     * @return string
+     */
+    protected function getConstructorBodyTemplate(string $className, array $info, bool $isLast = false): string
+    {
+        $name = $info['name'];
+
+        if ($isLast) {
+            return <<<EOF
+            \$this->$name = \$$name;
+            EOF;
+        }
+
+        return <<<EOF
+        \$this->$name = \$$name;
+                
+        EOF;
+    }
+
+    /**
+     * Return the property template for the given class
+     * @param string $className
+     * @param array<string, string> $info
+     * @return string
+     */
+    protected function getPropertyTemplate(string $className, array $info): string
+    {
+        $shortClass = $info['short'];
+        $name = $info['name'];
+
+        return <<<EOF
+        /**
+            * The $shortClass instance
+            * @var $shortClass
+            */
+            protected $shortClass \$$name;
+        
+            
+        EOF;
+    }
+
+    /**
+     * Return the name space use template for the given class
+     * @param string $className
+     * @return string
+     */
+    protected function getUsesTemplate(string $className): string
+    {
+        return <<<EOF
+        use $className; 
+        
+        EOF;
     }
 }

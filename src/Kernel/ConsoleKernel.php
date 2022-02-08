@@ -60,10 +60,14 @@ use Platine\Framework\App\Application;
  */
 class ConsoleKernel extends BaseKernel
 {
+    /**
+     * Console application instance
+     * @var ConsoleApp
+     */
     protected ConsoleApp $console;
 
     /**
-     * The list of middlewares
+     * The list of command
      * @var Command[]
      */
     protected array $commands = [];

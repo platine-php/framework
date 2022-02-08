@@ -89,7 +89,7 @@ class RouteCommand extends Command
     }
 
     /**
-     * {@inheritodc}
+     * {@inheritdoc}
      */
     public function execute()
     {

@@ -49,6 +49,14 @@ namespace Platine\Framework\Service\Provider;
 
 use Platine\Framework\Console\Command\ConfigCommand;
 use Platine\Framework\Console\Command\MakeActionCommand;
+use Platine\Framework\Console\Command\MakeEntityCommand;
+use Platine\Framework\Console\Command\MakeEventCommand;
+use Platine\Framework\Console\Command\MakeFormParamCommand;
+use Platine\Framework\Console\Command\MakeListenerCommand;
+use Platine\Framework\Console\Command\MakeMiddlewareCommand;
+use Platine\Framework\Console\Command\MakeProviderCommand;
+use Platine\Framework\Console\Command\MakeRepositoryCommand;
+use Platine\Framework\Console\Command\MakeValidatorCommand;
 use Platine\Framework\Console\Command\RouteCommand;
 use Platine\Framework\Console\Command\VendorPublishCommand;
 use Platine\Framework\Service\ServiceProvider;
@@ -68,9 +76,25 @@ class CommandServiceProvider extends ServiceProvider
         $this->app->bind(ConfigCommand::class);
         $this->app->bind(VendorPublishCommand::class);
         $this->app->bind(MakeActionCommand::class);
+        $this->app->bind(MakeEntityCommand::class);
+        $this->app->bind(MakeRepositoryCommand::class);
+        $this->app->bind(MakeFormParamCommand::class);
+        $this->app->bind(MakeValidatorCommand::class);
+        $this->app->bind(MakeProviderCommand::class);
+        $this->app->bind(MakeMiddlewareCommand::class);
+        $this->app->bind(MakeEventCommand::class);
+        $this->app->bind(MakeListenerCommand::class);
 
         //Commands
         $this->addCommand(VendorPublishCommand::class);
         $this->addCommand(MakeActionCommand::class);
+        $this->addCommand(MakeEntityCommand::class);
+        $this->addCommand(MakeRepositoryCommand::class);
+        $this->addCommand(MakeFormParamCommand::class);
+        $this->addCommand(MakeValidatorCommand::class);
+        $this->addCommand(MakeProviderCommand::class);
+        $this->addCommand(MakeMiddlewareCommand::class);
+        $this->addCommand(MakeEventCommand::class);
+        $this->addCommand(MakeListenerCommand::class);
     }
 }
