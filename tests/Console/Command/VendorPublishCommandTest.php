@@ -41,7 +41,7 @@ class VendorPublishCommandTest extends BaseCommandTestCase
                     $rootDir->url()
                 ],
                 [
-                    'migration.path',
+                    'database.migration.path',
                     'migrations',
                     $rootDir->url()
                 ]
@@ -102,7 +102,7 @@ Command finished successfully
                 $rootDir->url()
             ],
             [
-                'migration.path',
+                'database.migration.path',
                 'migrations',
                 $rootDir->url()
             ]
@@ -161,7 +161,7 @@ Command finished successfully
                     $rootDir->url()
                 ],
                 [
-                    'migration.path',
+                    'database.migration.path',
                     'migrations',
                     $rootDir->url()
                 ]
@@ -207,7 +207,7 @@ Can not find the composer package [test/foo].
                     $rootDir->url()
                 ],
                 [
-                    'migration.path',
+                    'database.migration.path',
                     'migrations',
                     $rootDir->url()
                 ]
@@ -262,7 +262,7 @@ Command finished successfully
                     $rootDir->url()
                 ],
                 [
-                    'migration.path',
+                    'database.migration.path',
                     'migrations',
                     $rootDir->url()
                 ]
@@ -322,7 +322,7 @@ Command finished successfully
                     $rootDir->url()
                 ],
                 [
-                    'migration.path',
+                    'database.migration.path',
                     'migrations',
                     $rootDir->url()
                 ]

@@ -272,7 +272,7 @@ class VendorPublishCommand extends Command
 
 
         $path = Path::convert2Absolute(
-            $this->config->get('migration.path', 'migrations')
+            $this->config->get('database.migration.path', 'migrations')
         );
         $destinationPath = Path::normalizePathDS($path, true);
 
