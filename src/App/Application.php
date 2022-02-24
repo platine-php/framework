@@ -536,6 +536,9 @@ class Application extends Container
         $this->instance($config);
 
         date_default_timezone_set($config->get('app.timezone', 'UTC'));
+
+        //Set the envirnoment
+        $this->setEnvironment($config->get('app.env', 'dev'));
     }
 
     /**

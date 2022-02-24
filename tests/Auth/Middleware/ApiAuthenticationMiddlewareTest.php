@@ -63,7 +63,8 @@ class ApiAuthenticationMiddlewareTest extends PlatineTestCase
     public function testProcessUrlIsWhiteList(): void
     {
         $route = $this->getMockInstance(Route::class, [
-            'getPattern' => '/api'
+            'getPattern' => '/api',
+            'getName' => 'api'
         ]);
         $request = $this->getMockInstance(ServerRequest::class, [
             'getAttribute' => $route
@@ -74,7 +75,7 @@ class ApiAuthenticationMiddlewareTest extends PlatineTestCase
         $config = $this->getMockInstanceMap(Config::class, [
             'get' => [
                 ['api.auth.path', '/', '/api'],
-                ['api.auth.url_whitelist', [], ['/api']],
+                ['api.auth.url_whitelist', [], ['api']],
             ]
         ]);
 
