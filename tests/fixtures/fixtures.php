@@ -12,6 +12,8 @@ use Platine\Event\EventInterface;
 use Platine\Event\ListenerInterface;
 use Platine\Event\SubscriberInterface;
 use Platine\Framework\App\Application;
+use Platine\Framework\Config\DatabaseConfigLoader;
+use Platine\Framework\Config\DatabaseConfigLoaderInterface;
 use Platine\Framework\Form\Param\BaseParam;
 use Platine\Framework\Form\Validator\AbstractValidator;
 use Platine\Framework\Http\RouteHelper;
@@ -99,6 +101,13 @@ class MyApp extends Application
         $this->bind(Configuration::class);
         $this->bind(LoggerInterface::class, Logger::class);
         $this->bind(LoggerFormatterInterface::class, DefaultFormatter::class);
+    }
+}
+
+class MyDatabaseConfigLoader extends DatabaseConfigLoader
+{
+    public function __construct()
+    {
     }
 }
 

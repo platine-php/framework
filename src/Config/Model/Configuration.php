@@ -30,11 +30,11 @@
  */
 
 /**
- *  @file SessionServiceProvider.php
+ *  @file Configuration.php
  *
- *  The Framework session service provider class
+ *  The Configuration Entity class
  *
- *  @package    Platine\Framework\Service\Provider
+ *  @package    Platine\Framework\Config\Model
  *  @author Platine Developers team
  *  @copyright  Copyright (c) 2020
  *  @license    http://opensource.org/licenses/MIT  MIT License
@@ -45,38 +45,43 @@
 
 declare(strict_types=1);
 
-namespace Platine\Framework\Service\Provider;
+namespace Platine\Framework\Config\Model;
 
-use Platine\Config\Config;
-use Platine\Container\ContainerInterface;
-use Platine\Filesystem\Filesystem;
-use Platine\Framework\Service\ServiceProvider;
-use Platine\Session\Configuration;
-use Platine\Session\Session;
-use Platine\Session\Storage\LocalStorage;
-use SessionHandlerInterface;
+use Platine\Orm\Entity;
+use Platine\Orm\Mapper\EntityMapperInterface;
+use Platine\Orm\Query\Query;
 
 /**
- * @class SessionServiceProvider
- * @package Platine\Framework\Service\Provider
+ * @class Configuration
+ * @package Platine\Framework\Config\Model
  */
-class SessionServiceProvider extends ServiceProvider
+class Configuration extends Entity
 {
     /**
      * {@inheritdoc}
      */
-    public function register(): void
+    public static function mapEntity(EntityMapperInterface $mapper): void
     {
-        $cfg = $this->app->get(Config::class)->get('session', []);
-        $this->app->bind(Configuration::class, function (ContainerInterface $app) use ($cfg) {
-            return new Configuration($cfg);
+        $mapper->useTimestamp();
+        $mapper->casts([
+            'created_at' => 'date',
+            'updated_at' => '?date',
+        ]);
+
+        $mapper->filter('status', function (Query $q, $value) {
+            $q->where('status')->is($value);
         });
-        $this->app->bind(SessionHandlerInterface::class, function (ContainerInterface $app) {
-            return new LocalStorage(
-                $app->get(Filesystem::class),
-                $app->get(Configuration::class)
-            );
+
+        $mapper->filter('env', function (Query $q, $value) {
+            $q->where('env')->is($value);
         });
-        $this->app->share(Session::class);
+
+        $mapper->filter('module', function (Query $q, $value) {
+            $q->where('module')->is($value);
+        });
+
+        $mapper->filter('type', function (Query $q, $value) {
+            $q->where('type')->is($value);
+        });
     }
 }

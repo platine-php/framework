@@ -7,6 +7,7 @@ namespace Platine\Test\Framework\Service\Provider;
 use Platine\Dev\PlatineTestCase;
 use Platine\Filesystem\Adapter\AdapterInterface;
 use Platine\Filesystem\Adapter\Local\LocalAdapter;
+use Platine\Filesystem\Filesystem;
 use Platine\Framework\Service\Provider\SessionServiceProvider;
 use Platine\Session\Configuration;
 use Platine\Session\Exception\FileSessionHandlerException;
@@ -29,6 +30,9 @@ class SessionServiceProviderTest extends PlatineTestCase
 
         $o = new SessionServiceProvider($app);
         $o->register();
+
+        $app->bind(Filesystem::class);
+
         $this->assertInstanceOf(Configuration::class, $app->get(Configuration::class));
         $this->expectException(FileSessionHandlerException::class);
         $this->assertInstanceOf(SessionHandlerInterface::class, $app->get(SessionHandlerInterface::class));

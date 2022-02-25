@@ -30,11 +30,11 @@
  */
 
 /**
- *  @file SessionServiceProvider.php
+ *  @file DatabaseConfigLoaderInterface.php
  *
- *  The Framework session service provider class
+ *  The Database Configuration loader interface
  *
- *  @package    Platine\Framework\Service\Provider
+ *  @package    Platine\Framework\Config
  *  @author Platine Developers team
  *  @copyright  Copyright (c) 2020
  *  @license    http://opensource.org/licenses/MIT  MIT License
@@ -45,38 +45,42 @@
 
 declare(strict_types=1);
 
-namespace Platine\Framework\Service\Provider;
+namespace Platine\Framework\Config;
 
-use Platine\Config\Config;
-use Platine\Container\ContainerInterface;
-use Platine\Filesystem\Filesystem;
-use Platine\Framework\Service\ServiceProvider;
-use Platine\Session\Configuration;
-use Platine\Session\Session;
-use Platine\Session\Storage\LocalStorage;
-use SessionHandlerInterface;
+use Platine\Config\LoaderInterface;
+use Platine\Framework\Config\Model\Configuration;
+use Platine\Orm\Entity;
 
 /**
- * @class SessionServiceProvider
- * @package Platine\Framework\Service\Provider
+ * @class DatabaseConfigLoaderInterface
+ * @package Platine\Framework\Config
  */
-class SessionServiceProvider extends ServiceProvider
+interface DatabaseConfigLoaderInterface extends LoaderInterface
 {
     /**
-     * {@inheritdoc}
+     * Load the configuration from database
+     * @param array<string, mixed> $where
+     * return array<string, mixed>
      */
-    public function register(): void
-    {
-        $cfg = $this->app->get(Config::class)->get('session', []);
-        $this->app->bind(Configuration::class, function (ContainerInterface $app) use ($cfg) {
-            return new Configuration($cfg);
-        });
-        $this->app->bind(SessionHandlerInterface::class, function (ContainerInterface $app) {
-            return new LocalStorage(
-                $app->get(Filesystem::class),
-                $app->get(Configuration::class)
-            );
-        });
-        $this->app->share(Session::class);
-    }
+    public function loadConfig(array $where = []): ?Entity;
+
+    /**
+     * Insert new configuration
+     * @param array<string, mixed> $data
+     * @return mixed
+     */
+    public function insertConfig(array $data);
+
+    /**
+     * Update the configuration
+     * @param Configuration $entity
+     * @return bool
+     */
+    public function updateConfig(Configuration $entity): bool;
+
+    /**
+     * Return all the configuration
+     * @return Entity[]
+     */
+    public function all(): array;
 }

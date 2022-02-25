@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Platine\Test\Framework\Env;
 
-use org\bovigo\vfs\vfsStream;
 use Platine\Dev\PlatineTestCase;
 use Platine\Framework\Env\Env;
 

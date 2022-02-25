@@ -30,9 +30,9 @@
  */
 
 /**
- *  @file SessionServiceProvider.php
+ *  @file DatabaseConfigServiceProvider.php
  *
- *  The Framework session service provider class
+ *  The Framework database configuration service provider class
  *
  *  @package    Platine\Framework\Service\Provider
  *  @author Platine Developers team
@@ -49,34 +49,32 @@ namespace Platine\Framework\Service\Provider;
 
 use Platine\Config\Config;
 use Platine\Container\ContainerInterface;
-use Platine\Filesystem\Filesystem;
+use Platine\Framework\Config\AppDatabaseConfig;
+use Platine\Framework\Config\DatabaseConfigLoader;
+use Platine\Framework\Config\DatabaseConfigLoaderInterface;
+use Platine\Framework\Config\Model\ConfigurationRepository;
 use Platine\Framework\Service\ServiceProvider;
-use Platine\Session\Configuration;
-use Platine\Session\Session;
-use Platine\Session\Storage\LocalStorage;
-use SessionHandlerInterface;
 
 /**
- * @class SessionServiceProvider
+ * @class DatabaseConfigServiceProvider
  * @package Platine\Framework\Service\Provider
  */
-class SessionServiceProvider extends ServiceProvider
+class DatabaseConfigServiceProvider extends ServiceProvider
 {
     /**
      * {@inheritdoc}
      */
     public function register(): void
     {
-        $cfg = $this->app->get(Config::class)->get('session', []);
-        $this->app->bind(Configuration::class, function (ContainerInterface $app) use ($cfg) {
-            return new Configuration($cfg);
+        $this->app->bind(ConfigurationRepository::class);
+        $this->app->bind(
+            DatabaseConfigLoaderInterface::class,
+            DatabaseConfigLoader::class
+        );
+
+        $this->app->share(AppDatabaseConfig::class, function (ContainerInterface $app) {
+            $env = $app->get(Config::class)->get('app.env', '');
+            return new AppDatabaseConfig($app->get(DatabaseConfigLoaderInterface::class), $env);
         });
-        $this->app->bind(SessionHandlerInterface::class, function (ContainerInterface $app) {
-            return new LocalStorage(
-                $app->get(Filesystem::class),
-                $app->get(Configuration::class)
-            );
-        });
-        $this->app->share(Session::class);
     }
 }

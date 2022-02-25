@@ -30,11 +30,11 @@
  */
 
 /**
- *  @file SessionServiceProvider.php
+ *  @file ConfigurationRepository.php
  *
- *  The Framework session service provider class
+ *  The configuration repository class
  *
- *  @package    Platine\Framework\Service\Provider
+ *  @package    Platine\Framework\Config\Model
  *  @author Platine Developers team
  *  @copyright  Copyright (c) 2020
  *  @license    http://opensource.org/licenses/MIT  MIT License
@@ -45,38 +45,23 @@
 
 declare(strict_types=1);
 
-namespace Platine\Framework\Service\Provider;
+namespace Platine\Framework\Config\Model;
 
-use Platine\Config\Config;
-use Platine\Container\ContainerInterface;
-use Platine\Filesystem\Filesystem;
-use Platine\Framework\Service\ServiceProvider;
-use Platine\Session\Configuration;
-use Platine\Session\Session;
-use Platine\Session\Storage\LocalStorage;
-use SessionHandlerInterface;
+use Platine\Orm\EntityManager;
+use Platine\Orm\Repository;
 
 /**
- * @class SessionServiceProvider
- * @package Platine\Framework\Service\Provider
+ * @class ConfigurationRepository
+ * @package Platine\Framework\Config\Model
  */
-class SessionServiceProvider extends ServiceProvider
+class ConfigurationRepository extends Repository
 {
     /**
-     * {@inheritdoc}
+     * Create new instance
+     * @param EntityManager $manager
      */
-    public function register(): void
+    public function __construct(EntityManager $manager)
     {
-        $cfg = $this->app->get(Config::class)->get('session', []);
-        $this->app->bind(Configuration::class, function (ContainerInterface $app) use ($cfg) {
-            return new Configuration($cfg);
-        });
-        $this->app->bind(SessionHandlerInterface::class, function (ContainerInterface $app) {
-            return new LocalStorage(
-                $app->get(Filesystem::class),
-                $app->get(Configuration::class)
-            );
-        });
-        $this->app->share(Session::class);
+        parent::__construct($manager, Configuration::class);
     }
 }

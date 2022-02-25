@@ -30,11 +30,11 @@
  */
 
 /**
- *  @file SessionServiceProvider.php
+ *  @file ConfigUtil.php
  *
- *  The Framework session service provider class
+ *  The Database Configuration utility class
  *
- *  @package    Platine\Framework\Service\Provider
+ *  @package    Platine\Framework\Config
  *  @author Platine Developers team
  *  @copyright  Copyright (c) 2020
  *  @license    http://opensource.org/licenses/MIT  MIT License
@@ -45,38 +45,64 @@
 
 declare(strict_types=1);
 
-namespace Platine\Framework\Service\Provider;
-
-use Platine\Config\Config;
-use Platine\Container\ContainerInterface;
-use Platine\Filesystem\Filesystem;
-use Platine\Framework\Service\ServiceProvider;
-use Platine\Session\Configuration;
-use Platine\Session\Session;
-use Platine\Session\Storage\LocalStorage;
-use SessionHandlerInterface;
+namespace Platine\Framework\Config;
 
 /**
- * @class SessionServiceProvider
- * @package Platine\Framework\Service\Provider
+ * @class ConfigUtil
+ * @package Platine\Framework\Config
  */
-class SessionServiceProvider extends ServiceProvider
+class ConfigUtil
 {
     /**
-     * {@inheritdoc}
+     * Convert the returned configuration to given type
+     * @param mixed $value
+     * @param string $type
+     * @return mixed
      */
-    public function register(): void
+    public static function convertToDataType($value, string $type)
     {
-        $cfg = $this->app->get(Config::class)->get('session', []);
-        $this->app->bind(Configuration::class, function (ContainerInterface $app) use ($cfg) {
-            return new Configuration($cfg);
-        });
-        $this->app->bind(SessionHandlerInterface::class, function (ContainerInterface $app) {
-            return new LocalStorage(
-                $app->get(Filesystem::class),
-                $app->get(Configuration::class)
-            );
-        });
-        $this->app->share(Session::class);
+        switch ($type) {
+            case 'integer':
+                $value = intval($value);
+                break;
+            case 'double':
+                $value = doubleval($value);
+                break;
+            case 'float':
+                $value = floatval($value);
+                break;
+            case 'array':
+            case 'object':
+                $value = unserialize($value);
+                break;
+            case 'boolean':
+                $value = boolval($value);
+                break;
+        }
+
+        return $value;
+    }
+
+    /**
+     * Validate the configuration data type
+     * @param mixed $value
+     * @param string $type
+     * @return bool
+     */
+    public static function isValueValideForDataType($value, string $type): bool
+    {
+        if ($type === 'float' || $type === 'double') {
+            return (bool) filter_var($value, FILTER_VALIDATE_FLOAT);
+        }
+
+        if ($type === 'integer') {
+            return (bool) filter_var($value, FILTER_VALIDATE_INT);
+        }
+
+        if ($type === 'boolean') {
+            return (bool) filter_var($value, FILTER_VALIDATE_BOOLEAN);
+        }
+
+        return true;
     }
 }
