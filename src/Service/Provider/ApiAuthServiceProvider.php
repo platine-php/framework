@@ -30,9 +30,9 @@
  */
 
 /**
- *  @file AuthServiceProvider.php
+ *  @file ApiAuthServiceProvider.php
  *
- *  The Framework authentication service provider class
+ *  The Framework API authentication service provider class
  *
  *  @package    Platine\Framework\Service\Provider
  *  @author Platine Developers team
@@ -47,44 +47,33 @@ declare(strict_types=1);
 
 namespace Platine\Framework\Service\Provider;
 
-use Platine\Framework\Auth\Authentication\SessionAuthentication;
-use Platine\Framework\Auth\AuthenticationInterface;
-use Platine\Framework\Auth\Authorization\SessionAuthorization;
-use Platine\Framework\Auth\AuthorizationInterface;
-use Platine\Framework\Auth\Middleware\AuthenticationMiddleware;
-use Platine\Framework\Auth\Middleware\AuthorizationMiddleware;
-use Platine\Framework\Auth\Repository\PermissionRepository;
-use Platine\Framework\Auth\Repository\RoleRepository;
-use Platine\Framework\Auth\Repository\UserRepository;
+use Platine\Framework\Auth\ApiAuthenticationInterface;
+use Platine\Framework\Auth\Authentication\JWTAuthentication;
+use Platine\Framework\Auth\Middleware\ApiAuthenticationMiddleware;
+use Platine\Framework\Auth\Repository\TokenRepository;
+use Platine\Framework\Security\JWT\Encoder\Base64UrlSafeEncoder;
+use Platine\Framework\Security\JWT\EncoderInterface;
+use Platine\Framework\Security\JWT\JWT;
+use Platine\Framework\Security\JWT\Signer\HMAC;
+use Platine\Framework\Security\JWT\SignerInterface;
 use Platine\Framework\Service\ServiceProvider;
-use Platine\Security\Hash\BcryptHash;
-use Platine\Security\Hash\HashInterface;
 
 /**
- * @class AuthServiceProvider
+ * @class ApiAuthServiceProvider
  * @package Platine\Framework\Service\Provider
  */
-class AuthServiceProvider extends ServiceProvider
+class ApiAuthServiceProvider extends ServiceProvider
 {
     /**
      * {@inheritdoc}
      */
     public function register(): void
     {
-        //Repositories
-        $this->app->bind(RoleRepository::class);
-        $this->app->bind(PermissionRepository::class);
-        $this->app->bind(UserRepository::class);
-
-        //Authentication
-        $this->app->bind(AuthenticationMiddleware::class);
-        $this->app->bind(AuthenticationInterface::class, SessionAuthentication::class);
-
-        //Authorization
-        $this->app->bind(AuthorizationMiddleware::class);
-        $this->app->bind(AuthorizationInterface::class, SessionAuthorization::class);
-
-        //Hash
-        $this->app->bind(HashInterface::class, BcryptHash::class);
+        $this->app->bind(ApiAuthenticationMiddleware::class);
+        $this->app->bind(ApiAuthenticationInterface::class, JWTAuthentication::class);
+        $this->app->bind(SignerInterface::class, HMAC::class);
+        $this->app->bind(EncoderInterface::class, Base64UrlSafeEncoder::class);
+        $this->app->bind(JWT::class);
+        $this->app->bind(TokenRepository::class);
     }
 }
