@@ -29,6 +29,9 @@ class AuditTest extends PlatineTestCase
         $entityMapper->expects($this->exactly(1))
                 ->method('casts');
 
+        $entityMapper->expects($this->exactly(1))
+                ->method('relation');
+
         $entityManager = $this->getMockInstance(EntityManager::class, [], [
             'getEntityMapper',
         ]);

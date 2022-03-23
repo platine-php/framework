@@ -94,7 +94,11 @@ class Auditor
             );
         }
 
+        $user = $data['user'];
+        unset($data['user']);
+
         $entity = $this->repository->create($data);
+        $entity->user = $user;
 
         return $this->repository->save($entity);
     }

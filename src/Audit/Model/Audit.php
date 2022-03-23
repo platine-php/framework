@@ -47,6 +47,7 @@ declare(strict_types=1);
 
 namespace Platine\Framework\Audit\Model;
 
+use Platine\Framework\Auth\Entity\User;
 use Platine\Orm\Entity;
 use Platine\Orm\Mapper\EntityMapperInterface;
 use Platine\Orm\Query\Query;
@@ -62,6 +63,8 @@ class Audit extends Entity
      */
     public static function mapEntity(EntityMapperInterface $mapper): void
     {
+        $mapper->relation('user')->belongsTo(User::class);
+
         $mapper->casts([
             'date' => 'date',
         ]);
