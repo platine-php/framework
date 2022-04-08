@@ -68,10 +68,12 @@ class TemplateServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        $this->app->bind(Configuration::class, function (ContainerInterface $app) {
-            return new Configuration($app->get(Config::class)->get('template', []));
+        $config = $this->app->get(Config::class)->get('template', []);
+
+        $this->app->bind(Configuration::class, function (ContainerInterface $app) use ($config) {
+            return new Configuration($config);
         });
-        $this->app->bind(AbstractCache::class, NullCache::class);
+        $this->app->bind(AbstractCache::class, $config['cache_driver'] ?? NullCache::class);
         $this->app->bind(LoaderInterface::class, FileLoader::class);
         $this->app->bind(Template::class);
     }

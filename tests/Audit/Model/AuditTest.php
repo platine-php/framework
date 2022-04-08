@@ -9,8 +9,6 @@ use Platine\Database\ResultSet;
 use Platine\Dev\PlatineTestCase;
 use Platine\Framework\Audit\Model\Audit;
 use Platine\Framework\Audit\Model\AuditRepository;
-use Platine\Framework\Config\Model\Configuration;
-use Platine\Framework\Config\Model\ConfigurationRepository;
 use Platine\Orm\EntityManager;
 use Platine\Orm\Mapper\EntityMapper;
 use Platine\Orm\Relation\PrimaryKey;
