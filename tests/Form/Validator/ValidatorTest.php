@@ -27,4 +27,16 @@ class ValidatorTest extends PlatineTestCase
 
         $this->assertTrue($o->validate());
     }
+	
+	public function testValidateDataFromParam(): void
+    {
+        $param = new MyParam([]);
+        $lang = $this->getMockInstance(Lang::class);
+        $o = new MyValidator($param, $lang);
+
+        $this->assertTrue($o->validate([
+            'name' => 'foo',
+            'status' => '1'
+        ]));
+    }
 }

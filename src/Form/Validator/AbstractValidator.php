@@ -74,7 +74,7 @@ abstract class AbstractValidator extends Validator
         $this->setValidationRules();
         $this->setValidationData();
 
-        return parent::validate();
+        return parent::validate($data);
     }
 
     /**

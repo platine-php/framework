@@ -218,8 +218,8 @@ class MyResponse extends Response
 
 class MyParam extends BaseParam
 {
-    protected string $name;
-    protected string $status;
+    protected string $name = '';
+    protected string $status = '';
 
     public function setName(string $name): self
     {
