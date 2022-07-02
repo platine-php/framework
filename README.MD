@@ -33,3 +33,6 @@ MIT License See [LICENSE.MD](LICENSE.MD)
 
 ### Documentation 
 Coming soon, be patient
+
+### Tutorials 
+- Youtube (French): [Budget Management Application](https://www.youtube.com/playlist?list=PLbUHyVcL-6Q8H6ip40eSdpt4MjRXYGPz9)

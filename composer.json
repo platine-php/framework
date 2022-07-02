@@ -45,7 +45,8 @@
         "platine-php/template": "1.0.x-dev",
         "platine-php/upload": "1.0.x-dev",
         "platine-php/user-agent": "1.0.x-dev",
-        "platine-php/validator": "1.0.x-dev"
+        "platine-php/validator": "1.0.x-dev",
+        "platine-php/workflow": "1.0.x-dev"
     },
 	
     "require-dev": {

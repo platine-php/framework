@@ -356,7 +356,9 @@ class VendorPublishCommand extends Command
      */
     protected function publishDirectory(DirectoryInterface $directory, string $dest): void
     {
-        $directory->copyTo($dest);
+        foreach ($directory->read() as $item) {
+            $item->copyTo($dest);
+        }
     }
 
     /**
