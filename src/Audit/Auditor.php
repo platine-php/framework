@@ -47,9 +47,13 @@ declare(strict_types=1);
 
 namespace Platine\Framework\Audit;
 
-use InvalidArgumentException;
+use DateTime;
 use Platine\Framework\Audit\Model\AuditRepository;
-use Platine\Framework\Auth\Entity\User;
+use Platine\Framework\Auth\AuthenticationInterface;
+use Platine\Framework\Auth\Repository\UserRepository;
+use Platine\Http\ServerRequestInterface;
+use Platine\Stdlib\Helper\Str;
+use Platine\UserAgent\UserAgent;
 
 /**
  * @class Auditor
@@ -64,12 +68,67 @@ class Auditor
     protected AuditRepository $repository;
 
     /**
+     * The request instance
+     * @var ServerRequestInterface
+     */
+    protected ServerRequestInterface $request;
+
+    /**
+     * User agent instance
+     * @var UserAgent
+     */
+    protected UserAgent $userAgent;
+
+    /**
+     * The authentication instance
+     * @var AuthenticationInterface
+     */
+    protected AuthenticationInterface $authentication;
+
+    /**
+     * The audit details
+     * @var string
+     */
+    protected string $detail = '';
+
+    /**
+     * The audit event
+     * @var string
+     */
+    protected string $event = '';
+
+    /**
+     * The audits tags
+     * @var array<string>
+     */
+    protected array $tags = [];
+
+    /**
+     * User repository instance
+     * @var UserRepository
+     */
+    protected UserRepository $userRepository;
+
+    /**
      * Create new instance
      * @param AuditRepository $repository
+     * @param ServerRequestInterface $request
+     * @param UserAgent $userAgent
+     * @param AuthenticationInterface $authentication
+     * @param UserRepository $userRepository
      */
-    public function __construct(AuditRepository $repository)
-    {
+    public function __construct(
+        AuditRepository $repository,
+        ServerRequestInterface $request,
+        UserAgent $userAgent,
+        AuthenticationInterface $authentication,
+        UserRepository $userRepository
+    ) {
         $this->repository = $repository;
+        $this->request = $request;
+        $this->userAgent = $userAgent;
+        $this->authentication = $authentication;
+        $this->userRepository = $userRepository;
     }
 
     /**
@@ -82,24 +141,66 @@ class Auditor
     }
 
     /**
-     * Save the audit log
-     * @param array<string, mixed> $data
+     * Save the audits information's
      * @return bool
      */
-    public function log(array $data): bool
+    public function save(): bool
     {
-        if (!isset($data['user']) || !$data['user'] instanceof User) {
-            throw new InvalidArgumentException(
-                'User entity does not exist or invalid'
-            );
-        }
+        $userAgentStr = $this->request->getHeaderLine('User-Agent');
+        $ua = $this->userAgent->parse($userAgentStr);
+        $userAgent = sprintf(
+            '%s %s - %s %s',
+            $ua->device()->getModel(),
+            $ua->device()->getType(),
+            $ua->browser()->getName(),
+            $ua->browser()->getVersion()
+        );
 
-        $user = $data['user'];
-        unset($data['user']);
-
-        $entity = $this->repository->create($data);
-        $entity->user = $user;
+        $entity = $this->repository->create([
+            'event' => $this->event,
+            'detail' => $this->detail,
+            'user_agent' => $userAgent,
+            'tags' => implode(', ', $this->tags),
+            'date' => new DateTime('now'),
+            'ip' => Str::ip(),
+            'url' => (string) $this->request->getUri(),
+        ]);
+        $userId = $this->authentication->getUser()->getId();
+        $entity->user = $this->userRepository->find($userId);
 
         return $this->repository->save($entity);
+    }
+
+    /**
+     *
+     * @param string $detail
+     * @return $this
+     */
+    public function setDetail(string $detail): self
+    {
+        $this->detail = $detail;
+        return $this;
+    }
+
+    /**
+     *
+     * @param string $event
+     * @return $this
+     */
+    public function setEvent(string $event): self
+    {
+        $this->event = $event;
+        return $this;
+    }
+
+    /**
+     *
+     * @param array<string> $tags
+     * @return $this
+     */
+    public function setTags(array $tags): self
+    {
+        $this->tags = $tags;
+        return $this;
     }
 }

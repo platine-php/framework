@@ -30,11 +30,11 @@
  */
 
 /**
- *  @file AuditServiceProvider.php
+ *  @file EventType.php
  *
- *  The Framework audit service provider class
+ *  The Audit Event Type class
  *
- *  @package    Platine\Framework\Service\Provider
+ *  @package    Platine\Framework\Audit\Enum
  *  @author Platine Developers team
  *  @copyright  Copyright (c) 2020
  *  @license    http://opensource.org/licenses/MIT  MIT License
@@ -45,26 +45,19 @@
 
 declare(strict_types=1);
 
-namespace Platine\Framework\Service\Provider;
-
-use Platine\Framework\Audit\Auditor;
-use Platine\Framework\Audit\Model\AuditRepository;
-use Platine\Framework\Service\ServiceProvider;
-use Platine\UserAgent\UserAgent;
+namespace Platine\Framework\Audit\Enum;
 
 /**
- * @class AuditServiceProvider
- * @package Platine\Framework\Service\Provider
+ * @class EventType
+ * @package Platine\Framework\Audit\Enum
  */
-class AuditServiceProvider extends ServiceProvider
+class EventType
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function register(): void
-    {
-        $this->app->bind(AuditRepository::class);
-        $this->app->bind(UserAgent::class);
-        $this->app->bind(Auditor::class);
-    }
+    public const AUTH = 'auth';
+    public const PASSWORD_RESET = 'password_reset';
+    public const CREATE = 'create';
+    public const UPDATE = 'update';
+    public const DELETE = 'delete';
+    public const ACTIVATE = 'activate';
+    public const DEACTIVATE = 'deactivate';
 }
