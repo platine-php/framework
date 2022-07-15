@@ -163,7 +163,7 @@ class Auditor
             'tags' => implode(', ', $this->tags),
             'date' => new DateTime('now'),
             'ip' => Str::ip(),
-            'url' => (string) $this->request->getUri(),
+            'url' => $this->request->getUri()->getPath(),
         ]);
         $userId = $this->authentication->getUser()->getId();
         $entity->user = $this->userRepository->find($userId);
