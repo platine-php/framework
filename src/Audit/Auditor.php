@@ -150,8 +150,8 @@ class Auditor
         $ua = $this->userAgent->parse($userAgentStr);
         $userAgent = sprintf(
             '%s %s - %s %s',
-            $ua->device()->getModel(),
-            $ua->device()->getType(),
+            $ua->os()->getName(),
+            $ua->os()->getVersion(),
             $ua->browser()->getName(),
             $ua->browser()->getVersion()
         );
