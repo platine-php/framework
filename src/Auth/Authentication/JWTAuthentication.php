@@ -251,6 +251,7 @@ class JWTAuthentication implements ApiAuthenticationInterface
                   ->setPayload([
                       'sub' => $user->id,
                       'exp' => $tokenExpire,
+                      'permissions' => $permissions,
                   ])
                   ->sign();
         $refreshToken = Str::randomToken(24);
