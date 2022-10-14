@@ -5,10 +5,7 @@ declare(strict_types=1);
 namespace Platine\Test\Framework\Security\Encoder;
 
 use Platine\Dev\PlatineTestCase;
-use Platine\Framework\Pagination\BootstrapRenderer;
 use Platine\Framework\Security\JWT\Encoder\Base64UrlSafeEncoder;
-use Platine\Pagination\Page;
-use Platine\Pagination\Pagination;
 
 /*
  * @group core

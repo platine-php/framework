@@ -38,7 +38,7 @@ class AuditorTest extends PlatineTestCase
         $this->assertInstanceOf(AuditRepository::class, $o->getRepository());
         $this->assertEquals($repository, $o->getRepository());
     }
-    
+
     public function testGetSet(): void
     {
 
@@ -55,7 +55,7 @@ class AuditorTest extends PlatineTestCase
             $authentication,
             $userRepository
         );
-        
+
         $o->setDetail('foo')
           ->setEvent('create')
           ->setTags(['one', 'two']);
@@ -66,7 +66,7 @@ class AuditorTest extends PlatineTestCase
         $this->assertCount(2, $this->getPropertyValue(Auditor::class, $o, 'tags'));
     }
 
-    
+
     public function testSaveSuccess(): void
     {
 
@@ -85,7 +85,7 @@ class AuditorTest extends PlatineTestCase
             $authentication,
             $userRepository
         );
-        
+
         $o->setDetail('foo')
           ->setEvent('create')
           ->setTags(['one', 'two']);
@@ -114,7 +114,7 @@ class AuditorTest extends PlatineTestCase
             $authentication,
             $userRepository
         );
-        
+
         $o->setDetail('foo')
           ->setEvent('create')
           ->setTags(['one', 'two']);

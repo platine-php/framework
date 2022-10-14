@@ -179,7 +179,6 @@ $mock_app_session_items = [];
 $mock_app_session_flash = [];
 $mock_app_session_has = [];
 $mock_app_config_items = [];
-$mock_app_config_items = [];
 $mock_sha1_foo = true;
 
 function sha1(string $str)
@@ -332,4 +331,32 @@ function hash_equals($known_string, $user_string)
     }
 
     return \hash_equals($known_string, $user_string);
+}
+
+
+namespace Platine\Framework\Helper;
+
+$mock_file_exists_to_false = false;
+$mock_fopen_to_false = false;
+
+function file_exists(string $str)
+{
+    global $mock_file_exists_to_false;
+
+    if ($mock_file_exists_to_false) {
+        return false;
+    }
+
+    return \file_exists($str);
+}
+
+function fopen(string $str, string $mode)
+{
+    global $mock_fopen_to_false;
+
+    if ($mock_fopen_to_false) {
+        return false;
+    }
+
+    return \fopen($str, $mode);
 }

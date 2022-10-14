@@ -11,8 +11,6 @@ use Platine\Console\IO\Interactor;
 use Platine\Filesystem\Adapter\Local\LocalAdapter;
 use Platine\Filesystem\Filesystem;
 use Platine\Framework\App\Application;
-use Platine\Framework\Migration\Command\MigrationCreateCommand;
-use Platine\Framework\Migration\MigrationRepository;
 use Platine\Framework\Migration\Seed\Command\SeedCreateCommand;
 use Platine\Test\Framework\Console\BaseCommandTestCase;
 use RuntimeException;

@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Platine\Test\Framework\Helper;
 
-use Platine\Container\ContainerInterface;
 use Platine\Dev\PlatineTestCase;
 use Platine\Framework\Helper\Flash;
 use Platine\Session\Session;
