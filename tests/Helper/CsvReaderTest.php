@@ -25,7 +25,7 @@ class CsvReaderTest extends PlatineTestCase
     public function testGetSet(): void
     {
         $o = new CsvReader();
-        $this->assertEquals(';', $o->getDelimter());
+        $this->assertEquals(';', $o->getDelimiter());
         $this->assertEquals(0, $o->getLimit());
         $this->assertEquals(0, $o->count());
         $this->assertEmpty($o->getHeaders());
@@ -44,13 +44,13 @@ class CsvReaderTest extends PlatineTestCase
     public function testSetDelimiter(): void
     {
         $o = new CsvReader();
-        $this->assertEquals(';', $o->getDelimter());
-        $o->setDelimter(',');
-        $this->assertEquals(',', $o->getDelimter());
+        $this->assertEquals(';', $o->getDelimiter());
+        $o->setDelimiter(',');
+        $this->assertEquals(',', $o->getDelimiter());
 
         //Invalid format
         $this->expectException(InvalidArgumentException::class);
-        $o->setDelimter('j');
+        $o->setDelimiter('j');
     }
 
     public function testSetFile(): void

@@ -90,7 +90,7 @@ class CsvReader
      * The CSV delimiter for each field
      * @var string
      */
-    protected string $delimter = ';';
+    protected string $delimiter = ';';
 
     /**
      * Return the data list
@@ -132,9 +132,9 @@ class CsvReader
      * Return the delimiter
      * @return string
      */
-    public function getDelimter(): string
+    public function getDelimiter(): string
     {
-        return $this->delimter;
+        return $this->delimiter;
     }
 
     /**
@@ -163,19 +163,19 @@ class CsvReader
 
     /**
      * Set the field delimiter
-     * @param string $delimter
+     * @param string $delimiter
      * @return $this
      */
-    public function setDelimter(string $delimter): self
+    public function setDelimiter(string $delimiter): self
     {
-        if (!in_array($delimter, $this->validDelimiters)) {
+        if (!in_array($delimiter, $this->validDelimiters)) {
             throw new InvalidArgumentException(sprintf(
                 'Invalid delimiter [%s], must be one of [%s]',
-                $delimter,
+                $delimiter,
                 implode(',', $this->validDelimiters)
             ));
         }
-        $this->delimter = $delimter;
+        $this->delimiter = $delimiter;
         return $this;
     }
 
@@ -195,7 +195,7 @@ class CsvReader
         }
 
         $i = 0;
-        while (($data = fgetcsv($fp, $this->limit, $this->delimter)) !== false) {
+        while (($data = fgetcsv($fp, $this->limit, $this->delimiter)) !== false) {
             // skip all empty lines
             if ($data[0] !== null) {
                 if ($i === 0) {
