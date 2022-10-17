@@ -53,6 +53,7 @@ use Platine\Filesystem\Filesystem;
 use Platine\Framework\App\Application;
 use Platine\Framework\Console\MakeCommand;
 use Platine\Framework\Task\Cron;
+use Platine\Stdlib\Helper\Str;
 
 /**
  * @class MakeTaskCommand
@@ -100,7 +101,7 @@ class MakeTaskCommand extends MakeCommand
 
 
         $io = $this->io();
-        $this->name = $io->prompt('Enter the task name', null);
+        $this->name = $io->prompt('Enter the task name', '');
 
 
         $expression = $io->prompt('Enter the cron expression', '* * * * *');
@@ -108,6 +109,32 @@ class MakeTaskCommand extends MakeCommand
             $expression = $io->prompt('Invalid expression, please enter the cron expression', '* * * * *');
         }
         $this->expression = $expression;
+
+        $properties = [];
+
+        $writer->boldYellow('Enter the properties list (empty value to finish):', true);
+        $value = '';
+        while ($value !== null) {
+            $value = $io->prompt('Property full class name', null, null, false);
+
+            if (!empty($value)) {
+                $value = trim($value);
+                if (!class_exists($value) && !interface_exists($value)) {
+                    $writer->boldWhiteBgRed(sprintf('The class [%s] does not exists', $value), true);
+                } else {
+                    $shortClass = basename($value);
+                    $name = Str::camel($shortClass, true);
+                    //replace"interface", "abstract"
+                    $nameClean = str_ireplace(['interface', 'abstract'], '', $name);
+
+                    $properties[$value] = [
+                        'name' => $nameClean,
+                        'short' => $shortClass,
+                    ];
+                }
+            }
+        }
+        $this->properties = $properties;
     }
 
     /**
@@ -123,7 +150,6 @@ class MakeTaskCommand extends MakeCommand
         namespace %namespace%;
         
         use Platine\Framework\Task\TaskInterface;
-        
         %uses%
 
         /**
@@ -133,6 +159,10 @@ class MakeTaskCommand extends MakeCommand
         class %classname% implements TaskInterface
         {
             
+            %properties%
+        
+            %constructor%
+        
             /**
             * {@inheritdoc}
             */
