@@ -10,6 +10,7 @@ use Platine\Framework\Service\ServiceProvider;
 use Platine\Route\Router;
 use Platine\Test\Framework\Fixture\MyEventListener;
 use Platine\Test\Framework\Fixture\MyEventSubscriber;
+use Platine\Test\Framework\Fixture\MyTask;
 
 /*
  * @group core
@@ -17,7 +18,7 @@ use Platine\Test\Framework\Fixture\MyEventSubscriber;
  */
 class ServiceProviderTest extends PlatineTestCase
 {
-    public function testEmptyMethods(): void
+    public function testDefault(): void
     {
         $app = $this->getMockInstanceMap(Application::class);
         $router = $this->getMockInstanceMap(Router::class);
@@ -33,5 +34,8 @@ class ServiceProviderTest extends PlatineTestCase
         $o->addRoutes($router);
         $o->listen('event', new MyEventListener());
         $o->subscribe(new MyEventSubscriber());
+        $o->addTask(MyTask::class);
+
+        $this->assertCount(1, $o->getTasks());
     }
 }

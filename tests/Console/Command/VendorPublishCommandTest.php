@@ -90,9 +90,9 @@ Command finished successfully
         $localAdapter = new LocalAdapter();
         $filesystem = new Filesystem($localAdapter);
         $app = $this->getMockInstance(Application::class, [
-        'getConfigPath' => $rootDir->url(),
-        'getRootPath' => $rootDir->url(),
-        'getVendorPath' => $vendorDir->url(),
+            'getConfigPath' => $rootDir->url(),
+            'getRootPath' => $rootDir->url(),
+            'getVendorPath' => $vendorDir->url(),
         ]);
         $config = $this->getMockInstanceMap(Config::class, [
         'get' => [
@@ -110,10 +110,10 @@ Command finished successfully
         ]);
         $writer = $this->getWriterInstance();
         $interactor = $this->getMockInstance(Interactor::class, [
-        'writer' => $writer
+            'writer' => $writer
         ]);
         $consoleApp = $this->getMockInstance(ConsoleApp::class, [
-        'io' => $interactor
+            'io' => $interactor
         ]);
 
         $o = new VendorPublishCommand($app, $filesystem, $config);

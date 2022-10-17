@@ -72,6 +72,12 @@ class ServiceProvider
     protected array $commands = [];
 
     /**
+     * Provider task list
+     * @var class-string[]
+     */
+    protected array $tasks = [];
+
+    /**
      * Create new instance
      * @param Application $app
      */
@@ -118,6 +124,18 @@ class ServiceProvider
     }
 
     /**
+     * Register task
+     * @param class-string $task
+     * @return $this
+     */
+    public function addTask(string $task): self
+    {
+        $this->tasks[] = $task;
+
+        return $this;
+    }
+
+    /**
      * Register a listener for the given event.
      *
      * @param string $eventName the name of event
@@ -155,5 +173,14 @@ class ServiceProvider
     public function getCommands(): array
     {
         return $this->commands;
+    }
+
+    /**
+     * Return the list of task
+     * @return class-string[]
+     */
+    public function getTasks(): array
+    {
+        return $this->tasks;
     }
 }

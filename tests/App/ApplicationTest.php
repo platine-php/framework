@@ -17,6 +17,7 @@ use Platine\Test\Framework\Fixture\MyCommand;
 use Platine\Test\Framework\Fixture\MyEventListener;
 use Platine\Test\Framework\Fixture\MyEventSubscriber;
 use Platine\Test\Framework\Fixture\MyServiceProvider;
+use Platine\Test\Framework\Fixture\MyTask;
 
 /*
  * @group core
@@ -124,8 +125,11 @@ class ApplicationTest extends PlatineTestCase
         $this->assertCount(3, $app->getProviders());
 
         $commands = $app->getProvidersCommands();
+        $tasks = $app->getProvidersTasks();
         $this->assertCount(1, $commands);
+        $this->assertCount(1, $tasks);
         $this->assertEquals(MyCommand::class, $commands[0]);
+        $this->assertEquals(MyTask::class, $tasks[0]);
     }
 
     public function testBoot(): void
@@ -203,7 +207,7 @@ class ApplicationTest extends PlatineTestCase
     {
         $vfsRoot = vfsStream::setup();
         $vfsPath = vfsStream::newDirectory('my_tests')->at($vfsRoot);
-        $file = $this->createVfsFile('.env', $vfsPath, 'foo=bar');
+        $this->createVfsFile('.env', $vfsPath, 'foo=bar');
         $app = new Application('');
         $app->setRootPath($vfsPath->url());
         $app->registerEnvironmentVariables();

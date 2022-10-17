@@ -125,6 +125,20 @@ function time()
     return \time();
 }
 
+namespace Platine\Framework\Task;
+$mock_time_to_1000000000 = false;
+
+function time()
+{
+    global $mock_time_to_1000000000;
+
+    if ($mock_time_to_1000000000) {
+        return 1000000000;
+    }
+
+    return \time();
+}
+
 namespace Platine\Framework\Kernel;
 
 $mock_current_to_false = false;

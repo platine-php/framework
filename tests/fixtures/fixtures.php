@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Platine\Test\Framework\Fixture;
 
 use ArrayIterator;
+use Exception;
 use IteratorAggregate;
 use Platine\Config\Config;
 use Platine\Console\Command\Command;
@@ -13,11 +14,11 @@ use Platine\Event\ListenerInterface;
 use Platine\Event\SubscriberInterface;
 use Platine\Framework\App\Application;
 use Platine\Framework\Config\DatabaseConfigLoader;
-use Platine\Framework\Config\DatabaseConfigLoaderInterface;
 use Platine\Framework\Form\Param\BaseParam;
 use Platine\Framework\Form\Validator\AbstractValidator;
 use Platine\Framework\Http\RouteHelper;
 use Platine\Framework\Service\ServiceProvider;
+use Platine\Framework\Task\TaskInterface;
 use Platine\Http\Handler\MiddlewareInterface;
 use Platine\Http\Handler\RequestHandlerInterface;
 use Platine\Http\Response;
@@ -327,6 +328,56 @@ class MyCommand extends Command
     }
 }
 
+class MyTask implements TaskInterface
+{
+    public function expression(): string
+    {
+        return '*/50 * * * *';
+    }
+
+    public function name(): string
+    {
+        return 'mytask';
+    }
+
+    public function run(): void
+    {
+        echo __METHOD__;
+    }
+}
+
+class MyTask2 extends MyTask
+{
+    public function expression(): string
+    {
+        return '* * * * *';
+    }
+
+    public function name(): string
+    {
+        return 'mytask2';
+    }
+}
+
+class MyTaskException implements TaskInterface
+{
+    public function expression(): string
+    {
+        return '* * * * *';
+    }
+
+    public function name(): string
+    {
+        return 'mytask_exception';
+    }
+
+    public function run(): void
+    {
+        throw new Exception(__METHOD__);
+    }
+}
+
+
 class MyServiceProvider extends ServiceProvider
 {
     public function addRoutes(Router $router): void
@@ -342,6 +393,7 @@ class MyServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->addCommand(MyCommand::class);
+        $this->addTask(MyTask::class);
         $this->app->bind(MyRequestHandle::class);
     }
 }

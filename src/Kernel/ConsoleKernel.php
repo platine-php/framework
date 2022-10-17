@@ -182,7 +182,7 @@ class ConsoleKernel extends BaseKernel
         }
 
         throw new InvalidArgumentException(
-            sprintf('The command must be an identifier of container or class')
+            sprintf('The command [%s] must be an identifier of container or class', $command)
         );
     }
 }

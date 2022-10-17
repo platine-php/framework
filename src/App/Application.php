@@ -429,6 +429,20 @@ class Application extends Container
     }
 
     /**
+     * Return the list of service providers tasks
+     * @return array<class-string>
+     */
+    public function getProvidersTasks(): array
+    {
+        $tasks = [];
+        foreach ($this->providers as /** @var ServiceProvider $provider */ $provider) {
+            $tasks = array_merge($tasks, $provider->getTasks());
+        }
+
+        return $tasks;
+    }
+
+    /**
      * Boot the application
      * @return void
      */
