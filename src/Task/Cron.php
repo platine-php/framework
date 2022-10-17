@@ -117,7 +117,7 @@ class Cron
             }
         }
 
-        return $start;
+        return 0;
     }
 
     /**

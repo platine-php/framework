@@ -52,35 +52,30 @@ use Platine\Console\Output\Writer;
 use Platine\Filesystem\Filesystem;
 use Platine\Framework\App\Application;
 use Platine\Framework\Console\MakeCommand;
+use Platine\Framework\Task\Cron;
 
 /**
- * @class MakeEntityCommand
+ * @class MakeTaskCommand
  * @package Platine\Framework\Console\Command
  */
-class MakeEntityCommand extends MakeCommand
+class MakeTaskCommand extends MakeCommand
 {
     /**
      * {@inheritdoc}
      */
-    protected string $type = 'entity';
+    protected string $type = 'task';
 
     /**
-     * Whether to use timestamp feature
-     * @var bool
-     */
-    protected bool $useTimestamp = false;
-
-    /**
-     * The name of field for created at
+     * The name of task
      * @var string
      */
-    protected string $createdAtField = 'created_at';
+    protected string $name = '';
 
     /**
-     * The name of field for updated at
+     * The task execution expression
      * @var string
      */
-    protected string $upatedAtField = 'updated_at';
+    protected string $expression = '* * * * *';
 
     /**
      * Create new instance
@@ -92,8 +87,8 @@ class MakeEntityCommand extends MakeCommand
         Filesystem $filesystem
     ) {
         parent::__construct($application, $filesystem);
-        $this->setName('make:entity')
-               ->setDescription('Command to generate new entity class');
+        $this->setName('make:task')
+               ->setDescription('Command to generate new task class');
     }
 
     /**
@@ -105,13 +100,14 @@ class MakeEntityCommand extends MakeCommand
 
 
         $io = $this->io();
+        $this->name = $io->prompt('Enter the task name', null);
 
-        $this->useTimestamp = $io->confirm('Use timestamp feature', 'y');
 
-        if ($this->useTimestamp) {
-            $this->createdAtField = $io->prompt('Created at field name', 'created_at');
-            $this->upatedAtField = $io->prompt('Updated at field name', 'updated_at');
+        $expression = $io->prompt('Enter the cron expression', '* * * * *');
+        while (Cron::parse($expression) === 0) {
+            $expression = $io->prompt('Invalid expression, please enter the cron expression', '* * * * *');
         }
+        $this->expression = $expression;
     }
 
     /**
@@ -126,8 +122,7 @@ class MakeEntityCommand extends MakeCommand
         
         namespace %namespace%;
         
-        use Platine\Orm\Entity;
-        use Platine\Orm\Mapper\EntityMapperInterface;
+        use Platine\Framework\Task\TaskInterface;
         
         %uses%
 
@@ -135,16 +130,18 @@ class MakeEntityCommand extends MakeCommand
         * @class %classname%
         * @package %namespace%
         */
-        class %classname% extends Entity
+        class %classname% implements TaskInterface
         {
             
             /**
             * {@inheritdoc}
             */
-            public static function mapEntity(EntityMapperInterface \$mapper): void
+            public function run(): void
             {
-             %mapper_body%
+                
             }
+        
+            %task_body%
         }
         
         EOF;
@@ -157,35 +154,34 @@ class MakeEntityCommand extends MakeCommand
     {
         $content = parent::createClass();
 
-        return $this->getMapperBody($content);
+        return $this->getTaskBody($content);
     }
 
     /**
-     * Return the mapper body
+     * Return the task body
      * @param string $content
      * @return string
      */
-    protected function getMapperBody(string $content): string
+    protected function getTaskBody(string $content): string
     {
-        $result = '';
-        if ($this->useTimestamp) {
-            $useTimestamp = 'useTimestamp()';
-            if ($this->createdAtField !== 'created_at' || $this->upatedAtField !== 'updated_at') {
-                $useTimestamp = sprintf(
-                    'useTimestamp(true, \'%s\', \'%s\')',
-                    $this->createdAtField,
-                    $this->upatedAtField
-                );
+        $result = <<<EOF
+            /**
+            * {@inheritdoc}
+            */
+            public function expression(): string
+            {
+                return '$this->expression';
             }
-            $result = <<<EOF
-            \$mapper->$useTimestamp;
-                 \$mapper->casts([
-                    '$this->createdAtField' => 'date',
-                    '$this->upatedAtField' => '?date',
-                 ]);
+                    
+            /**
+            * {@inheritdoc}
+            */
+            public function name(): string
+            {
+                return '$this->name';
+            }
         EOF;
-        }
 
-        return str_replace('%mapper_body%', $result, $content);
+        return str_replace('%task_body%', $result, $content);
     }
 }

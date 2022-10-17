@@ -29,7 +29,7 @@ class CronTest extends PlatineTestCase
         $time = Cron::parse($expression, $current);
         $date = date('Y-m-d H:i', $time);
 
-        $this->assertEquals(date('Y-m-d H:i', $current), $date);
+        $this->assertEquals('1970-01-01 00:00', $date);
     }
 
     public function testParseEvery5Minute(): void
