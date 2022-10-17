@@ -50,7 +50,7 @@ namespace Platine\Framework\Task\Command;
 use Platine\Config\Config;
 use Platine\Framework\App\Application;
 use Platine\Framework\Task\Cron;
-use Platine\Framework\Task\Scheduler;
+use Platine\Framework\Task\SchedulerInterface;
 use Platine\Stdlib\Helper\Arr;
 
 /**
@@ -61,12 +61,12 @@ class SchedulerListCommand extends AbstractCommand
 {
     /**
      * Create new instance
-     * @param Scheduler $scheduler
+     * @param SchedulerInterface $scheduler
      * @param Application $application
      * @param Config<T> $config
      */
     public function __construct(
-        Scheduler $scheduler,
+        SchedulerInterface $scheduler,
         Application $application,
         Config $config
     ) {

@@ -51,7 +51,7 @@ use InvalidArgumentException;
 use Platine\Config\Config;
 use Platine\Console\Command\Command;
 use Platine\Framework\App\Application;
-use Platine\Framework\Task\Scheduler;
+use Platine\Framework\Task\SchedulerInterface;
 use Platine\Framework\Task\TaskInterface;
 
 /**
@@ -62,9 +62,9 @@ abstract class AbstractCommand extends Command
 {
     /**
      * The scheduler instance
-     * @var Scheduler
+     * @var SchedulerInterface
      */
-    protected Scheduler $scheduler;
+    protected SchedulerInterface $scheduler;
 
     /**
      * The Application instance
@@ -80,12 +80,12 @@ abstract class AbstractCommand extends Command
 
     /**
      * Create new instance
-     * @param Scheduler $scheduler
+     * @param SchedulerInterface $scheduler
      * @param Application $application
      * @param Config<T> $config
      */
     public function __construct(
-        Scheduler $scheduler,
+        SchedulerInterface $scheduler,
         Application $application,
         Config $config
     ) {
