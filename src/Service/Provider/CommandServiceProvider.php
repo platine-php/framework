@@ -60,7 +60,6 @@ use Platine\Framework\Console\Command\MakeTaskCommand;
 use Platine\Framework\Console\Command\MakeValidatorCommand;
 use Platine\Framework\Console\Command\RouteCommand;
 use Platine\Framework\Console\Command\VendorPublishCommand;
-use Platine\Framework\Console\PasswordGenerateCommand;
 use Platine\Framework\Service\ServiceProvider;
 
 /**
@@ -87,7 +86,6 @@ class CommandServiceProvider extends ServiceProvider
         $this->app->bind(MakeEventCommand::class);
         $this->app->bind(MakeListenerCommand::class);
         $this->app->bind(MakeTaskCommand::class);
-        $this->app->bind(PasswordGenerateCommand::class);
 
         //Commands
         $this->addCommand(VendorPublishCommand::class);
@@ -101,6 +99,5 @@ class CommandServiceProvider extends ServiceProvider
         $this->addCommand(MakeEventCommand::class);
         $this->addCommand(MakeListenerCommand::class);
         $this->addCommand(MakeTaskCommand::class);
-        $this->addCommand(PasswordGenerateCommand::class);
     }
 }
