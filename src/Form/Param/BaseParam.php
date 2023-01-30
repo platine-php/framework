@@ -47,6 +47,7 @@ declare(strict_types=1);
 
 namespace Platine\Framework\Form\Param;
 
+use JsonSerializable;
 use Platine\Orm\Entity;
 use Platine\Stdlib\Helper\Str;
 
@@ -54,7 +55,7 @@ use Platine\Stdlib\Helper\Str;
  * @class BaseParam
  * @package Platine\Framework\Form\Param
  */
-class BaseParam
+class BaseParam implements JsonSerializable
 {
     /**
      * Create new instance
@@ -102,6 +103,24 @@ class BaseParam
     public function getDefault(): array
     {
         return [];
+    }
+    
+    /**
+     * Return the parameters values
+     * @return array<string, mixed>
+     */
+    public function data(): array
+    {
+        return get_object_vars($this);
+    }
+    
+    /**
+     * Convert parameter to JSON array
+     * @return array<string, mixed>
+     */
+    public function jsonSerialize()
+    {
+        return $this->data();
     }
 
     /**

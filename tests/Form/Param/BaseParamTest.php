@@ -37,6 +37,20 @@ class BaseParamTest extends PlatineTestCase
         $this->assertEquals('1', $o->status);
         $this->assertNull($o->undefined);
     }
+    
+    public function testDataAndJson(): void
+    {
+        $o = new MyParam([
+            'name' => 'foo',
+            'status' => '1'
+        ]);
+        $data = $o->data();
+        $this->assertCount(2, $data);
+        $this->assertEquals('foo', $data['name']);
+        $this->assertEquals('1', $data['status']);
+
+        $this->assertEquals('{"name":"foo","status":"1"}', json_encode($o));
+    }
 
     public function testFromEntity(): void
     {
