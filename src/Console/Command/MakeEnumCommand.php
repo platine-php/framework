@@ -102,7 +102,7 @@ class MakeEnumCommand extends MakeCommand
 
             if (!empty($value)) {
                 $value = trim($value);
-                $name = Str::snake($value);
+                $name = str_replace(['-', ' '], '_', $value);
 
                 $properties[] = Str::upper($name);
             }
@@ -183,7 +183,7 @@ class MakeEnumCommand extends MakeCommand
     protected function getEnumerationTemplate(string $name, string $value): string
     {
         return <<<EOF
-           public const $name = '$value';           
+        public const $name = '$value';           
            
         EOF;
     }
