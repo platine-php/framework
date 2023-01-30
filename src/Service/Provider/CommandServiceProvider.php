@@ -50,6 +50,7 @@ namespace Platine\Framework\Service\Provider;
 use Platine\Framework\Console\Command\ConfigCommand;
 use Platine\Framework\Console\Command\MakeActionCommand;
 use Platine\Framework\Console\Command\MakeEntityCommand;
+use Platine\Framework\Console\Command\MakeEnumCommand;
 use Platine\Framework\Console\Command\MakeEventCommand;
 use Platine\Framework\Console\Command\MakeFormParamCommand;
 use Platine\Framework\Console\Command\MakeListenerCommand;
@@ -78,6 +79,7 @@ class CommandServiceProvider extends ServiceProvider
         $this->app->bind(VendorPublishCommand::class);
         $this->app->bind(MakeActionCommand::class);
         $this->app->bind(MakeEntityCommand::class);
+        $this->app->bind(MakeEnumCommand::class);
         $this->app->bind(MakeRepositoryCommand::class);
         $this->app->bind(MakeFormParamCommand::class);
         $this->app->bind(MakeValidatorCommand::class);
@@ -91,6 +93,7 @@ class CommandServiceProvider extends ServiceProvider
         $this->addCommand(VendorPublishCommand::class);
         $this->addCommand(MakeActionCommand::class);
         $this->addCommand(MakeEntityCommand::class);
+        $this->addCommand(MakeEnumCommand::class);
         $this->addCommand(MakeRepositoryCommand::class);
         $this->addCommand(MakeFormParamCommand::class);
         $this->addCommand(MakeValidatorCommand::class);
