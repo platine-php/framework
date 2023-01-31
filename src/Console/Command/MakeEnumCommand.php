@@ -184,7 +184,7 @@ class MakeEnumCommand extends MakeCommand
     {
         return <<<EOF
         public const $name = '$value';           
-        
+            
         EOF;
     }
 
