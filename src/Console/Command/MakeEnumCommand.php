@@ -111,7 +111,7 @@ class MakeEnumCommand extends MakeCommand
         if (!empty($properties)) {
             foreach ($properties as $name) {
                 $value = $io->prompt(
-                    sprintf('Enumeration value for [%s] (just enter to ignore)', $name),
+                    sprintf('Enumeration value for [%s]', $name),
                     null,
                     null,
                     false
@@ -184,7 +184,7 @@ class MakeEnumCommand extends MakeCommand
     {
         return <<<EOF
         public const $name = '$value';           
-           
+        
         EOF;
     }
 
