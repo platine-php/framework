@@ -103,7 +103,9 @@ class MakeEnumCommand extends MakeCommand
             if (!empty($value)) {
                 $value = trim($value);
                 $name = preg_replace('#([^a-z0-9]+)#i', '_', $value);
-
+                if (substr($name, -1) == '_') {
+                    $name = substr($name, 0, -1);
+                }
                 $properties[] = Str::upper($name);
             }
         }
