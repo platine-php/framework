@@ -37,7 +37,7 @@ class BaseParamTest extends PlatineTestCase
         $this->assertEquals('1', $o->status);
         $this->assertNull($o->undefined);
     }
-    
+
     public function testDataAndJson(): void
     {
         $o = new MyParam([

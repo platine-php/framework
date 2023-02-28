@@ -64,7 +64,7 @@ class MakeEnumCommand extends MakeCommand
      * {@inheritdoc}
      */
     protected string $type = 'enum';
-    
+
     /**
      * The enumerations values
      * @var array<string, mixed>

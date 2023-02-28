@@ -140,7 +140,7 @@ class ErrorHandlerTest extends BaseErrorHandlerTestCase
         $o->setDefaultErrorRenderer('text/plain', $renderer);
         $resp = $o->handle($request, $exception, true);
         $this->assertEquals(500, $resp->getStatusCode());
-        $expected = 'Platine Application Error
+        $expected = 'Application Error
 Type: Exception
 Code: 100
 Message: Foo exception 2

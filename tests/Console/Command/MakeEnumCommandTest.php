@@ -35,11 +35,12 @@ class MakeEnumCommandTest extends BaseCommandTestCase
         $this->createInputContent('y');
         $this->createInputContent('A');
         $this->createInputContent("\n");
-        
+
         $reader = $this->getReaderInstance();
         $writer = $this->getWriterInstance();
 
-        $interactor = $this->getMockInstance(Interactor::class, 
+        $interactor = $this->getMockInstance(
+            Interactor::class,
             [
                 'writer' => $writer,
                 'reader' => $reader
@@ -49,7 +50,7 @@ class MakeEnumCommandTest extends BaseCommandTestCase
                 'confirm',
             ]
         );
-        
+
         $this->setPropertyValue(Interactor::class, $interactor, 'reader', $reader);
         $this->setPropertyValue(Interactor::class, $interactor, 'writer', $writer);
 
@@ -64,18 +65,18 @@ class MakeEnumCommandTest extends BaseCommandTestCase
 
         $o->interact($reader, $writer);
         $o->execute();
-        
+
         $vsfpath = 'vfs://root/app/Enum/MyEnum.php';
         $path = str_replace(['\\', '/'], DIRECTORY_SEPARATOR, $vsfpath);
         $expected = 'GENERATION OF NEW CLASS' . PHP_EOL .
-PHP_EOL .
-'Enter the enumeration list (empty value to finish):' . PHP_EOL .
-'Generation of new enum class [MyApp\Enum\MyEnum]' . PHP_EOL .
-PHP_EOL .
-'Class: MyApp\Enum\MyEnum' . PHP_EOL .
-'Path: ' . $path . PHP_EOL .
-'Namespace: MyApp\Enum' . PHP_EOL .
-'';
+        PHP_EOL .
+        'Enter the enumeration list (empty value to finish):' . PHP_EOL .
+        'Generation of new enum class [MyApp\Enum\MyEnum]' . PHP_EOL .
+        PHP_EOL .
+        'Class: MyApp\Enum\MyEnum' . PHP_EOL .
+        'Path: ' . $path . PHP_EOL .
+        'Namespace: MyApp\Enum' . PHP_EOL .
+        '';
 
         $this->assertEquals($expected, $this->getConsoleOutputContent());
         //$this->assertEquals('tnh', file_get_contents($vsfpath));
@@ -130,7 +131,7 @@ PHP_EOL .
         $o->interact($reader, $writer);
         $o->execute();
         $path = str_replace(['\\', '/'], DIRECTORY_SEPARATOR, 'vfs://root/app/Enum/MyEnum.php');
-        
+
         $expected = 'GENERATION OF NEW CLASS
 
 Enter the properties list (empty value to finish):

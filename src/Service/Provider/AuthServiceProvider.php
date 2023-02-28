@@ -87,10 +87,10 @@ class AuthServiceProvider extends ServiceProvider
 
         //Hash
         $this->app->bind(HashInterface::class, BcryptHash::class);
-        
+
         // Command
         $this->app->bind(PasswordGenerateCommand::class);
-        
+
         $this->addCommand(PasswordGenerateCommand::class);
     }
 }

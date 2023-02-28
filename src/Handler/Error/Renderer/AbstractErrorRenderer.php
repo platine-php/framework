@@ -61,7 +61,7 @@ abstract class AbstractErrorRenderer implements ErrorRenderInterface
      * The default error title
      * @var string
      */
-    protected string $title = 'Platine Application Error';
+    protected string $title = 'Application Error';
 
     /**
      * The default error description

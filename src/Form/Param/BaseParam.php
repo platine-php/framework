@@ -104,7 +104,7 @@ class BaseParam implements JsonSerializable
     {
         return [];
     }
-    
+
     /**
      * Return the parameters values
      * @return array<string, mixed>
@@ -113,7 +113,7 @@ class BaseParam implements JsonSerializable
     {
         return get_object_vars($this);
     }
-    
+
     /**
      * Convert parameter to JSON array
      * @return array<string, mixed>
