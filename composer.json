@@ -22,7 +22,7 @@
         "php": "^7.4 || ^8",
         "platine-php/cache": "1.0.x-dev",
         "platine-php/collection": "1.0.x-dev",
-        "platine-php/config": "1.0.x-dev",
+        "platine-php/config": "^1.0",
         "platine-php/console": "1.0.x-dev",
         "platine-php/container": "1.0.x-dev",
         "platine-php/cookie": "1.0.x-dev",
