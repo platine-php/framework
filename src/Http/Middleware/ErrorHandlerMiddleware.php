@@ -104,7 +104,7 @@ class ErrorHandlerMiddleware implements MiddlewareInterface
     {
         $this->detail = $detail;
         $this->logger = $logger;
-        $this->errorHandler = $this->getDefaultErrorHanlder();
+        $this->errorHandler = $this->getDefaultErrorHandler();
     }
 
     /**
@@ -222,7 +222,7 @@ class ErrorHandlerMiddleware implements MiddlewareInterface
      * Return the default error handler if none is set before
      * @return ErrorHandlerInterface
      */
-    protected function getDefaultErrorHanlder(): ErrorHandlerInterface
+    protected function getDefaultErrorHandler(): ErrorHandlerInterface
     {
         return new ErrorHandler($this->logger);
     }
