@@ -50,6 +50,7 @@ namespace Platine\Framework\Auth\Authentication;
 use Platine\Framework\App\Application;
 use Platine\Framework\Auth\AuthenticationInterface;
 use Platine\Framework\Auth\Event\AuthInvalidPasswordEvent;
+use Platine\Framework\Auth\Event\AuthLoginEvent;
 use Platine\Framework\Auth\Exception\AccountLockedException;
 use Platine\Framework\Auth\Exception\AccountNotFoundException;
 use Platine\Framework\Auth\Exception\InvalidCredentialsException;
@@ -192,6 +193,8 @@ class SessionAuthentication implements AuthenticationInterface
         ];
 
         $this->session->set('user', $data);
+
+        $this->app->dispatch(new AuthLoginEvent($user));
 
         return $this->isLogged();
     }
