@@ -196,7 +196,7 @@ abstract class AbstractCommand extends Command
         $files = $directory->read(DirectoryInterface::FILE);
         foreach ($files as $file) {
             $matches = [];
-            if (preg_match('/^([0-9_]+)_([a-z_]+)\.php$/i', $file->getName(), $matches)) {
+            if (preg_match('/^([0-9_]+)_([a-z0-9_]+)\.php$/i', $file->getName(), $matches)) {
                 $result[$matches[1]] = $matches[2];
             }
         }
