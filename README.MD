@@ -28,6 +28,21 @@ Platine Framework can be installed using composer
 composer require platine-php/framework
 ```
 
+### Install on docker
+If you want to test platine using docker follow the step below:
+- Build the framework image
+```bash
+docker-compose build framework
+```
+- Run the containers
+```bash
+docker-compose up -d
+```
+- Install composer dependencies
+```bash
+docker-compose exec framework composer install --no-interaction
+```
+
 ### License
 MIT License See [LICENSE.MD](LICENSE.MD)
 

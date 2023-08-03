@@ -1,0 +1,15 @@
+version: "3.9"
+services:
+  framework:
+    build:
+      args:
+        user: platine
+        uid: 1000
+      context: ./
+      dockerfile: Dockerfile
+    image: platine-framework
+    container_name: platine-framework
+    restart: unless-stopped
+    working_dir: /platine
+    volumes:
+        - ./:/platine
