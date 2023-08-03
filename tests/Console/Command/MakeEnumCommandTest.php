@@ -66,8 +66,6 @@ class MakeEnumCommandTest extends BaseCommandTestCase
         $o->interact($reader, $writer);
         $o->execute();
 
-        $vsfpath = 'vfs://root/app/Enum/MyEnum.php';
-        $path = str_replace(['\\', '/'], DIRECTORY_SEPARATOR, $vsfpath);
         $expected = 'GENERATION OF NEW CLASS
 
 Enter the enumeration list (empty value to finish):
@@ -130,8 +128,7 @@ Class [MyApp\Enum\MyEnum] generated successfully.
 
         $o->interact($reader, $writer);
         $o->execute();
-        $path = str_replace(['\\', '/'], DIRECTORY_SEPARATOR, 'vfs://root/app/Enum/MyEnum.php');
-
+        
         $expected = 'GENERATION OF NEW CLASS
 
 Enter the enumeration list (empty value to finish):
