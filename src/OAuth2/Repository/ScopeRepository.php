@@ -79,7 +79,7 @@ class ScopeRepository extends Repository implements ScopeRepositoryInterface
             $scopes[] = Scope::createNewScope(
                 $row->id,
                 $row->name,
-                '',
+                $row->description,
                 $row->is_default === 1
             );
         }
