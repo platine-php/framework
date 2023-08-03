@@ -34,6 +34,7 @@
         "platine-php/lang": "1.0.x-dev",
         "platine-php/logger": "1.0.x-dev",
         "platine-php/mail": "1.0.x-dev",
+        "platine-php/oauth2": "1.0.x-dev",
         "platine-php/orm": "1.0.x-dev",
         "platine-php/pagination": "1.0.x-dev",
         "platine-php/pdf": "1.0.x-dev",

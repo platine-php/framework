@@ -128,7 +128,7 @@ Class [MyApp\Enum\MyEnum] generated successfully.
 
         $o->interact($reader, $writer);
         $o->execute();
-        
+
         $expected = 'GENERATION OF NEW CLASS
 
 Enter the enumeration list (empty value to finish):
