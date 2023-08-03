@@ -45,13 +45,9 @@ class PasswordGenerateCommandTest extends BaseCommandTestCase
 
         $o->interact($reader, $writer);
         $o->execute();
-        $expected = 'GENERATION OF PASSWORD
-
-Plain password: [my password]
-Hashed password: hashed
-
-Command finished successfully
-';
+        $expectedTemplate = 'GENERATION OF PASSWORD%s%sPlain password: [my password]%sHashed password: hashed%s%sCommand finished successfully%s';
+        
+        $expected = sprintf($expectedTemplate, PHP_EOL, PHP_EOL, PHP_EOL, PHP_EOL, PHP_EOL, PHP_EOL);
         $this->assertEquals($expected, $this->getConsoleOutputContent());
     }
 
