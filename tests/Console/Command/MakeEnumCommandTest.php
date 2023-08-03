@@ -68,18 +68,18 @@ class MakeEnumCommandTest extends BaseCommandTestCase
 
         $vsfpath = 'vfs://root/app/Enum/MyEnum.php';
         $path = str_replace(['\\', '/'], DIRECTORY_SEPARATOR, $vsfpath);
-        $expected = 'GENERATION OF NEW CLASS' . PHP_EOL .
-        PHP_EOL .
-        'Enter the enumeration list (empty value to finish):' . PHP_EOL .
-        'Generation of new enum class [MyApp\Enum\MyEnum]' . PHP_EOL .
-        PHP_EOL .
-        'Class: MyApp\Enum\MyEnum' . PHP_EOL .
-        'Path: ' . $path . PHP_EOL .
-        'Namespace: MyApp\Enum' . PHP_EOL .
-        '';
+        $expected = 'GENERATION OF NEW CLASS
+
+Enter the enumeration list (empty value to finish):
+Enum name: Enum name: Enumeration value for [NAME]: Generation of new enum class [MyApp\Enum\MyEnum]
+
+Class: MyApp\Enum\MyEnum
+Path: vfs://root/app/Enum/MyEnum.php
+Namespace: MyApp\Enum
+Class [MyApp\Enum\MyEnum] generated successfully.
+';
 
         $this->assertEquals($expected, $this->getConsoleOutputContent());
-        //$this->assertEquals('tnh', file_get_contents($vsfpath));
     }
 
     public function testExecute(): void
@@ -134,12 +134,11 @@ class MakeEnumCommandTest extends BaseCommandTestCase
 
         $expected = 'GENERATION OF NEW CLASS
 
-Enter the properties list (empty value to finish):
-Property name: Property name: Entity field name for [code] (just enter to ignore):'
-        . ' Generation of new form parameter class [MyApp\Enum\MyEnum]
+Enter the enumeration list (empty value to finish):
+Enum name: Enum name: Enumeration value for [NAME]: Generation of new enum class [MyApp\Enum\MyEnum]
 
 Class: MyApp\Enum\MyEnum
-Path: ' . $path . '
+Path: vfs://root/app/Enum/MyEnum.php
 Namespace: MyApp\Enum
 Class [MyApp\Enum\MyEnum] generated successfully.
 ';
