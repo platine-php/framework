@@ -60,7 +60,6 @@ use Platine\Framework\OAuth2\Repository\RefreshTokenRepository;
 use Platine\Framework\OAuth2\Repository\ScopeRepository;
 use Platine\Framework\OAuth2\User\UserAuthentication;
 use Platine\Framework\Service\ServiceProvider;
-use Platine\Logger\LoggerInterface;
 use Platine\OAuth2\AuthorizationServer;
 use Platine\OAuth2\AuthorizationServerInterface;
 use Platine\OAuth2\Configuration;
@@ -131,24 +130,21 @@ class OAuth2ServiceProvider extends ServiceProvider
         $this->app->bind(AuthorizationCodeService::class);
 
         // Servers
-        $this->app->bind(ResourceServerInterface::class, ResourceServer::class);
-        $this->app->bind(AuthorizationServerInterface::class, function (ContainerInterface $app) {
-            /** @var Configuration $cfg */
-            $cfg = $app->get(Configuration::class);
-            $grants = $cfg->getGrants();
-            $serverGrants = [];
-            foreach ($grants as $grant) {
-                $serverGrants[] = $app->get($grant);
+        /** @var Configuration $cfg */
+        $cfg = $this->app->get(Configuration::class);
+        $grants = $cfg->getGrants();
+        $serverGrants = [];
+        foreach ($grants as $grant) {
+            if ($this->app->has($grant)) {
+                $serverGrants[] = $this->app->get($grant);
+            } else {
+                $serverGrants[] = new $grant();
             }
-
-            return new AuthorizationServer(
-                $app->get(ClientService::class),
-                $app->get(AccessTokenService::class),
-                $app->get(RefreshTokenService::class),
-                $app->get(LoggerInterface::class),
-                $serverGrants
-            );
-        });
+        }
+        $this->app->bind(ResourceServerInterface::class, ResourceServer::class);
+        $this->app->bind(AuthorizationServerInterface::class, AuthorizationServer::class, [
+            'grants' => $serverGrants
+        ]);
 
         // Middlewares
         $this->app->bind(ResourceServerMiddleware::class);

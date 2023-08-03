@@ -33,12 +33,33 @@ use Platine\Logger\Formatter\DefaultFormatter;
 use Platine\Logger\Logger;
 use Platine\Logger\LoggerFormatterInterface;
 use Platine\Logger\LoggerInterface;
+use Platine\OAuth2\Entity\Client;
+use Platine\OAuth2\Entity\TokenOwnerInterface;
+use Platine\OAuth2\Grant\BaseGrant;
 use Platine\Orm\Entity;
 use Platine\Route\Router;
 use Platine\Session\Session;
 use Platine\Validator\Rule\MinLength;
 use Platine\Validator\Rule\NotEmpty;
 use Traversable;
+
+class MyOAuthGrant extends BaseGrant
+{
+    public function allowPublicClients(): bool
+    {
+        return true;
+    }
+
+    public function createAuthorizationResponse(ServerRequestInterface $request, Client $client, ?TokenOwnerInterface $owner = null): ResponseInterface
+    {
+        return new Response();
+    }
+
+    public function createTokenResponse(ServerRequestInterface $request, ?Client $client = null, ?TokenOwnerInterface $owner = null): ResponseInterface
+    {
+        return new Response();
+    }
+}
 
 class MyLang extends Lang
 {
@@ -95,6 +116,7 @@ class MyApp extends Application
         //Most of binding use config, logger
         $this->registerLogger();
         $this->registerConfiguration();
+        $this->registerDb();
     }
 
     protected function registerLogger(): void
@@ -102,6 +124,11 @@ class MyApp extends Application
         $this->bind(Configuration::class);
         $this->bind(LoggerInterface::class, Logger::class);
         $this->bind(LoggerFormatterInterface::class, DefaultFormatter::class);
+    }
+
+    protected function registerDb(): void
+    {
+        $this->bind(Configuration::class);
     }
 }
 
