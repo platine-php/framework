@@ -57,6 +57,7 @@ use Platine\Framework\Task\TaskInterface;
 /**
  * @class AbstractCommand
  * @package Platine\Framework\Task\Command
+ * @template T
  */
 abstract class AbstractCommand extends Command
 {

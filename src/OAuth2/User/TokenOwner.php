@@ -75,6 +75,6 @@ class TokenOwner implements TokenOwnerInterface
      */
     public function getOwnerId()
     {
-        return 1;
+        return $this->id;
     }
 }

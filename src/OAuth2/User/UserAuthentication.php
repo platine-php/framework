@@ -47,6 +47,8 @@ declare(strict_types=1);
 
 namespace Platine\Framework\OAuth2\User;
 
+use Platine\Framework\Auth\AuthenticationInterface;
+use Platine\Framework\Auth\Exception\AuthenticationException;
 use Platine\OAuth2\Entity\TokenOwnerInterface;
 use Platine\OAuth2\Entity\UserAuthenticationInterface;
 
@@ -57,14 +59,44 @@ use Platine\OAuth2\Entity\UserAuthenticationInterface;
 class UserAuthentication implements UserAuthenticationInterface
 {
     /**
+     * The Authentication
+     * @var AuthenticationInterface
+     */
+    protected AuthenticationInterface $authentication;
+
+    /**
+     * Create new instance
+     * @param AuthenticationInterface $authentication
+     */
+    public function __construct(AuthenticationInterface $authentication)
+    {
+        $this->authentication = $authentication;
+    }
+
+
+    /**
      * {@inheritdoc}
      */
     public function validate(string $username, string $password): ?TokenOwnerInterface
     {
-        if ($username !== 'demo') {
+        $userId = null;
+        try {
+            $isLogged = $this->authentication->login([
+                'username' => $username,
+                'password' => $password,
+            ]);
+
+            if ($isLogged) {
+                $userId = $this->authentication->getUser()->getId();
+            }
+        } catch (AuthenticationException $ex) {
             return null;
         }
 
-        return new TokenOwner();
+        if ($userId === null) {
+            return null;
+        }
+
+        return new TokenOwner($userId);
     }
 }
