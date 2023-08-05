@@ -1,6 +1,19 @@
 <?php
 
 declare(strict_types=1);
+namespace Platine\Framework\Http\Client;
+
+$mock_uniqid = false;
+
+function uniqid(string $prefix = "", bool $more_entropy = FALSE)
+{
+    global $mock_uniqid;
+    if ($mock_uniqid) {
+        return 'uniqid_key';
+    }
+
+    return \uniqid($prefix, $more_entropy);
+}
 
 namespace Platine\Framework\Env;
 
