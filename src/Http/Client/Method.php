@@ -3,12 +3,13 @@
 /**
  * Platine Framework
  *
- * Platine Framework is a lightweight, high-performance, simple and elegant
- * PHP Web framework
+ * Platine Framework is a lightweight, high-performance, simple and elegant PHP
+ * Web framework
  *
  * This content is released under the MIT License (MIT)
  *
  * Copyright (c) 2020 Platine Framework
+ * Copyright (c) 2020 Evgeniy Zyubin
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -30,12 +31,11 @@
  */
 
 /**
- *  @file RouteHelper.php
+ *  @file Method.php
  *
- * This route helper class that contains some useful methods to manage the
- * route data.
+ *  The Http Method class
  *
- *  @package    Platine\Framework\Http
+ *  @package    Platine\Framework\Http\Client
  *  @author Platine Developers team
  *  @copyright  Copyright (c) 2020
  *  @license    http://opensource.org/licenses/MIT  MIT License
@@ -46,40 +46,20 @@
 
 declare(strict_types=1);
 
-namespace Platine\Framework\Http;
-
-use Platine\Route\Router;
-
+namespace Platine\Framework\Http\Client;
 
 /**
- * @class RouteHelper
- * @package Platine\Framework\Http
+ * @class Method
+ * @package Platine\Framework\Http\Client
  */
-class RouteHelper
+class Method
 {
-    /**
-     * The router instance
-     * @var Router
-     */
-    protected Router $router;
-
-    /**
-     * Create new instance
-     * @param Router $router
-     */
-    public function __construct(Router $router)
-    {
-        $this->router = $router;
-    }
-
-    /**
-     * Generate the URL using route name
-     * @param string $name
-     * @param array<string, mixed> $parameters
-     * @return string
-     */
-    public function generateUrl(string $name, array $parameters = []): string
-    {
-        return $this->router->path($name, $parameters);
-    }
+    public const HEAD = 'HEAD';
+    public const GET = 'GET';
+    public const PUT = 'PUT';
+    public const POST = 'POST';
+    public const DELETE = 'DELETE';
+    public const TRACE = 'TRACE';
+    public const OPTIONS = 'OPTIONS';
+    public const CONNECT = 'CONNECT';
 }
