@@ -1,11 +1,48 @@
 <?php
 
 declare(strict_types=1);
+
 namespace Platine\Framework\Http\Client;
 
 $mock_uniqid = false;
+$mock_curl_exec = false;
+$mock_curl_error = false;
+$mock_curl_setopt_closure = false;
 
-function uniqid(string $prefix = "", bool $more_entropy = FALSE)
+function curl_setopt($ch, int $option, $value)
+{
+    global $mock_curl_setopt_closure;
+    if ($mock_curl_setopt_closure && is_callable($value)) {
+        // TODO
+        $value($ch, 'header:value');
+    }
+
+    return \curl_setopt($ch, $option, $value);
+}
+
+
+function curl_exec($ch)
+{
+    global $mock_curl_exec;
+    if ($mock_curl_exec) {
+        return 'uniqid_key';
+    }
+
+    return \curl_exec($ch);
+}
+
+
+function curl_error($ch)
+{
+    global $mock_curl_error;
+    if ($mock_curl_error) {
+        return 'cURL error';
+    }
+
+    return \curl_error($ch);
+}
+
+function uniqid(string $prefix = "", bool $more_entropy = false)
 {
     global $mock_uniqid;
     if ($mock_uniqid) {
