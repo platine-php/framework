@@ -7,7 +7,24 @@ namespace Platine\Framework\Http\Client;
 $mock_uniqid = false;
 $mock_curl_exec = false;
 $mock_curl_error = false;
+$mock_curl_getinfo = false;
 $mock_curl_setopt_closure = false;
+
+function curl_getinfo($ch)
+{
+    global $mock_curl_getinfo;
+    if ($mock_curl_getinfo) {
+        return [
+            'url' => 'http://example.com',
+            'content_type' => 'application/json',
+            'http_code' => 200,
+            'header_size' => 2,
+            'content_length' => 897,
+        ];
+    }
+
+    return \curl_getinfo($ch);
+}
 
 function curl_setopt($ch, int $option, $value)
 {
@@ -25,7 +42,7 @@ function curl_exec($ch)
 {
     global $mock_curl_exec;
     if ($mock_curl_exec) {
-        return 'uniqid_key';
+        return '  curl_content';
     }
 
     return \curl_exec($ch);

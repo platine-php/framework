@@ -217,8 +217,9 @@ class HttpClientTest extends PlatineTestCase
 
     public function testRequest(): void
     {
-        global $mock_curl_exec;
+        global $mock_curl_exec, $mock_curl_getinfo;
         $mock_curl_exec = true;
+        $mock_curl_getinfo = true;
 
         $o = new HttpClient('http://example.com');
         $o->parameter('user', 1);
@@ -228,6 +229,14 @@ class HttpClientTest extends PlatineTestCase
 
         $res = $o->get('/foo/bar');
         $this->assertInstanceOf(HttpResponse::class, $res);
+        $this->assertFalse($res->isError());
+        $this->assertEquals(200, $res->getStatusCode());
+        $this->assertEquals(2, $res->getHeaderSize());
+        $this->assertCount(0, $res->getHeaders());
+        $this->assertEquals(897, $res->getContentLength());
+        $this->assertEquals('http://example.com', $res->getUrl());
+        $this->assertEquals('application/json', $res->getContentType());
+        $this->assertEquals('curl_content', $res->getContent());
     }
 
     public function testRequestCurlReturnError(): void
@@ -246,8 +255,9 @@ class HttpClientTest extends PlatineTestCase
 
     public function testRequestAllHttpMethods(): void
     {
-        global $mock_curl_exec;
+        global $mock_curl_exec, $mock_curl_getinfo;
         $mock_curl_exec = true;
+        $mock_curl_getinfo = true;
 
         $o = new HttpClient('http://example.com');
 
@@ -263,9 +273,10 @@ class HttpClientTest extends PlatineTestCase
 
     public function testRequestUsingHeaderFunction(): void
     {
-        global $mock_curl_exec, $mock_curl_setopt_closure;
+        global $mock_curl_exec, $mock_curl_setopt_closure, $mock_curl_getinfo;
         $mock_curl_exec = true;
         $mock_curl_setopt_closure = true;
+        $mock_curl_getinfo = true;
 
         $o = new HttpClient('http://example.com');
         $o->parameter('user', 1);
@@ -279,8 +290,9 @@ class HttpClientTest extends PlatineTestCase
 
     public function testRequestWithBodyJson(): void
     {
-        global $mock_curl_exec;
+        global $mock_curl_exec, $mock_curl_getinfo;
         $mock_curl_exec = true;
+        $mock_curl_getinfo = true;
 
         $o = new HttpClient('http://example.com');
         $o->parameter('user', 1);
@@ -295,8 +307,9 @@ class HttpClientTest extends PlatineTestCase
 
     public function testRequestWithBodyForm(): void
     {
-        global $mock_curl_exec;
+        global $mock_curl_exec, $mock_curl_getinfo;
         $mock_curl_exec = true;
+        $mock_curl_getinfo = true;
 
         $o = new HttpClient('http://example.com');
         $o->parameter('user', 1);
@@ -311,8 +324,9 @@ class HttpClientTest extends PlatineTestCase
 
     public function testRequestWithBodyMultipart(): void
     {
-        global $mock_curl_exec;
+        global $mock_curl_exec, $mock_curl_getinfo;
         $mock_curl_exec = true;
+        $mock_curl_getinfo = true;
 
         $o = new HttpClient('http://example.com');
         $o->parameter('user', 1);
