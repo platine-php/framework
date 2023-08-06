@@ -132,7 +132,7 @@ class HttpResponse
         if ($response !== false) {
             $this->contentType = $requestInfo['content_type'];
             $this->headerSize = (int) $requestInfo['header_size'];
-            $this->contentLength = ((int) $requestInfo['content_length']) ?? (strlen($response) - $this->headerSize);
+            $this->contentLength = (int) ($requestInfo['content_length'] ?? (strlen($response) - $this->headerSize));
             $this->content = $this->processContent($response, $this->headerSize);
         }
 
