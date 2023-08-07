@@ -21,7 +21,7 @@ jobs:
       uses: shivammathur/setup-php@v2
       with:
         php-version: ${{ matrix.php-versions }}
-        extensions: intl #optional
+        extensions: intl fileinfo #optional
         ini-values: "post_max_size=256M" #optional
     - name: Check PHP Version
       run: php -v
@@ -38,6 +38,6 @@ jobs:
       run: composer install && composer dump-autoload
 
     - name: Run tests and collect coverage
-      run: vendor/bin/phpunit --coverage-clover coverage.xml
+      run: vendor/bin/phpunit --coverage-clover coverage.xml tests
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v3
