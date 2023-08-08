@@ -4,11 +4,12 @@
 [![Project Status](http://opensource.box.com/badges/active.svg)](http://opensource.box.com/badges)
 [![Latest Stable Version](https://poser.pugx.org/platine-php/framework/v/stable)](https://packagist.org/packages/platine-php/framework)
 [![Latest Unstable Version](https://poser.pugx.org/platine-php/framework/v/unstable)](https://packagist.org/packages/platine-php/framework)
+[![Total Downloads](https://poser.pugx.org/platine-php/framework/downloads)](https://packagist.org/packages/platine-php/oauth2)
 [![License](https://poser.pugx.org/platine-php/framework/license)](https://packagist.org/packages/platine-php/framework)  
 ![Build Status](https://github.com/platine-php/framework/actions/workflows/ci.yml/badge.svg)
 [![Quality Score](https://img.shields.io/scrutinizer/g/platine-php/framework.svg?style=flat-square)](https://scrutinizer-ci.com/g/platine-php/framework)
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/1ae48400b20c49cf94e716e355d042d0)](https://app.codacy.com/gh/platine-php/framework/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade)
-[![Test Coverage](https://api.codeclimate.com/v1/badges/837cde5fc5b07163aa58/test_coverage)](https://codeclimate.com/github/platine-php/framework/test_coverage)
+[![Codacy Badge](https://app.codacy.com/project/badge/Coverage/1ae48400b20c49cf94e716e355d042d0)](https://app.codacy.com/gh/platine-php/framework/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_coverage)
 
 ### Requirements 
 You can use **Platine Framework** for web or command line application. For web application: 
