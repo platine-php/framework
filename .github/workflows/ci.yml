@@ -4,7 +4,7 @@ on:
       - develop
     tags:
       - '*'
-name: Deploy app on push (Dev)
+name: Tests
 jobs:
   run:    
     runs-on: ${{ matrix.operating-system }}
@@ -12,7 +12,7 @@ jobs:
       fail-fast: false
       matrix:
         operating-system: [ubuntu-latest, windows-latest, macOS-latest]
-        php-versions: ['7.4', '8.0']
+        php-versions: ['7.4', '8.0', '8.1', '8.2', '8.3']
     name: PHP ${{ matrix.php-versions }} Test on ${{ matrix.operating-system }}
     steps:
     - name: Checkout
@@ -21,8 +21,8 @@ jobs:
       uses: shivammathur/setup-php@v2
       with:
         php-version: ${{ matrix.php-versions }}
-        extensions: intl, fileinfo #optional
-        ini-values: "post_max_size=256M" #optional
+        extensions: intl, fileinfo, xdebug #optional
+        ini-values: "post_max_size=256M, xdebug.mode=coverage" #optional
     - name: Check PHP Version
       run: php -v
     - name: Cache Composer packages
@@ -35,9 +35,13 @@ jobs:
             ${{ runner.os }}-php-
 
     - name: Install dependencies
-      run: composer install && composer dump-autoload
+      run: composer install
 
     - name: Run tests and collect coverage
-      run: vendor/bin/phpunit --coverage-clover coverage.xml tests
-    - name: Upload coverage to Codecov
-      uses: codecov/codecov-action@v3
+      run: vendor/bin/phpunit --coverage-clover clover.xml tests
+    - name: Upload coverage to Codacy
+      uses: codacy/codacy-coverage-reporter-action@v1
+      with:
+          api-token: ${{ secrets.CODACY_API_TOKEN }}
+          coverage-reports: clover.xml
+          
