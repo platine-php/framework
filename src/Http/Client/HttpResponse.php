@@ -156,7 +156,17 @@ class HttpResponse
     {
         return $this->statusCode;
     }
+    
+    /**
+     * Return the error message
+     * @return string
+     */
+    public function getError(): string
+    {
+        return $this->error;
+    }
 
+    
     /**
      * Return the header size
      * @return int

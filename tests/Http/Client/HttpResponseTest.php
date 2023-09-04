@@ -88,5 +88,6 @@ class HttpResponseTest extends PlatineTestCase
         $this->assertIsArray($o->xml());
         $this->assertArrayHasKey('foo', $o->xml());
         $this->assertEquals('bar', $o->xml()['foo']);
+        $this->assertEmpty($o->getError());
     }
 }
