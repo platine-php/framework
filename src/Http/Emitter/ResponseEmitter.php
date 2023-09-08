@@ -110,7 +110,19 @@ class ResponseEmitter implements EmitterInterface
      */
     protected function emitHeaders(ResponseInterface $response): void
     {
-        foreach ($response->getHeaders() as $name => $values) {
+        $resp = $response;
+        if ($resp->hasHeader('Content-Security-Policy') === false) {
+            $resp = $resp->withAddedHeader(
+                'Content-Security-Policy',
+                'default-src \'self\'; frame-ancestors \'self\'; form-action \'self\';'
+            );
+        }
+
+        if ($resp->hasHeader('X-Content-Type-Options') === false) {
+            $resp = $resp->withAddedHeader('X-Content-Type-Options', 'nosniff');
+        }
+
+        foreach ($resp->getHeaders() as $name => $values) {
             $name = str_replace(
                 ' ',
                 '-',
