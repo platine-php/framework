@@ -111,7 +111,7 @@ class AuthenticationMiddleware implements MiddlewareInterface
 
         if (!$this->authentication->isLogged()) {
             $authRoute = $this->config->get('auth.authentication.login_route');
-            $next = (string) $request->getUri();
+            $next = $request->getUri()->getPath();
             return new RedirectResponse(
                 $this->routeHelper->generateUrl($authRoute) . '?next=' . $next
             );
