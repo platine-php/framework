@@ -176,19 +176,18 @@ class SecurityPolicy
 
         $reportTo = [];
         if ($config['report-to'] ?? false) {
-            $reportTo['group'] = $config['report-to'];
-            $reportTo['max_age'] = 1800; // TODO use configuration
-
             if (count($config['report-uri'] ?? []) > 0) {
+                $reportTo['group'] = $config['report-to'];
+                $reportTo['max_age'] = 1800; // TODO use configuration
+
                 $reportTo['endpoints'] = [];
                 foreach ($config['report-uri'] as $url) {
                     $reportTo['endpoints'][] = [
                         'url' => $url
                     ];
                 }
+                $headers['Report-To'] = Json::encode($reportTo);
             }
-
-            $headers['Report-To'] = Json::encode($reportTo);
         }
 
         return $headers;
