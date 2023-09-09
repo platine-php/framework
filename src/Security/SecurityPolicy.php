@@ -151,6 +151,20 @@ class SecurityPolicy
         $config['script-src']['nonces'] = $this->nonces['script'];
         $config['style-src']['nonces'] = $this->nonces['style'];
 
+        if (count($config['report-uri'] ?? []) > 0) {
+            $routes = $this->router->routes();
+            $reportUri = [];
+            foreach ($config['report-uri'] as $url) {
+                if ($routes->has($url)) {
+                    $url = $this->config->get('app.host') . $this->router->getUri($url)->getPath();
+                }
+
+                $reportUri[] = $url;
+            }
+
+            $config['report-uri'] = $reportUri;
+        }
+
         $isReportOnly = $config['report-only'] ?? false;
         $header = $isReportOnly
                 ? 'Content-Security-Policy-Report-Only'
@@ -167,14 +181,7 @@ class SecurityPolicy
 
             if (count($config['report-uri'] ?? []) > 0) {
                 $reportTo['endpoints'] = [];
-
-                $routes = $this->router->routes();
-
                 foreach ($config['report-uri'] as $url) {
-                    if ($routes->has($url)) {
-                        $url = $this->config->get('app.host') . $routes->get($url)->path();
-                    }
-
                     $reportTo['endpoints'][] = [
                         'url' => $url
                     ];

@@ -72,7 +72,7 @@ class SecurityPolicyTest extends SecurityPolicyTestCase
         $config['csp']['script-src']['hashes']['sha512'] = ['s'];
         
         $routeCollection = $this->getMockInstance(RouteCollection::class, [
-            'has' => true,
+            'has' => false,
         ]);
         $router = $this->getMockInstance(Router::class, [
             'routes' => $routeCollection
@@ -99,8 +99,14 @@ class SecurityPolicyTest extends SecurityPolicyTestCase
         $config = $this->getPolicyConfig();
         $config['csp']['script-src']['hashes']['sha256'] = ['a'];
         $config['csp']['script-src']['hashes']['sha512'] = ['ZmdnZw'];
+        $config['csp']['report-uri'] = ['http://localhost'];
         
-        $router = $this->getMockInstance(Router::class);
+        $routeCollection = $this->getMockInstance(RouteCollection::class, [
+            'has' => true,
+        ]);
+        $router = $this->getMockInstance(Router::class, [
+            'routes' => $routeCollection
+        ]);
         $cfg = $this->getMockInstance(Config::class);
 
         $o = new SecurityPolicy($cfg, $router, $config);
@@ -111,7 +117,7 @@ class SecurityPolicyTest extends SecurityPolicyTestCase
 
         $this->assertArrayHasKey('Content-Security-Policy', $headers1);
 
-        $expected1 = "default-src 'self'; form-action 'self'; frame-ancestors 'self'; script-src 'sha256-a' 'sha512-ZmdnZw' 'nonce-nonce'";
+        $expected1 = "default-src 'self'; form-action 'self'; frame-ancestors 'self'; script-src 'sha256-a' 'sha512-ZmdnZw' 'nonce-nonce'; report-uri ";
         $this->assertEquals($expected1, $headers1['Content-Security-Policy']);
 
         $mock_base64_decode_to_false = true;
@@ -123,7 +129,7 @@ class SecurityPolicyTest extends SecurityPolicyTestCase
 
         $this->assertArrayHasKey('Content-Security-Policy', $headers);
 
-        $expected = "default-src 'self'; form-action 'self'; frame-ancestors 'self'";
+        $expected = "default-src 'self'; form-action 'self'; frame-ancestors 'self'; report-uri ";
         $this->assertEquals($expected, $headers['Content-Security-Policy']);
     }
 
