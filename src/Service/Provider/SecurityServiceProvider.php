@@ -67,7 +67,7 @@ class SecurityServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->bind(SecurityPolicy::class, function (ContainerInterface $app) {
-            return new SecurityPolicy($app->get(Config::class)->get('security', []));
+            return new SecurityPolicy($app->get(Config::class)->get('security.policies', []));
         });
         $this->app->bind(SecurityPolicyMiddleware::class);
         $this->app->bind(CorsMiddleware::class);
