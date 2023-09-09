@@ -48,10 +48,13 @@ declare(strict_types=1);
 
 namespace Platine\Framework\Security;
 
+use Platine\Config\Config;
 use Platine\Framework\Security\Policy\ClearSiteDataPolicy;
 use Platine\Framework\Security\Policy\ContentSecurityPolicy;
 use Platine\Framework\Security\Policy\FeaturePermissionPolicy;
 use Platine\Framework\Security\Policy\StrictTransportSecurityPolicy;
+use Platine\Route\Router;
+use Platine\Stdlib\Helper\Json;
 
 /**
  * @class SecurityPolicy
@@ -59,6 +62,19 @@ use Platine\Framework\Security\Policy\StrictTransportSecurityPolicy;
  */
 class SecurityPolicy
 {
+    /**
+     * The application configuration
+     * @var Config
+     */
+    protected Config $config;
+
+
+    /**
+     * The Router instance
+     * @var Router
+     */
+    protected Router $router;
+
     /**
      * The configuration
      * @var array<string, mixed>
@@ -76,10 +92,17 @@ class SecurityPolicy
 
     /**
      * Create new instance
+     * @param Config $config
+     * @param Router $router
      * @param array<string, mixed> $configurations
      */
-    public function __construct(array $configurations = [])
-    {
+    public function __construct(
+        Config $config,
+        Router $router,
+        array $configurations = []
+    ) {
+        $this->config = $config;
+        $this->router = $router;
         $this->configurations = $configurations;
     }
 
@@ -135,7 +158,33 @@ class SecurityPolicy
 
         $policy = new ContentSecurityPolicy($config);
 
-        return [$header => $policy->headers()];
+        $headers = [$header => $policy->headers()];
+
+        $reportTo = [];
+        if ($config['report-to'] ?? false) {
+            $reportTo['group'] = $config['report-to'];
+            $reportTo['max_age'] = 1800; // TODO use configuration
+
+            if (count($config['report-uri'] ?? []) > 0) {
+                $reportTo['endpoints'] = [];
+
+                $routes = $this->router->routes();
+
+                foreach ($config['report-uri'] as $url) {
+                    if ($routes->has($url)) {
+                        $url = $this->config->get('app.host') . $routes->get($url)->path();
+                    }
+
+                    $reportTo['endpoints'][] = [
+                        'url' => $url
+                    ];
+                }
+            }
+
+            $headers['Report-To'] = Json::encode($reportTo);
+        }
+
+        return $headers;
     }
 
     /**

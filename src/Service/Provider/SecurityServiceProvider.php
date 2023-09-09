@@ -54,6 +54,7 @@ use Platine\Framework\Http\Middleware\CsrfMiddleware;
 use Platine\Framework\Http\Middleware\SecurityPolicyMiddleware;
 use Platine\Framework\Security\SecurityPolicy;
 use Platine\Framework\Service\ServiceProvider;
+use Platine\Route\Router;
 
 /**
  * @class SecurityServiceProvider
@@ -67,7 +68,11 @@ class SecurityServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->bind(SecurityPolicy::class, function (ContainerInterface $app) {
-            return new SecurityPolicy($app->get(Config::class)->get('security.policies', []));
+            return new SecurityPolicy(
+                $app->get(Config::class),
+                $app->get(Router::class),
+                $app->get(Config::class)->get('security.policies', [])
+            );
         });
         $this->app->bind(SecurityPolicyMiddleware::class);
         $this->app->bind(CorsMiddleware::class);

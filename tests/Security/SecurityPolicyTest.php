@@ -4,7 +4,10 @@ declare(strict_types=1);
 
 namespace Platine\Test\Framework\Security;
 
+use Platine\Config\Config;
 use Platine\Framework\Security\SecurityPolicy;
+use Platine\Route\RouteCollection;
+use Platine\Route\Router;
 
 /*
  * @group core
@@ -14,8 +17,10 @@ class SecurityPolicyTest extends SecurityPolicyTestCase
 {
     public function testConstruct(): void
     {
+        $router = $this->getMockInstance(Router::class);
+        $cfg = $this->getMockInstance(Config::class);
         $config = $this->getPolicyConfig();
-        $o = new SecurityPolicy($config);
+        $o = new SecurityPolicy($cfg, $router, $config);
 
         $this->assertInstanceOf(SecurityPolicy::class, $o);
         $this->assertCount(12, $config);
@@ -24,7 +29,9 @@ class SecurityPolicyTest extends SecurityPolicyTestCase
     public function testHeaders(): void
     {
         $config = $this->getPolicyConfig();
-        $o = new SecurityPolicy($config);
+        $router = $this->getMockInstance(Router::class);
+        $cfg = $this->getMockInstance(Config::class);
+        $o = new SecurityPolicy($cfg, $router, $config);
 
         $headers = $o->headers();
 
@@ -63,8 +70,16 @@ class SecurityPolicyTest extends SecurityPolicyTestCase
         $config['csp']['script-src']['hashes']['dd'] = ['ZmdnZw'];
         $config['csp']['script-src']['hashes']['sha256'] = ['ZmdnZw'];
         $config['csp']['script-src']['hashes']['sha512'] = ['s'];
+        
+        $routeCollection = $this->getMockInstance(RouteCollection::class, [
+            'has' => true,
+        ]);
+        $router = $this->getMockInstance(Router::class, [
+            'routes' => $routeCollection
+        ]);
+        $cfg = $this->getMockInstance(Config::class);
 
-        $o = new SecurityPolicy($config);
+        $o = new SecurityPolicy($cfg, $router, $config);
 
         $headers = $o->headers();
 
@@ -84,8 +99,11 @@ class SecurityPolicyTest extends SecurityPolicyTestCase
         $config = $this->getPolicyConfig();
         $config['csp']['script-src']['hashes']['sha256'] = ['a'];
         $config['csp']['script-src']['hashes']['sha512'] = ['ZmdnZw'];
+        
+        $router = $this->getMockInstance(Router::class);
+        $cfg = $this->getMockInstance(Config::class);
 
-        $o = new SecurityPolicy($config);
+        $o = new SecurityPolicy($cfg, $router, $config);
 
         $o->nonce();
 
@@ -113,8 +131,11 @@ class SecurityPolicyTest extends SecurityPolicyTestCase
     {
         $config = $this->getPolicyConfig();
         $config['csp']['report-only'] = true;
+        
+        $router = $this->getMockInstance(Router::class);
+        $cfg = $this->getMockInstance(Config::class);
 
-        $o = new SecurityPolicy($config);
+        $o = new SecurityPolicy($cfg, $router, $config);
 
         $headers = $o->headers();
 
@@ -126,8 +147,11 @@ class SecurityPolicyTest extends SecurityPolicyTestCase
     {
         $config = $this->getPolicyConfig();
         $config['csp']['enable'] = false;
+        
+        $router = $this->getMockInstance(Router::class);
+        $cfg = $this->getMockInstance(Config::class);
 
-        $o = new SecurityPolicy($config);
+        $o = new SecurityPolicy($cfg, $router, $config);
 
         $headers = $o->headers();
 
@@ -137,8 +161,10 @@ class SecurityPolicyTest extends SecurityPolicyTestCase
     public function testFeaturesHeaders(): void
     {
         $config = $this->getPolicyConfig();
+        $router = $this->getMockInstance(Router::class);
+        $cfg = $this->getMockInstance(Config::class);
 
-        $o = new SecurityPolicy($config);
+        $o = new SecurityPolicy($cfg, $router, $config);
 
         $headers = $o->headers();
 
@@ -153,11 +179,13 @@ class SecurityPolicyTest extends SecurityPolicyTestCase
 
     public function testFeatureNoneHeaders(): void
     {
+        $router = $this->getMockInstance(Router::class);
+        $cfg = $this->getMockInstance(Config::class);
         $config = $this->getPolicyConfig();
         $config['features-permissions']['accelerometer']['none'] = true;
         $config['features-permissions']['ambient-light-sensor']['origins'] = ['http://example.com'];
 
-        $o = new SecurityPolicy($config);
+        $o = new SecurityPolicy($cfg, $router, $config);
 
         $headers = $o->headers();
 
@@ -172,10 +200,12 @@ class SecurityPolicyTest extends SecurityPolicyTestCase
 
     public function testFeaturesNotEnableHeaders(): void
     {
+        $router = $this->getMockInstance(Router::class);
+        $cfg = $this->getMockInstance(Config::class);
         $config = $this->getPolicyConfig();
         $config['features-permissions']['enable'] = false;
 
-        $o = new SecurityPolicy($config);
+        $o = new SecurityPolicy($cfg, $router, $config);
 
         $headers = $o->headers();
 
@@ -184,11 +214,13 @@ class SecurityPolicyTest extends SecurityPolicyTestCase
 
     public function testClearSiteDataAllHeaders(): void
     {
+        $router = $this->getMockInstance(Router::class);
+        $cfg = $this->getMockInstance(Config::class);
         $config = $this->getPolicyConfig();
         $config['clear-site-data']['enable'] = true;
         $config['clear-site-data']['all'] = true;
 
-        $o = new SecurityPolicy($config);
+        $o = new SecurityPolicy($cfg, $router, $config);
 
 
         $headers = $o->headers();
@@ -199,10 +231,12 @@ class SecurityPolicyTest extends SecurityPolicyTestCase
 
     public function testClearSiteDataHeaders(): void
     {
+        $router = $this->getMockInstance(Router::class);
+        $cfg = $this->getMockInstance(Config::class);
         $config = $this->getPolicyConfig();
         $config['clear-site-data']['enable'] = true;
 
-        $o = new SecurityPolicy($config);
+        $o = new SecurityPolicy($cfg, $router, $config);
 
 
         $headers = $o->headers();
@@ -213,12 +247,14 @@ class SecurityPolicyTest extends SecurityPolicyTestCase
 
     public function testHstsHeaders(): void
     {
+        $router = $this->getMockInstance(Router::class);
+        $cfg = $this->getMockInstance(Config::class);
         $config = $this->getPolicyConfig();
         $config['hsts']['enable'] = true;
         $config['hsts']['preload'] = true;
         $config['hsts']['include-sub-domains'] = true;
 
-        $o = new SecurityPolicy($config);
+        $o = new SecurityPolicy($cfg, $router, $config);
 
 
         $headers = $o->headers();
@@ -232,7 +268,10 @@ class SecurityPolicyTest extends SecurityPolicyTestCase
         global $mock_base64_encode_to_sample;
         $mock_base64_encode_to_sample = true;
         $config = $this->getPolicyConfig();
-        $o = new SecurityPolicy($config);
+        $router = $this->getMockInstance(Router::class);
+        $cfg = $this->getMockInstance(Config::class);
+        
+        $o = new SecurityPolicy($cfg, $router, $config);
 
         $nonceScript = $o->nonce('script');
         $nonceStyle = $o->nonce('style');
