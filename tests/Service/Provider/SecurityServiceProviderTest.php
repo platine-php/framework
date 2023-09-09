@@ -6,7 +6,9 @@ namespace Platine\Test\Framework\Service\Provider;
 
 use Platine\Dev\PlatineTestCase;
 use Platine\Framework\App\Application;
+use Platine\Framework\Security\SecurityPolicy;
 use Platine\Framework\Service\Provider\SecurityServiceProvider;
+use Platine\Test\Framework\Fixture\MyApp;
 
 /*
  * @group core
@@ -18,10 +20,20 @@ class SecurityServiceProviderTest extends PlatineTestCase
     {
         $app = $this->getMockInstanceMap(Application::class);
 
-        $app->expects($this->exactly(2))
+        $app->expects($this->exactly(4))
                 ->method('bind');
 
         $o = new SecurityServiceProvider($app);
         $o->register();
+    }
+    
+    public function testMockAppRegister(): void
+    {
+        $app = new MyApp();
+
+
+        $o = new SecurityServiceProvider($app);
+        $o->register();
+        $this->assertInstanceOf(SecurityPolicy::class, $app->get(SecurityPolicy::class));
     }
 }

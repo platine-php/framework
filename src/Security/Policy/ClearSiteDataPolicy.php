@@ -3,12 +3,13 @@
 /**
  * Platine Framework
  *
- * Platine Framework is a lightweight, high-performance, simple and elegant
- * PHP Web framework
+ * Platine Framework is a lightweight, high-performance, simple and elegant PHP
+ * Web framework
  *
  * This content is released under the MIT License (MIT)
  *
  * Copyright (c) 2020 Platine Framework
+ * Copyright (c) 2015 - 2023 Paragon Initiative Enterprises
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -30,11 +31,11 @@
  */
 
 /**
- *  @file SecurityServiceProvider.php
+ *  @file ClearSiteDataPolicy.php
  *
- *  The Framework security service provider class
+ *  The Clear Site Data Security Policy class
  *
- *  @package    Platine\Framework\Service\Provider
+ *  @package    Platine\Framework\Security\Policy
  *  @author Platine Developers team
  *  @copyright  Copyright (c) 2020
  *  @license    http://opensource.org/licenses/MIT  MIT License
@@ -45,32 +46,47 @@
 
 declare(strict_types=1);
 
-namespace Platine\Framework\Service\Provider;
-
-use Platine\Config\Config;
-use Platine\Container\ContainerInterface;
-use Platine\Framework\Http\Middleware\CorsMiddleware;
-use Platine\Framework\Http\Middleware\CsrfMiddleware;
-use Platine\Framework\Http\Middleware\SecurityPolicyMiddleware;
-use Platine\Framework\Security\SecurityPolicy;
-use Platine\Framework\Service\ServiceProvider;
+namespace Platine\Framework\Security\Policy;
 
 /**
- * @class SecurityServiceProvider
- * @package Platine\Framework\Service\Provider
+ * @class ClearSiteDataPolicy
+ * @package Platine\Framework\Security\Policy
  */
-class SecurityServiceProvider extends ServiceProvider
+class ClearSiteDataPolicy extends AbstractPolicy
 {
+    /**
+     * Clear Site Data white list directives.
+     * @var array<string, bool>
+     */
+    protected array $whitelist = [
+        'cache' => true,
+        'cookies' => true,
+        'storage' => true,
+        'execution-contexts' => true,
+    ];
+
     /**
      * {@inheritdoc}
      */
-    public function register(): void
+    public function headers(): string
     {
-        $this->app->bind(SecurityPolicy::class, function (ContainerInterface $app) {
-            return new SecurityPolicy($app->get(Config::class)->get('security', []));
-        });
-        $this->app->bind(SecurityPolicyMiddleware::class);
-        $this->app->bind(CorsMiddleware::class);
-        $this->app->bind(CsrfMiddleware::class);
+        $config = $this->configurations;
+
+        if ($config['all'] ?? false) {
+            return '"*"';
+        }
+
+        $directives = array_intersect_key($config, $this->whitelist);
+        $values = array_filter($directives);
+
+        $results = array_map(function (string $directive) {
+            if ($directive === 'execution-contexts') {
+                $directive = 'executionContexts';
+            }
+
+            return sprintf('"%s"', $directive);
+        }, array_keys($values));
+
+        return implode(', ', $results);
     }
 }

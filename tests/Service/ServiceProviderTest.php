@@ -8,6 +8,7 @@ use Platine\Dev\PlatineTestCase;
 use Platine\Framework\App\Application;
 use Platine\Framework\Service\ServiceProvider;
 use Platine\Route\Router;
+use Platine\Test\Framework\Fixture\MyCommand;
 use Platine\Test\Framework\Fixture\MyEventListener;
 use Platine\Test\Framework\Fixture\MyEventSubscriber;
 use Platine\Test\Framework\Fixture\MyTask;
@@ -30,12 +31,17 @@ class ServiceProviderTest extends PlatineTestCase
                 ->method('subscribe');
 
         $o = new ServiceProvider($app);
+        
+        $o->boot(); // fake
+        
         $o->register();
         $o->addRoutes($router);
         $o->listen('event', new MyEventListener());
         $o->subscribe(new MyEventSubscriber());
         $o->addTask(MyTask::class);
+        $o->addCommand(MyCommand::class);
 
         $this->assertCount(1, $o->getTasks());
+        $this->assertCount(1, $o->getCommands());
     }
 }

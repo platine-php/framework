@@ -156,7 +156,7 @@ class HttpResponse
     {
         return $this->statusCode;
     }
-    
+
     /**
      * Return the error message
      * @return string
@@ -166,7 +166,7 @@ class HttpResponse
         return $this->error;
     }
 
-    
+
     /**
      * Return the header size
      * @return int

@@ -3,12 +3,13 @@
 /**
  * Platine Framework
  *
- * Platine Framework is a lightweight, high-performance, simple and elegant
- * PHP Web framework
+ * Platine Framework is a lightweight, high-performance, simple and elegant PHP
+ * Web framework
  *
  * This content is released under the MIT License (MIT)
  *
  * Copyright (c) 2020 Platine Framework
+ * Copyright (c) 2015 - 2023 Paragon Initiative Enterprises
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -30,11 +31,11 @@
  */
 
 /**
- *  @file SecurityServiceProvider.php
+ *  @file StrictTransportSecurityPolicy.php
  *
- *  The Framework security service provider class
+ *  The Strict Transport Security Policy class
  *
- *  @package    Platine\Framework\Service\Provider
+ *  @package    Platine\Framework\Security\Policy
  *  @author Platine Developers team
  *  @copyright  Copyright (c) 2020
  *  @license    http://opensource.org/licenses/MIT  MIT License
@@ -45,32 +46,47 @@
 
 declare(strict_types=1);
 
-namespace Platine\Framework\Service\Provider;
-
-use Platine\Config\Config;
-use Platine\Container\ContainerInterface;
-use Platine\Framework\Http\Middleware\CorsMiddleware;
-use Platine\Framework\Http\Middleware\CsrfMiddleware;
-use Platine\Framework\Http\Middleware\SecurityPolicyMiddleware;
-use Platine\Framework\Security\SecurityPolicy;
-use Platine\Framework\Service\ServiceProvider;
+namespace Platine\Framework\Security\Policy;
 
 /**
- * @class SecurityServiceProvider
- * @package Platine\Framework\Service\Provider
+ * @class StrictTransportSecurityPolicy
+ * @package Platine\Framework\Security\Policy
  */
-class SecurityServiceProvider extends ServiceProvider
+class StrictTransportSecurityPolicy extends AbstractPolicy
 {
     /**
      * {@inheritdoc}
      */
-    public function register(): void
+    public function headers(): string
     {
-        $this->app->bind(SecurityPolicy::class, function (ContainerInterface $app) {
-            return new SecurityPolicy($app->get(Config::class)->get('security', []));
-        });
-        $this->app->bind(SecurityPolicyMiddleware::class);
-        $this->app->bind(CorsMiddleware::class);
-        $this->app->bind(CsrfMiddleware::class);
+        $headers = [];
+        $headers[] = $this->maxAge();
+
+        $includeSubDomains = $this->configurations['include-sub-domains'] ?? false;
+        if ($includeSubDomains) {
+            $headers[] = 'includeSubDomains';
+        }
+
+        $preload = $this->configurations['preload'] ?? false;
+        if ($preload) {
+            $headers[] = 'preload';
+        }
+
+        return implode('; ', $headers);
+    }
+
+    /**
+     * Return the max age directive
+     * @return string
+     */
+    public function maxAge(): string
+    {
+        $maxAge = $this->configurations['max-age'] ?? 31536000;
+
+        $age = (int) $maxAge;
+        // prevent negative value
+        $value = max($age, 0);
+
+        return sprintf('max-age=%d', $value);
     }
 }

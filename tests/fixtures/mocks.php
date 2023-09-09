@@ -69,6 +69,37 @@ function uniqid(string $prefix = "", bool $more_entropy = false)
     return \uniqid($prefix, $more_entropy);
 }
 
+
+namespace Platine\Framework\Security;
+
+$mock_base64_encode_to_sample = false;
+
+function base64_encode(string $string)
+{
+    global $mock_base64_encode_to_sample;
+    if ($mock_base64_encode_to_sample) {
+        return 'nonce';
+    }
+
+    return \base64_encode($string);
+}
+
+
+namespace Platine\Framework\Security\Policy;
+
+$mock_base64_decode_to_false = false;
+
+function base64_decode(string $string)
+{
+    global $mock_base64_decode_to_false;
+    if ($mock_base64_decode_to_false) {
+        return false;
+    }
+
+    return \base64_decode($string);
+}
+
+
 namespace Platine\Framework\Env;
 
 $mock_parse_ini_string_to_false = false;
