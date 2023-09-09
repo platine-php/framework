@@ -89,9 +89,7 @@ class SecurityPolicyMiddleware implements MiddlewareInterface
         }
 
         $this->request = $request;
-
-        $response = $handler->handle($request);
-
+        
         // Generate the nonces to be used in script and style
         $scriptNonce = $this->securityPolicy->nonce('script');
         $styleNonce = $this->securityPolicy->nonce('style');
@@ -102,6 +100,8 @@ class SecurityPolicyMiddleware implements MiddlewareInterface
                 'script' => $scriptNonce,
             ]
         ]);
+
+        $response = $handler->handle($request);
 
         $headers = $this->securityPolicy->headers();
         foreach ($headers as $name => $value) {
