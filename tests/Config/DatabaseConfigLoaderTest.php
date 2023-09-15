@@ -136,7 +136,7 @@ class DatabaseConfigLoaderTest extends PlatineTestCase
 
     public function testLoadConfigNotNull(): void
     {
-        $entity = $this->getMockInstanceMap(Entity::class, [
+        $entity = $this->getMockInstanceMap(Configuration::class, [
             '__get' => [
                 ['name', 'tva'],
                 ['type', 'double'],
