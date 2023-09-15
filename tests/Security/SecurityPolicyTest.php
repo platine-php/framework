@@ -117,7 +117,7 @@ class SecurityPolicyTest extends SecurityPolicyTestCase
 
         $this->assertArrayHasKey('Content-Security-Policy', $headers1);
 
-        $expected1 = "default-src 'self'; form-action 'self'; frame-ancestors 'self'; script-src 'sha256-a' 'sha512-ZmdnZw' 'nonce-nonce'; report-uri ";
+        $expected1 = "default-src 'self'; form-action 'self'; frame-ancestors 'self'; script-src 'sha512-ZmdnZw'; report-uri ";
         $this->assertEquals($expected1, $headers1['Content-Security-Policy']);
 
         $mock_base64_decode_to_false = true;
