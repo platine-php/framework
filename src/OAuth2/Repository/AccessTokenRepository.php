@@ -59,6 +59,7 @@ use Platine\Orm\Repository;
 /**
  * @class AccessTokenRepository
  * @package Platine\Framework\OAuth2\Repository
+ * @extends Repository<OauthAccessToken>
  */
 class AccessTokenRepository extends Repository implements AccessTokenRepositoryInterface
 {
@@ -70,7 +71,7 @@ class AccessTokenRepository extends Repository implements AccessTokenRepositoryI
 
     /**
      * Create new instance
-     * @param EntityManager $manager
+     * @param EntityManager<OauthAccessToken> $manager
      * @param ClientService $clientService
      */
     public function __construct(EntityManager $manager, ClientService $clientService)

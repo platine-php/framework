@@ -88,6 +88,10 @@ class Cron
         }
 
         $crons = preg_split('/[\s]+/i', $cronExpression);
+        if ($crons === false) {
+            return 0;
+        }
+
         $start = time();
         if ($timestamp !== null) {
             $start = $timestamp;

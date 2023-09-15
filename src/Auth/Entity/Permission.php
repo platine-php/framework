@@ -53,11 +53,14 @@ use Platine\Orm\Mapper\EntityMapperInterface;
 /**
  * @class Permission
  * @package Platine\Framework\Auth\Entity
+ * @extends Entity<Permission>
  */
 class Permission extends Entity
 {
     /**
-     * {@inheritdoc}
+     *
+     * @param EntityMapperInterface<Permission> $mapper
+     * @return void
      */
     public static function mapEntity(EntityMapperInterface $mapper): void
     {

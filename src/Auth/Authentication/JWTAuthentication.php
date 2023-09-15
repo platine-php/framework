@@ -151,7 +151,7 @@ class JWTAuthentication implements ApiAuthenticationInterface
         }
 
         $payload = $this->jwt->getPayload();
-        $id = (int) $payload['sub'] ?? -1;
+        $id = (int) ($payload['sub'] ?? -1);
 
         $user = $this->userRepository->find($id);
 

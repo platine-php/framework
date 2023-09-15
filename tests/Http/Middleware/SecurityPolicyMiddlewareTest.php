@@ -48,7 +48,7 @@ class SecurityPolicyMiddlewareTest extends PlatineTestCase
         $securityPolicy = $this->getMockInstance(SecurityPolicy::class, [
             'headers' => ['Foo' => 'Bar']
         ]);
-        
+
 
         $o = new SecurityPolicyMiddleware($securityPolicy);
         $res = $o->process($request, $handler);

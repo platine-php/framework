@@ -63,13 +63,13 @@ class SecurityPolicyMiddleware implements MiddlewareInterface
 {
     /**
      * The SecurityPolicy instance
-     * @var SecurityPolicy
+     * @var SecurityPolicy<T>
      */
     protected SecurityPolicy $securityPolicy;
 
     /**
      * Create new instance
-     * @param SecurityPolicy $securityPolicy
+     * @param SecurityPolicy<T> $securityPolicy
      */
     public function __construct(SecurityPolicy $securityPolicy)
     {
@@ -88,8 +88,6 @@ class SecurityPolicyMiddleware implements MiddlewareInterface
             return $handler->handle($request);
         }
 
-        $this->request = $request;
-        
         // Generate the nonces to be used in script and style
         $scriptNonce = $this->securityPolicy->nonce('script');
         $styleNonce = $this->securityPolicy->nonce('style');

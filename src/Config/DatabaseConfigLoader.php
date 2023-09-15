@@ -50,7 +50,6 @@ namespace Platine\Framework\Config;
 use Platine\Database\Query\WhereStatement;
 use Platine\Framework\Config\Model\Configuration;
 use Platine\Framework\Config\Model\ConfigurationRepository;
-use Platine\Orm\Entity;
 
 /**
  * @class DatabaseConfigLoader
@@ -85,7 +84,7 @@ class DatabaseConfigLoader implements DatabaseConfigLoaderInterface
     /**
      * {@inheritdoc}
      */
-    public function loadConfig(array $where = []): ?Entity
+    public function loadConfig(array $where = []): ?Configuration
     {
         return $this->repository->findBy($where);
     }
@@ -134,10 +133,12 @@ class DatabaseConfigLoader implements DatabaseConfigLoaderInterface
                                 });
         // @codeCoverageIgnoreEnd
 
+        /** @var Configuration[] $results */
         $results = $query->all();
 
         $items = [];
         foreach ($results as $result) {
+            /** @var string $name */
             $name = $result->name;
             if (!empty($name)) {
                 $items[$name] = ConfigUtil::convertToDataType(

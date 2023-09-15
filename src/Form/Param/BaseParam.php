@@ -54,6 +54,7 @@ use Platine\Stdlib\Helper\Str;
 /**
  * @class BaseParam
  * @package Platine\Framework\Form\Param
+ * @template TEntity as Entity
  */
 class BaseParam implements JsonSerializable
 {
@@ -88,7 +89,7 @@ class BaseParam implements JsonSerializable
 
     /**
      *
-     * @param Entity $entity
+     * @param TEntity $entity
      * @return $this
      */
     public function fromEntity(Entity $entity): self

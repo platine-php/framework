@@ -59,12 +59,13 @@ use Platine\Stdlib\Helper\Json;
 /**
  * @class SecurityPolicy
  * @package Platine\Framework\Security
+ * @template T
  */
 class SecurityPolicy
 {
     /**
      * The application configuration
-     * @var Config
+     * @var Config<T>
      */
     protected Config $config;
 
@@ -92,7 +93,7 @@ class SecurityPolicy
 
     /**
      * Create new instance
-     * @param Config $config
+     * @param Config<T> $config
      * @param Router $router
      * @param array<string, mixed> $configurations
      */

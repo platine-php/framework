@@ -96,7 +96,7 @@ class FeaturePermissionPolicy extends AbstractPolicy
 
     /**
      * Get valid origins
-     * @param array<string> $config
+     * @param array<string> $origins
      * @return array<string>
      */
     public function origins(array $origins): array

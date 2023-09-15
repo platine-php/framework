@@ -53,12 +53,13 @@ use Platine\Orm\Repository;
 /**
  * @class AuditRepository
  * @package Platine\Framework\Audit\Model
+ * @extends Repository<Audit>
  */
 class AuditRepository extends Repository
 {
     /**
      * Create new instance
-     * @param EntityManager $manager
+     * @param EntityManager<Audit> $manager
      */
     public function __construct(EntityManager $manager)
     {

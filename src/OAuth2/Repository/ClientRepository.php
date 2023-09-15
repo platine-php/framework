@@ -56,12 +56,13 @@ use Platine\Orm\Repository;
 /**
  * @class ClientRepository
  * @package Platine\Framework\OAuth2\Repository
+ * @extends Repository<OauthClient>
  */
 class ClientRepository extends Repository implements ClientRepositoryInterface
 {
     /**
      * Create new instance
-     * @param EntityManager $manager
+     * @param EntityManager<OauthClient> $manager
      */
     public function __construct(EntityManager $manager)
     {

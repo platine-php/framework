@@ -188,7 +188,7 @@ class ResponseEmitter implements EmitterInterface
         }
 
         while ($length >= $this->bufferLength && !$body->eof()) {
-            $contents = $body->read($this->bufferLength);
+            $contents = $body->read((int) $this->bufferLength);
             $length -= strlen($contents);
 
             echo $contents;

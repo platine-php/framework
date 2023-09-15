@@ -54,12 +54,13 @@ use Platine\Orm\Repository;
 /**
  * @class RoleRepository
  * @package Platine\Framework\Auth\Repository
+ * @extends Repository<Role>
  */
 class RoleRepository extends Repository
 {
     /**
      * Create new instance
-     * @param EntityManager $manager
+     * @param EntityManager<Role> $manager
      */
     public function __construct(EntityManager $manager)
     {

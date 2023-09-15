@@ -54,11 +54,14 @@ use Platine\Orm\Query\Query;
 /**
  * @class Configuration
  * @package Platine\Framework\Config\Model
+ * @extends Entity<Configuration>
  */
 class Configuration extends Entity
 {
     /**
-     * {@inheritdoc}
+     *
+     * @param EntityMapperInterface<Configuration> $mapper
+     * @return void
      */
     public static function mapEntity(EntityMapperInterface $mapper): void
     {

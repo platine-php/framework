@@ -10,12 +10,15 @@ use Platine\Orm\Mapper\EntityMapperInterface;
 /**
 * @class OauthScope
 * @package Platine\Framework\OAuth2\Entity
+* @extends Entity<OauthScope>
 */
 class OauthScope extends Entity
 {
     /**
-    * {@inheritdoc}
-    */
+     *
+     * @param EntityMapperInterface<OauthScope> $mapper
+     * @return void
+     */
     public static function mapEntity(EntityMapperInterface $mapper): void
     {
          $mapper->useTimestamp();

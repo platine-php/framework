@@ -2,6 +2,20 @@
 
 declare(strict_types=1);
 
+namespace Platine\Framework\Task;
+
+$mock_preg_split_to_false = false;
+
+function preg_split(string $pattern, string $subject, int $limit = -1, int $flags = 0)
+{
+    global $mock_preg_split_to_false;
+    if ($mock_preg_split_to_false) {
+        return false;
+    }
+
+    return \preg_split($pattern, $subject, $limit, $flags);
+}
+
 namespace Platine\Framework\Http\Client;
 
 $mock_uniqid = false;
@@ -89,14 +103,14 @@ namespace Platine\Framework\Security\Policy;
 
 $mock_base64_decode_to_false = false;
 
-function base64_decode(string $string)
+function base64_decode(string $string, bool $strict = false)
 {
     global $mock_base64_decode_to_false;
     if ($mock_base64_decode_to_false) {
         return false;
     }
 
-    return \base64_decode($string);
+    return \base64_decode($string, $strict);
 }
 
 

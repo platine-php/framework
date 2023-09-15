@@ -49,7 +49,6 @@ namespace Platine\Framework\Config;
 
 use Platine\Config\LoaderInterface;
 use Platine\Framework\Config\Model\Configuration;
-use Platine\Orm\Entity;
 
 /**
  * @class DatabaseConfigLoaderInterface
@@ -60,9 +59,9 @@ interface DatabaseConfigLoaderInterface extends LoaderInterface
     /**
      * Load the configuration from database
      * @param array<string, mixed> $where
-     * return array<string, mixed>
+     * @return Configuration|null
      */
-    public function loadConfig(array $where = []): ?Entity;
+    public function loadConfig(array $where = []): ?Configuration;
 
     /**
      * Insert new configuration
@@ -80,7 +79,7 @@ interface DatabaseConfigLoaderInterface extends LoaderInterface
 
     /**
      * Return all the configuration
-     * @return Entity[]
+     * @return Configuration[]
      */
     public function all(): array;
 }

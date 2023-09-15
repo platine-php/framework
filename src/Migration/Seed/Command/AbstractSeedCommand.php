@@ -158,8 +158,10 @@ abstract class AbstractSeedCommand extends Command
         }
 
         $connection = $this->application->get(Connection::class);
+        /** @var AbstractSeed $o */
+        $o = new $fullClassName($connection);
 
-        return new $fullClassName($connection);
+        return $o;
     }
 
     /**

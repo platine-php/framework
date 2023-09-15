@@ -10,12 +10,14 @@ use Platine\Orm\Mapper\EntityMapperInterface;
 /**
 * @class OauthRefreshToken
 * @package Platine\Framework\OAuth2\Entity
+* @extends Entity<OauthRefreshToken>
 */
 class OauthRefreshToken extends Entity
 {
     /**
-    * {@inheritdoc}
-    */
+     * @param EntityMapperInterface<OauthRefreshToken> $mapper
+     * @return void
+     */
     public static function mapEntity(EntityMapperInterface $mapper): void
     {
          $mapper->primaryKey('refresh_token');

@@ -55,6 +55,7 @@ use Platine\Framework\Task\SchedulerInterface;
  * @class SchedulerRunCommand
  * @package Platine\Framework\Task\Command
  * @template T
+ * @extends AbstractCommand<T>
  */
 class SchedulerRunCommand extends AbstractCommand
 {

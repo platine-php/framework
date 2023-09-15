@@ -31,9 +31,9 @@ class ServiceProviderTest extends PlatineTestCase
                 ->method('subscribe');
 
         $o = new ServiceProvider($app);
-        
+
         $o->boot(); // fake
-        
+
         $o->register();
         $o->addRoutes($router);
         $o->listen('event', new MyEventListener());

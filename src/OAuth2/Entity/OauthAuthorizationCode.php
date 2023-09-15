@@ -10,12 +10,15 @@ use Platine\Orm\Mapper\EntityMapperInterface;
 /**
 * @class OauthAuthorizationCode
 * @package Platine\Framework\OAuth2\Entity
+* @extends Entity<OauthAuthorizationCode>
 */
 class OauthAuthorizationCode extends Entity
 {
     /**
-    * {@inheritdoc}
-    */
+     *
+     * @param EntityMapperInterface<OauthAuthorizationCode> $mapper
+     * @return void
+     */
     public static function mapEntity(EntityMapperInterface $mapper): void
     {
          $mapper->primaryKey('authorization_code');

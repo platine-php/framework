@@ -461,7 +461,7 @@ class Application extends Container
 
     /**
      * Register the service provider
-     * @param string|ServiceProvider $provider
+     * @param class-string<ServiceProvider>|ServiceProvider $provider
      * @param bool $force whether to force registration of provider
      * if already loaded
      * @return ServiceProvider
@@ -513,7 +513,7 @@ class Application extends Container
         /** @template T @var Config<T> $config */
         $config = $this->get(Config::class);
 
-        /** @var string[] $providers */
+        /** @var class-string<ServiceProvider>[] $providers */
         $providers = $config->get('providers', []);
         foreach ($providers as $provider) {
             $this->registerServiceProvider($provider);
@@ -579,7 +579,7 @@ class Application extends Container
 
     /**
      * Create service provider
-     * @param string $provider
+     * @param class-string<ServiceProvider> $provider
      * @return ServiceProvider
      */
     protected function createServiceProvider(string $provider): ServiceProvider
@@ -619,7 +619,7 @@ class Application extends Container
 
     /**
      * Create listener using the container or direct class instance
-     * @param string $listener
+     * @param string|class-string<ListenerInterface> $listener
      * @return ListenerInterface
      */
     protected function createListener(string $listener): ListenerInterface
@@ -629,7 +629,10 @@ class Application extends Container
         }
 
         if (class_exists($listener)) {
-            return new $listener();
+            /** @var ListenerInterface $o */
+            $o = new $listener();
+
+            return $o;
         }
 
         throw new InvalidArgumentException(sprintf(

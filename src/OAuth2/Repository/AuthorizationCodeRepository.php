@@ -59,6 +59,7 @@ use Platine\Orm\Repository;
 /**
  * @class AuthorizationCodeRepository
  * @package Platine\Framework\OAuth2\Repository
+ * @extends Repository<OauthAuthorizationCode>
  */
 class AuthorizationCodeRepository extends Repository implements AuthorizationCodeRepositoryInterface
 {
@@ -70,7 +71,7 @@ class AuthorizationCodeRepository extends Repository implements AuthorizationCod
 
     /**
      * Create new instance
-     * @param EntityManager $manager
+     * @param EntityManager<OauthAuthorizationCode> $manager
      * @param ClientService $clientService
      */
     public function __construct(EntityManager $manager, ClientService $clientService)

@@ -152,6 +152,10 @@ class Env
             return (null === $ref = static::get($m[1], null)) ? $m[0] : $ref;
         }, $value);
 
-        return $valueResolved;
+        if ($valueResolved !== null) {
+            return $valueResolved;
+        }
+
+        return $value;
     }
 }

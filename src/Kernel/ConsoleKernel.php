@@ -168,7 +168,7 @@ class ConsoleKernel extends BaseKernel
 
     /**
      * Create new command
-     * @param string $command
+     * @param string|class-string<Command> $command
      * @return Command
      */
     protected function createCommand(string $command): Command
@@ -178,7 +178,9 @@ class ConsoleKernel extends BaseKernel
         }
 
         if (class_exists($command)) {
-            return new $command();
+            /** @var Command $o */
+            $o = new $command();
+            return $o;
         }
 
         throw new InvalidArgumentException(

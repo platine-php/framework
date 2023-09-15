@@ -54,12 +54,13 @@ use Platine\Orm\Repository;
 /**
  * @class UserRepository
  * @package Platine\Framework\Auth\Repository
+ * @extends Repository<User>
  */
 class UserRepository extends Repository
 {
     /**
      * Create new instance
-     * @param EntityManager $manager
+     * @param EntityManager<User> $manager
      */
     public function __construct(EntityManager $manager)
     {

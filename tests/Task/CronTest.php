@@ -53,4 +53,18 @@ class CronTest extends PlatineTestCase
 
         $this->assertEquals($expected, $date);
     }
+
+    public function testParseZero(): void
+    {
+        global $mock_preg_split_to_false;
+        $mock_preg_split_to_false = true;
+        $expression = '*/11 1-6 1,4 * *';
+
+        $time = Cron::parse($expression, 0);
+        $date = date('Y-m-d H:i', $time);
+        $expected = '1970-01-01 00:00';
+
+        $this->assertEquals($time, 0);
+        $this->assertEquals($expected, $date);
+    }
 }

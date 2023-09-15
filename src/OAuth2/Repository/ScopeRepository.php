@@ -56,12 +56,13 @@ use Platine\Orm\Repository;
 /**
  * @class ScopeRepository
  * @package Platine\Framework\OAuth2\Repository
+ * @extends Repository<OauthScope>
  */
 class ScopeRepository extends Repository implements ScopeRepositoryInterface
 {
     /**
      * Create new instance
-     * @param EntityManager $manager
+     * @param EntityManager<OauthScope> $manager
      */
     public function __construct(EntityManager $manager)
     {

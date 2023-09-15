@@ -247,8 +247,8 @@ class SeedCreateDbCommand extends AbstractSeedCommand
     protected function exportSeedData(array $data): string
     {
         $export = var_export($data, true);
-        $export = preg_replace('/^([ ]*)(.*)/m', '$1$1$2', $export);
-        $array = preg_split("/\r\n|\n|\r/", $export);
+        $export = (string) preg_replace('/^([ ]*)(.*)/m', '$1$1$2', $export);
+        $array = (array) preg_split("/\r\n|\n|\r/", $export);
         $array = preg_replace(
             ["/\s*array\s\($/", "/\)(,)?$/", "/\s=>\s$/"],
             [null, ']$1', ' => ['],

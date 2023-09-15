@@ -53,12 +53,13 @@ use Platine\Orm\Repository;
 /**
  * @class MigrationRepository
  * @package Platine\Framework\Migration
+ * @extends Repository<MigrationEntity>
  */
 class MigrationRepository extends Repository
 {
     /**
      * Create new instance
-     * @param EntityManager $manager
+     * @param EntityManager<MigrationEntity> $manager
      */
     public function __construct(EntityManager $manager)
     {

@@ -59,6 +59,7 @@ use Platine\Orm\Repository;
 /**
  * @class RefreshTokenRepository
  * @package Platine\Framework\OAuth2\Repository
+ * @extends Repository<OauthRefreshToken>
  */
 class RefreshTokenRepository extends Repository implements RefreshTokenRepositoryInterface
 {
@@ -70,7 +71,7 @@ class RefreshTokenRepository extends Repository implements RefreshTokenRepositor
 
     /**
      * Create new instance
-     * @param EntityManager $manager
+     * @param EntityManager<OauthRefreshToken> $manager
      * @param ClientService $clientService
      */
     public function __construct(EntityManager $manager, ClientService $clientService)

@@ -70,7 +70,7 @@ class SecurityPolicyTest extends SecurityPolicyTestCase
         $config['csp']['script-src']['hashes']['dd'] = ['ZmdnZw'];
         $config['csp']['script-src']['hashes']['sha256'] = ['ZmdnZw'];
         $config['csp']['script-src']['hashes']['sha512'] = ['s'];
-        
+
         $routeCollection = $this->getMockInstance(RouteCollection::class, [
             'has' => false,
         ]);
@@ -100,7 +100,7 @@ class SecurityPolicyTest extends SecurityPolicyTestCase
         $config['csp']['script-src']['hashes']['sha256'] = ['a'];
         $config['csp']['script-src']['hashes']['sha512'] = ['ZmdnZw'];
         $config['csp']['report-uri'] = ['http://localhost'];
-        
+
         $routeCollection = $this->getMockInstance(RouteCollection::class, [
             'has' => true,
         ]);
@@ -137,7 +137,7 @@ class SecurityPolicyTest extends SecurityPolicyTestCase
     {
         $config = $this->getPolicyConfig();
         $config['csp']['report-only'] = true;
-        
+
         $router = $this->getMockInstance(Router::class);
         $cfg = $this->getMockInstance(Config::class);
 
@@ -153,7 +153,7 @@ class SecurityPolicyTest extends SecurityPolicyTestCase
     {
         $config = $this->getPolicyConfig();
         $config['csp']['enable'] = false;
-        
+
         $router = $this->getMockInstance(Router::class);
         $cfg = $this->getMockInstance(Config::class);
 
@@ -276,7 +276,7 @@ class SecurityPolicyTest extends SecurityPolicyTestCase
         $config = $this->getPolicyConfig();
         $router = $this->getMockInstance(Router::class);
         $cfg = $this->getMockInstance(Config::class);
-        
+
         $o = new SecurityPolicy($cfg, $router, $config);
 
         $nonceScript = $o->nonce('script');

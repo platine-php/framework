@@ -55,11 +55,14 @@ use Platine\Orm\Query\Query;
 /**
  * @class User
  * @package Platine\Framework\Auth\Entity
+ * @extends Entity<User>
  */
 class User extends Entity implements IdentityInterface
 {
     /**
-     * {@inheritdoc}
+     *
+     * @param EntityMapperInterface<User> $mapper
+     * @return void
      */
     public static function mapEntity(EntityMapperInterface $mapper): void
     {

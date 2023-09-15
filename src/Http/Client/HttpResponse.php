@@ -277,7 +277,7 @@ class HttpResponse
 
     /**
      * Process the cookies headers
-     * @param array $headers
+     * @param array<string, string[]> $headers
      * @return array<string, HttpCookie>
      */
     protected function processCookies(array $headers): array

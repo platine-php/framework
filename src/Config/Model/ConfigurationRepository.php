@@ -53,12 +53,13 @@ use Platine\Orm\Repository;
 /**
  * @class ConfigurationRepository
  * @package Platine\Framework\Config\Model
+ * @extends Repository<Configuration>
  */
 class ConfigurationRepository extends Repository
 {
     /**
      * Create new instance
-     * @param EntityManager $manager
+     * @param EntityManager<Configuration> $manager
      */
     public function __construct(EntityManager $manager)
     {

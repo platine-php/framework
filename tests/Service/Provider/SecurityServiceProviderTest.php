@@ -26,7 +26,7 @@ class SecurityServiceProviderTest extends PlatineTestCase
         $o = new SecurityServiceProvider($app);
         $o->register();
     }
-    
+
     public function testMockAppRegister(): void
     {
         $app = new MyApp();

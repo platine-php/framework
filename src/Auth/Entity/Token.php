@@ -54,11 +54,14 @@ use Platine\Orm\Query\Query;
 /**
  * @class Token
  * @package Platine\Framework\Auth\Entity
+ * @extends Entity<Token>
  */
 class Token extends Entity
 {
     /**
-     * {@inheritdoc}
+     *
+     * @param EntityMapperInterface<Token> $mapper
+     * @return void
      */
     public static function mapEntity(EntityMapperInterface $mapper): void
     {

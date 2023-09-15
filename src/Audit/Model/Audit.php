@@ -55,11 +55,14 @@ use Platine\Orm\Query\Query;
 /**
  * @class Audit
  * @package Platine\Framework\Audit\Model
+ * @extends Entity<Audit>
  */
 class Audit extends Entity
 {
     /**
-     * {@inheritdoc}
+     *
+     * @param EntityMapperInterface<Audit> $mapper
+     * @return void
      */
     public static function mapEntity(EntityMapperInterface $mapper): void
     {

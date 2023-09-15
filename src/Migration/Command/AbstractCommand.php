@@ -55,6 +55,7 @@ use Platine\Filesystem\FileInterface;
 use Platine\Filesystem\Filesystem;
 use Platine\Framework\App\Application;
 use Platine\Framework\Migration\AbstractMigration;
+use Platine\Framework\Migration\MigrationEntity;
 use Platine\Framework\Migration\MigrationRepository;
 use Platine\Stdlib\Helper\Path;
 use Platine\Stdlib\Helper\Str;
@@ -179,7 +180,10 @@ abstract class AbstractCommand extends Command
 
         $connection = $this->application->get(Connection::class);
 
-        return new $fullClassName($connection);
+        /** @var AbstractMigration $o */
+        $o = new $fullClassName($connection);
+
+        return $o;
     }
 
     /**
@@ -209,10 +213,11 @@ abstract class AbstractCommand extends Command
     /**
      * Return the executed migration
      * @param string $orderDir
-     * @return array<string, Entity>
+     * @return array<string, MigrationEntity>
      */
     protected function getExecuted(string $orderDir = 'ASC'): array
     {
+        /** @var MigrationEntity[] $migrations */
         $migrations = $this->repository
                            ->query()
                            ->orderBy('version', $orderDir)
@@ -220,7 +225,10 @@ abstract class AbstractCommand extends Command
         $result = [];
 
         foreach ($migrations as $entity) {
-            $result[$entity->version] = $entity;
+            /** @var string $version */
+            $version = $entity->version;
+
+            $result[$version] = $entity;
         }
 
         return $result;

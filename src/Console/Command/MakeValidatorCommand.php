@@ -69,7 +69,7 @@ class MakeValidatorCommand extends MakeCommand
 
     /**
      * The form parameter class name
-     * @var string
+     * @var class-string
      */
     protected string $paramClass;
 

@@ -49,7 +49,7 @@ namespace Platine\Framework\Config;
 
 use ArrayAccess;
 use InvalidArgumentException;
-use Platine\Orm\Entity;
+use Platine\Framework\Config\Model\Configuration;
 use Platine\Stdlib\Helper\Arr;
 
 /**
@@ -206,7 +206,7 @@ class AppDatabaseConfig implements ArrayAccess
 
     /**
      * Return all the configuration
-     * @return Entity[]
+     * @return Configuration[]
      */
     public function all(): array
     {

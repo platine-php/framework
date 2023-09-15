@@ -125,7 +125,7 @@ abstract class AbstractCommand extends Command
 
     /**
      * Create new task
-     * @param string $task
+     * @param string|class-string<TaskInterface> $task
      * @return TaskInterface
      */
     protected function createTask(string $task): TaskInterface
@@ -135,7 +135,9 @@ abstract class AbstractCommand extends Command
         }
 
         if (class_exists($task)) {
-            return new $task();
+            /** @var TaskInterface $o */
+            $o = new $task();
+            return $o;
         }
 
         throw new InvalidArgumentException(

@@ -54,11 +54,14 @@ use Platine\Orm\Mapper\EntityMapperInterface;
 /**
  * @class MigrationEntity
  * @package Platine\Framework\Migration
+ * @extends Entity<MigrationEntity>
  */
 class MigrationEntity extends Entity
 {
     /**
-     * {@inheritdoc}
+     *
+     * @param EntityMapperInterface<MigrationEntity> $mapper
+     * @return void
      */
     public static function mapEntity(EntityMapperInterface $mapper): void
     {

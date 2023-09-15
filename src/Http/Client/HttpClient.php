@@ -154,7 +154,7 @@ class HttpClient
 
     /**
      * Add multiple request headers
-     * @param array<int, array<string, mixed>> $headers
+     * @param array<string, mixed> $headers
      * @return $this
      */
     public function headers(array $headers): self
@@ -591,10 +591,10 @@ class HttpClient
 
         // Clean url
         // remove double slashes, except after scheme
-        $cleanUrl = preg_replace('/([^:])(\/{2,})/', '$1/', $url);
+        $cleanUrl = (string) preg_replace('/([^:])(\/{2,})/', '$1/', $url);
         // convert arrays with indexes to arrays without
         // (i.e. parameter[0]=1 -> parameter[]=1)
-        $finalUrl = preg_replace('/%5B[0-9]+%5D/simU', '%5B%5D', $cleanUrl);
+        $finalUrl = (string) preg_replace('/%5B[0-9]+%5D/simU', '%5B%5D', $cleanUrl);
 
         return $finalUrl;
     }
@@ -637,7 +637,7 @@ class HttpClient
     /**
      * Process the request body
      * @param mixed $ch the cURL handle
-     * @param mixed|null $body the request body
+     * @param array<mixed>|object|null $body the request body
      * @return void
      */
     protected function processBody($ch, $body = null): void
@@ -646,19 +646,18 @@ class HttpClient
             return;
         }
 
-        if (is_object($body) || is_array($body)) {
-            if (isset($this->headers['Content-Type'][0])) {
-                $contentType = $this->headers['Content-Type'][0];
-                if (stripos($contentType, 'application/json') !== false) {
-                    $body = Json::encode($body);
-                } elseif (stripos($contentType, 'application/x-www-form-urlencoded') !== false) {
-                    $body = http_build_query($body);
-                } elseif (stripos($contentType, 'multipart/form-data') !== false) {
-                    $boundary = $this->parseBoundaryFromContentType($contentType);
-                    $body = $this->buildMultipartBody($body, $boundary);
-                }
+        if (isset($this->headers['Content-Type'][0])) {
+            $contentType = $this->headers['Content-Type'][0];
+            if (stripos($contentType, 'application/json') !== false) {
+                $body = Json::encode($body);
+            } elseif (stripos($contentType, 'application/x-www-form-urlencoded') !== false) {
+                $body = http_build_query($body);
+            } elseif (stripos($contentType, 'multipart/form-data') !== false) {
+                $boundary = $this->parseBoundaryFromContentType($contentType);
+                $body = $this->buildMultipartBody(/** @var array<mixed> $body */ $body, $boundary);
             }
         }
+
         curl_setopt($ch, CURLOPT_POSTFIELDS, $body);
     }
 

@@ -82,7 +82,7 @@ class CsvReader
     /**
      * Setting to 0 makes the maximum
      * line length not limited
-     * @var int
+     * @var int<0, max>
      */
     protected int $limit = 0;
 
@@ -121,7 +121,7 @@ class CsvReader
 
     /**
      * Return the limit
-     * @return int
+     * @return int<0, max>
      */
     public function getLimit(): int
     {
@@ -152,7 +152,7 @@ class CsvReader
 
     /**
      * The parse limit
-     * @param int $limit
+     * @param int<0, max> $limit
      * @return $this
      */
     public function setLimit(int $limit): self
@@ -196,12 +196,18 @@ class CsvReader
 
         $i = 0;
         while (($data = fgetcsv($fp, $this->limit, $this->delimiter)) !== false) {
+            if ($data === null) {
+                continue;
+            }
             // skip all empty lines
             if ($data[0] !== null) {
                 if ($i === 0) {
                     $this->headers = array_map([$this, 'sanitize'], $data);
                 } else {
-                    $this->data[] = array_combine($this->headers, $data);
+                    $result = array_combine($this->headers, $data);
+                    if ($result !== false) {
+                        $this->data[] = $result;
+                    }
                 }
 
                 $i++;
@@ -235,6 +241,6 @@ class CsvReader
      */
     private function sanitize(string $value): string
     {
-        return preg_replace('/\xEF\xBB\xBF/', '', $value);
+        return (string) preg_replace('/\xEF\xBB\xBF/', '', $value);
     }
 }

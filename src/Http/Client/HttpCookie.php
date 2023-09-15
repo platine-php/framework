@@ -121,7 +121,7 @@ class HttpCookie
             $name = $part[0];
             $value = $part[1] ?? '';
             if (stripos($name, 'Expires') !== false) {
-                $this->expires = strtotime($value);
+                $this->expires = (int) strtotime($value);
             } elseif (stripos($name, 'Max-Age') !== false) {
                 $this->maxAge = intval($value);
             } elseif (stripos($name, 'Domain') !== false) {

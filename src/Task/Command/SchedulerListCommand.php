@@ -56,6 +56,8 @@ use Platine\Stdlib\Helper\Arr;
 /**
  * @class SchedulerListCommand
  * @package Platine\Framework\Task\Command
+ * @template T
+ * @extends AbstractCommand<T>
  */
 class SchedulerListCommand extends AbstractCommand
 {

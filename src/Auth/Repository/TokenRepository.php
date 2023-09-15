@@ -54,12 +54,13 @@ use Platine\Orm\Repository;
 /**
  * @class TokenRepository
  * @package Platine\Framework\Auth\Repository
+ * @extends Repository<Token>
  */
 class TokenRepository extends Repository
 {
     /**
      * Create new instance
-     * @param EntityManager $manager
+     * @param EntityManager<Token> $manager
      */
     public function __construct(EntityManager $manager)
     {
