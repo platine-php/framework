@@ -176,7 +176,7 @@ abstract class MakeCommand extends Command
 
         $this->className = $name;
     }
-    
+
     /**
      * Return the base class name
      * @param string|object $fullClassName
@@ -189,7 +189,7 @@ abstract class MakeCommand extends Command
         }
 
         $temp = explode('\\', $fullClassName);
-        
+
         return end($temp);
     }
 

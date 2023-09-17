@@ -48,7 +48,7 @@ class MakeActionCommandTest extends BaseCommandTestCase
         $o->bind($consoleApp);
         $o->parse(['platine', $actionName]);
         $this->assertEquals('make:action', $o->getName());
-        
+
         // Only to coverage tests
         $this->assertEquals('MakeActionCommandTest', $o->getClassBaseName($this));
         $this->assertEquals(stdClass::class, $o->getClassBaseName(stdClass::class));

@@ -304,9 +304,9 @@ class MakeFormParamCommand extends MakeCommand
             
             EOF;
         }
-        
+
         $template = (string) str_replace('%from_entity%', $result, $content);
-        
+
         return str_replace('%template_entity%', $templateEntity, $template);
     }
 
