@@ -161,6 +161,7 @@ class MakeFormParamCommand extends MakeCommand
         /**
         * @class %classname%
         * @package %namespace%
+        * %template_entity%
         */
         class %classname% extends BaseParam
         {
@@ -278,10 +279,12 @@ class MakeFormParamCommand extends MakeCommand
     protected function getFromEntityBody(string $content): string
     {
         $result = '';
+        $templateEntity = '@template TEntity as Entity';
         if ($this->createInstanceFormEntity && !empty($this->fromEntityMaps)) {
             $result = <<<EOF
             /**
-                * {@inheritdoc}
+                * @param TEntity \$entity
+                * @return \$this
                 */
                public function fromEntity(Entity \$entity): self
                {
@@ -301,8 +304,10 @@ class MakeFormParamCommand extends MakeCommand
             
             EOF;
         }
-
-        return str_replace('%from_entity%', $result, $content);
+        
+        $template = (string) str_replace('%from_entity%', $result, $content);
+        
+        return str_replace('%template_entity%', $templateEntity, $template);
     }
 
     /**

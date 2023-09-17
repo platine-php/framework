@@ -121,13 +121,14 @@ class MakeRepositoryCommand extends MakeCommand
         /**
         * @class %classname%
         * @package %namespace%
+        * @extends Repository<%entity_base_class%>
         */
         class %classname% extends Repository
         {
             
             /**
             * Create new instance
-            * @param EntityManager \$manager
+            * @param EntityManager<%entity_base_class%> \$manager
             */
            public function __construct(EntityManager \$manager)
            {
@@ -164,7 +165,9 @@ class MakeRepositoryCommand extends MakeCommand
     protected function getEntityBody(string $content): string
     {
         $entityName = basename($this->entityClass) . '::class';
+        $entityBaseName = $this->getClassBaseName($this->entityClass);
 
-        return str_replace('%entity_class%', $entityName, $content);
+        $template = str_replace('%entity_base_class%', $entityBaseName, $content);
+        return str_replace('%entity_class%', $entityName, $template);
     }
 }

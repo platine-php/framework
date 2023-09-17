@@ -134,12 +134,14 @@ class MakeEntityCommand extends MakeCommand
         /**
         * @class %classname%
         * @package %namespace%
+        * @extends Entity<%classname%>
         */
         class %classname% extends Entity
         {
             
             /**
-            * {@inheritdoc}
+            * @param EntityMapperInterface<%classname%> \$mapper
+            * @return void
             */
             public static function mapEntity(EntityMapperInterface \$mapper): void
             {

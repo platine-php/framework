@@ -176,6 +176,22 @@ abstract class MakeCommand extends Command
 
         $this->className = $name;
     }
+    
+    /**
+     * Return the base class name
+     * @param string|object $fullClassName
+     * @return string
+     */
+    public function getClassBaseName($fullClassName): string
+    {
+        if (is_object($fullClassName)) {
+            $fullClassName = get_class($fullClassName);
+        }
+
+        $temp = explode('\\', $fullClassName);
+        
+        return end($temp);
+    }
 
     /**
      * Return the the class template
