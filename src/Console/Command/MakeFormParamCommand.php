@@ -233,7 +233,7 @@ class MakeFormParamCommand extends MakeCommand
         /**
             * Set the $cleanName value 
             * @param string \$$name 
-            * @return self
+            * @return \$this
             */
            public function $setterName(string \$$name): self
            {
@@ -279,8 +279,9 @@ class MakeFormParamCommand extends MakeCommand
     protected function getFromEntityBody(string $content): string
     {
         $result = '';
-        $templateEntity = '@template TEntity as Entity';
+        $templateEntity = '';
         if ($this->createInstanceFormEntity && !empty($this->fromEntityMaps)) {
+            $templateEntity = '@template TEntity as Entity';
             $result = <<<EOF
             /**
                 * @param TEntity \$entity
