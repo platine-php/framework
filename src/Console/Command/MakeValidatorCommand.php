@@ -124,18 +124,19 @@ class MakeValidatorCommand extends MakeCommand
         /**
         * @class %classname%
         * @package %namespace%
+        * @template TEntity as \Platine\Orm\Entity
         */
         class %classname% extends AbstractValidator
         {
             /**
             * The parameter instance
-            * @var %param_class%
+            * @var %param_class%<TEntity>
             */
             protected %param_class% \$param;
         
             /**
             * Create new instance
-            * @param %param_class% \$param
+            * @param %param_class%<TEntity> \$param
             * @param Lang \$lang
             */
            public function __construct(%param_class% \$param, Lang \$lang)
