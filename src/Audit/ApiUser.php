@@ -30,11 +30,11 @@
  */
 
 /**
- *  @file RestResponse.php
+ *  @file ApiUser.php
  *
- *  This REST Response class
+ *  The audit user based on REST API class
  *
- *  @package    Platine\Framework\Http\Response
+ *  @package    Platine\Framework\Audit
  *  @author Platine Developers team
  *  @copyright  Copyright (c) 2020
  *  @license    http://opensource.org/licenses/MIT  MIT License
@@ -45,51 +45,38 @@
 
 declare(strict_types=1);
 
-namespace Platine\Framework\Http\Response;
+namespace Platine\Framework\Audit;
+
+use Platine\Framework\Auth\ApiAuthenticationInterface;
 
 /**
- * @class RestResponse
- * @package Platine\Framework\Http\Response
+ * @class ApiUser
+ * @package Platine\Framework\Audit
  */
-class RestResponse extends JsonResponse
+class ApiUser implements AuditUserInterface
 {
     /**
-     * Create new instance
-     * @param mixed $data
-     * @param array<string, mixed> $extras
-     * @param bool $success
-     * @param int $code
-     * @param string $message
-     * @param int $statusCode
-     * @param string $reasonPhrase
+     * The API Authentication instance
+     * @var ApiAuthenticationInterface
      */
-    public function __construct(
-        $data = [],
-        array $extras = [],
-        bool $success = true,
-        int $code = 0,
-        string $message = '',
-        int $statusCode = 200,
-        string $reasonPhrase = ''
-    ) {
-        $result = [
-            'success' => $success,
-            'timestamp' => time(),
-            'code' => $code,
-        ];
+    protected ApiAuthenticationInterface $authentication;
 
-        if (!empty($message)) {
-            $result['message'] = $message;
-        }
 
-        if ($data) {
-            $result['data'] = $data;
-        }
+    /**
+     * Create new instance
+     * @param ApiAuthenticationInterface $authentication
+     */
+    public function __construct(ApiAuthenticationInterface $authentication)
+    {
+        $this->authentication = $authentication;
+    }
 
-        if (!empty($extras)) {
-            $result = array_merge($result, $extras);
-        }
 
-        parent::__construct($result, $statusCode, $reasonPhrase);
+    /**
+     * {@inheritdoc}
+     */
+    public function getUserId(): int
+    {
+        return $this->authentication->getUser()->getId();
     }
 }

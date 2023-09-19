@@ -7,6 +7,7 @@ namespace Platine\Test\Framework\Audit;
 use Platine\Dev\PlatineTestCase;
 use Platine\Framework\Audit\Auditor;
 use Platine\Framework\Audit\Model\AuditRepository;
+use Platine\Framework\Audit\SessionUser;
 use Platine\Framework\Auth\Authentication\SessionAuthentication;
 use Platine\Framework\Auth\Repository\UserRepository;
 use Platine\Http\ServerRequest;
@@ -21,17 +22,17 @@ class AuditorTest extends PlatineTestCase
     public function testConstructor(): void
     {
 
+        $audtiUser = $this->getMockInstance(SessionUser::class);
         $repository = $this->getMockInstance(AuditRepository::class);
         $request = $this->getMockInstance(ServerRequest::class);
         $userAgent = $this->getMockInstance(UserAgent::class);
-        $authentication = $this->getMockInstance(SessionAuthentication::class);
         $userRepository = $this->getMockInstance(UserRepository::class);
 
         $o = new Auditor(
             $repository,
             $request,
             $userAgent,
-            $authentication,
+            $audtiUser,
             $userRepository
         );
 
@@ -45,14 +46,14 @@ class AuditorTest extends PlatineTestCase
         $repository = $this->getMockInstance(AuditRepository::class);
         $request = $this->getMockInstance(ServerRequest::class);
         $userAgent = $this->getMockInstance(UserAgent::class);
-        $authentication = $this->getMockInstance(SessionAuthentication::class);
+        $audtiUser = $this->getMockInstance(SessionUser::class);
         $userRepository = $this->getMockInstance(UserRepository::class);
 
         $o = new Auditor(
             $repository,
             $request,
             $userAgent,
-            $authentication,
+            $audtiUser,
             $userRepository
         );
 
@@ -75,14 +76,14 @@ class AuditorTest extends PlatineTestCase
         ]);
         $request = $this->getMockInstance(ServerRequest::class);
         $userAgent = $this->getMockInstance(UserAgent::class);
-        $authentication = $this->getMockInstance(SessionAuthentication::class);
+        $audtiUser = $this->getMockInstance(SessionUser::class);
         $userRepository = $this->getMockInstance(UserRepository::class);
 
         $o = new Auditor(
             $repository,
             $request,
             $userAgent,
-            $authentication,
+            $audtiUser,
             $userRepository
         );
 
@@ -104,14 +105,14 @@ class AuditorTest extends PlatineTestCase
         ]);
         $request = $this->getMockInstance(ServerRequest::class);
         $userAgent = $this->getMockInstance(UserAgent::class);
-        $authentication = $this->getMockInstance(SessionAuthentication::class);
+        $audtiUser = $this->getMockInstance(SessionUser::class);
         $userRepository = $this->getMockInstance(UserRepository::class);
 
         $o = new Auditor(
             $repository,
             $request,
             $userAgent,
-            $authentication,
+            $audtiUser,
             $userRepository
         );
 

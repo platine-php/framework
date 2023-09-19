@@ -49,7 +49,6 @@ namespace Platine\Framework\Audit;
 
 use DateTime;
 use Platine\Framework\Audit\Model\AuditRepository;
-use Platine\Framework\Auth\AuthenticationInterface;
 use Platine\Framework\Auth\Repository\UserRepository;
 use Platine\Http\ServerRequestInterface;
 use Platine\Stdlib\Helper\Str;
@@ -80,10 +79,10 @@ class Auditor
     protected UserAgent $userAgent;
 
     /**
-     * The authentication instance
-     * @var AuthenticationInterface
+     * The Audit User instance
+     * @var AuditUserInterface
      */
-    protected AuthenticationInterface $authentication;
+    protected AuditUserInterface $auditUser;
 
     /**
      * The audit details
@@ -114,20 +113,20 @@ class Auditor
      * @param AuditRepository $repository
      * @param ServerRequestInterface $request
      * @param UserAgent $userAgent
-     * @param AuthenticationInterface $authentication
+     * @param AuditUserInterface $auditUser
      * @param UserRepository $userRepository
      */
     public function __construct(
         AuditRepository $repository,
         ServerRequestInterface $request,
         UserAgent $userAgent,
-        AuthenticationInterface $authentication,
+        AuditUserInterface $auditUser,
         UserRepository $userRepository
     ) {
         $this->repository = $repository;
         $this->request = $request;
         $this->userAgent = $userAgent;
-        $this->authentication = $authentication;
+        $this->auditUser = $auditUser;
         $this->userRepository = $userRepository;
     }
 
@@ -163,10 +162,9 @@ class Auditor
             'tags' => implode(', ', $this->tags),
             'date' => new DateTime('now'),
             'ip' => Str::ip(),
+            'user_id' => $this->auditUser->getUserId(),
             'url' => $this->request->getUri()->getPath(),
         ]);
-        $userId = $this->authentication->getUser()->getId();
-        $entity->user = $this->userRepository->find($userId);
 
         return $this->repository->save($entity);
     }
