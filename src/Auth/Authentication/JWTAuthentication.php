@@ -304,7 +304,7 @@ class JWTAuthentication implements ApiAuthenticationInterface
     protected function getUserData(User $user, Token $token): array
     {
         return [
-            'token_expire' => $token->expire_at->getTimestamp()
+            'refresh_token_expire' => $token->expire_at->getTimestamp()
         ];
     }
 }
