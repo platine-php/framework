@@ -49,6 +49,7 @@ namespace Platine\Framework\Auth\Authentication;
 
 use Platine\Framework\App\Application;
 use Platine\Framework\Auth\AuthenticationInterface;
+use Platine\Framework\Auth\Entity\User;
 use Platine\Framework\Auth\Event\AuthInvalidPasswordEvent;
 use Platine\Framework\Auth\Event\AuthLoginEvent;
 use Platine\Framework\Auth\Exception\AccountLockedException;
@@ -153,10 +154,9 @@ class SessionAuthentication implements AuthenticationInterface
 
         $username = $credentials['username'];
         $password = $credentials['password'];
-        $user = $this->userRepository
-                    ->with('roles.permissions')
-                    ->findBy(['username' => $username]);
-        if (!$user) {
+
+        $user = $this->getUserEntity($username, $password);
+        if ($user === null) {
             throw new AccountNotFoundException('Can not find the user with the given information', 401);
         } elseif ($user->status === 'D') {
             throw new AccountLockedException(
@@ -192,7 +192,7 @@ class SessionAuthentication implements AuthenticationInterface
           'permissions' => array_unique($permissions),
         ];
 
-        $this->session->set('user', $data);
+        $this->session->set('user', array_merge($data, $this->getUserData($user)));
 
         $this->app->dispatch(new AuthLoginEvent($user));
 
@@ -205,5 +205,28 @@ class SessionAuthentication implements AuthenticationInterface
     public function logout(): void
     {
         $this->session->remove('user');
+    }
+
+    /**
+     * Return the user entity
+     * @param string $username
+     * @param string $password
+     * @return User|null
+     */
+    protected function getUserEntity(string $username, string $password): ?User
+    {
+        return $this->userRepository
+                                    ->with('roles.permissions')
+                                    ->findBy(['username' => $username]);
+    }
+
+    /**
+     * Return the user additional data
+     * @param User $user
+     * @return array<string, mixed>
+     */
+    protected function getUserData(User $user): array
+    {
+        return [];
     }
 }

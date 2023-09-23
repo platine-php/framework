@@ -4,11 +4,13 @@ declare(strict_types=1);
 
 namespace Platine\Test\Framework\Auth\Authentication;
 
+use DateTime;
 use Platine\Config\Config;
 use Platine\Dev\PlatineTestCase;
 use Platine\Framework\Auth\Authentication\JWTAuthentication;
 use Platine\Framework\Auth\Entity\Permission;
 use Platine\Framework\Auth\Entity\Role;
+use Platine\Framework\Auth\Entity\Token;
 use Platine\Framework\Auth\Entity\User;
 use Platine\Framework\Auth\Exception\AccountLockedException;
 use Platine\Framework\Auth\Exception\AccountNotFoundException;
@@ -384,6 +386,14 @@ class JWTAuthenticationTest extends PlatineTestCase
             ]
         ]);
 
+        $dt = new DateTime();
+
+        $token = $this->getMockInstanceMap(Token::class, [
+            '__get' => [
+                ['expire_at', $dt]
+            ]
+        ]);
+
         $role = $this->getMockInstanceMap(Role::class, [
             '__get' => [
                 ['permissions', [$permission]]
@@ -411,7 +421,9 @@ class JWTAuthenticationTest extends PlatineTestCase
             ]
         ]);
 
-        $tokenRepository = $this->getMockInstance(TokenRepository::class);
+        $tokenRepository = $this->getMockInstance(TokenRepository::class, [
+            'create' => $token
+        ]);
         $hash = $this->getMockInstance(BcryptHash::class, [
             'verify' => true
         ]);
@@ -440,6 +452,6 @@ class JWTAuthenticationTest extends PlatineTestCase
         ];
 
         $data = $o->login($credentials);
-        $this->assertCount(3, $data);
+        $this->assertCount(4, $data);
     }
 }

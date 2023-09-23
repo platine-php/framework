@@ -39,5 +39,4 @@ class ApiUserTest extends PlatineTestCase
 
         $this->assertEquals(123, $o->getUserId());
     }
-
 }

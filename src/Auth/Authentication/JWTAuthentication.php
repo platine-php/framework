@@ -50,6 +50,8 @@ namespace Platine\Framework\Auth\Authentication;
 use DateTime;
 use Platine\Config\Config;
 use Platine\Framework\Auth\ApiAuthenticationInterface;
+use Platine\Framework\Auth\Entity\Token;
+use Platine\Framework\Auth\Entity\User;
 use Platine\Framework\Auth\Exception\AccountLockedException;
 use Platine\Framework\Auth\Exception\AccountNotFoundException;
 use Platine\Framework\Auth\Exception\InvalidCredentialsException;
@@ -210,11 +212,9 @@ class JWTAuthentication implements ApiAuthenticationInterface
 
         $username = $credentials['username'];
         $password = $credentials['password'];
-        $user = $this->userRepository
-                    ->with('roles.permissions')
-                    ->findBy(['username' => $username]);
+        $user = $this->getUserEntity($username, $password);
 
-        if (!$user) {
+        if ($user === null) {
             throw new AccountNotFoundException('Can not find the user with the given information', 401);
         } elseif ($user->status === 'D') {
             throw new AccountLockedException(
@@ -279,6 +279,32 @@ class JWTAuthentication implements ApiAuthenticationInterface
           'refresh_token' => $refreshToken,
         ];
 
-        return $data;
+        return array_merge($data, $this->getUserData($user, $token));
+    }
+
+    /**
+     * Return the user entity
+     * @param string $username
+     * @param string $password
+     * @return User|null
+     */
+    protected function getUserEntity(string $username, string $password): ?User
+    {
+        return $this->userRepository
+                                    ->with('roles.permissions')
+                                    ->findBy(['username' => $username]);
+    }
+
+    /**
+     * Return the user additional data
+     * @param User $user
+     * @param Token $token
+     * @return array<string, mixed>
+     */
+    protected function getUserData(User $user, Token $token): array
+    {
+        return [
+            'token_expire' => $token->expire_at->getTimestamp()
+        ];
     }
 }
