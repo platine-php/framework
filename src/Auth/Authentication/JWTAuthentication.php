@@ -254,7 +254,7 @@ class JWTAuthentication implements ApiAuthenticationInterface
                       'permissions' => $permissions,
                   ])
                   ->sign();
-        $refreshToken = Str::randomToken(24);
+        $refreshToken = bin2hex(random_bytes(20));
         $jwtToken = $this->jwt->getToken();
 
         $token = $this->tokenRepository->create([
