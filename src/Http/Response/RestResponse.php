@@ -82,10 +82,6 @@ class RestResponse extends JsonResponse
             $result['message'] = $message;
         }
 
-        if ($data) {
-            $result['data'] = $data;
-        }
-
         if (!empty($extras)) {
             $result = array_merge($result, $extras);
         }
