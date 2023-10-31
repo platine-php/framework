@@ -50,6 +50,7 @@ namespace Platine\Framework\Http\Middleware;
 
 use Platine\Config\Config;
 use Platine\Framework\Http\RequestData;
+use Platine\Framework\Security\Csrf\CsrfManager;
 use Platine\Http\Handler\MiddlewareInterface;
 use Platine\Http\Handler\RequestHandlerInterface;
 use Platine\Http\Response;
@@ -58,7 +59,6 @@ use Platine\Http\ServerRequestInterface;
 use Platine\Lang\Lang;
 use Platine\Logger\LoggerInterface;
 use Platine\Route\Route;
-use Platine\Session\Session;
 
 /**
  * @class CsrfMiddleware
@@ -74,10 +74,10 @@ class CsrfMiddleware implements MiddlewareInterface
     protected Config $config;
 
     /**
-     * The session instance
-     * @var Session
+     * The CSRF manager
+     * @var CsrfManager
      */
-    protected Session $session;
+    protected CsrfManager $csrfManager;
 
     /**
      * The translator instance
@@ -102,16 +102,16 @@ class CsrfMiddleware implements MiddlewareInterface
      * @param LoggerInterface $logger
      * @param Lang $lang
      * @param Config<T> $config
-     * @param Session $session
+     * @param CsrfManager $csrfManager
      */
     public function __construct(
         LoggerInterface $logger,
         Lang $lang,
         Config $config,
-        Session $session
+        CsrfManager $csrfManager
     ) {
         $this->config = $config;
-        $this->session = $session;
+        $this->csrfManager = $csrfManager;
         $this->lang = $lang;
         $this->logger = $logger;
     }
@@ -130,7 +130,7 @@ class CsrfMiddleware implements MiddlewareInterface
 
         $this->request = $request;
 
-        if (!$this->isValid()) {
+        if ($this->isValid() === false) {
             return $this->unauthorizedResponse();
         }
 
@@ -143,36 +143,7 @@ class CsrfMiddleware implements MiddlewareInterface
      */
     protected function isValid(): bool
     {
-        $param = new RequestData($this->request);
-        $key = $this->config->get('security.csrf.key', '');
-
-        $sessionExpire = $this->session->get('csrf_data.expire');
-        $sessionValue = $this->session->get('csrf_data.value');
-
-        if (
-            $sessionExpire === null
-            || $sessionValue === null
-            || $sessionExpire <= time()
-        ) {
-            $this->logger->warning('The CSRF session data is not valide');
-
-            return false;
-        }
-
-
-        $token = $param->post($key, '');
-        if ($token !== $sessionValue) {
-            $this->logger->warning(sprintf(
-                'The CSRF token [%s] is not valide may be attacker do his job',
-                $token
-            ));
-
-            return false;
-        }
-
-        $this->session->remove('csrf_data');
-
-        return true;
+        return $this->csrfManager->validate($this->request);
     }
 
     /**

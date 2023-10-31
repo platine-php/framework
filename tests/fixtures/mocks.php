@@ -267,7 +267,6 @@ function current($a)
 }
 
 namespace Platine\Framework\Migration;
-use Platine\Test\Framework\Fixture\MyConfig as MyConfigMigration;
 
 $mock_app_to_config_instance = false;
 $mock_app_config_items = [];
@@ -302,10 +301,12 @@ namespace Platine\Framework\Template\Tag;
 
 use Platine\Config\Config;
 use Platine\Framework\Http\RouteHelper;
+use Platine\Framework\Security\Csrf\CsrfManager;
 use Platine\Http\ServerRequestInterface;
 use Platine\Lang\Lang;
 use Platine\Session\Session;
 use Platine\Test\Framework\Fixture\MyConfig;
+use Platine\Test\Framework\Fixture\MyCsrfManager;
 use Platine\Test\Framework\Fixture\MyLang;
 use Platine\Test\Framework\Fixture\MyRouteHelper;
 use Platine\Test\Framework\Fixture\MyServerRequest;
@@ -345,6 +346,10 @@ function app(string $id)
     if ($mock_app_to_instance) {
         if ($id === Config::class) {
             return new MyConfig($mock_app_config_items);
+        }
+
+        if ($id === CsrfManager::class) {
+            return new MyCsrfManager($mock_app_config_items);
         }
 
         if ($id === Session::class) {

@@ -17,6 +17,7 @@ use Platine\Framework\Config\DatabaseConfigLoader;
 use Platine\Framework\Form\Param\BaseParam;
 use Platine\Framework\Form\Validator\AbstractValidator;
 use Platine\Framework\Http\RouteHelper;
+use Platine\Framework\Security\Csrf\CsrfManager;
 use Platine\Framework\Service\ServiceProvider;
 use Platine\Framework\Task\TaskInterface;
 use Platine\Http\Handler\MiddlewareInterface;
@@ -192,6 +193,14 @@ class MyConfig extends Config
         return array_key_exists($key, $this->config)
                ? $this->config[$key]
                 : null;
+    }
+}
+
+class MyCsrfManager extends CsrfManager
+{
+    public function __construct($items = [])
+    {
+        parent::__construct(new MyConfig($items));
     }
 }
 

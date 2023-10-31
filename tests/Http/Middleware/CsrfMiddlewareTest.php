@@ -8,11 +8,11 @@ use Platine\Config\Config;
 use Platine\Dev\PlatineTestCase;
 use Platine\Framework\Http\Middleware\CsrfMiddleware;
 use Platine\Framework\Kernel\HttpKernel;
+use Platine\Framework\Security\Csrf\CsrfManager;
 use Platine\Http\ServerRequest;
 use Platine\Lang\Lang;
 use Platine\Logger\Logger;
 use Platine\Route\Route;
-use Platine\Session\Session;
 
 /*
  * @group core
@@ -22,7 +22,7 @@ class CsrfMiddlewareTest extends PlatineTestCase
 {
     public function testProcessRouteNotMatch(): void
     {
-        $session = $this->getMockInstance(Session::class);
+        $manager = $this->getMockInstance(CsrfManager::class);
         $lang = $this->getMockInstance(Lang::class);
         $logger = $this->getMockInstance(Logger::class);
         $request = $this->getMockInstance(ServerRequest::class);
@@ -34,7 +34,7 @@ class CsrfMiddlewareTest extends PlatineTestCase
             ]
         ]);
 
-        $o = new CsrfMiddleware($logger, $lang, $config, $session);
+        $o = new CsrfMiddleware($logger, $lang, $config, $manager);
         $res = $o->process($request, $handler);
 
         $this->assertEquals(0, $res->getStatusCode());
@@ -51,7 +51,7 @@ class CsrfMiddlewareTest extends PlatineTestCase
         ]);
         $handler = $this->getMockInstance(HttpKernel::class);
 
-        $session = $this->getMockInstance(Session::class);
+        $manager = $this->getMockInstance(CsrfManager::class);
         $lang = $this->getMockInstance(Lang::class);
         $logger = $this->getMockInstance(Logger::class);
         $config = $this->getMockInstanceMap(Config::class, [
@@ -60,7 +60,7 @@ class CsrfMiddlewareTest extends PlatineTestCase
             ]
         ]);
 
-        $o = new CsrfMiddleware($logger, $lang, $config, $session);
+        $o = new CsrfMiddleware($logger, $lang, $config, $manager);
         $res = $o->process($request, $handler);
 
         $this->assertEquals(0, $res->getStatusCode());
@@ -78,7 +78,7 @@ class CsrfMiddlewareTest extends PlatineTestCase
         ]);
         $handler = $this->getMockInstance(HttpKernel::class);
 
-        $session = $this->getMockInstance(Session::class);
+        $manager = $this->getMockInstance(CsrfManager::class);
         $lang = $this->getMockInstance(Lang::class);
         $logger = $this->getMockInstance(Logger::class);
         $config = $this->getMockInstanceMap(Config::class, [
@@ -88,13 +88,13 @@ class CsrfMiddlewareTest extends PlatineTestCase
             ]
         ]);
 
-        $o = new CsrfMiddleware($logger, $lang, $config, $session);
+        $o = new CsrfMiddleware($logger, $lang, $config, $manager);
         $res = $o->process($request, $handler);
 
         $this->assertEquals(0, $res->getStatusCode());
     }
 
-    public function testProcessSessionInvalid(): void
+    public function testProcessCsrfManagerInvalid(): void
     {
         $route = $this->getMockInstance(Route::class, [
             'getPattern' => '/bar/foo'
@@ -105,11 +105,8 @@ class CsrfMiddlewareTest extends PlatineTestCase
         ]);
         $handler = $this->getMockInstance(HttpKernel::class);
 
-        $session = $this->getMockInstanceMap(Session::class, [
-            'get' => [
-                ['csrf_data.expire', null, null],
-                ['csrf_data.value', null, null],
-            ]
+        $manager = $this->getMockInstance(CsrfManager::class, [
+            'validate' => false
         ]);
         $lang = $this->getMockInstance(Lang::class);
         $logger = $this->getMockInstance(Logger::class);
@@ -121,45 +118,13 @@ class CsrfMiddlewareTest extends PlatineTestCase
             ]
         ]);
 
-        $o = new CsrfMiddleware($logger, $lang, $config, $session);
+        $o = new CsrfMiddleware($logger, $lang, $config, $manager);
         $res = $o->process($request, $handler);
 
         $this->assertEquals(401, $res->getStatusCode());
     }
 
-    public function testProcessTokenInvalid(): void
-    {
-        $route = $this->getMockInstance(Route::class, [
-            'getPattern' => '/bar/foo'
-        ]);
-        $request = $this->getMockInstance(ServerRequest::class, [
-            'getAttribute' => $route,
-            'getMethod' => 'POST',
-            'getParsedBody' => ['csrf_key' => 'bar'],
-        ]);
-        $handler = $this->getMockInstance(HttpKernel::class);
 
-        $session = $this->getMockInstanceMap(Session::class, [
-            'get' => [
-                ['csrf_data.expire', null, time() + 10000],
-                ['csrf_data.value', null, 'foo'],
-            ]
-        ]);
-        $lang = $this->getMockInstance(Lang::class);
-        $logger = $this->getMockInstance(Logger::class);
-        $config = $this->getMockInstanceMap(Config::class, [
-            'get' => [
-                ['security.csrf.http_methods', [], ['POST']],
-                ['security.csrf.url_whitelist', [], ['/api']],
-                ['security.csrf.key', '', 'csrf_key'],
-            ]
-        ]);
-
-        $o = new CsrfMiddleware($logger, $lang, $config, $session);
-        $res = $o->process($request, $handler);
-
-        $this->assertEquals(401, $res->getStatusCode());
-    }
 
     public function testProcessSuccess(): void
     {
@@ -173,11 +138,8 @@ class CsrfMiddlewareTest extends PlatineTestCase
         ]);
         $handler = $this->getMockInstance(HttpKernel::class);
 
-        $session = $this->getMockInstanceMap(Session::class, [
-            'get' => [
-                ['csrf_data.expire', null, time() + 10000],
-                ['csrf_data.value', null, 'foo'],
-            ]
+        $manager = $this->getMockInstance(CsrfManager::class, [
+            'validate' => true
         ]);
         $lang = $this->getMockInstance(Lang::class);
         $logger = $this->getMockInstance(Logger::class);
@@ -189,7 +151,7 @@ class CsrfMiddlewareTest extends PlatineTestCase
             ]
         ]);
 
-        $o = new CsrfMiddleware($logger, $lang, $config, $session);
+        $o = new CsrfMiddleware($logger, $lang, $config, $manager);
         $res = $o->process($request, $handler);
 
         $this->assertEquals(0, $res->getStatusCode());

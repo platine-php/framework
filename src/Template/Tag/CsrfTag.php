@@ -48,8 +48,7 @@ declare(strict_types=1);
 namespace Platine\Framework\Template\Tag;
 
 use Platine\Config\Config;
-use Platine\Session\Session;
-use Platine\Stdlib\Helper\Str;
+use Platine\Framework\Security\Csrf\CsrfManager;
 use Platine\Template\Parser\AbstractTag;
 use Platine\Template\Parser\Context;
 
@@ -67,36 +66,16 @@ class CsrfTag extends AbstractTag
         /** @template T @var Config<T> $config */
         $config = app(Config::class);
 
-        /** @var Session $session */
-        $session = app(Session::class);
-
-        $currentTime = time();
-
-        if (
-            $session->has('csrf_data.value')
-            && $session->has('csrf_data.expire')
-            && $session->get('csrf_data.expire') > $currentTime
-        ) {
-            $value = $session->get('csrf_data.value');
-        } else {
-            $value = sha1(Str::randomToken(24));
-            $expire = $config->get('security.csrf.expire', 300);
-            $newTime = time() + $expire;
-
-            $data = [
-                'expire' => $newTime,
-                'value' => $value,
-            ];
-
-            $session->set('csrf_data', $data);
-        }
+        /** @var CsrfManager $csrfManager */
+        $csrfManager = app(CsrfManager::class);
 
         $key = $config->get('security.csrf.key', '');
+        $token = $csrfManager->getToken();
 
         return sprintf(
             '<input type = "hidden" name = "%s" value = "%s" />',
             $key,
-            $value
+            $token
         );
     }
 }
