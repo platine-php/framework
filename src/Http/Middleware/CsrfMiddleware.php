@@ -190,7 +190,7 @@ class CsrfMiddleware implements MiddlewareInterface
         );
         $response = new Response(401);
 
-        $message = $this->lang->tr('Unauthorized Request');
+        $message = $this->lang->tr('Form expired, please try again');
         $response->getBody()->write($message);
 
         return $response;
