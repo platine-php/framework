@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Platine\Test\Framework\Security;
+namespace Platine\Test\Framework\Security\Policy;
 
 use Platine\Dev\PlatineTestCase;
 

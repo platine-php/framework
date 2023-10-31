@@ -2,9 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Platine\Test\Framework\Security;
+namespace Platine\Test\Framework\Security\Policy;
 
 use Platine\Config\Config;
+use Platine\Framework\Security\Policy\ContentSecurityPolicy;
 use Platine\Framework\Security\SecurityPolicy;
 use Platine\Route\RouteCollection;
 use Platine\Route\Router;
@@ -131,6 +132,13 @@ class SecurityPolicyTest extends SecurityPolicyTestCase
 
         $expected = "default-src 'self'; form-action 'self'; frame-ancestors 'self'; report-uri ";
         $this->assertEquals($expected, $headers['Content-Security-Policy']);
+    }
+    
+    public function testCspNonces(): void
+    {
+        $o = new ContentSecurityPolicy();
+        $this->assertCount(1, $o->nonces(['c3R5bGU']));
+        $this->assertEquals(["'nonce-c3R5bGU'"], $o->nonces(['c3R5bGU']));
     }
 
     public function testCspReportHeaders(): void

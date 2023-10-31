@@ -284,6 +284,20 @@ function app(string $id)
     return \app($id);
 }
 
+namespace Platine\Framework\Security\Csrf;
+
+$mock_sha1_foo = true;
+
+function sha1(string $str)
+{
+    global $mock_sha1_foo;
+    if ($mock_sha1_foo) {
+        return 'foo';
+    }
+
+    return \sha1($str);
+}
+
 namespace Platine\Framework\Template\Tag;
 
 use Platine\Config\Config;
