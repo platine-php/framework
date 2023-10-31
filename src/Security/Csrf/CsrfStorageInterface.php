@@ -56,17 +56,18 @@ interface CsrfStorageInterface
     /**
      * Return the token information from storage
      * @param string $name
-     * @return array<string, int|string>|null
+     * @return string|null
      */
-    public function get(string $name): ?array;
+    public function get(string $name): ?string;
 
     /**
      * Set the token information into storage
      * @param string $name
-     * @param array<string, int|string> $data
+     * @param string $token
+     * @param int $expire
      * @return void
      */
-    public function set(string $name, array $data): void;
+    public function set(string $name, string $token, int $expire): void;
 
     /**
      * Delete token information from storage

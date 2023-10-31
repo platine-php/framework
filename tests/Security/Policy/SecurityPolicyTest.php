@@ -133,7 +133,7 @@ class SecurityPolicyTest extends SecurityPolicyTestCase
         $expected = "default-src 'self'; form-action 'self'; frame-ancestors 'self'; report-uri ";
         $this->assertEquals($expected, $headers['Content-Security-Policy']);
     }
-    
+
     public function testCspNonces(): void
     {
         $o = new ContentSecurityPolicy();

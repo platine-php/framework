@@ -50,6 +50,7 @@ namespace Platine\Framework\Security\Csrf;
 use Platine\Config\Config;
 use Platine\Framework\Http\RequestData;
 use Platine\Framework\Security\Csrf\CsrfStorageInterface;
+use Platine\Framework\Security\Csrf\Storage\CsrfNullStorage;
 use Platine\Http\ServerRequestInterface;
 use Platine\Stdlib\Helper\Str;
 
@@ -102,8 +103,8 @@ class CsrfManager
             $key = $this->getConfigValue('key');
         }
 
-        $data = $this->storage->get($key);
-        if ($data === null || $data['expire'] <= time()) {
+        $storageToken = $this->storage->get($key);
+        if ($storageToken === null) {
             return false;
         }
 
@@ -113,7 +114,7 @@ class CsrfManager
             $token = $param->get($key);
         }
 
-        if ($token === null || $token !== $data['value']) {
+        if ($token === null || $token !== $storageToken) {
             return false;
         }
 
@@ -135,22 +136,17 @@ class CsrfManager
             $key = $this->getConfigValue('key');
         }
 
-        $data = $this->storage->get($key);
-        if ($data === null) {
-            // Generate
+        $value = $this->storage->get($key);
+        if ($value === null) {
+            // Generate the token
             $value = sha1(Str::randomToken(24));
             $expire = $this->getConfigValue('expire') ?? 300;
             $expireTime = time() + $expire;
 
-            $data = [
-                'expire' => $expireTime,
-                'value' => $value,
-            ];
-
-            $this->storage->set($key, $data);
+            $this->storage->set($key, $value, $expireTime);
         }
 
-        return $data['value'];
+        return $value;
     }
 
     /**

@@ -81,19 +81,28 @@ class CsrfSessionStorage implements CsrfStorageInterface
     /**
      * {@inheritdoc}
      */
-    public function get(string $name): ?array
+    public function get(string $name): ?string
     {
         $key = $this->getKeyName($name);
-        return $this->session->get($key);
+        $data = $this->session->get($key, []);
+
+        if (count($data) === 0 || $data['expire'] <= time()) {
+            return null;
+        }
+
+        return $data['value'];
     }
 
     /**
      * {@inheritdoc}
      */
-    public function set(string $name, array $data): void
+    public function set(string $name, string $token, int $expire): void
     {
         $key = $this->getKeyName($name);
-        $this->session->set($key, $data);
+        $this->session->set($key, [
+            'value' => $token,
+            'expire' => $expire,
+        ]);
     }
 
     /**

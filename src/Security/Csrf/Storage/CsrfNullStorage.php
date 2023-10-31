@@ -64,7 +64,7 @@ class CsrfNullStorage implements CsrfStorageInterface
     /**
      * {@inheritdoc}
      */
-    public function get(string $name): ?array
+    public function get(string $name): ?string
     {
         return $this->data[$name] ?? null;
     }
@@ -72,9 +72,9 @@ class CsrfNullStorage implements CsrfStorageInterface
     /**
      * {@inheritdoc}
      */
-    public function set(string $name, array $data): void
+    public function set(string $name, string $token, int $expire): void
     {
-         $this->data[$name] = $data;
+         $this->data[$name] = $token;
     }
 
     /**
