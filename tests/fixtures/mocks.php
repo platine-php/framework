@@ -299,6 +299,18 @@ function sha1(string $str)
 }
 
 namespace Platine\Framework\Template\Tag;
+use Platine\Config\Config;
+use Platine\Framework\Http\RouteHelper;
+use Platine\Framework\Security\Csrf\CsrfManager;
+use Platine\Http\ServerRequestInterface;
+use Platine\Lang\Lang;
+use Platine\Session\Session;
+use Platine\Test\Framework\Fixture\MyConfig;
+use Platine\Test\Framework\Fixture\MyCsrfManager;
+use Platine\Test\Framework\Fixture\MyLang;
+use Platine\Test\Framework\Fixture\MyRouteHelper;
+use Platine\Test\Framework\Fixture\MyServerRequest;
+use Platine\Test\Framework\Fixture\MySession;
 
 $mock_app_to_instance = false;
 $mock_app_lang_methods = [];
