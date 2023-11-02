@@ -30,9 +30,9 @@
  */
 
 /**
- *  @file CsrfSessionStorage.php
+ *  @file CsrfUserSessionStorage.php
  *
- *  The CSRF storage based on session
+ *  The CSRF storage based on user session
  *
  *  @package    Platine\Framework\Security\Csrf\Storage
  *  @author Platine Developers team
@@ -47,50 +47,21 @@ declare(strict_types=1);
 
 namespace Platine\Framework\Security\Csrf\Storage;
 
-use Platine\Framework\Security\Csrf\CsrfStorageInterface;
-use Platine\Session\Session;
-
 /**
- * @class CsrfSessionStorage
+ * @class CsrfUserSessionStorage
  * @package Platine\Framework\Security\Csrf\Storage
  */
-class CsrfSessionStorage implements CsrfStorageInterface
+class CsrfUserSessionStorage extends CsrfSessionStorage
 {
-    /**
-     * The session key used to store CSRF data
-     */
-    public const CSRF_SESSION_KEY = 'pl_csrf_data';
-
-
-    /**
-     * The session instance
-     * @var Session
-     */
-    protected Session $session;
-
-    /**
-     * Create new instance
-     * @param Session $session
-     */
-    public function __construct(Session $session)
-    {
-        $this->session = $session;
-    }
-
-
     /**
      * {@inheritdoc}
      */
     public function get(string $name): ?string
     {
         $key = $this->getKeyName($name);
-        $data = $this->session->get($key, []);
+        $token = $this->session->get($key, null);
 
-        if (count($data) === 0 || $data['expire'] <= time()) {
-            return null;
-        }
-
-        return $data['value'];
+        return $token;
     }
 
     /**
@@ -99,36 +70,6 @@ class CsrfSessionStorage implements CsrfStorageInterface
     public function set(string $name, string $token, int $expire): void
     {
         $key = $this->getKeyName($name);
-        $this->session->set($key, [
-            'value' => $token,
-            'expire' => $expire,
-        ]);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function delete(string $name): void
-    {
-        $key = $this->getKeyName($name);
-        $this->session->remove($key);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function clear(): void
-    {
-        $this->session->remove(self::CSRF_SESSION_KEY);
-    }
-
-    /**
-     * Return the session key
-     * @param string $name
-     * @return string
-     */
-    protected function getKeyName(string $name): string
-    {
-        return sprintf('%s.%s', self::CSRF_SESSION_KEY, $name);
+        $this->session->set($key, $token);
     }
 }

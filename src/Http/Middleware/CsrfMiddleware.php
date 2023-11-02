@@ -49,7 +49,6 @@ declare(strict_types=1);
 namespace Platine\Framework\Http\Middleware;
 
 use Platine\Config\Config;
-use Platine\Framework\Http\RequestData;
 use Platine\Framework\Security\Csrf\CsrfManager;
 use Platine\Http\Handler\MiddlewareInterface;
 use Platine\Http\Handler\RequestHandlerInterface;
@@ -160,9 +159,12 @@ class CsrfMiddleware implements MiddlewareInterface
             return false;
         }
 
+        // Check for route attribute (useful for GET method)
+        $csrf = (bool) $route->getAttribute('csrf');
+
         $methods = $this->config->get('security.csrf.http_methods', []);
 
-        if (!in_array($request->getMethod(), $methods)) {
+        if (!in_array($request->getMethod(), $methods) && $csrf === false) {
             return false;
         }
 

@@ -135,14 +135,6 @@ class CsrfManager
         if ($key === null) {
             $key = $this->getConfigValue('key');
         }
-        
-        if ($this->unique === false) {
-            $value = sha1(Str::randomToken(24));
-            $expire = $this->getConfigValue('expire') ?? 300;
-            $expireTime = time() + $expire;
-
-            $this->storage->set($key, $value, $expireTime);
-        }
 
         $value = $this->storage->get($key);
         if ($value === null) {

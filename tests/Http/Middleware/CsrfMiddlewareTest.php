@@ -156,4 +156,36 @@ class CsrfMiddlewareTest extends PlatineTestCase
 
         $this->assertEquals(0, $res->getStatusCode());
     }
+
+    public function testProcessSuccessUsingGetMethod(): void
+    {
+        $route = $this->getMockInstance(Route::class, [
+            'getPattern' => '/bar/foo',
+            'getAttribute' => true,
+        ]);
+        $request = $this->getMockInstance(ServerRequest::class, [
+            'getAttribute' => $route,
+            'getMethod' => 'GET',
+            'getQueryParams' => ['csrf_key' => 'foo'],
+        ]);
+        $handler = $this->getMockInstance(HttpKernel::class);
+
+        $manager = $this->getMockInstance(CsrfManager::class, [
+            'validate' => true
+        ]);
+        $lang = $this->getMockInstance(Lang::class);
+        $logger = $this->getMockInstance(Logger::class);
+        $config = $this->getMockInstanceMap(Config::class, [
+            'get' => [
+                ['security.csrf.http_methods', [], ['POST']],
+                ['security.csrf.url_whitelist', [], ['/api']],
+                ['security.csrf.key', '', 'csrf_key'],
+            ]
+        ]);
+
+        $o = new CsrfMiddleware($logger, $lang, $config, $manager);
+        $res = $o->process($request, $handler);
+
+        $this->assertEquals(0, $res->getStatusCode());
+    }
 }
