@@ -159,4 +159,23 @@ class CsrfManagerTest extends PlatineTestCase
         $o->clear();
         $this->assertNull($storage->get('csrf_key'));
     }
+
+    public function testGetTokenQuery(): void
+    {
+        $storage = new CsrfNullStorage();
+        $storage->set('csrf_key', 'bar', time() + 1000);
+        $config = $this->getMockInstance(Config::class, [
+            'get' => [
+                'key' => 'csrf_key',
+                'expire' => 600,
+            ]
+        ]);
+
+        $o = new CsrfManager($config, $storage);
+
+        $queries = $o->getTokenQuery();
+        $this->assertCount(1, $queries);
+        $this->assertArrayHasKey('csrf_key', $queries);
+        $this->assertEquals('bar', $queries['csrf_key']);
+    }
 }

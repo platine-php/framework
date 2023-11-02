@@ -150,6 +150,22 @@ class CsrfManager
     }
 
     /**
+     * Return the token query to be used in query string
+     * @param string|null $key
+     * @return array<string, string>
+     */
+    public function getTokenQuery(?string $key = null): array
+    {
+        $token = $this->getToken($key);
+
+        if ($key === null) {
+            $key = $this->getConfigValue('key');
+        }
+
+        return [$key => $token];
+    }
+
+    /**
      * Clear all CSRF data from storage
      * @return void
      */
