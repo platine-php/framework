@@ -113,7 +113,7 @@ class CsrfManagerTest extends PlatineTestCase
         $this->assertFalse($o->validate($request));
     }
 
-    public function testValidateNotUnique(): void
+    public function testValidate(): void
     {
         $storage = new CsrfNullStorage();
         $storage->set('csrf_key', 'bar', time() + 1000);
@@ -130,36 +130,8 @@ class CsrfManagerTest extends PlatineTestCase
             'getParsedBody' => ['csrf_key' => 'bar']
         ]);
         $this->assertTrue($o->validate($request));
-        $this->assertNull($storage->get('csrf_key'));
     }
 
-    public function testValidateIsUnique(): void
-    {
-        $storage = new CsrfNullStorage();
-        $storage->set('csrf_key', 'bar', time() + 1000);
-        $config = $this->getMockInstance(Config::class, [
-            'get' => [
-                'key' => 'csrf_key',
-                'expire' => 600,
-            ]
-        ]);
-
-        $o = new CsrfManager($config, $storage);
-
-        $request = $this->getMockInstance(ServerRequest::class, [
-            'getParsedBody' => ['csrf_key' => 'bar']
-        ]);
-
-        $o->unique(true);
-
-        $this->assertEquals('bar', $storage->get('csrf_key'));
-        $this->assertTrue($o->validate($request));
-        $this->assertEquals('bar', $storage->get('csrf_key'));
-
-        $o->clear();
-        $this->assertNull($storage->get('csrf_key'));
-    }
-    
     public function testValidateUsingRequestHeader(): void
     {
         $storage = new CsrfNullStorage();
@@ -177,7 +149,6 @@ class CsrfManagerTest extends PlatineTestCase
             'getHeaderLine' => 'bar'
         ]);
         $this->assertTrue($o->validate($request));
-        $this->assertNull($storage->get('csrf_key'));
     }
 
     public function testGetTokenQuery(): void

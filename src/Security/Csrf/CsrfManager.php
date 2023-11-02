@@ -73,12 +73,6 @@ class CsrfManager
     protected CsrfStorageInterface $storage;
 
     /**
-     * Whether return need generate token per request or not
-     * @var bool
-     */
-    protected bool $unique = false;
-
-    /**
      * Create new instance
      * @param Config $config
      * @param CsrfStorageInterface|null $storage
@@ -112,10 +106,6 @@ class CsrfManager
 
         if ($token === null || $token !== $storageToken) {
             return false;
-        }
-
-        if ($this->unique === false) {
-            $this->storage->delete($key);
         }
 
         return true;
@@ -168,18 +158,6 @@ class CsrfManager
     public function clear(): void
     {
         $this->storage->clear();
-    }
-
-    /**
-     *
-     * @param bool $status
-     * @return $this
-     */
-    public function unique(bool $status = true): self
-    {
-        $this->unique = $status;
-
-        return $this;
     }
 
     /**
