@@ -190,9 +190,9 @@ class CsrfMiddleware implements MiddlewareInterface
                 'url' => (string) $this->request->getUri(),
             ]
         );
-        $response = new Response(401);
+        $response = new Response(419);
 
-        $message = $this->lang->tr('Form expired, please try again');
+        $message = $this->lang->tr('Page expired, or request token invalid');
         $response->getBody()->write($message);
 
         return $response;

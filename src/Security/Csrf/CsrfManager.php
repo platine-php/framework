@@ -108,11 +108,7 @@ class CsrfManager
             return false;
         }
 
-        $param = new RequestData($request);
-        $token = $param->post($key);
-        if ($token === null) {
-            $token = $param->get($key);
-        }
+        $token = $this->getRequestToken($request, $key);
 
         if ($token === null || $token !== $storageToken) {
             return false;
@@ -184,6 +180,28 @@ class CsrfManager
         $this->unique = $status;
 
         return $this;
+    }
+
+    /**
+     * Return the token from request
+     * @param ServerRequestInterface $request
+     * @param string $key
+     * @return string|null
+     */
+    protected function getRequestToken(ServerRequestInterface $request, string $key): ?string
+    {
+        $param = new RequestData($request);
+        $token = $param->post($key);
+        if ($token === null) {
+            $token = $param->get($key);
+        }
+
+        if ($token === null) {
+            $token = $request->getHeaderLine('X-Csrf-Token');
+        }
+
+
+        return $token;
     }
 
     /**
