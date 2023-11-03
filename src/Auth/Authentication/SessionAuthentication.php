@@ -206,7 +206,7 @@ class SessionAuthentication implements AuthenticationInterface
     {
         $this->session->remove('user');
 
-        setcookie(session_name(), '', 100);
+        setcookie(session_name(), '', time() - 1000);
         session_unset();
         session_destroy();
     }
