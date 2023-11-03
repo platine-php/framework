@@ -235,6 +235,11 @@ class SessionAuthenticationTest extends PlatineTestCase
 
     public function testLogout(): void
     {
+        global $mock_session_unset, $mock_session_destroy;
+
+        $mock_session_unset = true;
+        $mock_session_destroy = true;
+
         $app = $this->getMockInstance(Application::class);
         $hash = $this->getMockInstance(BcryptHash::class, [
             'verify' => false

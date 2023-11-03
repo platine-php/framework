@@ -16,7 +16,7 @@
   </testsuites>
   <coverage>
     <include>
-      <directory suffix=".php">src/Security/Csrf</directory>
+      <directory suffix=".php">src</directory>
     </include>
   </coverage>
 </phpunit>

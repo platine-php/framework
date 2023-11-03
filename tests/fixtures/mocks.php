@@ -16,6 +16,33 @@ function preg_split(string $pattern, string $subject, int $limit = -1, int $flag
     return \preg_split($pattern, $subject, $limit, $flags);
 }
 
+
+namespace Platine\Framework\Auth\Authentication;
+
+$mock_session_unset = false;
+$mock_session_destroy = false;
+
+function session_unset()
+{
+    global $mock_session_unset;
+    if ($mock_session_unset) {
+        return true;
+    }
+
+    return \session_unset();
+}
+
+function session_destroy()
+{
+    global $mock_session_destroy;
+    if ($mock_session_destroy) {
+        return true;
+    }
+
+    return \session_destroy();
+}
+
+
 namespace Platine\Framework\Http\Client;
 
 $mock_uniqid = false;
