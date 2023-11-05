@@ -62,6 +62,69 @@ Namespace: MyApp\Param
         $this->assertEquals($expected, $this->getConsoleOutputContent());
     }
 
+
+    public function testExecuteDefaultWithCustomDataType(): void
+    {
+        $dir = $this->createVfsDirectory('app', $this->vfsRoot);
+        $actionName = 'Param/' . 'MyParam';
+        $localAdapter = new LocalAdapter();
+        $filesystem = new Filesystem($localAdapter);
+        $app = $this->getMockInstance(Application::class, [
+            'getNamespace' => 'MyApp\\',
+            'getAppPath' => $dir->url()
+        ]);
+
+        $this->createInputContent('code:int:true');
+        $this->createInputContent("\n");
+        $this->createInputContent("\n");
+        $this->createInputContent('y');
+        $this->createInputContent('code');
+        $this->createInputContent("\n");
+
+
+        $reader = $this->getReaderInstance();
+        $writer = $this->getWriterInstance();
+
+        $interactor = $this->getMockInstance(
+            Interactor::class,
+            [
+            'writer' => $writer,
+            'reader' => $reader
+            ],
+            [
+            'prompt',
+            'confirm',
+            ]
+        );
+
+        $this->setPropertyValue(Interactor::class, $interactor, 'reader', $reader);
+        $this->setPropertyValue(Interactor::class, $interactor, 'writer', $writer);
+
+        $consoleApp = $this->getMockInstance(ConsoleApp::class, [
+            'io' => $interactor
+        ]);
+
+        $o = new MakeFormParamCommand($app, $filesystem);
+        $o->bind($consoleApp);
+        $o->parse(['platine', $actionName]);
+        $this->assertEquals('make:param', $o->getName());
+
+        $o->interact($reader, $writer);
+        $o->execute();
+        $expected = 'GENERATION OF NEW CLASS
+
+Enter the properties list (empty value to finish):
+Property name: Property name: Entity field name for [code] (just enter to ignore):'
+        . ' Generation of new form parameter class [MyApp\Param\MyParam]
+
+Class: MyApp\Param\MyParam
+Path: vfs://root/app/Param/MyParam.php
+Namespace: MyApp\Param
+Class [MyApp\Param\MyParam] generated successfully.
+';
+        $this->assertEquals($expected, $this->getConsoleOutputContent());
+    }
+
     public function testExecuteWithEntityInstance(): void
     {
         $dir = $this->createVfsDirectory('app', $this->vfsRoot);
@@ -76,7 +139,7 @@ Namespace: MyApp\Param
         $this->createInputContent('code');
         $this->createInputContent("\n");
         $this->createInputContent("\n");
-         $this->createInputContent('y');
+        $this->createInputContent('y');
         $this->createInputContent('code');
         $this->createInputContent("\n");
 

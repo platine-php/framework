@@ -108,11 +108,27 @@ class MakeFormParamCommand extends MakeCommand
 
             if (!empty($value)) {
                 $value = trim($value);
+                $type = 'string';
+                $required = true;
+                $values = (array) explode(':', $value); // 0 = field name, 1 = data type, 2 = required (true/false)
+                if (isset($values[0]) && !empty($values[0])) {
+                    $value = $values[0];
+                }
+
+                if (isset($values[1]) && !empty($values[1])) {
+                    $type = $values[1];
+                }
+
+                if (isset($values[2])) {
+                    $required = in_array($values[2], ['true', '1', 'yes', 'on', 'y']) ;
+                }
+
                 $name = Str::camel($value, true);
 
                 $properties[$name] = [
                     'name' => $name,
-                    'short' => 'string',
+                    'type' => $type,
+                    'required' => $required,
                 ];
             }
         }
@@ -226,16 +242,24 @@ class MakeFormParamCommand extends MakeCommand
     protected function getSetterTemplate(array $info): string
     {
         $name = $info['name'];
+        $type = $info['type'];
+        $typeDockBlock = $type;
+        $typeArg = $type;
+        $required = $info['required'];
+        if ($required === false) {
+            $typeDockBlock .= '|null';
+            $typeArg = '?' . $typeArg;
+        }
         $cleanName = Str::snake($name, ' ');
         $setterName = 'set' . Str::ucfirst($name);
 
         return <<<EOF
         /**
             * Set the $cleanName value 
-            * @param string \$$name 
+            * @param $typeDockBlock \$$name 
             * @return \$this
             */
-           public function $setterName(string \$$name): self
+           public function $setterName($typeArg \$$name): self
            {
                \$this->$name = \$$name;
                 
@@ -254,15 +278,23 @@ class MakeFormParamCommand extends MakeCommand
     protected function getGetterTemplate(array $info): string
     {
         $name = $info['name'];
+        $type = $info['type'];
+        $typeDockBlock = $type;
+        $typeReturn = $type;
+        $required = $info['required'];
+        if ($required === false) {
+            $typeDockBlock .= '|null';
+            $typeReturn = '?' . $typeReturn;
+        }
         $cleanName = Str::snake($name, ' ');
         $getterName = 'get' . Str::ucfirst($name);
 
         return <<<EOF
         /**
             * Return the $cleanName value 
-            * @return string
+            * @return $typeDockBlock
             */
-           public function $getterName(): string
+           public function $getterName(): $typeReturn
            {
                return \$this->$name;
            }
@@ -316,16 +348,27 @@ class MakeFormParamCommand extends MakeCommand
      */
     protected function getPropertyTemplate(string $className, array $info): string
     {
-        $shortClass = $info['short'];
         $name = $info['name'];
+        $type = $info['type'];
+        $typeDockBlock = $type;
+        $typeProp = $type;
+        $required = $info['required'];
+        if ($required === false) {
+            $typeDockBlock .= '|null';
+            $typeProp = '?' . $typeProp;
+        }
+
         $cleanName = Str::snake($name, ' ');
+        $default = $this->getDefaultValue($type);
+
+        $default = ' = ' . $default;
 
         return <<<EOF
         /**
             * The $cleanName field
-            * @var $shortClass
+            * @var $typeDockBlock
             */
-            protected $shortClass \$$name = '';
+            protected $typeProp \$$name$default;
         
             
         EOF;
@@ -344,5 +387,24 @@ class MakeFormParamCommand extends MakeCommand
         use Platine\Orm\Entity; 
         
         EOF;
+    }
+
+    /**
+     * Return default value for type
+     * @param string $type
+     * @return string
+     */
+    protected function getDefaultValue(string $type): string
+    {
+        $maps = [
+            'array' => '[]',
+            'int' => '0',
+            'float' => '0.0',
+            'double' => '0.0',
+            'bool' => 'false',
+            'string' => '\'\'',
+        ];
+
+        return $maps[$type] ?? '\'\'';
     }
 }
