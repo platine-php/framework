@@ -127,6 +127,7 @@ class MakeFormParamCommand extends MakeCommand
 
                 $properties[$name] = [
                     'name' => $name,
+                    'short' => $type, // needed by super class
                     'type' => $type,
                     'required' => $required,
                 ];
