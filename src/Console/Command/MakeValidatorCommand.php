@@ -190,7 +190,7 @@ class MakeValidatorCommand extends MakeCommand
         if (!empty($methods)) {
             foreach ($methods as /** @var ReflectionMethod $method */ $method) {
                 $returnType = $method->getReturnType();
-                if ($returnType !== null && $returnType->getName() === 'string') {
+                if ($returnType !== null) {
                     $name = $method->name;
                     if (substr($name, 0, 3) === 'get') {
                         $field = str_replace('get', '', $name);
