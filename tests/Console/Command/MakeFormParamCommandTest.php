@@ -120,7 +120,7 @@ Namespace: MyApp\Param
         $expected = 'GENERATION OF NEW CLASS
 
 Enter the properties list (empty value to finish):
-Property name: Property name: Entity field name for [code] (just enter to ignore):'
+Property name: Property name: Property name: Property name: Property name: Entity field name for [code] (just enter to ignore): Entity field name for [sexe] (just enter to ignore): Entity field name for [amount] (just enter to ignore): Entity field name for [name] (just enter to ignore):'
         . ' Generation of new form parameter class [MyApp\Param\MyParam]
 
 Class: MyApp\Param\MyParam
