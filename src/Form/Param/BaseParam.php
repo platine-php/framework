@@ -149,6 +149,34 @@ class BaseParam implements JsonSerializable
     }
 
     /**
+     * Return the value after cast
+     * @param string $attribute
+     * @param mixed $value
+     * @return mixed
+     */
+    protected function getValue(string $attribute, $value)
+    {
+        $types = $this->getPropertyTypes();
+        $property = $types[$attribute] ?? null;
+        if ($property === null) {
+            return $value;
+        }
+
+        $maps = $this->getPropertiesCastMaps();
+
+        $type = $property[0];
+        $allowNull = $property[1];
+        $closure = $maps[$type] ?? fn($value) => $value;
+
+        $typedValue = $closure($value);
+        if ($type !== 'array' && strlen((string) $typedValue) === 0 && $allowNull) {
+            $typedValue = null;
+        }
+
+        return $typedValue;
+    }
+
+    /**
      * Return the properties of this class
      * @return array<string, string>
      */
@@ -163,33 +191,12 @@ class BaseParam implements JsonSerializable
             /** @var ReflectionNamedType|null $type */
             $type = $property->getType();
             if ($type !== null && $type->isBuiltin()) {
-                $props[$property->getName()] = $type->getName();
+                $props[$property->getName()] = [$type->getName(), $type->allowsNull()];
             }
         }
 
 
         return $props;
-    }
-
-    /**
-     * Return the value after cast
-     * @param string $property
-     * @param mixed $value
-     * @return mixed
-     */
-    protected function getValue(string $property, $value)
-    {
-        $types = $this->getPropertyTypes();
-        $type = $types[$property] ?? null;
-        if ($type === null) {
-            return $value;
-        }
-
-        $maps = $this->getPropertiesCastMaps();
-
-        $closure = $maps[$type] ?? fn($value) => $value;
-
-        return $closure($value);
     }
 
     /**
