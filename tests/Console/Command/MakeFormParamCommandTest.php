@@ -74,7 +74,8 @@ Namespace: MyApp\Param
             'getAppPath' => $dir->url()
         ]);
 
-        $this->createInputContent('code:int:true');
+        $this->createInputContent('code:int:true:1');
+        $this->createInputContent('sexe:string:false:');
         $this->createInputContent("\n");
         $this->createInputContent("\n");
         $this->createInputContent('y');

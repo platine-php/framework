@@ -16,7 +16,7 @@
   </testsuites>
   <coverage>
     <include>
-      <directory suffix=".php">src</directory>
+      <directory suffix=".php">src/Console/Command</directory>
     </include>
   </coverage>
 </phpunit>

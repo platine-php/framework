@@ -368,6 +368,10 @@ class MakeFormParamCommand extends MakeCommand
             $typeProp = '?' . $typeProp;
         }
 
+        if ($default === null && $required === false) {
+            $default = 'null';
+        }
+
         $cleanName = Str::snake($name, ' ');
         if ($default !== null) {
             $default = ' = ' . $default;
