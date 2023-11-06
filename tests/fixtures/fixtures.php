@@ -300,6 +300,7 @@ class MyParam4 extends BaseParam
 {
     protected object $obj;
     protected $name;
+    protected ?int $age;
 }
 
 class MyValidator extends AbstractValidator

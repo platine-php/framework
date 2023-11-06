@@ -166,17 +166,17 @@ class BaseParam implements JsonSerializable
 
         $type = $property[0];
         $allowNull = $property[1];
-        $closure = $maps[$type] ?? fn($value) => $value;
 
-        $typedValue = $closure($value);
         if (
             in_array($type, ['array', 'object']) === false &&
-            strlen((string) $typedValue) === 0 && $allowNull
+            strlen((string) $value) === 0 && $allowNull
         ) {
-            $typedValue = null;
+            return null;
         }
 
-        return $typedValue;
+        $closure = $maps[$type] ?? fn($value) => $value;
+
+        return $closure($value);
     }
 
     /**

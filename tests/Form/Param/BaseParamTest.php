@@ -44,12 +44,14 @@ class BaseParamTest extends PlatineTestCase
     {
         $o = new MyParam4([
             'obj' => new stdClass(),
-            'name' => 1
+            'name' => 1,
+            'age' => '',
         ]);
         $this->assertEmpty($o->getDefault());
 
         //Using magic method
         $this->assertEquals(1, $o->name);
+        $this->assertNull($o->age);
         $this->assertInstanceOf(stdClass::class, $o->obj);
     }
 
