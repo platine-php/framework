@@ -77,6 +77,7 @@ Namespace: MyApp\Param
         $this->createInputContent('code:int:true:1');
         $this->createInputContent('sexe:string:false:');
         $this->createInputContent('amount:float:false');
+        $this->createInputContent('name:string:y:');
         $this->createInputContent("\n");
         $this->createInputContent("\n");
         $this->createInputContent('y');

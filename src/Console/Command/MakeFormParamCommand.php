@@ -358,6 +358,8 @@ class MakeFormParamCommand extends MakeCommand
     protected function getPropertyTemplate(string $className, array $info): string
     {
         $name = $info['name'];
+        $cleanName = Str::snake($name, ' ');
+
         $default = $info['default'];
         $type = $info['type'];
         $typeDockBlock = $type;
@@ -372,14 +374,15 @@ class MakeFormParamCommand extends MakeCommand
             $default = 'null';
         }
 
-        $cleanName = Str::snake($name, ' ');
         if ($default !== null) {
+            if ($type === 'string' && empty($default)) {
+                $default = '\'\'';
+            }
+
             $default = ' = ' . $default;
         } else {
             $default = '';
         }
-
-
 
         return <<<EOF
         /**
