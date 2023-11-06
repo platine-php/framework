@@ -110,7 +110,10 @@ class MakeFormParamCommand extends MakeCommand
                 $value = trim($value);
                 $type = 'string';
                 $required = true;
-                $values = (array) explode(':', $value); // 0 = field name, 1 = data type, 2 = required (true/false)
+                $default = null;
+
+                // 0 = field name, 1 = data type, 2 = required (true/false), 3 = default value
+                $values = (array) explode(':', $value);
                 if (isset($values[0]) && !empty($values[0])) {
                     $value = $values[0];
                 }
@@ -123,6 +126,10 @@ class MakeFormParamCommand extends MakeCommand
                     $required = in_array($values[2], ['true', '1', 'yes', 'on', 'y']) ;
                 }
 
+                if (isset($values[3])) {
+                    $default = $values[3];
+                }
+
                 $name = Str::camel($value, true);
 
                 $properties[$name] = [
@@ -130,6 +137,7 @@ class MakeFormParamCommand extends MakeCommand
                     'short' => $type, // needed by super class
                     'type' => $type,
                     'required' => $required,
+                    'default' => $default,
                 ];
             }
         }
@@ -350,6 +358,7 @@ class MakeFormParamCommand extends MakeCommand
     protected function getPropertyTemplate(string $className, array $info): string
     {
         $name = $info['name'];
+        $default = $info['default'];
         $type = $info['type'];
         $typeDockBlock = $type;
         $typeProp = $type;
@@ -360,9 +369,13 @@ class MakeFormParamCommand extends MakeCommand
         }
 
         $cleanName = Str::snake($name, ' ');
-        $default = $this->getDefaultValue($type);
+        if ($default !== null) {
+            $default = ' = ' . $default;
+        } else {
+            $default = '';
+        }
 
-        $default = ' = ' . $default;
+
 
         return <<<EOF
         /**
@@ -388,24 +401,5 @@ class MakeFormParamCommand extends MakeCommand
         use Platine\Orm\Entity; 
         
         EOF;
-    }
-
-    /**
-     * Return default value for type
-     * @param string $type
-     * @return string
-     */
-    protected function getDefaultValue(string $type): string
-    {
-        $maps = [
-            'array' => '[]',
-            'int' => '0',
-            'float' => '0.0',
-            'double' => '0.0',
-            'bool' => 'false',
-            'string' => '\'\'',
-        ];
-
-        return $maps[$type] ?? '\'\'';
     }
 }
