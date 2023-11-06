@@ -67,6 +67,9 @@ class BaseParam implements JsonSerializable
      */
     public function __construct(array $data = [])
     {
+        // Load default values
+        $this->loadDefaultValues();
+        
         $params = array_merge($this->getDefault(), $data);
         $this->load($params);
     }
@@ -162,8 +165,6 @@ class BaseParam implements JsonSerializable
             return $value;
         }
 
-        $maps = $this->getPropertiesCastMaps();
-
         $type = $property[0];
         $allowNull = $property[1];
 
@@ -174,7 +175,13 @@ class BaseParam implements JsonSerializable
             return null;
         }
 
-        $closure = $maps[$type] ?? fn($value) => $value;
+        $maps = $this->getPropertiesCastMaps();
+        $map = $maps[$type] ?? [];
+        if (count($map) === 0) {
+            return $value;
+        }
+
+        $closure = $map[0] ?? fn($value) => $value;
 
         return $closure($value);
     }
@@ -198,7 +205,6 @@ class BaseParam implements JsonSerializable
             }
         }
 
-
         return $props;
     }
 
@@ -209,12 +215,31 @@ class BaseParam implements JsonSerializable
     protected function getPropertiesCastMaps(): array
     {
         return [
-            'int' => fn($value) => intval($value),
-            'float' => fn($value) => floatval($value),
-            'double' => fn($value) => doubleval($value),
-            'bool' => fn($value) => boolval($value),
-            'string' => fn($value) => strval($value),
-            'array' => fn($value) => (array) $value,
+            'int' => [fn($value) => intval($value), 0],
+            'float' => [fn($value) => floatval($value), 0.0],
+            'double' => [fn($value) => doubleval($value), 0.0],
+            'bool' => [fn($value) => boolval($value), false],
+            'string' => [fn($value) => strval($value), ''],
+            'array' => [fn($value) => (array) $value, []],
         ];
+    }
+
+    /**
+     * Load the default value based on data type
+     * @return void
+     */
+    protected function loadDefaultValues(): void
+    {
+        $data = [];
+        $types = $this->getPropertyTypes();
+        $maps = $this->getPropertiesCastMaps();
+
+        foreach ($types as $attr => $val) {
+            if (isset($maps[$val[0]])) {
+                $data[$attr] = $maps[$val[0]][1];
+            }
+        }
+
+        $this->load($data);
     }
 }
