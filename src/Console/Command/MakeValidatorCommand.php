@@ -192,7 +192,7 @@ class MakeValidatorCommand extends MakeCommand
                 $returnType = $method->getReturnType();
                 if ($returnType !== null) {
                     $name = $method->name;
-                    if (substr($name, 0, 3) === 'get') {
+                    if (substr($name, 0, 3) === 'get' && $name !== 'getDefault') {
                         $field = str_replace('get', '', $name);
                         $list[Str::snake($field)] = $name;
                     }
