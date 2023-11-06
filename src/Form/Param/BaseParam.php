@@ -83,7 +83,7 @@ class BaseParam implements JsonSerializable
     {
         foreach ($data as $name => $value) {
             $key = Str::camel($name, true);
-            $typedValue = $this->getValue($key, $value);
+            $typedValue = $this->getPropertyValue($key, $value);
 
             $setterMethod = 'set' . ucfirst($key);
             if (method_exists($this, $setterMethod)) {
@@ -157,7 +157,7 @@ class BaseParam implements JsonSerializable
      * @param mixed $value
      * @return mixed
      */
-    protected function getValue(string $attribute, $value)
+    protected function getPropertyValue(string $attribute, $value)
     {
         $types = $this->getPropertyTypes();
         $property = $types[$attribute] ?? null;
