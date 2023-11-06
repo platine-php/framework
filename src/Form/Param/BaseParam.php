@@ -50,6 +50,9 @@ namespace Platine\Framework\Form\Param;
 use JsonSerializable;
 use Platine\Orm\Entity;
 use Platine\Stdlib\Helper\Str;
+use ReflectionClass;
+use ReflectionNamedType;
+use ReflectionProperty;
 
 /**
  * @class BaseParam
@@ -77,12 +80,13 @@ class BaseParam implements JsonSerializable
     {
         foreach ($data as $name => $value) {
             $key = Str::camel($name, true);
+            $typedValue = $this->getValue($key, $value);
 
             $setterMethod = 'set' . ucfirst($key);
             if (method_exists($this, $setterMethod)) {
-                $this->{$setterMethod}($value);
+                $this->{$setterMethod}($typedValue);
             } elseif (property_exists($this, $key)) {
-                $this->{$key} = $value;
+                $this->{$key} = $typedValue;
             }
         }
     }
@@ -142,5 +146,65 @@ class BaseParam implements JsonSerializable
         }
 
         return null;
+    }
+
+    /**
+     * Return the properties of this class
+     * @return array<string, string>
+     */
+    protected function getPropertyTypes(): array
+    {
+        $props = [];
+
+        $reflectionClass = new ReflectionClass($this);
+        /** @var ReflectionProperty[] $properties */
+        $properties = $reflectionClass->getProperties(ReflectionProperty::IS_PROTECTED);
+        foreach ($properties as $property) {
+            /** @var ReflectionNamedType|null $type */
+            $type = $property->getType();
+            if ($type !== null && $type->isBuiltin()) {
+                $props[$property->getName()] = $type->getName();
+            }
+        }
+
+
+        return $props;
+    }
+
+    /**
+     * Return the value after cast
+     * @param string $property
+     * @param mixed $value
+     * @return mixed
+     */
+    protected function getValue(string $property, $value)
+    {
+        $types = $this->getPropertyTypes();
+        $type = $types[$property] ?? null;
+        if ($type === null) {
+            return $value;
+        }
+
+        $maps = $this->getPropertiesCastMaps();
+
+        $closure = $maps[$type] ?? fn($value) => $value;
+
+        return $closure($value);
+    }
+
+    /**
+     * Return the properties cast maps
+     * @return array<string, Closure>
+     */
+    protected function getPropertiesCastMaps(): array
+    {
+        return [
+            'int' => fn($value) => intval($value),
+            'float' => fn($value) => floatval($value),
+            'double' => fn($value) => doubleval($value),
+            'bool' => fn($value) => boolval($value),
+            'string' => fn($value) => strval($value),
+            'array' => fn($value) => (array) $value,
+        ];
     }
 }

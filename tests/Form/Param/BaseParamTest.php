@@ -9,6 +9,8 @@ use Platine\Orm\Entity;
 use Platine\Test\Framework\Fixture\MyParam;
 use Platine\Test\Framework\Fixture\MyParam2;
 use Platine\Test\Framework\Fixture\MyParam3;
+use Platine\Test\Framework\Fixture\MyParam4;
+use stdClass;
 
 /*
  * @group core
@@ -36,6 +38,19 @@ class BaseParamTest extends PlatineTestCase
         $this->assertEquals('foo', $o->name);
         $this->assertEquals('1', $o->status);
         $this->assertNull($o->undefined);
+    }
+
+    public function testLoadValueTypeNotFound(): void
+    {
+        $o = new MyParam4([
+            'obj' => new stdClass(),
+            'name' => 1
+        ]);
+        $this->assertEmpty($o->getDefault());
+
+        //Using magic method
+        $this->assertEquals(1, $o->name);
+        $this->assertInstanceOf(stdClass::class, $o->obj);
     }
 
     public function testDataAndJson(): void

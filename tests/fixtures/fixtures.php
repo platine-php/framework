@@ -296,6 +296,12 @@ class MyParam3 extends BaseParam
     protected string $fooBar;
 }
 
+class MyParam4 extends BaseParam
+{
+    protected object $obj;
+    protected $name;
+}
+
 class MyValidator extends AbstractValidator
 {
     protected MyParam $param;
