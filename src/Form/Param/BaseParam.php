@@ -69,7 +69,7 @@ class BaseParam implements JsonSerializable
     {
         // Load default values
         $this->loadDefaultValues();
-        
+
         $params = array_merge($this->getDefault(), $data);
         $this->load($params);
     }
@@ -201,7 +201,7 @@ class BaseParam implements JsonSerializable
             /** @var ReflectionNamedType|null $type */
             $type = $property->getType();
             if ($type !== null && $type->isBuiltin()) {
-                $props[$property->getName()] = [$type->getName(), $type->allowsNull()];
+                $props[$property->getName()] = [$type->getName(), $type->allowsNull(), $property];
             }
         }
 
@@ -235,7 +235,10 @@ class BaseParam implements JsonSerializable
         $maps = $this->getPropertiesCastMaps();
 
         foreach ($types as $attr => $val) {
-            if (isset($maps[$val[0]])) {
+            /** @var ReflectionProperty $property */
+            $property = $val[2];
+            $property->setAccessible(true);
+            if (isset($maps[$val[0]]) && $property->isInitialized($this) === false) {
                 $data[$attr] = $maps[$val[0]][1];
             }
         }
