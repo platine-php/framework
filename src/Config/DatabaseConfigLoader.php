@@ -49,7 +49,6 @@ namespace Platine\Framework\Config;
 
 use Platine\Database\Query\WhereStatement;
 use Platine\Framework\Config\Model\Configuration;
-use Platine\Framework\Config\Model\ConfigurationRepository;
 
 /**
  * @class DatabaseConfigLoader
@@ -59,16 +58,16 @@ class DatabaseConfigLoader implements DatabaseConfigLoaderInterface
 {
     /**
      * The Repository instance
-     * @var ConfigurationRepository
+     * @var ConfigurationRepositoryInterface
      */
-    protected ConfigurationRepository $repository;
+    protected ConfigurationRepositoryInterface $repository;
 
 
     /**
      * Create new instance
-     * @param ConfigurationRepository $repository
+     * @param ConfigurationRepositoryInterface $repository
      */
-    public function __construct(ConfigurationRepository $repository)
+    public function __construct(ConfigurationRepositoryInterface $repository)
     {
         $this->repository = $repository;
     }

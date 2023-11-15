@@ -30,11 +30,11 @@
  */
 
 /**
- *  @file DatabaseConfigServiceProvider.php
+ *  @file ConfigurationRepositoryInterface.php
  *
- *  The Framework database configuration service provider class
+ *  The Database Configuration Repository interface
  *
- *  @package    Platine\Framework\Service\Provider
+ *  @package    Platine\Framework\Config
  *  @author Platine Developers team
  *  @copyright  Copyright (c) 2020
  *  @license    http://opensource.org/licenses/MIT  MIT License
@@ -45,37 +45,15 @@
 
 declare(strict_types=1);
 
-namespace Platine\Framework\Service\Provider;
+namespace Platine\Framework\Config;
 
-use Platine\Config\Config;
-use Platine\Container\ContainerInterface;
-use Platine\Framework\Config\AppDatabaseConfig;
-use Platine\Framework\Config\ConfigurationRepositoryInterface;
-use Platine\Framework\Config\DatabaseConfigLoader;
-use Platine\Framework\Config\DatabaseConfigLoaderInterface;
-use Platine\Framework\Config\Model\ConfigurationRepository;
-use Platine\Framework\Service\ServiceProvider;
+use Platine\Orm\RepositoryInterface;
 
 /**
- * @class DatabaseConfigServiceProvider
- * @package Platine\Framework\Service\Provider
+ * @class ConfigurationRepositoryInterface
+ * @package Platine\Framework\Config
  */
-class DatabaseConfigServiceProvider extends ServiceProvider
+interface ConfigurationRepositoryInterface extends RepositoryInterface
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function register(): void
-    {
-        $this->app->bind(ConfigurationRepositoryInterface::class, ConfigurationRepository::class);
-        $this->app->bind(
-            DatabaseConfigLoaderInterface::class,
-            DatabaseConfigLoader::class
-        );
-
-        $this->app->share(AppDatabaseConfig::class, function (ContainerInterface $app) {
-            $env = $app->get(Config::class)->get('app.env', '');
-            return new AppDatabaseConfig($app->get(DatabaseConfigLoaderInterface::class), $env);
-        });
-    }
+    
 }

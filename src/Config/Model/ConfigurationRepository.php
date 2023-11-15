@@ -47,6 +47,7 @@ declare(strict_types=1);
 
 namespace Platine\Framework\Config\Model;
 
+use Platine\Framework\Config\ConfigurationRepositoryInterface;
 use Platine\Orm\EntityManager;
 use Platine\Orm\Repository;
 
@@ -55,7 +56,7 @@ use Platine\Orm\Repository;
  * @package Platine\Framework\Config\Model
  * @extends Repository<Configuration>
  */
-class ConfigurationRepository extends Repository
+class ConfigurationRepository extends Repository implements ConfigurationRepositoryInterface
 {
     /**
      * Create new instance
