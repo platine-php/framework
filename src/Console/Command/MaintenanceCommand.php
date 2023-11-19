@@ -210,7 +210,7 @@ class MaintenanceCommand extends Command
 
             $this->application->maintenance()->deactivate();
 
-            $writer->boldRed('Application is now online')->eol();
+            $writer->boldGreen('Application is now online')->eol();
         } catch (Throwable $ex) {
             $writer->boldRed(sprintf(
                 'Failed to disable maintenance mode: %s.',
@@ -236,7 +236,7 @@ class MaintenanceCommand extends Command
             $data = $this->getPayload();
             $this->application->maintenance()->activate($data);
 
-            $writer->boldRed('Application is now in maintenance mode.')->eol();
+            $writer->boldGreen('Application is now in maintenance mode.')->eol();
         } catch (Throwable $ex) {
             $writer->boldRed(sprintf(
                 'Failed to enable maintenance mode: %s.',
