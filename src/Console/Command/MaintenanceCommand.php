@@ -120,7 +120,7 @@ class MaintenanceCommand extends Command
                         $val
                     ));
                 }
-                
+
                 return $val;
             }
         );
@@ -138,7 +138,7 @@ class MaintenanceCommand extends Command
                         $val
                     ));
                 }
-                
+
                 return $val;
             }
         );
@@ -163,7 +163,7 @@ class MaintenanceCommand extends Command
                         $val
                     ));
                 }
-                
+
                 return $val;
             }
         );
