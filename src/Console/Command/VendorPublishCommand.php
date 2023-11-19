@@ -119,6 +119,7 @@ class VendorPublishCommand extends Command
         $this->addOption('-c|--config', 'Publish only the configuration.', false, false);
         $this->addOption('-m|--migration', 'Publish only the migrations.', false, false);
         $this->addOption('-l|--lang', 'Publish only the languages.', false, false);
+        $this->addOption('-t|--template', 'Publish only the templates.', false, false);
         $this->addOption('-a|--all', 'Publish all files.', false, false);
 
         $this->config = $config;
@@ -207,6 +208,11 @@ class VendorPublishCommand extends Command
         if ($lang) {
             $this->publishLanguage();
         }
+        
+        $template = $this->getOptionValue('template');
+        if ($template) {
+            $this->publishTemplate();
+        }
     }
 
     /**
@@ -218,6 +224,7 @@ class VendorPublishCommand extends Command
         $this->publishConfiguration();
         $this->publishMigration();
         $this->publishLanguage();
+        $this->publishTemplate();
     }
 
     /**
@@ -280,6 +287,28 @@ class VendorPublishCommand extends Command
         $migrations = $manifest['migration'] ?? [];
         foreach ($migrations as $migration) {
             $this->publishItem($migration, $destinationPath, 'migration');
+        }
+    }
+    
+    /**
+     * Publish the template
+     * @return void
+     */
+    protected function publishTemplate(): void
+    {
+        $writer = $this->io()->writer();
+        $writer->boldYellow('Publish of package template', true);
+
+
+        $path = Path::convert2Absolute(
+            $this->config->get('template.template_dir', 'templates')
+        );
+        $destinationPath = Path::normalizePathDS($path, true);
+
+        $manifest = $this->manifest;
+        $templates = $manifest['template'] ?? [];
+        foreach ($templates as $template) {
+            $this->publishItem($template, $destinationPath, 'template');
         }
     }
 

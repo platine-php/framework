@@ -366,6 +366,7 @@ NOTHING TO PUBLISH, COMMAND ENDED!
                         "platine": {
                             "config": ["testconfig.php"],
                             "lang": ["lang/"],
+                            "template": ["templates/"],
                             "migration": ["migrations/"]
                         }
                     },
@@ -379,6 +380,7 @@ NOTHING TO PUBLISH, COMMAND ENDED!
         $packageDir = $this->createVfsDirectory('foo', $packageRootDir);
         $this->createVfsDirectory('lang', $packageDir);
         $this->createVfsDirectory('migrations', $packageDir);
+        $this->createVfsDirectory('templates', $packageDir);
         $this->createVfsFile('testconfig.php', $packageDir, '<?php');
     }
 
