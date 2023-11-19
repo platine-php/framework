@@ -45,10 +45,11 @@
 
 declare(strict_types=1);
 
-namespace Platine\Framework\Http\Maintenance;
+namespace Platine\Framework\Http\Maintenance\Driver;
 
 use Platine\Config\Config;
 use Platine\Filesystem\Filesystem;
+use Platine\Framework\Http\Maintenance\MaintenanceDriverInterface;
 use Platine\Stdlib\Helper\Json;
 /**
  * @class FileMaintenanceDriver

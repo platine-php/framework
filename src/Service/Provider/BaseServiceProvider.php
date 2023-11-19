@@ -55,7 +55,7 @@ use Platine\Container\ResolverInterface;
 use Platine\Framework\App\Application;
 use Platine\Framework\Http\Emitter\EmitterInterface;
 use Platine\Framework\Http\Emitter\ResponseEmitter;
-use Platine\Framework\Http\Maintenance\FileMaintenanceDriver;
+use Platine\Framework\Http\Maintenance\Driver\FileMaintenanceDriver;
 use Platine\Framework\Http\Maintenance\MaintenanceDriverInterface;
 use Platine\Framework\Service\ServiceProvider;
 use Platine\Http\Handler\MiddlewareResolver;
