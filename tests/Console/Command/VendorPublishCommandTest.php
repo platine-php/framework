@@ -44,6 +44,11 @@ class VendorPublishCommandTest extends BaseCommandTestCase
                     'database.migration.path',
                     'migrations',
                     $rootDir->url()
+                ],
+                [
+                    'template.template_dir',
+                    'templates',
+                    $rootDir->url()
                 ]
             ]
         ]);
@@ -105,7 +110,13 @@ Command finished successfully
                 'database.migration.path',
                 'migrations',
                 $rootDir->url()
+            ],
+            [
+                'template.template_dir',
+                'templates',
+                $rootDir->url()
             ]
+                
         ]
         ]);
         $writer = $this->getWriterInstance();
@@ -164,6 +175,11 @@ Command finished successfully
                     'database.migration.path',
                     'migrations',
                     $rootDir->url()
+                ],
+                [
+                    'template.template_dir',
+                    'templates',
+                    $rootDir->url()
                 ]
             ]
         ]);
@@ -209,6 +225,11 @@ Can not find the composer package [test/foo].
                 [
                     'database.migration.path',
                     'migrations',
+                    $rootDir->url()
+                ],
+                [
+                    'template.template_dir',
+                    'templates',
                     $rootDir->url()
                 ]
             ]
@@ -264,6 +285,11 @@ Command finished successfully
                 [
                     'database.migration.path',
                     'migrations',
+                    $rootDir->url()
+                ],
+                [
+                    'template.template_dir',
+                    'templates',
                     $rootDir->url()
                 ]
             ]
@@ -324,6 +350,11 @@ Command finished successfully
                 [
                     'database.migration.path',
                     'migrations',
+                    $rootDir->url()
+                ],
+                [
+                    'template.template_dir',
+                    'templates',
                     $rootDir->url()
                 ]
             ]
