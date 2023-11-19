@@ -85,7 +85,7 @@ class MaintenanceCommand extends Command
         $this->config = $config;
 
         $this->setName('maintenance')
-             ->setDescription('The Maintenance management command');
+             ->setDescription('Command to manage application maintenance');
 
         $this->addArgument('type', 'type of action [up|down]', 'up', true, true, false, function ($val) {
             if (!in_array($val, ['up', 'down'])) {
@@ -120,6 +120,8 @@ class MaintenanceCommand extends Command
                         $val
                     ));
                 }
+                
+                return $val;
             }
         );
         $this->addOption(
@@ -136,6 +138,8 @@ class MaintenanceCommand extends Command
                         $val
                     ));
                 }
+                
+                return $val;
             }
         );
         $this->addOption(
@@ -159,6 +163,8 @@ class MaintenanceCommand extends Command
                         $val
                     ));
                 }
+                
+                return $val;
             }
         );
         $this->addOption(
