@@ -56,6 +56,7 @@ use Platine\Event\EventInterface;
 use Platine\Event\ListenerInterface;
 use Platine\Event\SubscriberInterface;
 use Platine\Framework\Env\Loader;
+use Platine\Framework\Http\Maintenance\MaintenanceDriverInterface;
 use Platine\Framework\Service\Provider\BaseServiceProvider;
 use Platine\Framework\Service\Provider\EventServiceProvider;
 use Platine\Framework\Service\ServiceProvider;
@@ -355,6 +356,24 @@ class Application extends Container
         $this->configPath = $configPath;
 
         return $this;
+    }
+
+    /**
+     * Return the current maintenance driver
+     * @return MaintenanceDriverInterface
+     */
+    public function maintenance(): MaintenanceDriverInterface
+    {
+        return $this->get(MaintenanceDriverInterface::class);
+    }
+
+    /**
+     * Whether the application is in maintenance
+     * @return bool
+     */
+    public function isInMaintenance(): bool
+    {
+        return $this->maintenance()->active();
     }
 
     /**

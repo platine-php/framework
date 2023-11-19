@@ -48,6 +48,7 @@ declare(strict_types=1);
 namespace Platine\Framework\Service\Provider;
 
 use Platine\Framework\Console\Command\ConfigCommand;
+use Platine\Framework\Console\Command\MaintenanceCommand;
 use Platine\Framework\Console\Command\MakeActionCommand;
 use Platine\Framework\Console\Command\MakeEntityCommand;
 use Platine\Framework\Console\Command\MakeEnumCommand;
@@ -75,6 +76,7 @@ class CommandServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->bind(RouteCommand::class);
+        $this->app->bind(MaintenanceCommand::class);
         $this->app->bind(ConfigCommand::class);
         $this->app->bind(VendorPublishCommand::class);
         $this->app->bind(MakeActionCommand::class);
@@ -90,6 +92,7 @@ class CommandServiceProvider extends ServiceProvider
         $this->app->bind(MakeTaskCommand::class);
 
         //Commands
+        $this->addCommand(MaintenanceCommand::class);
         $this->addCommand(VendorPublishCommand::class);
         $this->addCommand(MakeActionCommand::class);
         $this->addCommand(MakeEntityCommand::class);

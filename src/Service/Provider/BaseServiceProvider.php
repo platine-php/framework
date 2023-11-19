@@ -55,6 +55,8 @@ use Platine\Container\ResolverInterface;
 use Platine\Framework\App\Application;
 use Platine\Framework\Http\Emitter\EmitterInterface;
 use Platine\Framework\Http\Emitter\ResponseEmitter;
+use Platine\Framework\Http\Maintenance\FileMaintenanceDriver;
+use Platine\Framework\Http\Maintenance\MaintenanceDriverInterface;
 use Platine\Framework\Service\ServiceProvider;
 use Platine\Http\Handler\MiddlewareResolver;
 use Platine\Http\Handler\MiddlewareResolverInterface;
@@ -83,6 +85,7 @@ class BaseServiceProvider extends ServiceProvider
         $this->app->share(Router::class);
         $this->app->bind(RouteCollectionInterface::class, RouteCollection::class);
         $this->app->bind(MiddlewareResolverInterface::class, MiddlewareResolver::class);
+        $this->app->bind(MaintenanceDriverInterface::class, FileMaintenanceDriver::class);
         $this->app->bind(EmitterInterface::class, function (ContainerInterface $app) {
             return new ResponseEmitter(
                 $app->get(Config::class)->get('app.response_chunck_size', null)

@@ -208,7 +208,7 @@ class VendorPublishCommand extends Command
         if ($lang) {
             $this->publishLanguage();
         }
-        
+
         $template = $this->getOptionValue('template');
         if ($template) {
             $this->publishTemplate();
@@ -289,7 +289,7 @@ class VendorPublishCommand extends Command
             $this->publishItem($migration, $destinationPath, 'migration');
         }
     }
-    
+
     /**
      * Publish the template
      * @return void
