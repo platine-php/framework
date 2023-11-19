@@ -87,10 +87,10 @@ class MaintenanceCommand extends Command
         $this->setName('maintenance')
              ->setDescription('Command to manage application maintenance');
 
-        $this->addArgument('type', 'type of action [up|down]', 'up', true, true, false, function ($val) {
-            if (!in_array($val, ['up', 'down'])) {
+        $this->addArgument('type', 'type of action [up|down|status]', 'status', true, true, false, function ($val) {
+            if (!in_array($val, ['up', 'down', 'status'])) {
                 throw new RuntimeException(sprintf(
-                    'Invalid argument type [%s], must be one of [up, down]',
+                    'Invalid argument type [%s], must be one of [up, down, status]',
                     $val
                 ));
             }
@@ -189,8 +189,10 @@ class MaintenanceCommand extends Command
 
         if ($type === 'up') {
             $this->online();
-        } else {
+        } elseif ($type === 'down') {
             $this->down();
+        }  {
+            $this->status();
         }
     }
 
@@ -242,6 +244,21 @@ class MaintenanceCommand extends Command
                 'Failed to enable maintenance mode: %s.',
                 $ex->getMessage()
             ))->eol();
+        }
+    }
+
+    /**
+     * Check application maintenance mode
+     * @return void
+     */
+    public function status(): void
+    {
+        $writer = $this->io()->writer();
+
+        if ($this->application->isInMaintenance()) {
+            $writer->boldYellow('Application is down.')->eol();
+        } else {
+            $writer->boldGreen('Application is online.')->eol();
         }
     }
 
