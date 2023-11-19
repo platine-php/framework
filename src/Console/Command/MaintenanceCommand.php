@@ -191,7 +191,7 @@ class MaintenanceCommand extends Command
             $this->online();
         } elseif ($type === 'down') {
             $this->down();
-        }  {
+        } else {
             $this->status();
         }
     }
