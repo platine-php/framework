@@ -79,6 +79,8 @@ Publish of package migration
 Package migration [migrations/] publish successfully
 Publish of package language
 Package language [lang/] publish successfully
+Publish of package template
+Package template [templates/] publish successfully
 
 Command finished successfully
 ';
