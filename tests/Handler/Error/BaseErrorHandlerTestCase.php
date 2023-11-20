@@ -36,11 +36,13 @@ class BaseErrorHandlerTestCase extends PlatineTestCase
             throw new Exception('Foo exception 1');
         } catch (Exception $ex) {
             try {
-                throw new HttpNotFoundException(
+                $e = new HttpNotFoundException(
                     $this->getMockInstance(ServerRequest::class),
                     'not found',
                     $ex
                 );
+                $e->setHeaders(['foo' => 'bar']);
+                throw $e;
             } catch (Exception $ex) {
                 $exception = $ex;
             }

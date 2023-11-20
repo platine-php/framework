@@ -321,6 +321,13 @@ class ErrorHandler implements ErrorHandlerInterface
             $response = $response->withHeader('Allow', $allowMethods);
         }
 
+        if ($this->exception instanceof HttpException) {
+            $headers = $this->exception->getHeaders();
+            foreach ($headers as $name => $value) {
+                $response = $response->withAddedHeader($name, $value);
+            }
+        }
+
         $renderer = $this->determineRenderer();
 
         $body = $renderer->render($this->exception, $this->detail, false);

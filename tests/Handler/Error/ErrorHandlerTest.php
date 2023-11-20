@@ -34,6 +34,7 @@ class ErrorHandlerTest extends BaseErrorHandlerTestCase
         $o = new ErrorHandler($logger);
         $resp = $o->handle($request, $exception, true);
         $this->assertEquals(404, $resp->getStatusCode());
+        $this->assertEquals('bar', $resp->getHeaderLine('foo'));
     }
 
     public function testHandleHttpMethodNotAllowedException(): void
