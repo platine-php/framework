@@ -103,14 +103,13 @@ Application already online
         $o = new MaintenanceCommand($app, $mockInfo[3]);
         $o->bind($mockInfo[0]);
 
-        $o->parse(['platine', 'down', '-r=-10']);
+        $this->expectExceptionMessage(RuntimeException::class);
+        $this->expectExceptionMessage('Invalid retry value [0], must be an integer greather than zero');
+
+        $o->parse(['platine', 'down', '-r=0']);
         $this->assertEquals('maintenance', $o->getName());
 
         $o->interact($mockInfo[1], $mockInfo[2]);
         $o->execute();
-
-        $expected = '';
-
-        $this->assertEquals($expected, $this->getConsoleOutputContent());
     }
 }
