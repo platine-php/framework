@@ -53,6 +53,7 @@ use Platine\Cookie\Cookie;
 use Platine\Cookie\CookieManager;
 use Platine\Framework\App\Application;
 use Platine\Framework\Http\Exception\HttpException;
+use Platine\Framework\Http\RequestData;
 use Platine\Framework\Http\Response\RedirectResponse;
 use Platine\Framework\Http\Response\TemplateResponse;
 use Platine\Framework\Http\RouteHelper;
@@ -185,17 +186,6 @@ class MaintenanceMiddleware implements MiddlewareInterface
     }
 
     /**
-     * Whether has valid bypass cookie
-     * @param ServerRequestInterface $request
-     * @param array<string, mixed> $data
-     * @return bool
-     */
-    protected function hasValidBypassCookie(ServerRequestInterface $request, array $data): bool
-    {
-        return false;
-    }
-
-    /**
      * Check whether it's request URL white list
      * @param ServerRequestInterface $request
      * @return bool
@@ -219,6 +209,33 @@ class MaintenanceMiddleware implements MiddlewareInterface
     protected function getExceptUrls(): array
     {
         return $this->config->get('maintenance.url_whitelist', []);
+    }
+
+    /**
+     * Whether has valid bypass cookie
+     * @param ServerRequestInterface $request
+     * @param array<string, mixed> $data
+     * @return bool
+     */
+    protected function hasValidBypassCookie(ServerRequestInterface $request, array $data): bool
+    {
+        if (!isset($data['secret'])) {
+            return false;
+        }
+        $secret = $data['secret'];
+        $name = $this->getCookieName();
+        $cookieValue = (new RequestData($request))->cookie($name);
+        if ($cookieValue === null) {
+            return false;
+        }
+
+        $payload = Json::decode(base64_decode($cookieValue), true);
+
+        return is_array($payload) &&
+                is_int($payload['expire'] ?? null) &&
+                isset($payload['hash']) &&
+                hash_equals(hash_hmac('sha256', (string) $payload['expire'], $secret), $payload['hash']) &&
+                is_int($payload['expire']) >= time();
     }
 
     /**
