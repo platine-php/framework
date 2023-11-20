@@ -252,17 +252,17 @@ class MaintenanceMiddleware implements MiddlewareInterface
             'hash' => hash_hmac('sha256', (string) $expire, $secret)
         ];
         $value = base64_encode(Json::encode($data));
-
-        $cookie = new Cookie($name, $value);
-
         $sessionCookieConfig = $this->config->get('session.cookie', []);
 
-        $cookie->withExpires($expire)
-               ->withPath($sessionCookieConfig['path'] ?? null)
-               ->withDomain($sessionCookieConfig['domain'] ?? null)
-               ->withSecure($sessionCookieConfig['secure'] ?? false)
-               ->withHttpOnly(true);
-
+        $cookie = new Cookie(
+            $name,
+            $value,
+            $expire,
+            $sessionCookieConfig['domain'] ?? null,
+            $sessionCookieConfig['path'] ?? null,
+            $sessionCookieConfig['secure'] ?? false,
+            true
+        );
 
         return $cookie;
     }
