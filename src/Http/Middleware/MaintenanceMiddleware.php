@@ -260,6 +260,7 @@ class MaintenanceMiddleware implements MiddlewareInterface
         $cookie->withExpires($expire)
                ->withPath($sessionCookieConfig['path'] ?? null)
                ->withDomain($sessionCookieConfig['domain'] ?? null)
+               ->withSecure($sessionCookieConfig['secure'] ?? false)
                ->withHttpOnly(true);
 
 
