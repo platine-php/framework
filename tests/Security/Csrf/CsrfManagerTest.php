@@ -92,6 +92,9 @@ class CsrfManagerTest extends PlatineTestCase
 
         $request = $this->getMockInstance(ServerRequest::class);
         $this->assertFalse($o->validate($request));
+
+        $o->clear();
+        $this->assertFalse($o->validate($request));
     }
 
     public function testValidateRequestTokenNotMatch(): void

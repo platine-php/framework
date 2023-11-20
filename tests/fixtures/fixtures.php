@@ -16,6 +16,7 @@ use Platine\Framework\App\Application;
 use Platine\Framework\Config\DatabaseConfigLoader;
 use Platine\Framework\Form\Param\BaseParam;
 use Platine\Framework\Form\Validator\AbstractValidator;
+use Platine\Framework\Http\Maintenance\MaintenanceDriverInterface;
 use Platine\Framework\Http\RouteHelper;
 use Platine\Framework\Security\Csrf\CsrfManager;
 use Platine\Framework\Service\ServiceProvider;
@@ -43,6 +44,66 @@ use Platine\Session\Session;
 use Platine\Validator\Rule\MinLength;
 use Platine\Validator\Rule\NotEmpty;
 use Traversable;
+
+function getTestMaintenanceDriver(bool $exception = false, bool $active = false, bool $dataException = false, array $excludes = []): MaintenanceDriverInterface
+{
+    return new class ($exception, $active, $dataException, $excludes) implements  MaintenanceDriverInterface{
+        protected bool $exception = true;
+        protected bool $active = true;
+        protected bool $dataException = true;
+        protected array $excludes = [];
+
+        public function __construct(bool $exception = true, bool $active = true, bool $dataException = true, array $excludes = [])
+        {
+            $this->exception = $exception;
+            $this->active = $active;
+            $this->dataException = $dataException;
+            $this->excludes = $excludes;
+        }
+
+        public function activate($data): void
+        {
+            if ($this->exception) {
+                throw new Exception('Maintenance activate error');
+            }
+        }
+
+        public function active(): bool
+        {
+            return $this->active;
+        }
+
+        public function data(): array
+        {
+            if ($this->dataException) {
+                throw new Exception('Maintenance data error');
+            }
+
+            $data = [
+                'except' => [],
+                'template' => 'maintenance',
+                'retry' => 1080,
+                'refresh' => 15,
+                'secret' => '08685bd7-594b-4ce1-9a6b-f5d168ecdb05',
+                'status' => 503,
+                'message' => 'Please the system is upgrading',
+            ];
+
+            foreach ($this->excludes as $key) {
+                unset($data[$key]);
+            }
+
+            return $data;
+        }
+
+        public function deactivate(): void
+        {
+            if ($this->exception) {
+                throw new Exception('Maintenance deactivate error');
+            }
+        }
+    };
+}
 
 class MyOAuthGrant extends BaseGrant
 {

@@ -223,10 +223,12 @@ class MaintenanceMiddleware implements MiddlewareInterface
         if (!isset($data['secret'])) {
             return false;
         }
+
+
         $secret = $data['secret'];
         $name = $this->getCookieName();
         $cookieValue = (new RequestData($request))->cookie($name);
-        if ($cookieValue === null) {
+        if (empty($cookieValue)) {
             return false;
         }
 

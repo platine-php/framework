@@ -145,6 +145,18 @@ namespace Platine\Framework\Env;
 
 $mock_parse_ini_string_to_false = false;
 $mock_getenv_to_foo = false;
+$mock_preg_replace_callback_to_null = false;
+
+function preg_replace_callback($pattern, callable $callback, $subject, int $limit = -1, &$count = null, int $flags = 0)
+{
+    global $mock_preg_replace_callback_to_null;
+    if ($mock_preg_replace_callback_to_null) {
+        return null;
+    }
+
+    return \preg_replace_callback($pattern, $callback, $subject, $limit, $count, $flags);
+}
+
 
 function parse_ini_string(string $ini_string, bool $process_sections = false, int $scanner_mode = INI_SCANNER_NORMAL)
 {
@@ -510,6 +522,7 @@ namespace Platine\Framework\Helper;
 
 $mock_file_exists_to_false = false;
 $mock_fopen_to_false = false;
+
 
 function file_exists(string $str)
 {

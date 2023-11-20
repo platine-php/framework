@@ -44,4 +44,14 @@ class EnvTest extends PlatineTestCase
         $this->assertEquals('foo', Env::get('server_key1'));
         $this->assertEquals('foo/bar', Env::get('server_key2'));
     }
+
+    public function testGetUsingArgumentValue(): void
+    {
+        global $mock_preg_replace_callback_to_null;
+        $mock_preg_replace_callback_to_null = true;
+        $_SERVER['server_key1'] = 'foo';
+        $_SERVER['server_key2'] = '${server_keyX}/bar';
+        $this->assertEquals('foo', Env::get('server_key1'));
+        $this->assertEquals('${server_keyX}/bar', Env::get('server_key2'));
+    }
 }
