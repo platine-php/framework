@@ -91,7 +91,7 @@ Class [MyApp\Enum\MyEnum] generated successfully.
             'getAppPath' => $dir->url()
         ]);
 
-        $this->createInputContent('name');
+        $this->createInputContent('name_');
         $this->createInputContent("\n");
         $this->createInputContent("\n");
         $this->createInputContent('y');

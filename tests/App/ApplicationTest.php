@@ -11,8 +11,13 @@ use Platine\Config\FileLoader;
 use Platine\Dev\PlatineTestCase;
 use Platine\Event\DispatcherInterface;
 use Platine\Event\EventInterface;
+use Platine\Filesystem\Adapter\AdapterInterface;
+use Platine\Filesystem\Adapter\Local\LocalAdapter;
+use Platine\Filesystem\Filesystem;
 use Platine\Framework\App\Application;
 use Platine\Framework\Env\Env;
+use Platine\Framework\Http\Maintenance\Driver\FileMaintenanceDriver;
+use Platine\Test\Framework\Fixture\MyApp;
 use Platine\Test\Framework\Fixture\MyCommand;
 use Platine\Test\Framework\Fixture\MyEventListener;
 use Platine\Test\Framework\Fixture\MyEventSubscriber;
@@ -238,5 +243,14 @@ class ApplicationTest extends PlatineTestCase
         $app->registerConfiguration();
         $this->assertTrue($app->has(FileLoader::class));
         $this->assertTrue($app->has(Config::class));
+    }
+
+    public function testMaintenance(): void
+    {
+        $app = new MyApp('');
+        $app->bind(AdapterInterface::class, LocalAdapter::class);
+        $app->bind(Filesystem::class);
+        $this->assertInstanceOf(FileMaintenanceDriver::class, $app->maintenance());
+        $this->assertFalse($app->isInMaintenance());
     }
 }

@@ -131,7 +131,7 @@ Command finished successfully
 
         $o = new VendorPublishCommand($app, $filesystem, $config);
         $o->bind($consoleApp);
-        $o->parse(['platine', 'test/foo', '-cml']);
+        $o->parse(['platine', 'test/foo', '-cmlt']);
         $this->assertEquals('vendor:publish', $o->getName());
         $o->execute();
         $expected = 'PUBLISH OF PACKAGE [test/foo]
@@ -148,6 +148,8 @@ Publish of package migration
 Package migration [migrations/] publish successfully
 Publish of package language
 Package language [lang/] publish successfully
+Publish of package template
+Package template [templates/] publish successfully
 
 Command finished successfully
 ';
@@ -413,8 +415,9 @@ NOTHING TO PUBLISH, COMMAND ENDED!
         $packageDir = $this->createVfsDirectory('foo', $packageRootDir);
         $this->createVfsDirectory('lang', $packageDir);
         $this->createVfsDirectory('migrations', $packageDir);
-        $this->createVfsDirectory('templates', $packageDir);
+        $templateDir = $this->createVfsDirectory('templates', $packageDir);
         $this->createVfsFile('testconfig.php', $packageDir, '<?php');
+        $this->createVfsFile('home.html', $templateDir, 'hello World');
     }
 
     private function createTestPackageDestinationFileAlreadyExists($rootDir, $vendorDir): void

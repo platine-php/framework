@@ -192,13 +192,6 @@ class MakeEnumCommand extends MakeCommand
         EOF;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    protected function getPropertyTemplate(string $className, array $info): string
-    {
-        return '';
-    }
 
     /**
      * {@inheritdoc}

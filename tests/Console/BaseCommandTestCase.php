@@ -5,7 +5,10 @@ declare(strict_types=1);
 namespace Platine\Test\Framework\Console;
 
 use org\bovigo\vfs\vfsStream;
+use Platine\Config\Config;
+use Platine\Console\Application;
 use Platine\Console\Input\Reader;
+use Platine\Console\IO\Interactor;
 use Platine\Console\Output\Color;
 use Platine\Console\Output\Writer;
 use Platine\Dev\PlatineTestCase;
@@ -68,5 +71,39 @@ class BaseCommandTestCase extends PlatineTestCase
     protected function createInputContent(string $text): void
     {
         file_put_contents($this->vfsInputStream->url(), $text, FILE_APPEND);
+    }
+
+    protected function getConsoleApp(array $configValues = []): array
+    {
+        $config = $this->getMockInstanceMap(Config::class, [
+            'get' => [
+                $configValues
+            ]
+        ]);
+
+        $reader = $this->getReaderInstance();
+        $writer = $this->getWriterInstance();
+
+        $interactor = $this->getMockInstance(
+            Interactor::class,
+            [
+                'writer' => $writer,
+                'reader' => $reader
+            ],
+            [
+                'prompt',
+                'confirm',
+            ]
+        );
+
+        $this->setPropertyValue(Interactor::class, $interactor, 'reader', $reader);
+        $this->setPropertyValue(Interactor::class, $interactor, 'writer', $writer);
+
+        $consoleApp = $this->getMockInstance(Application::class, [
+            'io' => $interactor
+        ]);
+
+
+        return [$consoleApp, $reader, $writer, $config];
     }
 }
