@@ -138,7 +138,8 @@ class MaintenanceMiddleware implements MiddlewareInterface
             );
 
             $httpException->setTitle('Service Unavailable')
-                          ->setDescription($message);
+                          ->setDescription($message)
+                          ->setHeaders($this->getHeaders($data));
 
             // TODO Add headers
             throw $httpException;
