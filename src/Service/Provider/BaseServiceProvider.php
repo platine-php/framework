@@ -57,6 +57,7 @@ use Platine\Framework\Http\Emitter\EmitterInterface;
 use Platine\Framework\Http\Emitter\ResponseEmitter;
 use Platine\Framework\Http\Maintenance\Driver\FileMaintenanceDriver;
 use Platine\Framework\Http\Maintenance\MaintenanceDriverInterface;
+use Platine\Framework\Http\Middleware\MaintenanceMiddleware;
 use Platine\Framework\Service\ServiceProvider;
 use Platine\Http\Handler\MiddlewareResolver;
 use Platine\Http\Handler\MiddlewareResolverInterface;
@@ -85,6 +86,7 @@ class BaseServiceProvider extends ServiceProvider
         $this->app->share(Router::class);
         $this->app->bind(RouteCollectionInterface::class, RouteCollection::class);
         $this->app->bind(MiddlewareResolverInterface::class, MiddlewareResolver::class);
+        $this->app->bind(MaintenanceMiddleware::class);
         $this->app->bind(MaintenanceDriverInterface::class, FileMaintenanceDriver::class);
         $this->app->bind(EmitterInterface::class, function (ContainerInterface $app) {
             return new ResponseEmitter(
