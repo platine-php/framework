@@ -62,20 +62,29 @@ class HttpException extends Exception
     protected string $description = '';
 
     /**
+     * Additional headers to add into error response
+     * @var array<string, mixed>
+     */
+    protected array $headers = [];
+
+    /**
      * Create new instance
      * @param ServerRequestInterface $request
      * @param string $message
      * @param int $code
      * @param Throwable|null $previous
+     * @param array<string, mixed> $headers
      */
     public function __construct(
         ServerRequestInterface $request,
         string $message = '',
         int $code = 0,
-        ?Throwable $previous = null
+        ?Throwable $previous = null,
+        array $headers = []
     ) {
         parent::__construct($message, $code, $previous);
         $this->request = $request;
+        $this->headers = $headers;
     }
 
     /**
@@ -126,6 +135,26 @@ class HttpException extends Exception
     {
         $this->description = $description;
 
+        return $this;
+    }
+
+    /**
+     * Return headers
+     * @return array<string, mixed>
+     */
+    public function getHeaders(): array
+    {
+        return $this->headers;
+    }
+
+    /**
+     * Set the headers
+     * @param array<string, mixed> $headers
+     * @return $this
+     */
+    public function setHeaders(array $headers): self
+    {
+        $this->headers = $headers;
         return $this;
     }
 }

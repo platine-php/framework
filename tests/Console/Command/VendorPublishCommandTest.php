@@ -118,7 +118,7 @@ Command finished successfully
                 'templates',
                 $rootDir->url()
             ]
-                
+
         ]
         ]);
         $writer = $this->getWriterInstance();

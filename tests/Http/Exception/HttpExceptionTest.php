@@ -28,4 +28,17 @@ class HttpExceptionTest extends PlatineTestCase
         $this->assertEquals('exception description', $o->getDescription());
         $this->assertEquals('exception title', $o->getTitle());
     }
+
+    public function testHeaders(): void
+    {
+        $request = $this->getMockInstance(ServerRequest::class);
+        $o = new HttpException($request);
+        $o->setHeaders(['foo' => 'bar']);
+
+        $headers = $o->getHeaders();
+
+        $this->assertCount(1, $headers);
+        $this->assertArrayHasKey('foo', $headers);
+        $this->assertEquals('bar', $headers['foo']);
+    }
 }
