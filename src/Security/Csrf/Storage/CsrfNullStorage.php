@@ -57,7 +57,7 @@ class CsrfNullStorage implements CsrfStorageInterface
 {
     /**
      * The CSRF data
-     * @var array<string, array<string, int|mixed>
+     * @var array<string, string>
      */
     protected array $data = [];
 

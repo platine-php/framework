@@ -57,12 +57,13 @@ use Platine\Stdlib\Helper\Str;
 /**
  * @class CsrfManager
  * @package Platine\Framework\Security\Csrf
+ * @template T
  */
 class CsrfManager
 {
     /**
      * The application configuration class
-     * @var Config
+     * @var Config<T>
      */
     protected Config $config;
 
@@ -74,7 +75,7 @@ class CsrfManager
 
     /**
      * Create new instance
-     * @param Config $config
+     * @param Config<T> $config
      * @param CsrfStorageInterface|null $storage
      */
     public function __construct(
@@ -145,7 +146,7 @@ class CsrfManager
         $token = $this->getToken($key);
 
         if ($key === null) {
-            $key = $this->getConfigValue('key');
+            $key = (string) $this->getConfigValue('key');
         }
 
         return [$key => $token];

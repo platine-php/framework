@@ -7,3 +7,8 @@ parameters:
         maximumNumberOfProcesses: 4
     universalObjectCratesClasses:
         - Platine\Orm\Entity
+    ignoreErrors:
+        - '#Call to an undefined method Platine\\Database\\Query\\Where\|Platine\\Database\\Query\\WhereStatement(.*)#'
+        - '#Call to an undefined method Platine\\Database\\Query\\WhereStatement(.*)#'
+        - '#(.*)Tag has an unused parameter \$parser(.*)#'
+        - '#(.*)Tag has an unused parameter \$tokens(.*)#'

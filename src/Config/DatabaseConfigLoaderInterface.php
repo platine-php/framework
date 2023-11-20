@@ -48,20 +48,21 @@ declare(strict_types=1);
 namespace Platine\Framework\Config;
 
 use Platine\Config\LoaderInterface;
-use Platine\Framework\Config\Model\Configuration;
+use Platine\Orm\Entity;
 
 /**
  * @class DatabaseConfigLoaderInterface
  * @package Platine\Framework\Config
+ * @template TEntity as Entity
  */
 interface DatabaseConfigLoaderInterface extends LoaderInterface
 {
     /**
      * Load the configuration from database
      * @param array<string, mixed> $where
-     * @return Configuration|null
+     * @return TEntity|null
      */
-    public function loadConfig(array $where = []): ?Configuration;
+    public function loadConfig(array $where = []): ?Entity;
 
     /**
      * Insert new configuration
@@ -72,14 +73,14 @@ interface DatabaseConfigLoaderInterface extends LoaderInterface
 
     /**
      * Update the configuration
-     * @param Configuration $entity
+     * @param TEntity $entity
      * @return bool
      */
-    public function updateConfig(Configuration $entity): bool;
+    public function updateConfig(Entity $entity): bool;
 
     /**
      * Return all the configuration
-     * @return Configuration[]
+     * @return TEntity[]
      */
     public function all(): array;
 }

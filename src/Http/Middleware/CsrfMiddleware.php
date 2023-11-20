@@ -74,7 +74,7 @@ class CsrfMiddleware implements MiddlewareInterface
 
     /**
      * The CSRF manager
-     * @var CsrfManager
+     * @var CsrfManager<T>
      */
     protected CsrfManager $csrfManager;
 
@@ -101,7 +101,7 @@ class CsrfMiddleware implements MiddlewareInterface
      * @param LoggerInterface $logger
      * @param Lang $lang
      * @param Config<T> $config
-     * @param CsrfManager $csrfManager
+     * @param CsrfManager<T> $csrfManager
      */
     public function __construct(
         LoggerInterface $logger,

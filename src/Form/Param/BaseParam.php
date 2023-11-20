@@ -188,7 +188,7 @@ class BaseParam implements JsonSerializable
 
     /**
      * Return the properties of this class
-     * @return array<string, string>
+     * @return array<string, array<int, bool|ReflectionProperty|string>>
      */
     protected function getPropertyTypes(): array
     {
@@ -210,7 +210,7 @@ class BaseParam implements JsonSerializable
 
     /**
      * Return the properties cast maps
-     * @return array<string, Closure>
+     * @return array<string, array<int, Closure|mixed>>
      */
     protected function getPropertiesCastMaps(): array
     {

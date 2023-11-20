@@ -245,7 +245,7 @@ class MakeFormParamCommand extends MakeCommand
 
     /**
      * Return the setter template
-     * @param array<string, string> $info
+     * @param array<string, mixed> $info
      * @return string
      */
     protected function getSetterTemplate(array $info): string
@@ -281,7 +281,7 @@ class MakeFormParamCommand extends MakeCommand
 
     /**
      * Return the getter template
-     * @param array<string, string> $info
+     * @param array<string, mixed> $info
      * @return string
      */
     protected function getGetterTemplate(array $info): string

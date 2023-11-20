@@ -52,6 +52,8 @@ use Platine\Orm\RepositoryInterface;
 /**
  * @class ConfigurationRepositoryInterface
  * @package Platine\Framework\Config
+ * @template TEntity as \Platine\Orm\Entity
+ * @extends RepositoryInterface<TEntity>
  */
 interface ConfigurationRepositoryInterface extends RepositoryInterface
 {

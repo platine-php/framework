@@ -49,23 +49,25 @@ namespace Platine\Framework\Config;
 
 use Platine\Database\Query\WhereStatement;
 use Platine\Framework\Config\Model\Configuration;
+use Platine\Orm\Entity;
 
 /**
  * @class DatabaseConfigLoader
  * @package Platine\Framework\Config
+ * @implements DatabaseConfigLoaderInterface<Configuration>
  */
 class DatabaseConfigLoader implements DatabaseConfigLoaderInterface
 {
     /**
      * The Repository instance
-     * @var ConfigurationRepositoryInterface
+     * @var ConfigurationRepositoryInterface<Configuration>
      */
     protected ConfigurationRepositoryInterface $repository;
 
 
     /**
      * Create new instance
-     * @param ConfigurationRepositoryInterface $repository
+     * @param ConfigurationRepositoryInterface<Configuration> $repository
      */
     public function __construct(ConfigurationRepositoryInterface $repository)
     {
@@ -83,7 +85,7 @@ class DatabaseConfigLoader implements DatabaseConfigLoaderInterface
     /**
      * {@inheritdoc}
      */
-    public function loadConfig(array $where = []): ?Configuration
+    public function loadConfig(array $where = []): ?Entity
     {
         return $this->repository->findBy($where);
     }
@@ -100,7 +102,7 @@ class DatabaseConfigLoader implements DatabaseConfigLoaderInterface
     /**
      * {@inheritdoc}
      */
-    public function updateConfig(Configuration $entity): bool
+    public function updateConfig(Entity $entity): bool
     {
         return $this->repository->save($entity);
     }

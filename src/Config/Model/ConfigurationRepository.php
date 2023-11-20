@@ -55,6 +55,7 @@ use Platine\Orm\Repository;
  * @class ConfigurationRepository
  * @package Platine\Framework\Config\Model
  * @extends Repository<Configuration>
+ * @implements ConfigurationRepositoryInterface<Configuration>
  */
 class ConfigurationRepository extends Repository implements ConfigurationRepositoryInterface
 {

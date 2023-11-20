@@ -55,6 +55,7 @@ use Platine\Template\Parser\Context;
 /**
  * @class CsrfTag
  * @package Platine\Framework\Template\Tag
+ * @template T
  */
 class CsrfTag extends AbstractTag
 {
@@ -66,7 +67,7 @@ class CsrfTag extends AbstractTag
         /** @template T @var Config<T> $config */
         $config = app(Config::class);
 
-        /** @var CsrfManager $csrfManager */
+        /** @var CsrfManager<T> $csrfManager */
         $csrfManager = app(CsrfManager::class);
 
         $key = $config->get('security.csrf.key', '');

@@ -75,7 +75,7 @@ class MaintenanceCommand extends Command
     /**
      * Create new instance
      * @param Application $app
-     * @param Config $config
+     * @param Config<T> $config
      */
     public function __construct(
         Application $app,
@@ -285,12 +285,12 @@ class MaintenanceCommand extends Command
 
         return [
             'except' => $this->config->get('maintenance.url_whitelist', []),
-            'template' => $this->getOptionValue('template') ?? '',
+            'template' => $this->getOptionValue('template'),
             'retry' => $retry,
             'refresh' => $refresh,
-            'secret' => $this->getOptionValue('secret') ?? '',
+            'secret' => $this->getOptionValue('secret'),
             'status' => $status,
-            'message' => $this->getOptionValue('message') ?? '',
+            'message' => $this->getOptionValue('message'),
         ];
     }
 }

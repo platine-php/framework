@@ -93,7 +93,7 @@ abstract class MakeCommand extends Command
 
     /**
      * The action properties
-     * @var array<string, array<string, string>>
+     * @var array<string, array<string, mixed>>
      */
     protected array $properties = [];
 
@@ -560,7 +560,7 @@ abstract class MakeCommand extends Command
     /**
      * Return the property template for the given class
      * @param string $className
-     * @param array<string, string> $info
+     * @param array<string, mixed> $info
      * @return string
      */
     protected function getPropertyTemplate(string $className, array $info): string

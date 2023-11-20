@@ -208,7 +208,7 @@ class SessionAuthentication implements AuthenticationInterface
 
         $params = session_get_cookie_params();
         setcookie(
-            session_name(),
+            (string) session_name(),
             '',
             time() - 42000,
             $params['path'],
