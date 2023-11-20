@@ -57,5 +57,4 @@ use Platine\Orm\RepositoryInterface;
  */
 interface ConfigurationRepositoryInterface extends RepositoryInterface
 {
-    
 }
