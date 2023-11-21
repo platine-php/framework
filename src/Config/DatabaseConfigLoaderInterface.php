@@ -53,14 +53,14 @@ use Platine\Orm\Entity;
 /**
  * @class DatabaseConfigLoaderInterface
  * @package Platine\Framework\Config
- * @template TEntity as Entity
+ * @template TDbConfigurationEntity as Entity
  */
 interface DatabaseConfigLoaderInterface extends LoaderInterface
 {
     /**
      * Load the configuration from database
      * @param array<string, mixed> $where
-     * @return TEntity|null
+     * @return TDbConfigurationEntity|null
      */
     public function loadConfig(array $where = []): ?Entity;
 
@@ -73,14 +73,14 @@ interface DatabaseConfigLoaderInterface extends LoaderInterface
 
     /**
      * Update the configuration
-     * @param TEntity $entity
+     * @param TDbConfigurationEntity $entity
      * @return bool
      */
     public function updateConfig(Entity $entity): bool;
 
     /**
      * Return all the configuration
-     * @return TEntity[]
+     * @return TDbConfigurationEntity[]
      */
     public function all(): array;
 }

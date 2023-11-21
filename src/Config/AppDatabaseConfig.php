@@ -54,14 +54,14 @@ use Platine\Stdlib\Helper\Arr;
 /**
  * @class AppDatabaseConfig
  * @package Platine\Framework\Config
- * @template TEntity as Configuration
+ * @template TDbConfigurationEntity as \Platine\Framework\Config\Model\Configuration
  * @implements ArrayAccess<string, mixed>
  */
 class AppDatabaseConfig implements ArrayAccess
 {
     /**
      * The configuration loader to use
-     * @var DatabaseConfigLoaderInterface<TEntity>
+     * @var DatabaseConfigLoaderInterface<TDbConfigurationEntity>
      */
     protected DatabaseConfigLoaderInterface $loader;
 
@@ -79,7 +79,7 @@ class AppDatabaseConfig implements ArrayAccess
 
     /**
      * Create new configuration instance
-     * @param DatabaseConfigLoaderInterface<TEntity> $loader the loader to use
+     * @param DatabaseConfigLoaderInterface<TDbConfigurationEntity> $loader the loader to use
      * @param string          $env    the name of the environment
      */
     public function __construct(DatabaseConfigLoaderInterface $loader, string $env = '')
@@ -183,7 +183,7 @@ class AppDatabaseConfig implements ArrayAccess
 
     /**
      * Return the configuration current loader
-     * @return DatabaseConfigLoaderInterface<TEntity>
+     * @return DatabaseConfigLoaderInterface<TDbConfigurationEntity>
      */
     public function getLoader(): DatabaseConfigLoaderInterface
     {
@@ -193,7 +193,7 @@ class AppDatabaseConfig implements ArrayAccess
     /**
      * Set the configuration loader
      *
-     * @param DatabaseConfigLoaderInterface<TEntity> $loader
+     * @param DatabaseConfigLoaderInterface<TDbConfigurationEntity> $loader
      * @return $this
      */
     public function setLoader(DatabaseConfigLoaderInterface $loader): self
@@ -205,7 +205,7 @@ class AppDatabaseConfig implements ArrayAccess
 
     /**
      * Return all the configuration
-     * @return TEntity[]
+     * @return TDbConfigurationEntity[]
      */
     public function all(): array
     {
