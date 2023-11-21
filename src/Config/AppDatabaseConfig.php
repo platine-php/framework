@@ -49,13 +49,11 @@ namespace Platine\Framework\Config;
 
 use ArrayAccess;
 use InvalidArgumentException;
-use Platine\Framework\Config\Model\Configuration;
 use Platine\Stdlib\Helper\Arr;
 
 /**
  * @class AppDatabaseConfig
  * @package Platine\Framework\Config
- * @template T
  * @template TEntity as Configuration
  * @implements ArrayAccess<string, mixed>
  */
