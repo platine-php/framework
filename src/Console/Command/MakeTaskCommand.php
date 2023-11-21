@@ -122,7 +122,7 @@ class MakeTaskCommand extends MakeCommand
                 if (!class_exists($value) && !interface_exists($value)) {
                     $writer->boldWhiteBgRed(sprintf('The class [%s] does not exists', $value), true);
                 } else {
-                    $shortClass = basename($value);
+                    $shortClass = $this->getClassBaseName($value);
                     $name = Str::camel($shortClass, true);
                     //replace"interface", "abstract"
                     $nameClean = str_ireplace(['interface', 'abstract'], '', $name);

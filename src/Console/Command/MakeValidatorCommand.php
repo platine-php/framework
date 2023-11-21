@@ -256,7 +256,7 @@ class MakeValidatorCommand extends MakeCommand
      */
     protected function replaceFormParameterName(string $content): string
     {
-        $paramName = basename($this->paramClass);
+        $paramName = $this->getClassBaseName($this->paramClass);
 
         return str_replace('%param_class%', $paramName, $content);
     }

@@ -107,7 +107,7 @@ class MakeListenerCommand extends MakeCommand
      */
     public function getClassTemplate(): string
     {
-        $eventShortName = basename($this->eventClass);
+        $eventShortName = $this->getClassBaseName($this->eventClass);
 
         return <<<EOF
         <?php

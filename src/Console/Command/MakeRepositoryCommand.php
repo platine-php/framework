@@ -164,7 +164,7 @@ class MakeRepositoryCommand extends MakeCommand
      */
     protected function getEntityBody(string $content): string
     {
-        $entityName = basename($this->entityClass) . '::class';
+        $entityName = $this->getClassBaseName($this->entityClass) . '::class';
         $entityBaseName = $this->getClassBaseName($this->entityClass);
 
         $template = str_replace('%entity_base_class%', $entityBaseName, $content);
