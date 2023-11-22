@@ -277,8 +277,9 @@ abstract class MakeCommand extends Command
         $replaceClasses = $this->replaceClasses($replaceUses);
         $replaceProperties = $this->replaceProperties($replaceClasses);
         $replaceConstructor = $this->replaceConstructor($replaceProperties);
+        $replaceMethodBody = $this->replaceMethodBody($replaceConstructor);
 
-        return $replaceConstructor;
+        return $replaceMethodBody;
     }
 
     /**
@@ -345,6 +346,18 @@ abstract class MakeCommand extends Command
         $replaceContent = $this->getConstructorContent();
 
         return str_replace('%constructor%', $replaceContent, $content);
+    }
+    
+    /**
+     * Replace the method body
+     * @param string $content
+     * @return string
+     */
+    protected function replaceMethodBody(string $content): string
+    {
+        $replaceContent = $this->getMethodBodyContent();
+
+        return str_replace('%method_body%', $replaceContent, $content);
     }
 
     /**
@@ -434,6 +447,15 @@ abstract class MakeCommand extends Command
                 $body
             }
         EOF;
+    }
+    
+    /**
+     * Return the constructor content
+     * @return string
+     */
+    protected function getMethodBodyContent(): string
+    {
+        return '';
     }
 
 
