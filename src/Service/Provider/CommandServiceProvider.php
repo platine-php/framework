@@ -105,5 +105,6 @@ class CommandServiceProvider extends ServiceProvider
         $this->addCommand(MakeEventCommand::class);
         $this->addCommand(MakeListenerCommand::class);
         $this->addCommand(MakeTaskCommand::class);
+        $this->addCommand(ConfigCommand::class);
     }
 }
