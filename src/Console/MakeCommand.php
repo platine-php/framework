@@ -47,38 +47,17 @@ declare(strict_types=1);
 
 namespace Platine\Framework\Console;
 
-use Platine\Console\Command\Command;
 use Platine\Console\Input\Reader;
 use Platine\Console\Output\Writer;
 use Platine\Filesystem\Filesystem;
 use Platine\Framework\App\Application;
-use Platine\Stdlib\Helper\Path;
-use Platine\Stdlib\Helper\Str;
 
 /**
  * @class MakeCommand
  * @package Platine\Framework\Console
  */
-abstract class MakeCommand extends Command
+abstract class MakeCommand extends BaseCommand
 {
-    /**
-     * The Application instance
-     * @var Application
-     */
-    protected Application $application;
-
-    /**
-     * The file system to use
-     * @var Filesystem
-     */
-    protected Filesystem $filesystem;
-
-    /**
-     * The application root name space
-     * @var string
-     */
-    protected string $rootNamespace;
-
     /**
      * The type of class
      * @var string
@@ -106,10 +85,7 @@ abstract class MakeCommand extends Command
         Application $application,
         Filesystem $filesystem
     ) {
-        parent::__construct('make', 'Command to generate class skeleton');
-        $this->application = $application;
-        $this->filesystem = $filesystem;
-        $this->rootNamespace = $application->getNamespace();
+        parent::__construct($application, $filesystem);
         $this->addArgument('name', 'The full class name (can include root namespace', null, false);
         $this->addOption('-f|--force', 'Overwrite existing files.', false, false);
     }
@@ -124,8 +100,8 @@ abstract class MakeCommand extends Command
         $name = $this->className;
 
         $className = $this->getFullClassName($name);
-        $path = $this->getPath();
-        $namespace = $this->getNamespace();
+        $path = $this->getPath($name);
+        $namespace = $this->getNamespace($name);
 
         $writer->boldGreen(sprintf(
             'Generation of new %s class [%s]',
@@ -134,7 +110,7 @@ abstract class MakeCommand extends Command
         ), true)->eol();
 
 
-        if ($this->fileExists() && !$this->getOptionValue('force')) {
+        if ($this->fileExists($name) && !$this->getOptionValue('force')) {
             $writer->red(sprintf(
                 'File [%s] already exists.',
                 $path
@@ -178,91 +154,10 @@ abstract class MakeCommand extends Command
     }
 
     /**
-     * Return the base class name
-     * @param string|object $fullClassName
-     * @return string
-     */
-    public function getClassBaseName($fullClassName): string
-    {
-        if (is_object($fullClassName)) {
-            $fullClassName = get_class($fullClassName);
-        }
-
-        $temp = explode('\\', $fullClassName);
-
-        return end($temp);
-    }
-
-    /**
      * Return the the class template
      * @return string
      */
     abstract public function getClassTemplate(): string;
-
-    /**
-     * Return the real path for the given name
-     * @return string
-     */
-    protected function getPath(): string
-    {
-        $class = Str::replaceFirst($this->rootNamespace, '', $this->className);
-
-        $path = sprintf(
-            '%s/%s.php',
-            $this->application->getAppPath(),
-            str_replace('\\', '/', $class)
-        );
-
-        return Path::normalizePathDS($path);
-    }
-
-    /**
-     * Return the class name with the root name space
-     * @param string $name
-     * @return string
-     */
-    protected function getFullClassName(string $name): string
-    {
-        $classClean = ltrim($name, '/\\');
-        $class = str_replace('/', '\\', $classClean);
-
-        if (Str::startsWith($this->rootNamespace, $class)) {
-            return $class;
-        }
-
-        $fullyClass = $this->getFullClassName(sprintf(
-            '%s\\%s',
-            trim($this->rootNamespace, '\\'),
-            $class
-        ));
-
-        return $fullyClass;
-    }
-
-    /**
-     * Return the full name space for the given class
-     * @return string
-     */
-    protected function getNamespace(): string
-    {
-        $class = str_replace('/', '\\', $this->className);
-
-        return $this->rootNamespace . trim(implode(
-            '\\',
-            array_slice(explode('\\', $class), 0, -1)
-        ), '\\');
-    }
-
-    /**
-     * Whether the file for the given name already exists
-     * @return bool
-     */
-    protected function fileExists(): bool
-    {
-        $path = $this->getPath();
-
-        return $this->filesystem->file($path)->exists();
-    }
 
     /**
      * Create the class for the given name
@@ -283,45 +178,13 @@ abstract class MakeCommand extends Command
     }
 
     /**
-     * Return the short class name
-     * @return string
-     */
-    protected function getShortClassName(): string
-    {
-        $namespace = $this->getNamespace();
-
-        return Str::replaceFirst(
-            $namespace . '\\',
-            '',
-            $this->getFullClassName($this->className)
-        );
-    }
-
-    /**
-     * Create the class parent(s) directory if it does not exist
-     * @param string $path
-     * @return void
-     */
-    protected function createParentDirectory(string $path): void
-    {
-        $file = $this->filesystem->file($path);
-        $location = $file->getLocation();
-        if (!empty($location)) {
-            $directory = $this->filesystem->directory($location);
-            if (!$directory->exists()) {
-                $directory->create('', 0775, true);
-            }
-        }
-    }
-
-    /**
      * Replace the name space
      * @param string $content
      * @return string
      */
     protected function replaceNamespace(string $content): string
     {
-        $namespace = $this->getNamespace();
+        $namespace = $this->getNamespace($this->className);
         return str_replace('%namespace%', $namespace, $content);
     }
 
@@ -378,7 +241,7 @@ abstract class MakeCommand extends Command
      */
     protected function replaceClasses(string $content): string
     {
-        $shortClassName = $this->getShortClassName();
+        $shortClassName = $this->getShortClassName($this->className);
         $fullClassName = $this->getFullClassName($this->className);
 
         $replaced = str_replace('%classname%', $shortClassName, $content);
