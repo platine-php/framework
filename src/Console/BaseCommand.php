@@ -47,7 +47,9 @@ declare(strict_types=1);
 
 namespace Platine\Framework\Console;
 
+use InvalidArgumentException;
 use Platine\Console\Command\Command;
+use Platine\Console\Input\Reader;
 use Platine\Filesystem\Filesystem;
 use Platine\Framework\App\Application;
 use Platine\Stdlib\Helper\Path;
@@ -207,5 +209,26 @@ abstract class BaseCommand extends Command
                 $directory->create('', 0775, true);
             }
         }
+    }
+
+    /**
+     * Set reader stream content
+     * @param Reader $reader
+     * @param string $filename
+     * @param string|array<string> $data
+     * @return void
+     */
+    public function setReaderContent(Reader $reader, string $filename, $data): void
+    {
+        if (is_array($data)) {
+            $data = implode(PHP_EOL, $data);
+        }
+        file_put_contents($filename, $data, FILE_APPEND);
+
+        $resource = fopen($filename, 'r');
+        if ($resource === false) {
+            throw new InvalidArgumentException(sprintf('Could not open filename [%s] for reading', $filename));
+        }
+        $reader->setStream($resource);
     }
 }

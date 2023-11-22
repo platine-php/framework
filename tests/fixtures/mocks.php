@@ -545,3 +545,16 @@ function fopen(string $str, string $mode)
 
     return \fopen($str, $mode);
 }
+
+namespace Platine\Framework\Console;
+$mock_fopen_to_false = false;
+function fopen(string $str, string $mode)
+{
+    global $mock_fopen_to_false;
+
+    if ($mock_fopen_to_false) {
+        return false;
+    }
+
+    return \fopen($str, $mode);
+}

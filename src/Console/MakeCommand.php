@@ -210,7 +210,7 @@ abstract class MakeCommand extends BaseCommand
 
         return str_replace('%constructor%', $replaceContent, $content);
     }
-    
+
     /**
      * Replace the method body
      * @param string $content
@@ -311,7 +311,7 @@ abstract class MakeCommand extends BaseCommand
             }
         EOF;
     }
-    
+
     /**
      * Return the constructor content
      * @return string

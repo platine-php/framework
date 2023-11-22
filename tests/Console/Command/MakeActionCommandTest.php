@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace Platine\Test\Framework\Console\Command;
 
+use InvalidArgumentException;
 use Platine\Console\Application as ConsoleApp;
+use Platine\Console\Input\Reader;
 use Platine\Console\IO\Interactor;
 use Platine\Filesystem\Adapter\Local\LocalAdapter;
 use Platine\Filesystem\Filesystem;
@@ -286,5 +288,36 @@ File [vfs://root/app/MyAction.php] already exists.
         $o = new MakeActionCommand($app, $filesystem);
 
         $this->assertNotEmpty($o->getClassTemplate());
+    }
+
+    public function testSetReaderContent(): void
+    {
+        $localAdapter = new LocalAdapter();
+        $filesystem = new Filesystem($localAdapter);
+        $app = $this->getMockInstance(Application::class, []);
+        $reader = new Reader();
+
+        $o = new MakeActionCommand($app, $filesystem);
+
+        $o->setReaderContent($reader, $this->vfsInputStream->url(), ['foo']);
+        $this->assertEquals($reader->read(), 'foo');
+    }
+
+    public function testSetReaderContentInvalidFilenameForRead(): void
+    {
+        global $mock_fopen_to_false;
+
+        $mock_fopen_to_false = true;
+
+        $localAdapter = new LocalAdapter();
+        $filesystem = new Filesystem($localAdapter);
+        $app = $this->getMockInstance(Application::class, []);
+        $reader = new Reader();
+
+        $o = new MakeActionCommand($app, $filesystem);
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Could not open filename [not_found_reader_filename] for reading');
+        $o->setReaderContent($reader, 'not_found_reader_filename', ['foo']);
     }
 }
