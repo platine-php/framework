@@ -157,7 +157,7 @@ class Timer
             return false;
         }
 
-        $this->startTime = microtime(true);
+        $this->startTime = (float) microtime(true);
 
         $this->setState(self::STARTED);
 

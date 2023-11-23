@@ -558,3 +558,17 @@ function fopen(string $str, string $mode)
 
     return \fopen($str, $mode);
 }
+
+
+namespace Platine\Framework\Helper\Timer;
+$mock_microtime_to_1 = false;
+function microtime(bool $as_float = false)
+{
+    global $mock_microtime_to_1;
+
+    if ($mock_microtime_to_1) {
+        return 1;
+    }
+
+    return \microtime($as_float);
+}
