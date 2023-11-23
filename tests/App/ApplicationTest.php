@@ -16,6 +16,7 @@ use Platine\Filesystem\Adapter\Local\LocalAdapter;
 use Platine\Filesystem\Filesystem;
 use Platine\Framework\App\Application;
 use Platine\Framework\Env\Env;
+use Platine\Framework\Helper\Timer\Watch;
 use Platine\Framework\Http\Maintenance\Driver\FileMaintenanceDriver;
 use Platine\Test\Framework\Fixture\MyApp;
 use Platine\Test\Framework\Fixture\MyCommand;
@@ -252,5 +253,11 @@ class ApplicationTest extends PlatineTestCase
         $app->bind(Filesystem::class);
         $this->assertInstanceOf(FileMaintenanceDriver::class, $app->maintenance());
         $this->assertFalse($app->isInMaintenance());
+    }
+
+    public function testWatch(): void
+    {
+        $app = new MyApp('');
+        $this->assertInstanceOf(Watch::class, $app->watch());
     }
 }

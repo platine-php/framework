@@ -176,4 +176,17 @@ class Watch
     {
         return count($this->timers);
     }
+
+    /**
+     * Return watch details
+     * @return array<string, float>
+     */
+    public function info(): array
+    {
+        $result = [];
+        foreach ($this->timers as $name => /** @var Timer $timer */ $timer) {
+            $result[$name] = $timer->getTime();
+        }
+        return $result;
+    }
 }

@@ -30,6 +30,11 @@ class WatchTest extends PlatineTestCase
         $this->assertEquals(0.0, $o->getTime());
         $this->assertEquals(-1, $o->getTime('not_found_name'));
 
+        $info = $o->info();
+        $this->assertCount(1, $info);
+        $this->assertArrayHasKey(Watch::WATCH_DEFAULT_NAME, $info);
+        $this->assertEquals(0, $info[Watch::WATCH_DEFAULT_NAME]);
+
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Watch with the name [not_found_name] does not exist');
         $o->getWatch('not_found_name');

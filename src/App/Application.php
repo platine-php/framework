@@ -56,6 +56,7 @@ use Platine\Event\EventInterface;
 use Platine\Event\ListenerInterface;
 use Platine\Event\SubscriberInterface;
 use Platine\Framework\Env\Loader;
+use Platine\Framework\Helper\Timer\Watch;
 use Platine\Framework\Http\Maintenance\MaintenanceDriverInterface;
 use Platine\Framework\Service\Provider\BaseServiceProvider;
 use Platine\Framework\Service\Provider\EventServiceProvider;
@@ -78,6 +79,12 @@ class Application extends Container
      * @var DispatcherInterface
      */
     protected DispatcherInterface $dispatcher;
+
+    /**
+     * The stop watch instance
+     * @var Watch
+     */
+    protected Watch $watch;
 
     /**
      * The base path for this application
@@ -154,6 +161,7 @@ class Application extends Container
         parent::__construct();
 
         $this->basePath = $basePath;
+        $this->watch = new Watch();
         $this->loadCoreServiceProviders();
 
         $this->dispatcher = $this->get(DispatcherInterface::class);
@@ -359,6 +367,15 @@ class Application extends Container
     }
 
     /**
+     * Return the watch instance
+     * @return Watch
+     */
+    public function watch(): Watch
+    {
+        return $this->watch;
+    }
+
+    /**
      * Return the current maintenance driver
      * @return MaintenanceDriverInterface
      */
@@ -534,9 +551,11 @@ class Application extends Container
 
         /** @var class-string<ServiceProvider>[] $providers */
         $providers = $config->get('providers', []);
+        $this->watch->start('register-service-providers');
         foreach ($providers as $provider) {
             $this->registerServiceProvider($provider);
         }
+        $this->watch->stop('register-service-providers');
     }
 
     /**
@@ -550,11 +569,13 @@ class Application extends Container
 
         /** @var array<string, string[]> $events */
         $events = $config->get('events', []);
+        $this->watch->start('register-event-listeners');
         foreach ($events as $eventName => $listeners) {
             foreach ($listeners as $listener) {
                 $this->listen($eventName, $listener);
             }
         }
+        $this->watch->stop('register-event-listeners');
     }
 
     /**
@@ -580,6 +601,7 @@ class Application extends Container
      */
     public function registerEnvironmentVariables(): void
     {
+        $this->watch->start('register-environment-variables');
         if (!empty($this->rootPath)) {
             $path = Path::normalizePath($this->rootPath);
             $file = rtrim($path, DIRECTORY_SEPARATOR)
@@ -594,6 +616,7 @@ class Application extends Container
                     );
             }
         }
+        $this->watch->stop('register-environment-variables');
     }
 
     /**
@@ -632,8 +655,10 @@ class Application extends Container
      */
     protected function loadCoreServiceProviders(): void
     {
+        $this->watch->start('load-core-service-provider');
         $this->registerServiceProvider(new BaseServiceProvider($this));
         $this->registerServiceProvider(new EventServiceProvider($this));
+        $this->watch->stop('load-core-service-provider');
     }
 
     /**

@@ -127,10 +127,14 @@ class HttpKernel extends BaseKernel implements RequestHandlerInterface
         $this->app->instance($req, ServerRequestInterface::class);
 
         //bootstrap the application
+        $this->app->watch()->start('kernel-bootstrap');
         $this->bootstrap();
+        $this->app->watch()->stop('kernel-bootstrap');
 
         //set the routing
+        $this->app->watch()->start('kernel-routing');
         $this->setRouting();
+        $this->app->watch()->stop('kernel-routing');
 
         //Load configured middlewares
         $this->registerConfiguredMiddlewares();
@@ -138,9 +142,11 @@ class HttpKernel extends BaseKernel implements RequestHandlerInterface
 
         /** @var EmitterInterface $emitter */
         $emitter = $this->app->get(EmitterInterface::class);
+        $this->app->watch()->start('handle-request');
         $response = $this->handle($req);
+        $this->app->watch()->stop('handle-request');
 
-
+        $this->app->watch()->start('emit-response');
         $emitter->emit(
             $response,
             !$this->isEmptyResponse(
@@ -148,6 +154,8 @@ class HttpKernel extends BaseKernel implements RequestHandlerInterface
                 $response->getStatusCode()
             )
         );
+
+        $this->app->watch()->stop('emit-response');
     }
 
     /**
@@ -205,10 +213,11 @@ class HttpKernel extends BaseKernel implements RequestHandlerInterface
 
         /** @var string[] $middlewares */
         $middlewares = $config->get('middlewares', []);
-
+        $this->app->watch()->start('register-middlewares');
         foreach ($middlewares as $middleware) {
             $this->use($middleware);
         }
+        $this->app->watch()->stop('register-middlewares');
     }
 
     /**
@@ -220,6 +229,7 @@ class HttpKernel extends BaseKernel implements RequestHandlerInterface
      */
     protected function determineBasePath(): string
     {
+        $this->app->watch()->start('determine-base-path');
         $appBasePath = $this->app->getBasePath();
         if (!empty($appBasePath)) {
             return $appBasePath;
@@ -247,6 +257,7 @@ class HttpKernel extends BaseKernel implements RequestHandlerInterface
             return $autoBasePath;
         }
 
+        $this->app->watch()->stop('determine-base-path');
         return '/';
     }
 
