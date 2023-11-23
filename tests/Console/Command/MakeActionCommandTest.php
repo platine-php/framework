@@ -317,7 +317,6 @@ File [vfs://root/app/MyAction.php] already exists.
         $o = new MakeActionCommand($app, $filesystem);
 
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('Could not open filename [not_found_reader_filename] for reading');
-        $o->setReaderContent($reader, 'not_found_reader_filename', ['foo']);
+        $o->setReaderContent($reader, $this->vfsInputStream->url(), ['foo']);
     }
 }
