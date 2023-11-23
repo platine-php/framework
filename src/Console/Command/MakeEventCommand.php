@@ -103,7 +103,6 @@ class MakeEventCommand extends MakeCommand
             public function __construct()
             {
                parent::__construct(__CLASS__, []);
-               
             }
         }
         

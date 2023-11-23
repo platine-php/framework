@@ -147,6 +147,7 @@ class MakeActionCommand extends MakeCommand
             */
             public function handle(ServerRequestInterface \$request): ResponseInterface
             {
+                %method_body%
             }
         }
         

@@ -107,7 +107,7 @@ class MakeMiddlewareCommand extends MakeCommand
                ServerRequestInterface \$request,
                RequestHandlerInterface \$handler
            ): ResponseInterface {
-               
+               %method_body%
                return \$handler->handle(\$request);
            }
         }

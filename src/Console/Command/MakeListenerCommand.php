@@ -133,7 +133,7 @@ class MakeListenerCommand extends MakeCommand
             public function handle(EventInterface \$event)
             {
                if (\$event instanceof $eventShortName) {
-                   
+                   %method_body%
                }
             }
         }

@@ -160,7 +160,7 @@ Are you confirm the generation of [MyApp\Task\MyTask] ?Class [MyApp\Task\MyTask]
 
         $this->createInputContent('mytask');
         $this->createInputContent("\n");
-        $this->createInputContent('100 * * * *');
+        $this->createInputContent('61 * * * *');
         $this->createInputContent("\n");
         $this->createInputContent('*/10 * * * *');
         $this->createInputContent("\n");

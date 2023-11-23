@@ -128,7 +128,7 @@ class MakeProviderCommand extends MakeCommand
             */
            public function register(): void
            {
-            
+             %method_body%
            }
             
             %boot_body%

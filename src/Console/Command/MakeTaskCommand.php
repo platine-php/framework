@@ -168,7 +168,7 @@ class MakeTaskCommand extends MakeCommand
             */
             public function run(): void
             {
-                
+                %method_body%
             }
         
             %task_body%
