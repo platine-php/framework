@@ -179,13 +179,14 @@ class Watch
 
     /**
      * Return watch details
+     * @param int $decimal
      * @return array<string, float>
      */
-    public function info(): array
+    public function info(int $decimal = 6): array
     {
         $result = [];
         foreach ($this->timers as $name => /** @var Timer $timer */ $timer) {
-            $result[$name] = $timer->getTime();
+            $result[$name] = number_format($timer->getTime(), $decimal);
         }
         return $result;
     }
