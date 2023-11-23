@@ -184,7 +184,10 @@ class HttpKernel extends BaseKernel implements RequestHandlerInterface
         /** @var Config<T> $config */
         $config = $this->app->get(Config::class);
 
+        $this->app->watch()->start('determine-base-path');
         $basePath = $this->determineBasePath();
+        $this->app->watch()->stop('determine-base-path');
+
         $this->router->setBasePath($basePath);
 
         $routes = $config->get('routes', []);
@@ -229,7 +232,6 @@ class HttpKernel extends BaseKernel implements RequestHandlerInterface
      */
     protected function determineBasePath(): string
     {
-        $this->app->watch()->start('determine-base-path');
         $appBasePath = $this->app->getBasePath();
         if (!empty($appBasePath)) {
             return $appBasePath;
@@ -257,7 +259,6 @@ class HttpKernel extends BaseKernel implements RequestHandlerInterface
             return $autoBasePath;
         }
 
-        $this->app->watch()->stop('determine-base-path');
         return '/';
     }
 
