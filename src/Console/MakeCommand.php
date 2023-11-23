@@ -86,7 +86,7 @@ abstract class MakeCommand extends BaseCommand
         Filesystem $filesystem
     ) {
         parent::__construct($application, $filesystem);
-        $this->addArgument('name', 'The full class name (can include root namespace', null, false);
+        $this->addArgument('name', 'The full class name (without the root namespace)', null, false);
         $this->addOption('-f|--force', 'Overwrite existing files.', false, false);
     }
 
