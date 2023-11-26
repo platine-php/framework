@@ -241,7 +241,8 @@ class MySession extends Session
 class MyConfig extends Config
 {
     protected array $config = [
-      'database.migration.table' => 'table'
+      'database.migration.table' => 'table',
+      'security.encryption.key' => 'foosecret',
     ];
 
     public function __construct($items = [])
@@ -253,7 +254,7 @@ class MyConfig extends Config
     {
         return array_key_exists($key, $this->config)
                ? $this->config[$key]
-                : null;
+                : $default;
     }
 }
 

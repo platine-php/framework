@@ -108,6 +108,7 @@ class Cron
         // limited to time()+366 - no need
         // to check more than 1 year ahead
         $total = 60 * 60 * 24 * 366;
+
         for ($i = 0; $i <= $total; $i += 60) {
             $current = $start + $i;
             if (

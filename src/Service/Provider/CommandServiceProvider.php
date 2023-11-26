@@ -58,6 +58,7 @@ use Platine\Framework\Console\Command\MakeListenerCommand;
 use Platine\Framework\Console\Command\MakeMiddlewareCommand;
 use Platine\Framework\Console\Command\MakeProviderCommand;
 use Platine\Framework\Console\Command\MakeRepositoryCommand;
+use Platine\Framework\Console\Command\MakeResourceActionCommand;
 use Platine\Framework\Console\Command\MakeTaskCommand;
 use Platine\Framework\Console\Command\MakeValidatorCommand;
 use Platine\Framework\Console\Command\RouteCommand;
@@ -90,6 +91,7 @@ class CommandServiceProvider extends ServiceProvider
         $this->app->bind(MakeEventCommand::class);
         $this->app->bind(MakeListenerCommand::class);
         $this->app->bind(MakeTaskCommand::class);
+        $this->app->bind(MakeResourceActionCommand::class);
 
         //Commands
         $this->addCommand(MaintenanceCommand::class);
@@ -106,5 +108,6 @@ class CommandServiceProvider extends ServiceProvider
         $this->addCommand(MakeListenerCommand::class);
         $this->addCommand(MakeTaskCommand::class);
         $this->addCommand(ConfigCommand::class);
+        $this->addCommand(MakeResourceActionCommand::class);
     }
 }

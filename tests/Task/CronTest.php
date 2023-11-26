@@ -24,7 +24,7 @@ class CronTest extends PlatineTestCase
 
     public function testParseWrongNumber(): void
     {
-        $expression = '100 90 * * *';
+        $expression = '* * * * 7';
         $current = time();
         $time = Cron::parse($expression, $current);
         $date = date('Y-m-d H:i', $time);

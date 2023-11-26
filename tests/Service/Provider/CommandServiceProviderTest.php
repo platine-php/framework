@@ -18,7 +18,7 @@ class CommandServiceProviderTest extends PlatineTestCase
     {
         $app = $this->getMockInstanceMap(Application::class);
 
-        $app->expects($this->exactly(15))
+        $app->expects($this->exactly(16))
                 ->method('bind');
 
         $o = new CommandServiceProvider($app);
