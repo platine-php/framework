@@ -86,13 +86,13 @@ class MakeResourceActionCommand extends MakeCommand
 
     /**
      * The entity class name
-     * @var string
+     * @var class-string
      */
     protected string $entityClass;
 
     /**
      * The repository class name
-     * @var string
+     * @var class-string
      */
     protected string $repositoryClass;
 
@@ -570,6 +570,7 @@ class MakeResourceActionCommand extends MakeCommand
         $entityBaseClass = $this->getClassBaseName($this->entityClass);
         $templatePrefix = $this->getTemplatePrefix();
         $listRoute = $this->getRouteName('list');
+        $detailRoute = $this->getRouteName('detail');
         $notFoundMessage = $this->getMessage('messageNotFound');
         $updateMessage = $this->getMessage('messageUpdate');
         $processErrorMessage = $this->getMessage('messageProcessError');
@@ -626,7 +627,7 @@ class MakeResourceActionCommand extends MakeCommand
                     \$this->flash->setSuccess(\$this->lang->tr('$updateMessage'));
 
                     return new RedirectResponse(
-                        \$this->routeHelper->generateUrl('$listRoute')
+                        \$this->routeHelper->generateUrl('$detailRoute', ['id' => \$id])
                     );
                 } catch (Exception \$ex) {
                     \$this->logger->error('Error when saved the data {error}', ['error' => \$ex->getMessage()]);
@@ -727,7 +728,7 @@ class MakeResourceActionCommand extends MakeCommand
                 }
 
                 $result .= ($i > 1 ? "\t\t\t\t\t       " : '') .
-                        $this->getFormParamEntityFieldTemplate($column, $param, count($fields) > $i, $create);
+                        $this->getFormParamEntityFieldTemplate($column, $param, count($fields) > $i);
                 $i++;
             }
 
@@ -947,7 +948,7 @@ class MakeResourceActionCommand extends MakeCommand
      */
     protected function getMessage(string $option): ?string
     {
-        $message = $this->getOptionValue($option);
+        $message = (string) $this->getOptionValue($option);
         if (!empty($message)) {
             $message = addslashes($message);
         }
@@ -982,7 +983,6 @@ class MakeResourceActionCommand extends MakeCommand
      * @param string $field
      * @param string $param
      * @param bool $isLast
-     * @param bool $isArray
      * @return string
      */
     protected function getFormParamEntityFieldTemplate(
@@ -1005,6 +1005,7 @@ class MakeResourceActionCommand extends MakeCommand
             $file = $this->filesystem->file($filename);
             if ($file->exists() && $file->isReadable()) {
                 $content = $file->read();
+                /** @var array<string, string> $config */
                 $config = Json::decode($content, true);
                 foreach ($config as $option => $value) {
                     $optionKey = Str::camel($option, true);

@@ -180,7 +180,7 @@ class Watch
     /**
      * Return watch details
      * @param int $decimal
-     * @return array<string, float>
+     * @return array<string, string>
      */
     public function info(int $decimal = 6): array
     {
