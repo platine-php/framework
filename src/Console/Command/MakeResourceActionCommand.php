@@ -213,6 +213,8 @@ class MakeResourceActionCommand extends MakeCommand
         $this->recordResourceClasses();
 
         $this->recordProperties();
+        
+        $this->addProperty($this->repositoryClass);
     }
 
      /**
@@ -372,8 +374,6 @@ class MakeResourceActionCommand extends MakeCommand
         }
 
         $this->repositoryClass = $repositoryClass;
-
-        $this->addProperty($repositoryClass);
     }
 
     /**
