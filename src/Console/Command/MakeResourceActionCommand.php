@@ -859,12 +859,16 @@ class MakeResourceActionCommand extends MakeCommand
     /**
      * Add new property
      * @param class-string $value
+     * @param string|null $name
      * @return $this
      */
-    protected function addProperty(string $value): self
+    protected function addProperty(string $value, ?string $name = null): self
     {
         $shortClass = $this->getClassBaseName($value);
-        $name = Str::camel($shortClass, true);
+        if($name === null){
+            $name = Str::camel($shortClass, true);
+        }
+        
         //replace"interface", "abstract"
         $nameClean = str_ireplace(['interface', 'abstract'], '', $name);
 
