@@ -192,6 +192,13 @@ class MakeResourceActionCommand extends MakeCommand
             null,
             false
         );
+
+        $this->addOption(
+            '-b|--entity-context-key',
+            'The entity context key name',
+            'entity',
+            false
+        );
     }
 
     /**
@@ -213,7 +220,7 @@ class MakeResourceActionCommand extends MakeCommand
         $this->recordResourceClasses();
 
         $this->recordProperties();
-        
+
         $this->addProperty($this->repositoryClass);
     }
 
@@ -453,21 +460,24 @@ class MakeResourceActionCommand extends MakeCommand
 
         $listRoute = $this->getRouteName('list');
 
+        $entityContextKey = $this->getEntityContextKey(true);
+        $entityContextName = $this->getEntityContextKey(false);
+
         $result = <<<EOF
         \$context = [];
                 \$id = (int) \$request->getAttribute('id');
 
-                /** @var $entityBaseClass|null \$entity */
-                \$entity = \$this->{$repositoryName}->find(\$id);
+                /** @var $entityBaseClass|null \$$entityContextName */
+                \$$entityContextName = \$this->{$repositoryName}->find(\$id);
 
-                if (\$entity === null) {
+                if (\$$entityContextName === null) {
                     \$this->flash->setError(\$this->lang->tr('$notFoundMessage'));
 
                     return new RedirectResponse(
                         \$this->routeHelper->generateUrl('$listRoute')
                     );
                 }
-                \$context['entity'] = \$entity;
+                \$context['$entityContextKey'] = \$$entityContextName;
                         
                 return new TemplateResponse(
                     \$this->template,
@@ -499,6 +509,8 @@ class MakeResourceActionCommand extends MakeCommand
         $uniqueCheckStr = $this->getUniqueFieldCheckTemplate(true);
         $fieldTemplates = $this->getEntityFieldsTemplate(true);
 
+        $entityContextName = $this->getEntityContextKey(false);
+
         $result = <<<EOF
         \$context = [];
                 \$param = new RequestData(\$request);
@@ -527,13 +539,13 @@ class MakeResourceActionCommand extends MakeCommand
                 
                 $uniqueCheckStr
 
-                /** @var $entityBaseClass \$entity */
-                \$entity = \$this->{$repositoryName}->create([
+                /** @var $entityBaseClass \$$entityContextName */
+                \$$entityContextName = \$this->{$repositoryName}->create([
                    $fieldTemplates
                 ]);
                 
                 try {
-                    \$this->{$repositoryName}->save(\$entity);
+                    \$this->{$repositoryName}->save(\$$entityContextName);
 
                     \$this->flash->setSuccess(\$this->lang->tr('$createMessage'));
 
@@ -578,24 +590,27 @@ class MakeResourceActionCommand extends MakeCommand
         $uniqueCheckStr = $this->getUniqueFieldCheckTemplate(false);
         $fieldTemplates = $this->getEntityFieldsTemplate(false);
 
+        $entityContextKey = $this->getEntityContextKey(true);
+        $entityContextName = $this->getEntityContextKey(false);
+
         $result = <<<EOF
         \$context = [];
                 \$param = new RequestData(\$request);
                 
                 \$id = (int) \$request->getAttribute('id');
 
-                /** @var $entityBaseClass|null \$entity */
-                \$entity = \$this->{$repositoryName}->find(\$id);
+                /** @var $entityBaseClass|null \$$entityContextName */
+                \$$entityContextName = \$this->{$repositoryName}->find(\$id);
 
-                if (\$entity === null) {
+                if (\$$entityContextName === null) {
                     \$this->flash->setError(\$this->lang->tr('$notFoundMessage'));
 
                     return new RedirectResponse(
                         \$this->routeHelper->generateUrl('$listRoute')
                     );
                 }
-                \$context['entity'] = \$entity;
-                \$context['param'] = (new $formParamBaseClass())->fromEntity(\$entity);
+                \$context['$entityContextKey'] = \$$entityContextName;
+                \$context['param'] = (new $formParamBaseClass())->fromEntity(\$$entityContextName);
                 if (\$request->getMethod() === 'GET') {
                     return new TemplateResponse(
                         \$this->template,
@@ -622,7 +637,7 @@ class MakeResourceActionCommand extends MakeCommand
                 $fieldTemplates
                 
                 try {
-                    \$this->{$repositoryName}->save(\$entity);
+                    \$this->{$repositoryName}->save(\$$entityContextName);
 
                     \$this->flash->setSuccess(\$this->lang->tr('$updateMessage'));
 
@@ -661,13 +676,15 @@ class MakeResourceActionCommand extends MakeCommand
 
         $listRoute = $this->getRouteName('list');
 
+        $entityContextName = $this->getEntityContextKey(false);
+
         $result = <<<EOF
         \$id = (int) \$request->getAttribute('id');
 
-                /** @var $entityBaseClass|null \$entity */
-                \$entity = \$this->{$repositoryName}->find(\$id);
+                /** @var $entityBaseClass|null \$$entityContextName */
+                \$$entityContextName = \$this->{$repositoryName}->find(\$id);
 
-                if (\$entity === null) {
+                if (\$$entityContextName === null) {
                     \$this->flash->setError(\$this->lang->tr('$notFoundMessage'));
 
                     return new RedirectResponse(
@@ -676,7 +693,7 @@ class MakeResourceActionCommand extends MakeCommand
                 }
 
                 try {
-                    \$this->{$repositoryName}->delete(\$entity);
+                    \$this->{$repositoryName}->delete(\$$entityContextName);
 
                     \$this->flash->setSuccess(\$this->lang->tr('$deleteMessage'));
 
@@ -890,6 +907,25 @@ class MakeResourceActionCommand extends MakeCommand
     }
 
     /**
+     * Return the entity context key
+     * @param bool $isKey
+     * @return string
+     */
+    protected function getEntityContextKey(bool $isKey = true): string
+    {
+        $key = (string) $this->getOptionValue('entityContextKey');
+        if (!empty($key)) {
+            if ($isKey) {
+                $key = Str::snake($key, '_');
+            } else {
+                $key = Str::camel($key, true);
+            }
+        }
+
+        return $key;
+    }
+
+    /**
      * Return the route prefix
      * @return string
      */
@@ -974,8 +1010,13 @@ class MakeResourceActionCommand extends MakeCommand
         if ($create) {
             return sprintf('\'%s\' => $formParam->%s(),', $field, $fieldMethodName) . ($isLast ? PHP_EOL : '');
         }
-
-        return sprintf('$entity->%s = $formParam->%s();', $field, $fieldMethodName) . ($isLast ? PHP_EOL : '');
+        $entityContextName = $this->getEntityContextKey(false);
+        return sprintf(
+            '$%s->%s = $formParam->%s();',
+            $entityContextName,
+            $field,
+            $fieldMethodName
+        ) . ($isLast ? PHP_EOL : '');
     }
 
     /**
