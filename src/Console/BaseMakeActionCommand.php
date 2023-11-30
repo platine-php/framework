@@ -453,6 +453,7 @@ abstract class BaseMakeActionCommand extends MakeCommand
         $result = '';
         foreach ($fields as $field => $param) {
             if ($orderField) {
+                $param = Str::upper($param);
                 $order = 'ASC';
                 if ($param === 'DESC') {
                     $order = 'DESC';
