@@ -51,7 +51,7 @@ use Platine\Console\Input\Reader;
 use Platine\Console\Output\Writer;
 use Platine\Filesystem\Filesystem;
 use Platine\Framework\App\Application;
-use Platine\Framework\Console\MakeCommand;
+use Platine\Framework\Console\BaseMakeActionCommand;
 use Platine\Framework\Helper\Flash;
 use Platine\Framework\Http\RouteHelper;
 use Platine\Lang\Lang;
@@ -65,36 +65,12 @@ use Platine\Template\Template;
  * @class MakeResourceActionCommand
  * @package Platine\Framework\Console\Command
  */
-class MakeResourceActionCommand extends MakeCommand
+class MakeResourceActionCommand extends BaseMakeActionCommand
 {
     /**
      * {@inheritdoc}
      */
     protected string $type = 'resource';
-
-    /**
-     * The form parameter class name
-     * @var class-string
-     */
-    protected string $paramClass;
-
-    /**
-     * The form validator class name
-     * @var class-string
-     */
-    protected string $validatorClass;
-
-    /**
-     * The entity class name
-     * @var class-string
-     */
-    protected string $entityClass;
-
-    /**
-     * The repository class name
-     * @var class-string
-     */
-    protected string $repositoryClass;
 
     /**
      * Create new instance
@@ -108,97 +84,6 @@ class MakeResourceActionCommand extends MakeCommand
         parent::__construct($application, $filesystem);
         $this->setName('make:resource')
               ->setDescription('Command to generate platine resource action');
-
-        $this->addOption(
-            '-c|--fields',
-            'The entity fields. Example field1:param1,field2:param2,field3',
-            null,
-            false
-        );
-
-        $this->addOption(
-            '-i|--fields-unique',
-            'The entity unique fields. Example field1:param1,field2:param2,field3',
-            null,
-            false
-        );
-
-        $this->addOption(
-            '-o|--fields-order',
-            'The entity orders fields. Example field1:ASC,field2:DESC,field3',
-            null,
-            false
-        );
-
-        $this->addOption(
-            '-t|--template-prefix',
-            'The template prefix',
-            null,
-            false
-        );
-
-        $this->addOption(
-            '-r|--route-prefix',
-            'The route name prefix',
-            null,
-            false
-        );
-
-        $this->addOption(
-            '-e|--message-not-found',
-            'The entity not found error message',
-            'This record doesn\'t exist',
-            false
-        );
-
-        $this->addOption(
-            '-l|--message-duplicate',
-            'The entity duplicate error message',
-            'This record already exist',
-            false
-        );
-
-        $this->addOption(
-            '-a|--message-create',
-            'The entity successfully create message',
-            'Data successfully created',
-            false
-        );
-
-        $this->addOption(
-            '-u|--message-update',
-            'The entity successfully update message',
-            'Data successfully updated',
-            false
-        );
-
-        $this->addOption(
-            '-d|--message-delete',
-            'The entity successfully delete message',
-            'Data successfully deleted',
-            false
-        );
-
-        $this->addOption(
-            '-p|--message-process-error',
-            'The entity processing error message',
-            'Data processing error',
-            false
-        );
-
-        $this->addOption(
-            '-j|--config',
-            'Use JSON config file for options',
-            null,
-            false
-        );
-
-        $this->addOption(
-            '-b|--entity-context-key',
-            'The entity context key name',
-            'entity',
-            false
-        );
     }
 
     /**
@@ -208,16 +93,11 @@ class MakeResourceActionCommand extends MakeCommand
     {
         parent::interact($reader, $writer);
 
-        // Load configuration file if exist
-        $this->loadConfig();
-
         $baseClasses = $this->getBaseClasses();
 
         foreach ($baseClasses as $value) {
             $this->addProperty($value);
         }
-
-        $this->recordResourceClasses();
 
         $this->recordProperties();
 
@@ -307,80 +187,6 @@ class MakeResourceActionCommand extends MakeCommand
         }
         
         EOF;
-    }
-
-    /**
-     * Record class properties
-     * @return void
-     */
-    protected function recordProperties(): void
-    {
-        $io = $this->io();
-
-        $writer = $io->writer();
-
-        $writer->boldYellow('Enter the properties list (empty value to finish):', true);
-        $value = '';
-        while ($value !== null) {
-            $value = $io->prompt('Property full class name', null, null, false);
-
-            if (!empty($value)) {
-                $value = trim($value);
-                if (!class_exists($value) && !interface_exists($value)) {
-                    $writer->boldWhiteBgRed(sprintf('The class [%s] does not exists', $value), true);
-                } else {
-                    $shortClass = $this->getClassBaseName($value);
-                    $name = Str::camel($shortClass, true);
-                    //replace"interface", "abstract"
-                    $nameClean = str_ireplace(['interface', 'abstract'], '', $name);
-
-                    $this->properties[$value] = [
-                        'name' => $nameClean,
-                        'short' => $shortClass,
-                    ];
-                }
-            }
-        }
-    }
-
-    /**
-     * Record the resource classes
-     * @return void
-     */
-    protected function recordResourceClasses(): void
-    {
-        $io = $this->io();
-
-        $paramClass = $io->prompt('Enter the form parameter full class name', null);
-        while (!class_exists($paramClass)) {
-            $paramClass = $io->prompt('Class does not exists, please enter the form parameter full class name', null);
-        }
-
-        $this->paramClass = $paramClass;
-
-        $validatorClass = $io->prompt('Enter the form validator full class name', null);
-        while (!class_exists($validatorClass)) {
-            $validatorClass = $io->prompt(
-                'Class does not exists, please enter the form validator full class name',
-                null
-            );
-        }
-
-        $this->validatorClass = $validatorClass;
-
-        $entityClass = $io->prompt('Enter the entity full class name', null);
-        while (!class_exists($entityClass)) {
-            $entityClass = $io->prompt('Class does not exists, please enter the entity full class name', null);
-        }
-
-        $this->entityClass = $entityClass;
-
-        $repositoryClass = $io->prompt('Enter the repository full class name', null);
-        while (!class_exists($repositoryClass)) {
-            $repositoryClass = $io->prompt('Class does not exists, please enter the repository full class name', null);
-        }
-
-        $this->repositoryClass = $repositoryClass;
     }
 
     /**
@@ -857,115 +663,6 @@ class MakeResourceActionCommand extends MakeCommand
     }
 
     /**
-     * Add new property
-     * @param class-string $value
-     * @param string|null $name
-     * @return $this
-     */
-    protected function addProperty(string $value, ?string $name = null): self
-    {
-        $shortClass = $this->getClassBaseName($value);
-        if ($name === null) {
-            $name = Str::camel($shortClass, true);
-        }
-
-        //replace"interface", "abstract"
-        $nameClean = str_ireplace(['interface', 'abstract'], '', $name);
-
-        $this->properties[$value] = [
-            'name' => $nameClean,
-            'short' => $shortClass,
-        ];
-
-        return $this;
-    }
-
-    /**
-     * Return the property name
-     * @param class-string $value
-     * @return string
-     */
-    protected function getPropertyName(string $value): string
-    {
-        if (!isset($this->properties[$value])) {
-            return '';
-        }
-
-        return $this->properties[$value]['name'];
-    }
-
-
-    /**
-     * Return the route prefix
-     * @return string
-     */
-    protected function getTemplatePrefix(): string
-    {
-        $templatePrefix = $this->getOptionValue('templatePrefix');
-        if ($templatePrefix === null) {
-            $actionName = $this->getShortClassName($this->className);
-            $templatePrefix = Str::snake(str_ireplace('action', '', $actionName));
-        }
-
-        return $templatePrefix;
-    }
-
-    /**
-     * Return the entity context key
-     * @param bool $isKey
-     * @return string
-     */
-    protected function getEntityContextKey(bool $isKey = true): string
-    {
-        $key = (string) $this->getOptionValue('entityContextKey');
-        if (!empty($key)) {
-            if ($isKey) {
-                $key = Str::snake($key, '_');
-            } else {
-                $key = Str::camel($key, true);
-            }
-        }
-
-        return $key;
-    }
-
-    /**
-     * Return the route prefix
-     * @return string
-     */
-    protected function getRoutePrefix(): string
-    {
-        $routePrefix = $this->getOptionValue('routePrefix');
-        if ($routePrefix === null) {
-            $actionName = $this->getShortClassName($this->className);
-            $routePrefix = Str::snake(str_ireplace('action', '', $actionName));
-        }
-
-        return $routePrefix;
-    }
-
-    /**
-     * Return the route name
-     * @param string $value
-     * @return string
-     */
-    protected function getRouteName(string $value): string
-    {
-        $routePrefix = $this->getRoutePrefix();
-        return sprintf('%s_%s', $routePrefix, $value);
-    }
-
-    /**
-     * Return the form parameter method name of the given name
-     * @param string $field
-     * @return string
-     */
-    protected function getFormParamMethodName(string $field): string
-    {
-        return sprintf('get%s', Str::camel($field, false));
-    }
-
-    /**
      * Return the base classes
      * @return array<class-string>
      */
@@ -979,21 +676,6 @@ class MakeResourceActionCommand extends MakeCommand
             RouteHelper::class,
             LoggerInterface::class,
         ];
-    }
-
-    /**
-     * Return the message
-     * @param string $option
-     * @return string|null
-     */
-    protected function getMessage(string $option): ?string
-    {
-        $message = (string) $this->getOptionValue($option);
-        if (!empty($message)) {
-            $message = addslashes($message);
-        }
-
-        return $message;
     }
 
     /**
@@ -1021,42 +703,5 @@ class MakeResourceActionCommand extends MakeCommand
             $field,
             $fieldMethodName
         ) . ($isLast ? PHP_EOL : '');
-    }
-
-    /**
-     * Return the template for form parameter entity field
-     * @param string $field
-     * @param string $param
-     * @param bool $isLast
-     * @return string
-     */
-    protected function getFormParamEntityFieldTemplate(
-        string $field,
-        string $param,
-        bool $isLast = false
-    ): string {
-        $fieldMethodName = $this->getFormParamMethodName($param);
-        return sprintf('\'%s\' => $formParam->%s(),', $field, $fieldMethodName) . ($isLast ? PHP_EOL : '');
-    }
-
-    /**
-     * Load JSON configuration file if exist
-     * @return void
-     */
-    protected function loadConfig(): void
-    {
-        $filename = $this->getOptionValue('config');
-        if (!empty($filename)) {
-            $file = $this->filesystem->file($filename);
-            if ($file->exists() && $file->isReadable()) {
-                $content = $file->read();
-                /** @var array<string, string> $config */
-                $config = Json::decode($content, true);
-                foreach ($config as $option => $value) {
-                    $optionKey = Str::camel($option, true);
-                    $this->values[$optionKey] = $value;
-                }
-            }
-        }
     }
 }

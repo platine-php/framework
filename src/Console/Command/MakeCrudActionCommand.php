@@ -47,18 +47,16 @@ declare(strict_types=1);
 
 namespace Platine\Framework\Console\Command;
 
-use Platine\Console\Input\Reader;
-use Platine\Console\Output\Writer;
 use Platine\Filesystem\Filesystem;
 use Platine\Framework\App\Application;
-use Platine\Stdlib\Helper\Json;
+use Platine\Framework\Console\BaseMakeActionCommand;
 use Platine\Stdlib\Helper\Str;
 
 /**
  * @class MakeCrudActionCommand
  * @package Platine\Framework\Console\Command
  */
-class MakeCrudActionCommand extends MakeResourceActionCommand
+class MakeCrudActionCommand extends BaseMakeActionCommand
 {
     /**
      * {@inheritdoc}
@@ -77,19 +75,6 @@ class MakeCrudActionCommand extends MakeResourceActionCommand
         parent::__construct($application, $filesystem);
         $this->setName('make:crud')
               ->setDescription('Command to generate platine CRUD action');
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function interact(Reader $reader, Writer $writer): void
-    {
-        parent::interact($reader, $writer);
-
-        // Load configuration file if exist
-        $this->loadConfig();
-
-        $this->recordResourceClasses();
     }
 
      /**
@@ -116,17 +101,26 @@ class MakeCrudActionCommand extends MakeResourceActionCommand
         /**
         * @class %classname%
         * @package %namespace%
-        * @extends CrudAction<%base_entity_class%>
+        * @extends CrudAction<%base_entity%>
         */
         class %classname% extends CrudAction
         {
             
             %attributes%
+            /**
+            * {@inheritdoc}
+            */
+            protected string \$paramClass = %base_param%::class;
+
+            /**
+            * {@inheritdoc}
+            */
+            protected string \$validatorClass = %base_validator%::class;
         
             /**
             * Create new instance
             * {@inheritdoc}
-            * @param %base_repository% \$repository
+            * @param %base_repository%<%base_entity%> \$repository
             */
             public function __construct(
                 Lang \$lang,
@@ -153,114 +147,191 @@ class MakeCrudActionCommand extends MakeResourceActionCommand
     }
 
     /**
-     * Record the resource classes
-     * @return void
-     */
-    protected function recordResourceClasses(): void
-    {
-        $io = $this->io();
-
-        $paramClass = $io->prompt('Enter the form parameter full class name', null);
-        while (!class_exists($paramClass)) {
-            $paramClass = $io->prompt('Class does not exists, please enter the form parameter full class name', null);
-        }
-
-        $this->paramClass = $paramClass;
-
-        $validatorClass = $io->prompt('Enter the form validator full class name', null);
-        while (!class_exists($validatorClass)) {
-            $validatorClass = $io->prompt(
-                'Class does not exists, please enter the form validator full class name',
-                null
-            );
-        }
-
-        $this->validatorClass = $validatorClass;
-
-        $entityClass = $io->prompt('Enter the entity full class name', null);
-        while (!class_exists($entityClass)) {
-            $entityClass = $io->prompt('Class does not exists, please enter the entity full class name', null);
-        }
-
-        $this->entityClass = $entityClass;
-
-        $repositoryClass = $io->prompt('Enter the repository full class name', null);
-        while (!class_exists($repositoryClass)) {
-            $repositoryClass = $io->prompt('Class does not exists, please enter the repository full class name', null);
-        }
-
-        $this->repositoryClass = $repositoryClass;
-    }
-
-    /**
      * {@inheritdoc}
      */
     protected function createClass(): string
     {
         $content = parent::createClass();
+        $entityBaseClass = $this->getClassBaseName($this->entityClass);
+        $repositoryBaseClass = $this->getClassBaseName($this->repositoryClass);
+        $paramBaseClass = $this->getClassBaseName($this->paramClass);
+        $validatorBaseClass = $this->getClassBaseName($this->validatorClass);
 
         $replace = '';
-        $fields = $this->getFieldsPropertyBody($content);
+        $fields = $this->getFieldsPropertyBody();
         if (!empty($fields)) {
-            $replace .= $fields;
+            $replace .= $fields . PHP_EOL . PHP_EOL;
         }
+
+        $orderFields = $this->getOrderByFieldsPropertyBody();
+        if (!empty($orderFields)) {
+            $replace .= $orderFields . PHP_EOL . PHP_EOL;
+        }
+
+        $uniqueFields = $this->getUniqueFieldsPropertyBody();
+        if (!empty($uniqueFields)) {
+            $replace .= $uniqueFields . PHP_EOL . PHP_EOL;
+        }
+
+        $templatePrefix = $this->getTemplatePrefix();
+        if (!empty($templatePrefix)) {
+            $replace .= <<<EOF
+            /**
+            * {@inheritdoc}
+            */
+            protected string \$templatePrefix = '$templatePrefix';
+        
+        
+        EOF;
+        }
+
+        $routePrefix = $this->getRoutePrefix();
+        if (!empty($routePrefix)) {
+            $replace .= <<<EOF
+            /**
+            * {@inheritdoc}
+            */
+            protected string \$routePrefix = '$routePrefix';
+        
+        
+        EOF;
+        }
+
+        $entityContextName = $this->getEntityContextKey(true);
+        $optionEntityContext = $this->getOptionForArgument('--entity-context-key');
+        if ($optionEntityContext !== null && $optionEntityContext->getDefault() !== $entityContextName) {
+            $replace .= <<<EOF
+            /**
+            * {@inheritdoc}
+            */
+            protected string \$entityContextName = '$entityContextName';
+        
+        
+        EOF;
+        }
+
+        $messages = $this->getMessageTemplates();
+        if (!empty($messages)) {
+            $replace .= $messages;
+        }
+
+
+        $content = str_replace('%base_entity%', $entityBaseClass, $content);
+        $content = str_replace('%base_repository%', $repositoryBaseClass, $content);
+        $content = str_replace('%base_param%', $paramBaseClass, $content);
+        $content = str_replace('%base_validator%', $validatorBaseClass, $content);
 
         return str_replace('%attributes%', $replace, $content);
     }
 
     /**
-     * Return the fields property body
-     * @param string $content
+     * Return the messages template
      * @return string
      */
-    protected function getFieldsPropertyBody(string $content): string
+    protected function getMessageTemplates(): string
+    {
+        $replace = '';
+
+        $messages = [
+            'create',
+            'update',
+            'delete',
+            'duplicate',
+            'not-found',
+            'process-error',
+        ];
+
+        foreach ($messages as $val) {
+            $optionName = sprintf('--message-%s', $val);
+            $optionKey = sprintf('message%s', Str::camel($val, false));
+
+            $message = $this->getMessage($optionKey);
+            $option = $this->getOptionForArgument($optionName);
+            if ($option !== null && addslashes($option->getDefault()) !== $message) {
+                $replace .= <<<EOF
+                /**
+                * {@inheritdoc}
+                */
+                protected string \${$optionKey} = '$message';
+
+
+            EOF;
+            }
+        }
+
+        return $replace;
+    }
+
+    /**
+     * Return the fields property body
+     * @return string
+     */
+    protected function getFieldsPropertyBody(): string
     {
         $fields = $this->getOptionValue('fields');
         if ($fields === null) {
             return '';
         }
+
+        $columns = $this->formatFields($fields);
+        $str = $this->formatFieldStr($columns);
+
         $result = <<<EOF
         /**
             * {@inheritdoc}
             */
-            protected array \$fields = ['name', 'description'];
+            protected array \$fields = [$str];
         EOF;
 
         return $result;
     }
 
-
-
     /**
-     * Return the template for order by
+     * Return the order by fields property body
      * @return string
      */
     protected function getOrderByFieldsPropertyBody(): string
     {
-        $result = '';
-        $orderFields = $this->getOptionValue('fieldsOrder');
+        $fields = $this->getOptionValue('fieldsOrder');
 
-        if ($orderFields !== null) {
-            $fields = (array) explode(',', $orderFields);
-            $i = 1;
-            foreach ($fields as $field) {
-                $column = $field;
-                $dir = 'ASC';
-                $orderField = (array) explode(':', $field);
-                if (isset($orderField[0])) {
-                    $column = $orderField[0];
-                }
-
-                if (isset($orderField[1]) && in_array(strtolower($orderField[1]), ['asc', 'desc'])) {
-                    $dir = $orderField[1];
-                }
-
-                $result .= ($i > 1 ? "\t\t\t\t\t    " : '') .
-                        sprintf('->orderBy(\'%s\', \'%s\')', $column, Str::upper($dir)) .
-                        (count($fields) > $i ? PHP_EOL : '');
-                $i++;
-            }
+        if ($fields === null) {
+            return '';
         }
+
+        $columns = $this->formatFields($fields);
+        $str = $this->formatFieldStr($columns, true);
+
+        $result = <<<EOF
+            /**
+            * {@inheritdoc}
+            */
+            protected array \$orderFields = [$str];
+        EOF;
+
+        return $result;
+    }
+
+    /**
+     * Return the unique fields property body
+     * @return string
+     */
+    protected function getUniqueFieldsPropertyBody(): string
+    {
+        $fields = $this->getOptionValue('fieldsUnique');
+
+        if ($fields === null) {
+            return '';
+        }
+
+        $columns = $this->formatFields($fields);
+        $str = $this->formatFieldStr($columns);
+
+        $result = <<<EOF
+            /**
+            * {@inheritdoc}
+            */
+            protected array \$uniqueFields = [$str];
+        EOF;
 
         return $result;
     }
@@ -280,105 +351,5 @@ class MakeCrudActionCommand extends MakeResourceActionCommand
         return <<<EOF
         $uses
         EOF;
-    }
-
-    /**
-     * Return the property name
-     * @param class-string $value
-     * @return string
-     */
-    protected function getPropertyName(string $value): string
-    {
-        if (!isset($this->properties[$value])) {
-            return '';
-        }
-
-        return $this->properties[$value]['name'];
-    }
-
-
-    /**
-     * Return the route prefix
-     * @return string
-     */
-    protected function getTemplatePrefix(): string
-    {
-        $templatePrefix = $this->getOptionValue('templatePrefix');
-        if ($templatePrefix === null) {
-            $actionName = $this->getShortClassName($this->className);
-            $templatePrefix = Str::snake(str_ireplace('action', '', $actionName));
-        }
-
-        return $templatePrefix;
-    }
-
-    /**
-     * Return the entity context key
-     * @param bool $isKey
-     * @return string
-     */
-    protected function getEntityContextKey(bool $isKey = true): string
-    {
-        $key = (string) $this->getOptionValue('entityContextKey');
-        if (!empty($key)) {
-            if ($isKey) {
-                $key = Str::snake($key, '_');
-            } else {
-                $key = Str::camel($key, true);
-            }
-        }
-
-        return $key;
-    }
-
-    /**
-     * Return the route prefix
-     * @return string
-     */
-    protected function getRoutePrefix(): string
-    {
-        $routePrefix = $this->getOptionValue('routePrefix');
-        if ($routePrefix === null) {
-            $actionName = $this->getShortClassName($this->className);
-            $routePrefix = Str::snake(str_ireplace('action', '', $actionName));
-        }
-
-        return $routePrefix;
-    }
-
-    /**
-     * Return the message
-     * @param string $option
-     * @return string|null
-     */
-    protected function getMessage(string $option): ?string
-    {
-        $message = (string) $this->getOptionValue($option);
-        if (!empty($message)) {
-            $message = addslashes($message);
-        }
-
-        return $message;
-    }
-
-    /**
-     * Load JSON configuration file if exist
-     * @return void
-     */
-    protected function loadConfig(): void
-    {
-        $filename = $this->getOptionValue('config');
-        if (!empty($filename)) {
-            $file = $this->filesystem->file($filename);
-            if ($file->exists() && $file->isReadable()) {
-                $content = $file->read();
-                /** @var array<string, string> $config */
-                $config = Json::decode($content, true);
-                foreach ($config as $option => $value) {
-                    $optionKey = Str::camel($option, true);
-                    $this->values[$optionKey] = $value;
-                }
-            }
-        }
     }
 }
