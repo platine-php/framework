@@ -444,7 +444,7 @@ abstract class BaseMakeActionCommand extends MakeCommand
 
     /**
      * Format fields
-     * @param array<string, string> $values
+     * @param array<string, string> $fields
      * @param bool $orderField
      * @return string
      */
