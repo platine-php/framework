@@ -16,6 +16,8 @@ use Platine\Framework\App\Application;
 use Platine\Framework\Config\DatabaseConfigLoader;
 use Platine\Framework\Form\Param\BaseParam;
 use Platine\Framework\Form\Validator\AbstractValidator;
+use Platine\Framework\Helper\Flash;
+use Platine\Framework\Http\Action\CrudAction;
 use Platine\Framework\Http\Maintenance\MaintenanceDriverInterface;
 use Platine\Framework\Http\RouteHelper;
 use Platine\Framework\Security\Csrf\CsrfManager;
@@ -39,8 +41,12 @@ use Platine\OAuth2\Entity\Client;
 use Platine\OAuth2\Entity\TokenOwnerInterface;
 use Platine\OAuth2\Grant\BaseGrant;
 use Platine\Orm\Entity;
+use Platine\Orm\Mapper\EntityMapperInterface;
+use Platine\Orm\Repository;
+use Platine\Pagination\Pagination;
 use Platine\Route\Router;
 use Platine\Session\Session;
+use Platine\Template\Template;
 use Platine\Validator\Rule\MinLength;
 use Platine\Validator\Rule\NotEmpty;
 use Traversable;
@@ -105,6 +111,64 @@ function getTestMaintenanceDriver(bool $exception = false, bool $active = false,
     };
 }
 
+class MyCrudAction extends CrudAction
+{
+    /**
+     * {@inheritdoc}
+     */
+    protected array $fields = ['name', 'status'];
+
+    /**
+     * {@inheritdoc}
+     */
+    protected array $uniqueFields = ['name'];
+
+    /**
+     * {@inheritdoc}
+     */
+    protected array $orderFields = ['name', 'description' => 'DESC'];
+
+    /**
+     * {@inheritdoc}
+     */
+    protected string $templatePrefix = 'category';
+
+    /**
+     * {@inheritdoc}
+     */
+    protected string $routePrefix = 'category';
+
+    /**
+     * {@inheritdoc}
+     */
+    protected string $paramClass = MyParam::class;
+
+    /**
+     * {@inheritdoc}
+     */
+    protected string $validatorClass = MyValidator::class;
+
+    public function __construct(
+        Lang $lang,
+        Pagination $pagination,
+        Template $template,
+        Flash $flash,
+        RouteHelper $routeHelper,
+        LoggerInterface $logger,
+        MyRepository $repository
+    ) {
+        parent::__construct(
+            $lang,
+            $pagination,
+            $template,
+            $flash,
+            $routeHelper,
+            $logger
+        );
+        $this->repository = $repository;
+    }
+}
+
 class MyOAuthGrant extends BaseGrant
 {
     public function allowPublicClients(): bool
@@ -120,6 +184,17 @@ class MyOAuthGrant extends BaseGrant
     public function createTokenResponse(ServerRequestInterface $request, ?Client $client = null, ?TokenOwnerInterface $owner = null): ResponseInterface
     {
         return new Response();
+    }
+}
+
+class MyRepository extends Repository
+{
+}
+
+class MyEntity extends Entity
+{
+    public static function mapEntity(EntityMapperInterface $mapper): void
+    {
     }
 }
 
