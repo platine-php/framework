@@ -61,7 +61,7 @@ use Platine\Http\StreamInterface;
 class ResponseEmitter implements EmitterInterface
 {
     /**
-     * The response before length
+     * The response buffer length
      * @var int|null
      */
     protected ?int $bufferLength = null;

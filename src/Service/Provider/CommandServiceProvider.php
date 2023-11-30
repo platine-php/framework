@@ -50,6 +50,7 @@ namespace Platine\Framework\Service\Provider;
 use Platine\Framework\Console\Command\ConfigCommand;
 use Platine\Framework\Console\Command\MaintenanceCommand;
 use Platine\Framework\Console\Command\MakeActionCommand;
+use Platine\Framework\Console\Command\MakeCrudActionCommand;
 use Platine\Framework\Console\Command\MakeEntityCommand;
 use Platine\Framework\Console\Command\MakeEnumCommand;
 use Platine\Framework\Console\Command\MakeEventCommand;
@@ -92,6 +93,7 @@ class CommandServiceProvider extends ServiceProvider
         $this->app->bind(MakeListenerCommand::class);
         $this->app->bind(MakeTaskCommand::class);
         $this->app->bind(MakeResourceActionCommand::class);
+        $this->app->bind(MakeCrudActionCommand::class);
 
         //Commands
         $this->addCommand(MaintenanceCommand::class);
@@ -109,5 +111,6 @@ class CommandServiceProvider extends ServiceProvider
         $this->addCommand(MakeTaskCommand::class);
         $this->addCommand(ConfigCommand::class);
         $this->addCommand(MakeResourceActionCommand::class);
+        $this->addCommand(MakeCrudActionCommand::class);
     }
 }

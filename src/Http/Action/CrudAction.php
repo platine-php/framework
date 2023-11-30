@@ -58,7 +58,6 @@ use Platine\Http\ResponseInterface;
 use Platine\Http\ServerRequestInterface;
 use Platine\Lang\Lang;
 use Platine\Logger\LoggerInterface;
-use Platine\Orm\Entity;
 use Platine\Orm\Repository;
 use Platine\Pagination\Pagination;
 use Platine\Stdlib\Helper\Str;
@@ -67,7 +66,7 @@ use Platine\Template\Template;
 /**
 * @class CrudAction
 * @package Platine\Framework\Http\Action
-* @template TEntity as Entity
+* @template TEntity as \Platine\Orm\Entity
 */
 class CrudAction
 {
@@ -229,7 +228,7 @@ class CrudAction
     */
     public function index(ServerRequestInterface $request): ResponseInterface
     {
-        $context = [];
+        $context = $this->getTemplateData();
         $templateName = sprintf('%s/list', $this->templatePrefix);
         $param = new RequestData($request);
         $totalItems = $this->repository->query()
@@ -279,7 +278,7 @@ class CrudAction
     {
         $routeListName = sprintf('%s_list', $this->routePrefix);
         $templateName = sprintf('%s/detail', $this->templatePrefix);
-        $context = [];
+        $context = $this->getTemplateData();
         $id = (int) $request->getAttribute('id');
 
         /** @var TEntity|null $entity */
@@ -310,7 +309,7 @@ class CrudAction
     {
         $routeListName = sprintf('%s_list', $this->routePrefix);
         $templateName = sprintf('%s/create', $this->templatePrefix);
-        $context = [];
+        $context = $this->getTemplateData();
         $param = new RequestData($request);
 
         $formParam = new $this->paramClass($param->posts());
@@ -387,7 +386,7 @@ class CrudAction
     {
         $routeListName = sprintf('%s_list', $this->routePrefix);
         $templateName = sprintf('%s/update', $this->templatePrefix);
-        $context = [];
+        $context = $this->getTemplateData();
         $param = new RequestData($request);
 
         $id = (int) $request->getAttribute('id');
@@ -527,5 +526,14 @@ class CrudAction
         }
 
         return $results;
+    }
+
+    /**
+     * Return the additional template data
+     * @return array<string, mixed>
+     */
+    protected function getTemplateData(): array
+    {
+        return [];
     }
 }
