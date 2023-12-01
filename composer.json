@@ -83,12 +83,6 @@
         "sort-packages": true
     },
     
-    "extra": {
-        "branch-alias": {
-            "dev-develop": "1.0.x-dev"
-        }
-    },
-
     "scripts": {
         "test": "phpunit --colors=always",
         "static": "phpstan analyze",

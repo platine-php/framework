@@ -6,7 +6,6 @@
 [![Latest Unstable Version](https://poser.pugx.org/platine-php/framework/v/unstable)](https://packagist.org/packages/platine-php/framework)
 [![Total Downloads](https://poser.pugx.org/platine-php/framework/downloads)](https://packagist.org/packages/platine-php/oauth2)
 [![License](https://poser.pugx.org/platine-php/framework/license)](https://packagist.org/packages/platine-php/framework)  
-![Build Status](https://github.com/platine-php/framework/actions/workflows/ci.yml/badge.svg)
 [![Quality Score](https://img.shields.io/scrutinizer/g/platine-php/framework.svg?style=flat-square)](https://scrutinizer-ci.com/g/platine-php/framework)
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/1ae48400b20c49cf94e716e355d042d0)](https://app.codacy.com/gh/platine-php/framework/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade)
 [![Codacy Badge](https://app.codacy.com/project/badge/Coverage/1ae48400b20c49cf94e716e355d042d0)](https://app.codacy.com/gh/platine-php/framework/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_coverage)
@@ -46,7 +45,6 @@ docker-compose exec framework composer install --no-interaction
 
 ### License
 MIT License See [LICENSE.MD](LICENSE.MD)
-
 
 ### Resources
 - [Documentation](https://docs.platine-php.com) 
