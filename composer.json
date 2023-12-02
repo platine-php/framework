@@ -82,8 +82,6 @@
         "sort-packages": true
     },
     
-    
-
     "scripts": {
         "test": "phpunit --colors=always",
         "static": "phpstan analyze",
