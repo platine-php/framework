@@ -32,7 +32,7 @@ Message: Foo exception 1
 File: ' . $file . '
 Line: 20
 ';
-        $this->assertEquals($expected, $o->render($ex, true, false));
+        $this->assertCommandOutput($expected, $o->render($ex, true, false));
     }
 
     public function testRenderWithoutDetail(): void
@@ -41,7 +41,7 @@ Line: 20
         $ex = $this->throwTestException();
         $expected = 'Application Error
 ';
-        $this->assertEquals($expected, $o->render($ex, false, false));
+        $this->assertCommandOutput($expected, $o->render($ex, false, false));
     }
 
     public function testRenderForLog(): void
@@ -50,6 +50,6 @@ Line: 20
         $ex = $this->throwTestException();
         $expected = 'Application Error
 ';
-        $this->assertEquals($expected, $o->render($ex, false, true));
+        $this->assertCommandOutput($expected, $o->render($ex, false, true));
     }
 }

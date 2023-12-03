@@ -25,6 +25,6 @@ class XmlErrorRendererTest extends BaseErrorHandlerTestCase
                 . '<line>23</line></exception><exception><type>Exception</type><code>0</code>'
                 . '<message><![CDATA[Foo exception 1]]></message><file>' . $file . '</file>'
                 . '<line>20</line></exception></exceptions></error>';
-        $this->assertEquals($expected, $o->render($ex, true, false));
+        $this->assertCommandOutput($expected, $o->render($ex, true, false));
     }
 }
