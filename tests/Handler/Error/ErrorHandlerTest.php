@@ -156,6 +156,6 @@ File: ' . $file . '
 Line: 20
 ';
         
-        $this->assertEquals($expected, (string) $resp->getBody());
+        $this->assertCommandOutput($expected, (string) $resp->getBody());
     }
 }
