@@ -18,7 +18,8 @@ class JsonErrorRendererTest extends BaseErrorHandlerTestCase
         $o = new JsonErrorRenderer();
         $ex = $this->throwTestException();
         $file = $this->getExceptionThrownFilePath();
-        $expected = '{
+        $expected = <<<E
+{
     "title": "Application Error",
     "message": "An error has occurred. Sorry for the temporary inconvenience.",
     "exception": [
@@ -26,18 +27,19 @@ class JsonErrorRendererTest extends BaseErrorHandlerTestCase
             "type": "Exception",
             "code": 100,
             "message": "Foo exception 2",
-            "file": "' . $file . '",
+            "file": "$file",
             "line": 23
         },
         {
             "type": "Exception",
             "code": 0,
             "message": "Foo exception 1",
-            "file": "' . $file . '",
+            "file": "$file",
             "line": 20
         }
     ]
-}';
+}
+E;
         $this->assertEquals($expected, $o->render($ex, true, false));
     }
 }
