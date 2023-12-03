@@ -75,6 +75,7 @@ Command finished successfully
         $o->bind($app);
         $o->parse(['platine', 'config', '-l', '-t', 'commands']);
         $o->execute();
+        
         $expected = 'Show configuration for [commands]
 
 +-------+
