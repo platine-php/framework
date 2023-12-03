@@ -39,7 +39,6 @@ Line: 20
     {
         $o = new TextPlainErrorRenderer();
         $ex = $this->throwTestException();
-        $file = $this->getExceptionThrownFilePath(false);
         $expected = 'Application Error
 ';
         $this->assertEquals($expected, $o->render($ex, false, false));
@@ -49,7 +48,6 @@ Line: 20
     {
         $o = new TextPlainErrorRenderer();
         $ex = $this->throwTestException();
-        $file = $this->getExceptionThrownFilePath();
         $expected = 'Application Error
 ';
         $this->assertEquals($expected, $o->render($ex, false, true));
