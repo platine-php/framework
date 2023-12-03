@@ -5,6 +5,7 @@
 [![Latest Stable Version](https://poser.pugx.org/platine-php/framework/v/stable)](https://packagist.org/packages/platine-php/framework)
 [![Latest Unstable Version](https://poser.pugx.org/platine-php/framework/v/unstable)](https://packagist.org/packages/platine-php/framework)
 [![Total Downloads](https://poser.pugx.org/platine-php/framework/downloads)](https://packagist.org/packages/platine-php/framework)
+![Tests](https://github.com/platine-php/framework/actions/workflows/ci.yml/badge.svg)
 [![License](https://poser.pugx.org/platine-php/framework/license)](https://packagist.org/packages/platine-php/framework)  
 [![Quality Score](https://img.shields.io/scrutinizer/g/platine-php/framework.svg?style=flat-square)](https://scrutinizer-ci.com/g/platine-php/framework)
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/1ae48400b20c49cf94e716e355d042d0)](https://app.codacy.com/gh/platine-php/framework/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade)
