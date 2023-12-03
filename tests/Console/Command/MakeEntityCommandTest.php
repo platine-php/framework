@@ -50,26 +50,38 @@ class MakeEntityCommandTest extends BaseCommandTestCase
 
         $o->interact($reader, $writer);
         $o->execute();
-        $expected = 'GENERATION OF NEW CLASS
+        $classPath = implode(
+            DIRECTORY_SEPARATOR,
+            [
+                'vfs://root',
+                'app',
+                'Entity',
+                'MyEntity.php'
+            ]
+        );
+        $expected = <<<E
+GENERATION OF NEW CLASS
 
 Generation of new entity class [MyApp\Entity\MyEntity]
 
 Class: MyApp\Entity\MyEntity
-Path: vfs://root/app/Entity/MyEntity.php
+Path: $classPath
 Namespace: MyApp\Entity
-';
-        $this->assertEquals($expected, $this->getConsoleOutputContent());
+
+E;
+        $this->assertCommandOutput($expected, $this->getConsoleOutputContent());
     }
 
     public function testExecuteWithTimestamp(): void
     {
         $dir = $this->createVfsDirectory('app', $this->vfsRoot);
+
         $actionName = 'Entity/' . 'MyEntity';
         $localAdapter = new LocalAdapter();
         $filesystem = new Filesystem($localAdapter);
         $app = $this->getMockInstance(Application::class, [
             'getNamespace' => 'MyApp\\',
-            'getAppPath' => $dir->url()
+            'getAppPath' => $dir->url(),
         ]);
 
 
@@ -102,16 +114,27 @@ Namespace: MyApp\Entity
 
         $o->interact($reader, $writer);
         $o->execute();
-        $expected = 'GENERATION OF NEW CLASS
+        $classPath = implode(
+            DIRECTORY_SEPARATOR,
+            [
+                'vfs://root',
+                'app',
+                'Entity',
+                'MyEntity.php'
+            ]
+        );
+        $expected = <<<E
+GENERATION OF NEW CLASS
 
 Created at field name [created_at]: Updated at field name [updated_at]: Generation of new entity class [MyApp\Entity\MyEntity]
 
 Class: MyApp\Entity\MyEntity
-Path: vfs://root/app/Entity/MyEntity.php
+Path: $classPath
 Namespace: MyApp\Entity
 Class [MyApp\Entity\MyEntity] generated successfully.
-';
-        $this->assertEquals($expected, $this->getConsoleOutputContent());
+
+E;
+        $this->assertCommandOutput($expected, $this->getConsoleOutputContent());
     }
 
     public function testExecuteWithTimestampCustomFields(): void
@@ -157,16 +180,27 @@ Class [MyApp\Entity\MyEntity] generated successfully.
 
         $o->interact($reader, $writer);
         $o->execute();
-        $expected = 'GENERATION OF NEW CLASS
+        $classPath = implode(
+            DIRECTORY_SEPARATOR,
+            [
+                'vfs://root',
+                'app',
+                'Entity',
+                'MyEntity.php'
+            ]
+        );
+        $expected = <<<E
+GENERATION OF NEW CLASS
 
 Created at field name [created_at]: Updated at field name [updated_at]: Generation of new entity class [MyApp\Entity\MyEntity]
 
 Class: MyApp\Entity\MyEntity
-Path: vfs://root/app/Entity/MyEntity.php
+Path: $classPath
 Namespace: MyApp\Entity
 Class [MyApp\Entity\MyEntity] generated successfully.
-';
-        $this->assertEquals($expected, $this->getConsoleOutputContent());
+
+E;
+        $this->assertCommandOutput($expected, $this->getConsoleOutputContent());
     }
 
     public function testGetClassTemplate(): void

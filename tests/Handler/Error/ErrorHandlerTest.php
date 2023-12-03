@@ -136,7 +136,7 @@ class ErrorHandlerTest extends BaseErrorHandlerTestCase
         ]);
         $logger = $this->getMockInstance(Logger::class);
         $exception = $this->throwTestException();
-        $file = $this->getExceptionThrownFilePath();
+        $file = $this->getExceptionThrownFilePath(false);
         $o = new ErrorHandler($logger);
         $o->setDefaultErrorRenderer('text/plain', $renderer);
         $resp = $o->handle($request, $exception, true);

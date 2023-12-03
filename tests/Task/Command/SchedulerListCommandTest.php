@@ -69,7 +69,7 @@ class SchedulerListCommandTest extends BaseCommandTestCase
 
 Command finished successfully
 ';
-        $this->assertEquals($expected, $this->getConsoleOutputContent());
+        $this->assertCommandOutput($expected, $this->getConsoleOutputContent());
     }
 
     public function testExecuteClassStringDoesNotExist(): void
@@ -158,6 +158,6 @@ Command finished successfully
 
 Command finished successfully
 ';
-        $this->assertEquals($expected, $this->getConsoleOutputContent());
+        $this->assertCommandOutput($expected, $this->getConsoleOutputContent());
     }
 }

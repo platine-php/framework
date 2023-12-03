@@ -30,7 +30,7 @@ class HtmlErrorRendererTest extends BaseErrorHandlerTestCase
 
     public function testRenderWithoutDetailAndLog(): void
     {
-        $file = $this->getExceptionThrownFilePath();
+        $file = $this->getExceptionThrownFilePath(false);
         $o = new HtmlErrorRenderer();
         $ex = $this->throwTestException();
         $expected = 'Application Error: An error has occurred. Sorry for'
@@ -43,7 +43,7 @@ class HtmlErrorRendererTest extends BaseErrorHandlerTestCase
     {
         global $mock_htmlentities_to_empty;
         $mock_htmlentities_to_empty = true;
-        $file = $this->getExceptionThrownFilePath();
+        $file = $this->getExceptionThrownFilePath(false);
         $o = new HtmlErrorRenderer();
         $ex = $this->throwTestException();
         $expected = '<html><head><meta http-equiv="Content-Type" content="text/html; '
@@ -65,7 +65,7 @@ class HtmlErrorRendererTest extends BaseErrorHandlerTestCase
     {
         global $mock_htmlentities_to_empty;
         $mock_htmlentities_to_empty = true;
-        $file = $this->getExceptionThrownFilePath();
+        $file = $this->getExceptionThrownFilePath(false);
         $o = new HtmlErrorRenderer();
         $ex = $this->throwTestHttpException();
         $expected = '404 Not found: The requested resource [] could not be found. '

@@ -57,16 +57,29 @@ class MakeActionCommandTest extends BaseCommandTestCase
 
         $o->interact($reader, $writer);
         $o->execute();
-        $expected = 'GENERATION OF NEW CLASS
+
+        $classPath = implode(
+            DIRECTORY_SEPARATOR,
+            [
+                'vfs://root',
+                'app',
+                'actions',
+                'MyAction.php'
+            ]
+        );
+
+        $expected = <<<E
+GENERATION OF NEW CLASS
 
 Enter the properties list (empty value to finish):
 Generation of new action class [MyApp\actions\MyAction]
 
 Class: MyApp\actions\MyAction
-Path: vfs://root/app/actions/MyAction.php
+Path: $classPath
 Namespace: MyApp\actions
-';
-        $this->assertEquals($expected, $this->getConsoleOutputContent());
+
+E;
+        $this->assertCommandOutput($expected, $this->getConsoleOutputContent());
     }
 
     public function testExecuteNameFromInput(): void
@@ -106,16 +119,29 @@ Namespace: MyApp\actions
 
         $o->interact($reader, $writer);
         $o->execute();
-        $expected = 'GENERATION OF NEW CLASS
+
+        $classPath = implode(
+            DIRECTORY_SEPARATOR,
+            [
+                'vfs://root',
+                'app',
+                'actions',
+                'MyAction.php'
+            ]
+        );
+
+        $expected = <<<E
+GENERATION OF NEW CLASS
 
 Enter the full class name (can include root namespace): Enter the properties list (empty value to finish):
 Property full class name: Generation of new action class [MyApp\actions\MyAction]
 
 Class: MyApp\actions\MyAction
-Path: vfs://root/app/actions/MyAction.php
+Path: $classPath
 Namespace: MyApp\actions
-';
-        $this->assertEquals($expected, $this->getConsoleOutputContent());
+
+E;
+        $this->assertCommandOutput($expected, $this->getConsoleOutputContent());
     }
 
     public function testExecuteWithProperties(): void
@@ -167,17 +193,30 @@ Namespace: MyApp\actions
 
         $o->interact($reader, $writer);
         $o->execute();
-        $expected = 'GENERATION OF NEW CLASS
+
+        $classPath = implode(
+            DIRECTORY_SEPARATOR,
+            [
+                'vfs://root',
+                'app',
+                'actions',
+                'MyAction.php'
+            ]
+        );
+
+        $expected = <<<E
+GENERATION OF NEW CLASS
 
 Enter the properties list (empty value to finish):
 Property full class name: Property full class name: Property full class name: Generation of new action class [MyApp\actions\MyAction]
 
 Class: MyApp\actions\MyAction
-Path: vfs://root/app/actions/MyAction.php
+Path: $classPath
 Namespace: MyApp\actions
 Are you confirm the generation of [MyApp\actions\MyAction] ?Class [MyApp\actions\MyAction] generated successfully.
-';
-        $this->assertEquals($expected, $this->getConsoleOutputContent());
+
+E;
+        $this->assertCommandOutput($expected, $this->getConsoleOutputContent());
     }
 
     public function testExecuteWithPropertiesClassNotExist(): void
@@ -223,17 +262,30 @@ Are you confirm the generation of [MyApp\actions\MyAction] ?Class [MyApp\actions
 
         $o->interact($reader, $writer);
         $o->execute();
-        $expected = 'GENERATION OF NEW CLASS
+
+        $classPath = implode(
+            DIRECTORY_SEPARATOR,
+            [
+                'vfs://root',
+                'app',
+                'actions',
+                'MyAction.php'
+            ]
+        );
+
+        $expected = <<<E
+GENERATION OF NEW CLASS
 
 Enter the properties list (empty value to finish):
 Property full class name: The class [Foo\Bar\Not\Found] does not exists
 Property full class name: Generation of new action class [MyApp\actions\MyAction]
 
 Class: MyApp\actions\MyAction
-Path: vfs://root/app/actions/MyAction.php
+Path: $classPath
 Namespace: MyApp\actions
-';
-        $this->assertEquals($expected, $this->getConsoleOutputContent());
+
+E;
+        $this->assertCommandOutput($expected, $this->getConsoleOutputContent());
     }
 
     public function testExecuteFileAlreadyExists(): void
@@ -269,14 +321,26 @@ Namespace: MyApp\actions
 
         $o->interact($reader, $writer);
         $o->execute();
-        $expected = 'GENERATION OF NEW CLASS
+
+        $classPath = implode(
+            DIRECTORY_SEPARATOR,
+            [
+                'vfs://root',
+                'app',
+                'MyAction.php'
+            ]
+        );
+
+        $expected = <<<E
+GENERATION OF NEW CLASS
 
 Enter the properties list (empty value to finish):
 Generation of new action class [MyApp\MyAction]
 
-File [vfs://root/app/MyAction.php] already exists.
-';
-        $this->assertEquals($expected, $this->getConsoleOutputContent());
+File [$classPath] already exists.
+
+E;
+        $this->assertCommandOutput($expected, $this->getConsoleOutputContent());
     }
 
     public function testGetClassTemplate(): void

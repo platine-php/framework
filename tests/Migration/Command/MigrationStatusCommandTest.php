@@ -6,14 +6,11 @@ namespace Platine\Test\Framework\Migration\Command;
 
 use Platine\Config\Config;
 use Platine\Console\Application as ConsoleApp;
-use Platine\Console\Input\Reader;
 use Platine\Console\IO\Interactor;
 use Platine\Database\Connection;
 use Platine\Filesystem\Adapter\Local\LocalAdapter;
 use Platine\Filesystem\Filesystem;
 use Platine\Framework\App\Application;
-use Platine\Framework\Migration\Command\MigrationExecuteCommand;
-use Platine\Framework\Migration\Command\MigrationResetCommand;
 use Platine\Framework\Migration\Command\MigrationStatusCommand;
 use Platine\Framework\Migration\MigrationEntity;
 use Platine\Framework\Migration\MigrationRepository;
@@ -74,9 +71,20 @@ class MigrationStatusCommandTest extends BaseCommandTestCase
         $o->parse(['platine']);
         $this->assertEquals('migration:status', $o->getName());
         $o->execute();
-        $expected = 'MIGRATION STATUS
 
-Migration path: ' . $migrationPath . DIRECTORY_SEPARATOR . '
+        $migrationFile = implode(
+            DIRECTORY_SEPARATOR,
+            [
+                'vfs://root',
+                'my_tests',
+                'migrations',
+            ]
+        ) . DIRECTORY_SEPARATOR;
+
+        $expected = <<<E
+MIGRATION STATUS
+
+Migration path: $migrationFile
 Migration table: migrations
 Migration All: 1
 Migration Available: 1
@@ -91,9 +99,10 @@ MIGRATION LIST
 +-----------------+----------------+------+--------+
 
 Command finished successfully
-';
 
-        $this->assertEquals($expected, $this->getConsoleOutputContent());
+E;
+
+        $this->assertCommandOutput($expected, $this->getConsoleOutputContent());
     }
 
     private function createMigrationTestFile($migrationDir)

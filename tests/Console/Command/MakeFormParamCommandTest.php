@@ -50,16 +50,29 @@ class MakeFormParamCommandTest extends BaseCommandTestCase
 
         $o->interact($reader, $writer);
         $o->execute();
-        $expected = 'GENERATION OF NEW CLASS
+
+        $classPath = implode(
+            DIRECTORY_SEPARATOR,
+            [
+                'vfs://root',
+                'app',
+                'Param',
+                'MyParam.php'
+            ]
+        );
+
+        $expected = <<<E
+GENERATION OF NEW CLASS
 
 Enter the properties list (empty value to finish):
 Generation of new form parameter class [MyApp\Param\MyParam]
 
 Class: MyApp\Param\MyParam
-Path: vfs://root/app/Param/MyParam.php
+Path: $classPath
 Namespace: MyApp\Param
-';
-        $this->assertEquals($expected, $this->getConsoleOutputContent());
+
+E;
+        $this->assertCommandOutput($expected, $this->getConsoleOutputContent());
     }
 
 
@@ -117,18 +130,30 @@ Namespace: MyApp\Param
 
         $o->interact($reader, $writer);
         $o->execute();
-        $expected = 'GENERATION OF NEW CLASS
+
+        $classPath = implode(
+            DIRECTORY_SEPARATOR,
+            [
+                'vfs://root',
+                'app',
+                'Param',
+                'MyParam.php'
+            ]
+        );
+
+        $expected = <<<E
+GENERATION OF NEW CLASS
 
 Enter the properties list (empty value to finish):
-Property name: Property name: Property name: Property name: Property name: Entity field name for [code] (just enter to ignore): Entity field name for [sexe] (just enter to ignore): Entity field name for [amount] (just enter to ignore): Entity field name for [name] (just enter to ignore):'
-        . ' Generation of new form parameter class [MyApp\Param\MyParam]
+Property name: Property name: Property name: Property name: Property name: Entity field name for [code] (just enter to ignore): Entity field name for [sexe] (just enter to ignore): Entity field name for [amount] (just enter to ignore): Entity field name for [name] (just enter to ignore): Generation of new form parameter class [MyApp\Param\MyParam]
 
 Class: MyApp\Param\MyParam
-Path: vfs://root/app/Param/MyParam.php
+Path: $classPath
 Namespace: MyApp\Param
 Class [MyApp\Param\MyParam] generated successfully.
-';
-        $this->assertEquals($expected, $this->getConsoleOutputContent());
+
+E;
+        $this->assertCommandOutput($expected, $this->getConsoleOutputContent());
     }
 
     public function testExecuteWithEntityInstance(): void
@@ -179,18 +204,30 @@ Class [MyApp\Param\MyParam] generated successfully.
 
         $o->interact($reader, $writer);
         $o->execute();
-        $expected = 'GENERATION OF NEW CLASS
+
+        $classPath = implode(
+            DIRECTORY_SEPARATOR,
+            [
+                'vfs://root',
+                'app',
+                'Param',
+                'MyParam.php'
+            ]
+        );
+
+        $expected = <<<E
+GENERATION OF NEW CLASS
 
 Enter the properties list (empty value to finish):
-Property name: Property name: Entity field name for [code] (just enter to ignore):'
-        . ' Generation of new form parameter class [MyApp\Param\MyParam]
+Property name: Property name: Entity field name for [code] (just enter to ignore): Generation of new form parameter class [MyApp\Param\MyParam]
 
 Class: MyApp\Param\MyParam
-Path: vfs://root/app/Param/MyParam.php
+Path: $classPath
 Namespace: MyApp\Param
 Class [MyApp\Param\MyParam] generated successfully.
-';
-        $this->assertEquals($expected, $this->getConsoleOutputContent());
+
+E;
+        $this->assertCommandOutput($expected, $this->getConsoleOutputContent());
     }
 
     public function testGetClassTemplate(): void

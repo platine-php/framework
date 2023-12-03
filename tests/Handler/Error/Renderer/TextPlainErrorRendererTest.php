@@ -17,7 +17,7 @@ class TextPlainErrorRendererTest extends BaseErrorHandlerTestCase
     {
         $o = new TextPlainErrorRenderer();
         $ex = $this->throwTestException();
-        $file = $this->getExceptionThrownFilePath();
+        $file = $this->getExceptionThrownFilePath(false);
         $expected = 'Application Error
 Type: Exception
 Code: 100
@@ -39,7 +39,7 @@ Line: 20
     {
         $o = new TextPlainErrorRenderer();
         $ex = $this->throwTestException();
-        $file = $this->getExceptionThrownFilePath();
+        $file = $this->getExceptionThrownFilePath(false);
         $expected = 'Application Error
 ';
         $this->assertEquals($expected, $o->render($ex, false, false));

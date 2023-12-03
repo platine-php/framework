@@ -52,9 +52,20 @@ class SeedStatusCommandTest extends BaseCommandTestCase
         $o->parse(['platine']);
         $this->assertEquals('seed:status', $o->getName());
         $o->execute();
-        $expected = 'SEED STATUS
 
-Seed path: ' . $seedPath . DIRECTORY_SEPARATOR . '
+        $seedPath = implode(
+            DIRECTORY_SEPARATOR,
+            [
+                'vfs://root',
+                'my_tests',
+                'seeds',
+            ]
+        ) . DIRECTORY_SEPARATOR;
+
+        $expected = <<<E
+SEED STATUS
+
+Seed path: $seedPath
 All seed: 1
 SEED LIST
 +-----+----------+
@@ -64,9 +75,10 @@ SEED LIST
 +-----+----------+
 
 Command finished successfully
-';
 
-        $this->assertEquals($expected, $this->getConsoleOutputContent());
+E;
+
+        $this->assertCommandOutput($expected, $this->getConsoleOutputContent());
     }
 
     private function createSeedTestFile($seedDir)

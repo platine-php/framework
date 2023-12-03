@@ -84,7 +84,7 @@ Package template [templates/] publish successfully
 
 Command finished successfully
 ';
-        $this->assertEquals($expected, $this->getConsoleOutputContent());
+        $this->assertCommandOutput($expected, $this->getConsoleOutputContent());
     }
 
     public function testExecutePublishOnlySomeFiles(): void
@@ -153,7 +153,7 @@ Package template [templates/] publish successfully
 
 Command finished successfully
 ';
-        $this->assertEquals($expected, $this->getConsoleOutputContent());
+        $this->assertCommandOutput($expected, $this->getConsoleOutputContent());
     }
 
     public function testExecutePackageNotFound(): void
@@ -204,7 +204,7 @@ Command finished successfully
 
 Can not find the composer package [test/foo].
 ';
-        $this->assertEquals($expected, $this->getConsoleOutputContent());
+        $this->assertCommandOutput($expected, $this->getConsoleOutputContent());
     }
 
     public function testExecutePackageFileToPublishMissing(): void
@@ -264,7 +264,7 @@ Can not find the package file configuration [vfs://root/vendor/test/foo/testconf
 
 Command finished successfully
 ';
-        $this->assertEquals($expected, $this->getConsoleOutputContent());
+        $this->assertCommandOutput($expected, $this->getConsoleOutputContent());
     }
 
     public function testExecutePackageDestinationFileExistsNoOverwrite(): void
@@ -311,7 +311,18 @@ Command finished successfully
         $o->parse(['platine', 'test/foo', '-c']);
         $this->assertEquals('vendor:publish', $o->getName());
         $o->execute();
-        $expected = 'PUBLISH OF PACKAGE [test/foo]
+
+        $classPath = implode(
+            DIRECTORY_SEPARATOR,
+            [
+                'vfs://root',
+                'app',
+                'testconfig.php'
+            ]
+        );
+
+        $expected = <<<E
+PUBLISH OF PACKAGE [test/foo]
 
 Name: test/foo
 Description: Test package
@@ -321,14 +332,13 @@ Path: vfs://root/vendor/test/foo
 
 Publish of package configuration
 Package configuration [testconfig.php] publish successfully
-File 
-[vfs://root/app/testconfig.php]
- already exist, if you want to overwrite use option "--overwrite".
+File [$classPath] already exist, if you want to overwrite use option "--overwrite".
 Package configuration [testconfig.php] publish successfully
 
 Command finished successfully
-';
-        $this->assertEquals($expected, $this->getConsoleOutputContent());
+
+E;
+        $this->assertCommandOutput($expected, $this->getConsoleOutputContent());
     }
 
 
@@ -386,7 +396,7 @@ Path: vfs://root/vendor/test/foo
 
 NOTHING TO PUBLISH, COMMAND ENDED!
 ';
-        $this->assertEquals($expected, $this->getConsoleOutputContent());
+        $this->assertCommandOutput($expected, $this->getConsoleOutputContent());
     }
 
     private function createTestPackage($rootDir, $vendorDir): void

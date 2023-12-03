@@ -57,7 +57,7 @@ class MigrationInitCommandTest extends BaseCommandTestCase
         $o->execute();
         $expected = 'MIGRATION INITIALIZATION
 Migration table [migrations] already created';
-        $this->assertEquals($expected, $this->getConsoleOutputContent());
+        $this->assertCommandOutput($expected, $this->getConsoleOutputContent());
     }
 
     public function testExecuteCreateTableSuccess(): void
@@ -101,6 +101,6 @@ Migration table [migrations] already created';
         $o->execute();
         $expected = 'MIGRATION INITIALIZATION
 Migration table [migrations] created successfully';
-        $this->assertEquals($expected, $this->getConsoleOutputContent());
+        $this->assertCommandOutput($expected, $this->getConsoleOutputContent());
     }
 }

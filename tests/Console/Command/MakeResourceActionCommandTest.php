@@ -78,17 +78,30 @@ class MakeResourceActionCommandTest extends BaseCommandTestCase
 
         $o->interact($reader, $writer);
         $o->execute();
-        $expected = 'GENERATION OF NEW CLASS
+
+        $classPath = implode(
+            DIRECTORY_SEPARATOR,
+            [
+                'vfs://root',
+                'app',
+                'actions',
+                'MyAction.php'
+            ]
+        );
+
+        $expected = <<<E
+GENERATION OF NEW CLASS
 
 Enter the form parameter full class name: Class does not exists, please enter the form parameter full class name: Enter the form validator full class name: Class does not exists, please enter the form validator full class name: Enter the entity full class name: Class does not exists, please enter the entity full class name: Enter the repository full class name: Class does not exists, please enter the repository full class name: Enter the properties list (empty value to finish):
 Property full class name: Property full class name: The class [Foo\Bar\Not\Found] does not exists
 Property full class name: Generation of new resource class [MyApp\actions\MyAction]
 
 Class: MyApp\actions\MyAction
-Path: vfs://root/app/actions/MyAction.php
+Path: $classPath
 Namespace: MyApp\actions
-';
-        $this->assertEquals($expected, $this->getConsoleOutputContent());
+
+E;
+        $this->assertCommandOutput($expected, $this->getConsoleOutputContent());
     }
 
 
@@ -140,17 +153,30 @@ Namespace: MyApp\actions
 
         $o->interact($reader, $writer);
         $o->execute();
-        $expected = 'GENERATION OF NEW CLASS
+
+        $classPath = implode(
+            DIRECTORY_SEPARATOR,
+            [
+                'vfs://root',
+                'app',
+                'actions',
+                'MyAction.php'
+            ]
+        );
+
+        $expected = <<<E
+GENERATION OF NEW CLASS
 
 Enter the form parameter full class name: Enter the form validator full class name: Enter the entity full class name: Enter the repository full class name: Enter the properties list (empty value to finish):
 Property full class name: Generation of new resource class [MyApp\actions\MyAction]
 
 Class: MyApp\actions\MyAction
-Path: vfs://root/app/actions/MyAction.php
+Path: $classPath
 Namespace: MyApp\actions
 Class [MyApp\actions\MyAction] generated successfully.
-';
-        $this->assertEquals($expected, $this->getConsoleOutputContent());
+
+E;
+        $this->assertCommandOutput($expected, $this->getConsoleOutputContent());
         //$this->assertEquals($this->getExpectedCommandContent(), $this->runPrivateProtectedMethod($o, 'createClass', []));
     }
 
@@ -203,17 +229,30 @@ Class [MyApp\actions\MyAction] generated successfully.
 
         $o->interact($reader, $writer);
         $o->execute();
-        $expected = 'GENERATION OF NEW CLASS
+
+        $classPath = implode(
+            DIRECTORY_SEPARATOR,
+            [
+                'vfs://root',
+                'app',
+                'actions',
+                'MyAction.php'
+            ]
+        );
+
+        $expected = <<<E
+GENERATION OF NEW CLASS
 
 Enter the form parameter full class name: Enter the form validator full class name: Enter the entity full class name: Enter the repository full class name: Enter the properties list (empty value to finish):
 Property full class name: Generation of new resource class [MyApp\actions\MyAction]
 
 Class: MyApp\actions\MyAction
-Path: vfs://root/app/actions/MyAction.php
+Path: $classPath
 Namespace: MyApp\actions
 Class [MyApp\actions\MyAction] generated successfully.
-';
-        $this->assertEquals($expected, $this->getConsoleOutputContent());
+
+E;
+        $this->assertCommandOutput($expected, $this->getConsoleOutputContent());
     }
 
     public function testGetPropertyNameNotExist(): void

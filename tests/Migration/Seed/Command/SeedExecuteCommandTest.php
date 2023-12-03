@@ -59,7 +59,7 @@ No seed available for execution
 Command finished successfully
 ';
 
-        $this->assertEquals($expected, $this->getConsoleOutputContent());
+        $this->assertCommandOutput($expected, $this->getConsoleOutputContent());
     }
 
     public function testExecuteThereIsSeed(): void
@@ -105,7 +105,7 @@ Command finished successfully
 Command finished successfully
 ';
 
-        $this->assertEquals($expected, $this->getConsoleOutputContent());
+        $this->assertCommandOutput($expected, $this->getConsoleOutputContent());
     }
 
 

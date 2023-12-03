@@ -50,15 +50,28 @@ class MakeEventCommandTest extends BaseCommandTestCase
 
         $o->interact($reader, $writer);
         $o->execute();
-        $expected = 'GENERATION OF NEW CLASS
+
+        $classPath = implode(
+            DIRECTORY_SEPARATOR,
+            [
+                'vfs://root',
+                'app',
+                'Event',
+                'MyEvent.php'
+            ]
+        );
+
+        $expected = <<<E
+GENERATION OF NEW CLASS
 
 Generation of new event class [MyApp\Event\MyEvent]
 
 Class: MyApp\Event\MyEvent
-Path: vfs://root/app/Event/MyEvent.php
+Path: $classPath
 Namespace: MyApp\Event
-';
-        $this->assertEquals($expected, $this->getConsoleOutputContent());
+
+E;
+        $this->assertCommandOutput($expected, $this->getConsoleOutputContent());
     }
 
 

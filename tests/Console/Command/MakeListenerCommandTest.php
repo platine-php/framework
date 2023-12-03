@@ -60,16 +60,29 @@ class MakeListenerCommandTest extends BaseCommandTestCase
 
         $o->interact($reader, $writer);
         $o->execute();
-        $expected = 'GENERATION OF NEW CLASS
+
+        $classPath = implode(
+            DIRECTORY_SEPARATOR,
+            [
+                'vfs://root',
+                'app',
+                'Listener',
+                'MyListener.php'
+            ]
+        );
+
+        $expected = <<<E
+GENERATION OF NEW CLASS
 
 Enter the event full class name: Generation of new event listener class [MyApp\Listener\MyListener]
 
 Class: MyApp\Listener\MyListener
-Path: vfs://root/app/Listener/MyListener.php
+Path: $classPath
 Namespace: MyApp\Listener
 Class [MyApp\Listener\MyListener] generated successfully.
-';
-        $this->assertEquals($expected, $this->getConsoleOutputContent());
+
+E;
+        $this->assertCommandOutput($expected, $this->getConsoleOutputContent());
     }
 
     public function testExecuteEventClassNotExists(): void
@@ -122,17 +135,29 @@ Class [MyApp\Listener\MyListener] generated successfully.
         $o->interact($reader, $writer);
 
         $o->execute();
-        $expected = 'GENERATION OF NEW CLASS
 
-Enter the event full class name: Class does not exists, please enter the event '
-        . 'full class name: Generation of new event listener class [MyApp\Listener\MyListener]
+        $classPath = implode(
+            DIRECTORY_SEPARATOR,
+            [
+                'vfs://root',
+                'app',
+                'Listener',
+                'MyListener.php'
+            ]
+        );
+
+        $expected = <<<E
+GENERATION OF NEW CLASS
+
+Enter the event full class name: Class does not exists, please enter the event full class name: Generation of new event listener class [MyApp\Listener\MyListener]
 
 Class: MyApp\Listener\MyListener
-Path: vfs://root/app/Listener/MyListener.php
+Path: $classPath
 Namespace: MyApp\Listener
 Class [MyApp\Listener\MyListener] generated successfully.
-';
-        $this->assertEquals($expected, $this->getConsoleOutputContent());
+
+E;
+        $this->assertCommandOutput($expected, $this->getConsoleOutputContent());
     }
 
 

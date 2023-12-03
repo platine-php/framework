@@ -39,7 +39,7 @@ class MaintenanceCommandTest extends BaseCommandTestCase
 Application is online.
 ';
 
-        $this->assertEquals($expected, $this->getConsoleOutputContent());
+        $this->assertCommandOutput($expected, $this->getConsoleOutputContent());
     }
 
     public function testExecuteWrongArgument(): void
@@ -86,7 +86,7 @@ Application is online.
 
 Application already online
 ';
-        $this->assertEquals($expected, $this->getConsoleOutputContent());
+        $this->assertCommandOutput($expected, $this->getConsoleOutputContent());
     }
 
     public function testExecuteWrongRetryValue(): void
@@ -181,7 +181,7 @@ Application already online
 
 Application is down.
 ';
-        $this->assertEquals($expected, $this->getConsoleOutputContent());
+        $this->assertCommandOutput($expected, $this->getConsoleOutputContent());
     }
 
     public function testExecuteDownAlreadyInMaintenance(): void
@@ -207,7 +207,7 @@ Application is down.
 
 Application is already down.
 ';
-        $this->assertEquals($expected, $this->getConsoleOutputContent());
+        $this->assertCommandOutput($expected, $this->getConsoleOutputContent());
     }
 
     public function testExecuteDownSuccess(): void
@@ -233,7 +233,7 @@ Application is already down.
 
 Application is now in maintenance mode.
 ';
-        $this->assertEquals($expected, $this->getConsoleOutputContent());
+        $this->assertCommandOutput($expected, $this->getConsoleOutputContent());
     }
 
     public function testExecuteOnlineSuccess(): void
@@ -259,7 +259,7 @@ Application is now in maintenance mode.
 
 Application is now online
 ';
-        $this->assertEquals($expected, $this->getConsoleOutputContent());
+        $this->assertCommandOutput($expected, $this->getConsoleOutputContent());
     }
 
     public function testExecuteOnlineError(): void
@@ -286,7 +286,7 @@ Application is now online
 
 Failed to disable maintenance mode: Maintenance deactivate error.
 ';
-        $this->assertEquals($expected, $this->getConsoleOutputContent());
+        $this->assertCommandOutput($expected, $this->getConsoleOutputContent());
     }
 
     public function testExecuteDownError(): void
@@ -313,6 +313,6 @@ Failed to disable maintenance mode: Maintenance deactivate error.
 
 Failed to enable maintenance mode: Maintenance activate error.
 ';
-        $this->assertEquals($expected, $this->getConsoleOutputContent());
+        $this->assertCommandOutput($expected, $this->getConsoleOutputContent());
     }
 }

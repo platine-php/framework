@@ -36,7 +36,6 @@ class MigrationExecuteCommandTest extends BaseCommandTestCase
         $filesystem = new Filesystem($localAdapter);
 
         $writer = $this->getWriterInstance();
-        $reader =  $this->getMockInstance(Reader::class);
         $application =  $this->getMockInstance(Application::class);
         $entityQueryMiddle = $this->getMockInstance(EntityQuery::class, [
             'all' => [],
@@ -109,7 +108,7 @@ class MigrationExecuteCommandTest extends BaseCommandTestCase
 
 Migration already up to date';
 
-        $this->assertEquals($expected, $this->getConsoleOutputContent());
+        $this->assertCommandOutput($expected, $this->getConsoleOutputContent());
     }
 
     public function testExecuteUpThereIsMigration(): void
@@ -162,7 +161,7 @@ Migration already up to date';
 * Execute migration up for 20210915_100000: add user table
 ';
 
-        $this->assertEquals($expected, $this->getConsoleOutputContent());
+        $this->assertCommandOutput($expected, $this->getConsoleOutputContent());
     }
 
     public function testExecuteUpThereIsMigrationInputVersion(): void
@@ -216,7 +215,7 @@ Migration already up to date';
 * Execute migration up for 20210915_100000: add user table
 ';
 
-        $this->assertEquals($expected, $this->getConsoleOutputContent());
+        $this->assertCommandOutput($expected, $this->getConsoleOutputContent());
     }
 
     public function testExecuteUpThereIsMigrationInvalidVersion(): void
@@ -269,7 +268,7 @@ Migration already up to date';
 
 Invalid migration version [20210915_100001] or already executed';
 
-        $this->assertEquals($expected, $this->getConsoleOutputContent());
+        $this->assertCommandOutput($expected, $this->getConsoleOutputContent());
     }
 
     public function testExecuteDownNoMigration(): void
@@ -315,7 +314,7 @@ Invalid migration version [20210915_100001] or already executed';
 
 No migration to rollback';
 
-        $this->assertEquals($expected, $this->getConsoleOutputContent());
+        $this->assertCommandOutput($expected, $this->getConsoleOutputContent());
     }
 
     public function testExecuteDownThereIsMigration(): void
@@ -374,7 +373,7 @@ No migration to rollback';
 * Execute migration down for 20210915_100000: add user table
 ';
 
-        $this->assertEquals($expected, $this->getConsoleOutputContent());
+        $this->assertCommandOutput($expected, $this->getConsoleOutputContent());
     }
 
     public function testExecuteDownThereIsMigrationInputVersion(): void
@@ -435,7 +434,7 @@ No migration to rollback';
 * Execute migration down for 20210915_100000: add user table
 ';
 
-        $this->assertEquals($expected, $this->getConsoleOutputContent());
+        $this->assertCommandOutput($expected, $this->getConsoleOutputContent());
     }
 
     public function testExecuteDownThereIsMigrationInvalidVersion(): void
@@ -494,7 +493,7 @@ No migration to rollback';
 
 Invalid migration version [20210915_100001] or not yet executed';
 
-        $this->assertEquals($expected, $this->getConsoleOutputContent());
+        $this->assertCommandOutput($expected, $this->getConsoleOutputContent());
     }
 
     public function testExecuteInvalidMigrationClassName(): void

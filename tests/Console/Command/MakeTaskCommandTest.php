@@ -66,18 +66,31 @@ class MakeTaskCommandTest extends BaseCommandTestCase
         $this->assertEquals('make:task', $o->getName());
 
         $o->interact($reader, $writer);
+
+        $classPath = implode(
+            DIRECTORY_SEPARATOR,
+            [
+                'vfs://root',
+                'app',
+                'Task',
+                'MyTask.php'
+            ]
+        );
+
         $o->execute();
-        $expected = 'GENERATION OF NEW CLASS
+        $expected = <<<E
+GENERATION OF NEW CLASS
 
 Enter the task name []: Enter the cron expression [* * * * *]: Enter the properties list (empty value to finish):
 Property full class name: Generation of new task class [MyApp\Task\MyTask]
 
 Class: MyApp\Task\MyTask
-Path: vfs://root/app/Task/MyTask.php
+Path: $classPath
 Namespace: MyApp\Task
 Are you confirm the generation of [MyApp\Task\MyTask] ?Class [MyApp\Task\MyTask] generated successfully.
-';
-        $this->assertEquals($expected, $this->getConsoleOutputContent());
+
+E;
+        $this->assertCommandOutput($expected, $this->getConsoleOutputContent());
     }
 
     public function testExecuteWithProperties(): void
@@ -133,17 +146,30 @@ Are you confirm the generation of [MyApp\Task\MyTask] ?Class [MyApp\Task\MyTask]
 
         $o->interact($reader, $writer);
         $o->execute();
-        $expected = 'GENERATION OF NEW CLASS
+
+        $classPath = implode(
+            DIRECTORY_SEPARATOR,
+            [
+                'vfs://root',
+                'app',
+                'Task',
+                'MyTask.php'
+            ]
+        );
+
+        $expected = <<<E
+GENERATION OF NEW CLASS
 
 Enter the task name []: Enter the cron expression [* * * * *]: Enter the properties list (empty value to finish):
 Property full class name: Property full class name: Property full class name: Generation of new task class [MyApp\Task\MyTask]
 
 Class: MyApp\Task\MyTask
-Path: vfs://root/app/Task/MyTask.php
+Path: $classPath
 Namespace: MyApp\Task
 Are you confirm the generation of [MyApp\Task\MyTask] ?Class [MyApp\Task\MyTask] generated successfully.
-';
-        $this->assertEquals($expected, $this->getConsoleOutputContent());
+
+E;
+        $this->assertCommandOutput($expected, $this->getConsoleOutputContent());
     }
 
 
@@ -198,17 +224,30 @@ Are you confirm the generation of [MyApp\Task\MyTask] ?Class [MyApp\Task\MyTask]
 
         $o->interact($reader, $writer);
         $o->execute();
-        $expected = 'GENERATION OF NEW CLASS
+
+        $classPath = implode(
+            DIRECTORY_SEPARATOR,
+            [
+                'vfs://root',
+                'app',
+                'Task',
+                'MyTask.php'
+            ]
+        );
+
+        $expected = <<<E
+GENERATION OF NEW CLASS
 
 Enter the task name []: Enter the cron expression [* * * * *]: Invalid expression, please enter the cron expression [* * * * *]: Enter the properties list (empty value to finish):
 Property full class name: Generation of new task class [MyApp\Task\MyTask]
 
 Class: MyApp\Task\MyTask
-Path: vfs://root/app/Task/MyTask.php
+Path: $classPath
 Namespace: MyApp\Task
 Are you confirm the generation of [MyApp\Task\MyTask] ?Class [MyApp\Task\MyTask] generated successfully.
-';
-        $this->assertEquals($expected, $this->getConsoleOutputContent());
+
+E;
+        $this->assertCommandOutput($expected, $this->getConsoleOutputContent());
     }
 
     public function testExecuteWithPropertiesClassNotExist(): void
@@ -265,18 +304,31 @@ Are you confirm the generation of [MyApp\Task\MyTask] ?Class [MyApp\Task\MyTask]
 
         $o->interact($reader, $writer);
         $o->execute();
-        $expected = 'GENERATION OF NEW CLASS
+
+        $classPath = implode(
+            DIRECTORY_SEPARATOR,
+            [
+                'vfs://root',
+                'app',
+                'Task',
+                'MyTask.php'
+            ]
+        );
+
+        $expected = <<<E
+GENERATION OF NEW CLASS
 
 Enter the task name []: Enter the cron expression [* * * * *]: Enter the properties list (empty value to finish):
 Property full class name: Property full class name: Property full class name: The class [Foo\Bar\Not\Found] does not exists
 Property full class name: Generation of new task class [MyApp\Task\MyTask]
 
 Class: MyApp\Task\MyTask
-Path: vfs://root/app/Task/MyTask.php
+Path: $classPath
 Namespace: MyApp\Task
 Are you confirm the generation of [MyApp\Task\MyTask] ?Class [MyApp\Task\MyTask] generated successfully.
-';
-        $this->assertEquals($expected, $this->getConsoleOutputContent());
+
+E;
+        $this->assertCommandOutput($expected, $this->getConsoleOutputContent());
     }
 
     public function testGetClassTemplate(): void

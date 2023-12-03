@@ -68,7 +68,7 @@ class MigrationResetCommandTest extends BaseCommandTestCase
 
 No migration done before';
 
-        $this->assertEquals($expected, $this->getConsoleOutputContent());
+        $this->assertCommandOutput($expected, $this->getConsoleOutputContent());
     }
 
     public function testExecuteThereIsMigration(): void
@@ -133,6 +133,6 @@ Migration list to be rollback:
 Migration rollback successfully
 ';
 
-        $this->assertEquals($expected, $this->getConsoleOutputContent());
+        $this->assertCommandOutput($expected, $this->getConsoleOutputContent());
     }
 }

@@ -53,18 +53,30 @@ class SeedCreateCommandTest extends BaseCommandTestCase
         $o->interact($reader, $writer);
         $o->execute();
         $seedFilename = 'AddUserSeed.php';
-        $seedFile = $seedPath . '/' . $seedFilename;
-        $expected = 'SEED GENERATION
+
+        $seedFile = implode(
+            DIRECTORY_SEPARATOR,
+            [
+                'vfs://root',
+                'my_tests',
+                'seed',
+                'AddUserSeed.php'
+            ]
+        );
+
+        $expected = <<<E
+SEED GENERATION
 
 Seed detail: 
 Name: add user seed
 Class name: AddUserSeed
 Filename: AddUserSeed.php
-Path: ' . $seedFile . '
+Path: $seedFile
 
 Seed [add user seed] generated successfully
-';
-        $this->assertEquals($expected, $this->getConsoleOutputContent());
+
+E;
+        $this->assertCommandOutput($expected, $this->getConsoleOutputContent());
         $this->assertTrue($seedDir->hasChild($seedFilename));
     }
 

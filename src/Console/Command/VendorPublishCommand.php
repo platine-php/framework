@@ -368,7 +368,7 @@ class VendorPublishCommand extends Command
         $writer = $this->io()->writer();
         if ($destFile->exists() && !$overwrite) {
             $writer->red(sprintf(
-                "File \n[%s]\n already exist, if you want to overwrite"
+                "File [%s] already exist, if you want to overwrite"
                     . ' use option "--overwrite".',
                 $destFile->getPath()
             ), true);

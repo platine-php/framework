@@ -60,16 +60,29 @@ class MakeValidatorCommandTest extends BaseCommandTestCase
 
         $o->interact($reader, $writer);
         $o->execute();
-        $expected = 'GENERATION OF NEW CLASS
+
+        $classPath = implode(
+            DIRECTORY_SEPARATOR,
+            [
+                'vfs://root',
+                'app',
+                'Validator',
+                'MyValidator.php'
+            ]
+        );
+
+        $expected = <<<E
+GENERATION OF NEW CLASS
 
 Enter the form parameter full class name: Generation of new validator class [MyApp\Validator\MyValidator]
 
 Class: MyApp\Validator\MyValidator
-Path: vfs://root/app/Validator/MyValidator.php
+Path: $classPath
 Namespace: MyApp\Validator
 Class [MyApp\Validator\MyValidator] generated successfully.
-';
-        $this->assertEquals($expected, $this->getConsoleOutputContent());
+
+E;
+        $this->assertCommandOutput($expected, $this->getConsoleOutputContent());
     }
 
     public function testExecuteParameterClassNotExists(): void
@@ -122,17 +135,29 @@ Class [MyApp\Validator\MyValidator] generated successfully.
         $o->interact($reader, $writer);
 
         $o->execute();
-        $expected = 'GENERATION OF NEW CLASS
 
-Enter the form parameter full class name: Class does not exists, please enter the'
-        . ' form parameter full class name: Generation of new validator class [MyApp\Validator\MyValidator]
+        $classPath = implode(
+            DIRECTORY_SEPARATOR,
+            [
+                'vfs://root',
+                'app',
+                'Validator',
+                'MyValidator.php'
+            ]
+        );
+
+        $expected = <<<E
+GENERATION OF NEW CLASS
+
+Enter the form parameter full class name: Class does not exists, please enter the form parameter full class name: Generation of new validator class [MyApp\Validator\MyValidator]
 
 Class: MyApp\Validator\MyValidator
-Path: vfs://root/app/Validator/MyValidator.php
+Path: $classPath
 Namespace: MyApp\Validator
 Class [MyApp\Validator\MyValidator] generated successfully.
-';
-        $this->assertEquals($expected, $this->getConsoleOutputContent());
+
+E;
+        $this->assertCommandOutput($expected, $this->getConsoleOutputContent());
     }
 
 

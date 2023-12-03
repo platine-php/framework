@@ -50,15 +50,28 @@ class MakeMiddlewareCommandTest extends BaseCommandTestCase
 
         $o->interact($reader, $writer);
         $o->execute();
-        $expected = 'GENERATION OF NEW CLASS
+
+        $classPath = implode(
+            DIRECTORY_SEPARATOR,
+            [
+                'vfs://root',
+                'app',
+                'Middleware',
+                'MyMiddleware.php'
+            ]
+        );
+
+        $expected = <<<E
+GENERATION OF NEW CLASS
 
 Generation of new middleware class [MyApp\Middleware\MyMiddleware]
 
 Class: MyApp\Middleware\MyMiddleware
-Path: vfs://root/app/Middleware/MyMiddleware.php
+Path: $classPath
 Namespace: MyApp\Middleware
-';
-        $this->assertEquals($expected, $this->getConsoleOutputContent());
+
+E;
+        $this->assertCommandOutput($expected, $this->getConsoleOutputContent());
     }
 
 

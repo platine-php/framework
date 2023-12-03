@@ -75,6 +75,6 @@ class RouteCommandTest extends BaseCommandTestCase
 
 Command finished successfully
 ';
-        $this->assertEquals($expected, $this->getConsoleOutputContent());
+        $this->assertCommandOutput($expected, $this->getConsoleOutputContent());
     }
 }

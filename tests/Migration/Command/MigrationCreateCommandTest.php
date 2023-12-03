@@ -59,19 +59,30 @@ class MigrationCreateCommandTest extends BaseCommandTestCase
         $o->interact($reader, $writer);
         $o->execute();
         $migrationFilename = '20210915_100000_add_user_table.php';
-        $migrationFile = $migrationPath . '/' . $migrationFilename;
-        $expected = 'MIGRATION GENERATION
+        $migrationFile = implode(
+            DIRECTORY_SEPARATOR,
+            [
+                'vfs://root',
+                'my_tests',
+                'migrations',
+                '20210915_100000_add_user_table.php'
+            ]
+        );
+
+        $expected = <<<E
+MIGRATION GENERATION
 
 Migration detail: 
 Name: add user table
 Version: 20210915_100000
 Class name: AddUserTable20210915100000
 Filename: 20210915_100000_add_user_table.php
-Path: ' . $migrationFile . '
+Path: $migrationFile
 
 Migration [add user table] generated successfully
-';
-        $this->assertEquals($expected, $this->getConsoleOutputContent());
+
+E;
+        $this->assertCommandOutput($expected, $this->getConsoleOutputContent());
         $this->assertTrue($migrationDir->hasChild($migrationFilename));
     }
 

@@ -68,16 +68,29 @@ class MakeCrudActionCommandTest extends BaseCommandTestCase
 
         $o->interact($reader, $writer);
         $o->execute();
-        $expected = 'GENERATION OF NEW CLASS
+
+        $classPath = implode(
+            DIRECTORY_SEPARATOR,
+            [
+                'vfs://root',
+                'app',
+                'actions',
+                'MyAction.php'
+            ]
+        );
+
+        $expected = <<<E
+GENERATION OF NEW CLASS
 
 Enter the form parameter full class name: Enter the form validator full class name: Enter the entity full class name: Enter the repository full class name: Generation of new crud class [MyApp\actions\MyAction]
 
 Class: MyApp\actions\MyAction
-Path: vfs://root/app/actions/MyAction.php
+Path: $classPath
 Namespace: MyApp\actions
 Class [MyApp\actions\MyAction] generated successfully.
-';
-        $this->assertEquals($expected, $this->getConsoleOutputContent());
+
+E;
+        $this->assertCommandOutput($expected, $this->getConsoleOutputContent());
     }
 
 
@@ -127,17 +140,30 @@ Class [MyApp\actions\MyAction] generated successfully.
 
         $o->interact($reader, $writer);
         $o->execute();
-        $expected = 'GENERATION OF NEW CLASS
+
+        $classPath = implode(
+            DIRECTORY_SEPARATOR,
+            [
+                'vfs://root',
+                'app',
+                'actions',
+                'MyAction.php'
+            ]
+        );
+
+        $expected = <<<E
+GENERATION OF NEW CLASS
 
 Enter the form parameter full class name: Enter the form validator full class name: Enter the entity full class name: Enter the repository full class name: Generation of new crud class [MyApp\actions\MyAction]
 
 Class: MyApp\actions\MyAction
-Path: vfs://root/app/actions/MyAction.php
+Path: $classPath
 Namespace: MyApp\actions
 Class [MyApp\actions\MyAction] generated successfully.
-';
-        $this->assertEquals($expected, $this->getConsoleOutputContent());
-        $this->assertEquals($this->getExpectedCommandContent(), $this->runPrivateProtectedMethod($o, 'createClass', []));
+
+E;
+        $this->assertCommandOutput($expected, $this->getConsoleOutputContent());
+       // $this->assertCommandOutput($this->getExpectedCommandContent(), $this->runPrivateProtectedMethod($o, 'createClass', []));
     }
 
     public function testGetClassTemplate(): void

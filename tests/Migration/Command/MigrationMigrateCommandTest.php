@@ -7,7 +7,6 @@ namespace Platine\Test\Framework\Migration\Command;
 use Platine\Config\Config;
 use Platine\Console\Application as ConsoleApp;
 use Platine\Console\IO\Interactor;
-use Platine\Database\Connection;
 use Platine\Filesystem\Adapter\Local\LocalAdapter;
 use Platine\Filesystem\Filesystem;
 use Platine\Framework\App\Application;
@@ -64,7 +63,7 @@ class MigrationMigrateCommandTest extends BaseCommandTestCase
 
 Migration already up to date';
 
-        $this->assertEquals($expected, $this->getConsoleOutputContent());
+        $this->assertCommandOutput($expected, $this->getConsoleOutputContent());
     }
 
     public function testExecuteMigrationSuccess(): void
@@ -119,7 +118,7 @@ Migration list to be upgraded:
 Migration upgraded successfully
 ';
 
-        $this->assertEquals($expected, $this->getConsoleOutputContent());
+        $this->assertCommandOutput($expected, $this->getConsoleOutputContent());
     }
 
     private function createMigrationTestFile($migrationDir)

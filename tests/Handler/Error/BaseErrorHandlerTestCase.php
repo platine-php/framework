@@ -72,8 +72,12 @@ class BaseErrorHandlerTestCase extends PlatineTestCase
         return $exception;
     }
 
-    protected function getExceptionThrownFilePath(): string
+    protected function getExceptionThrownFilePath(bool $fixWin = true): string
     {
+        if ($fixWin) {
+            return str_replace('\\', '\\\\', __FILE__);
+        }
+
         return __FILE__;
     }
 }

@@ -60,16 +60,30 @@ class MakeRepositoryCommandTest extends BaseCommandTestCase
 
         $o->interact($reader, $writer);
         $o->execute();
-        $expected = 'GENERATION OF NEW CLASS
+
+        $classPath = implode(
+            DIRECTORY_SEPARATOR,
+            [
+                'vfs://root',
+                'app',
+                'Repository',
+                'MyRepository.php'
+            ]
+        );
+
+
+        $expected = <<<E
+GENERATION OF NEW CLASS
 
 Enter the entity full class name: Generation of new repository class [MyApp\Repository\MyRepository]
 
 Class: MyApp\Repository\MyRepository
-Path: vfs://root/app/Repository/MyRepository.php
+Path: $classPath
 Namespace: MyApp\Repository
 Class [MyApp\Repository\MyRepository] generated successfully.
-';
-        $this->assertEquals($expected, $this->getConsoleOutputContent());
+
+E;
+        $this->assertCommandOutput($expected, $this->getConsoleOutputContent());
     }
 
     public function testExecuteEntityClassNotExists(): void
@@ -122,17 +136,30 @@ Class [MyApp\Repository\MyRepository] generated successfully.
         $o->interact($reader, $writer);
 
         $o->execute();
-        $expected = 'GENERATION OF NEW CLASS
 
-Enter the entity full class name: Class does not exists, please enter the entity'
-        . ' full class name: Generation of new repository class [MyApp\Repository\MyRepository]
+        $classPath = implode(
+            DIRECTORY_SEPARATOR,
+            [
+                'vfs://root',
+                'app',
+                'Repository',
+                'MyRepository.php'
+            ]
+        );
+
+
+        $expected = <<<E
+GENERATION OF NEW CLASS
+
+Enter the entity full class name: Class does not exists, please enter the entity full class name: Generation of new repository class [MyApp\Repository\MyRepository]
 
 Class: MyApp\Repository\MyRepository
-Path: vfs://root/app/Repository/MyRepository.php
+Path: $classPath
 Namespace: MyApp\Repository
 Class [MyApp\Repository\MyRepository] generated successfully.
-';
-        $this->assertEquals($expected, $this->getConsoleOutputContent());
+
+E;
+        $this->assertCommandOutput($expected, $this->getConsoleOutputContent());
     }
 
 

@@ -50,15 +50,28 @@ class MakeProviderCommandTest extends BaseCommandTestCase
 
         $o->interact($reader, $writer);
         $o->execute();
-        $expected = 'GENERATION OF NEW CLASS
+
+        $classPath = implode(
+            DIRECTORY_SEPARATOR,
+            [
+                'vfs://root',
+                'app',
+                'Provider',
+                'MyProvider.php'
+            ]
+        );
+
+        $expected = <<<E
+GENERATION OF NEW CLASS
 
 Generation of new provider class [MyApp\Provider\MyProvider]
 
 Class: MyApp\Provider\MyProvider
-Path: vfs://root/app/Provider/MyProvider.php
+Path: $classPath
 Namespace: MyApp\Provider
-';
-        $this->assertEquals($expected, $this->getConsoleOutputContent());
+
+E;
+        $this->assertCommandOutput($expected, $this->getConsoleOutputContent());
     }
 
     public function testExecuteWithBootAndAddRoutes(): void
@@ -108,16 +121,29 @@ Namespace: MyApp\Provider
 
         $o->interact($reader, $writer);
         $o->execute();
-        $expected = 'GENERATION OF NEW CLASS
+
+        $classPath = implode(
+            DIRECTORY_SEPARATOR,
+            [
+                'vfs://root',
+                'app',
+                'Provider',
+                'MyProvider.php'
+            ]
+        );
+
+        $expected = <<<E
+GENERATION OF NEW CLASS
 
 Use bootstrap feature ?Add routes ?Generation of new provider class [MyApp\Provider\MyProvider]
 
 Class: MyApp\Provider\MyProvider
-Path: vfs://root/app/Provider/MyProvider.php
+Path: $classPath
 Namespace: MyApp\Provider
 Are you confirm the generation of [MyApp\Provider\MyProvider] ?Class [MyApp\Provider\MyProvider] generated successfully.
-';
-        $this->assertEquals($expected, $this->getConsoleOutputContent());
+
+E;
+        $this->assertCommandOutput($expected, $this->getConsoleOutputContent());
     }
 
     public function testExecuteWithoutBootAndAddRoutes(): void
@@ -167,16 +193,29 @@ Are you confirm the generation of [MyApp\Provider\MyProvider] ?Class [MyApp\Prov
 
         $o->interact($reader, $writer);
         $o->execute();
-        $expected = 'GENERATION OF NEW CLASS
+
+        $classPath = implode(
+            DIRECTORY_SEPARATOR,
+            [
+                'vfs://root',
+                'app',
+                'Provider',
+                'MyProvider.php'
+            ]
+        );
+
+        $expected = <<<E
+GENERATION OF NEW CLASS
 
 Use bootstrap feature ?Add routes ?Generation of new provider class [MyApp\Provider\MyProvider]
 
 Class: MyApp\Provider\MyProvider
-Path: vfs://root/app/Provider/MyProvider.php
+Path: $classPath
 Namespace: MyApp\Provider
 Are you confirm the generation of [MyApp\Provider\MyProvider] ?Class [MyApp\Provider\MyProvider] generated successfully.
-';
-        $this->assertEquals($expected, $this->getConsoleOutputContent());
+
+E;
+        $this->assertCommandOutput($expected, $this->getConsoleOutputContent());
     }
 
     public function testGetClassTemplate(): void

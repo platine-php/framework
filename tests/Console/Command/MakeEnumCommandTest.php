@@ -66,18 +66,30 @@ class MakeEnumCommandTest extends BaseCommandTestCase
         $o->interact($reader, $writer);
         $o->execute();
 
-        $expected = 'GENERATION OF NEW CLASS
+        $classPath = implode(
+            DIRECTORY_SEPARATOR,
+            [
+                'vfs://root',
+                'app',
+                'Enum',
+                'MyEnum.php'
+            ]
+        );
+
+        $expected = <<<E
+GENERATION OF NEW CLASS
 
 Enter the enumeration list (empty value to finish):
 Enum name: Enum name: Enumeration value for [NAME]: Generation of new enum class [MyApp\Enum\MyEnum]
 
 Class: MyApp\Enum\MyEnum
-Path: vfs://root/app/Enum/MyEnum.php
+Path: $classPath
 Namespace: MyApp\Enum
 Class [MyApp\Enum\MyEnum] generated successfully.
-';
 
-        $this->assertEquals($expected, $this->getConsoleOutputContent());
+E;
+
+        $this->assertCommandOutput($expected, $this->getConsoleOutputContent());
     }
 
     public function testExecute(): void
@@ -129,17 +141,29 @@ Class [MyApp\Enum\MyEnum] generated successfully.
         $o->interact($reader, $writer);
         $o->execute();
 
-        $expected = 'GENERATION OF NEW CLASS
+        $classPath = implode(
+            DIRECTORY_SEPARATOR,
+            [
+                'vfs://root',
+                'app',
+                'Enum',
+                'MyEnum.php'
+            ]
+        );
+
+        $expected = <<<E
+GENERATION OF NEW CLASS
 
 Enter the enumeration list (empty value to finish):
 Enum name: Enum name: Enumeration value for [NAME]: Generation of new enum class [MyApp\Enum\MyEnum]
 
 Class: MyApp\Enum\MyEnum
-Path: vfs://root/app/Enum/MyEnum.php
+Path: $classPath
 Namespace: MyApp\Enum
 Class [MyApp\Enum\MyEnum] generated successfully.
-';
-        $this->assertEquals($expected, $this->getConsoleOutputContent());
+
+E;
+        $this->assertCommandOutput($expected, $this->getConsoleOutputContent());
     }
 
     public function testGetClassTemplate(): void
