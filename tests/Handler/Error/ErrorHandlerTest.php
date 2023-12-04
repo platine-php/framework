@@ -155,7 +155,7 @@ Message: Foo exception 1
 File: ' . $file . '
 Line: 20
 ';
-        
+
         $this->assertCommandOutput($expected, (string) $resp->getBody());
     }
 }

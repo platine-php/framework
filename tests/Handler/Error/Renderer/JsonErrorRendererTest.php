@@ -40,7 +40,7 @@ class JsonErrorRendererTest extends BaseErrorHandlerTestCase
     ]
 }
 E;
-        
+
         $this->assertCommandOutput($expected, $o->render($ex, true, false));
     }
 }
