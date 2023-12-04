@@ -30,6 +30,7 @@
         "platine-php/docx-template": "^1.0",
         "platine-php/etl": "^1.0",
         "platine-php/event-dispatcher": "^1.0",
+        "platine-php/expression": "^1.0",
         "platine-php/filesystem": "^1.0",
         "platine-php/http": "^1.0",
         "platine-php/lang": "^1.0",
