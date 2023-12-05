@@ -338,7 +338,10 @@ function sha1(string $str)
 }
 
 namespace Platine\Framework\Template\Tag;
+
 use Platine\Config\Config;
+use Platine\Framework\Auth\AuthenticationInterface;
+use Platine\Framework\Auth\AuthorizationInterface;
 use Platine\Framework\Http\RouteHelper;
 use Platine\Framework\Security\Csrf\CsrfManager;
 use Platine\Http\ServerRequestInterface;
@@ -351,7 +354,9 @@ use Platine\Test\Framework\Fixture\MyRouteHelper;
 use Platine\Test\Framework\Fixture\MyServerRequest;
 use Platine\Test\Framework\Fixture\MySession;
 
+
 $mock_app_to_instance = false;
+$mock_app_auth_object = null;
 $mock_app_lang_methods = [];
 $mock_app_route_helper_methods = [];
 $mock_app_server_request_methods = [];
@@ -360,6 +365,7 @@ $mock_app_session_flash = [];
 $mock_app_session_has = [];
 $mock_app_config_items = [];
 $mock_sha1_foo = true;
+
 
 function sha1(string $str)
 {
@@ -380,9 +386,14 @@ function app(string $id)
            $mock_app_server_request_methods,
            $mock_app_lang_methods,
            $mock_app_route_helper_methods,
-           $mock_app_session_flash;
+           $mock_app_session_flash,
+           $mock_app_auth_object;
 
     if ($mock_app_to_instance) {
+        if ($id === AuthenticationInterface::class || $id === AuthorizationInterface::class) {
+            return $mock_app_auth_object;
+        }
+
         if ($id === Config::class) {
             return new MyConfig($mock_app_config_items);
         }
