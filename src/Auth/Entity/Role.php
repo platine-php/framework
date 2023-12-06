@@ -64,6 +64,7 @@ class Role extends Entity
      */
     public static function mapEntity(EntityMapperInterface $mapper): void
     {
+        $mapper->relation('users')->shareMany(User::class);
         $mapper->relation('permissions')->shareMany(Permission::class);
         $mapper->useTimestamp();
         $mapper->casts([
@@ -95,6 +96,34 @@ class Role extends Entity
     {
         foreach ($permissions as $permission) {
             $this->mapper()->unlink('permissions', $permission);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Set users
+     * @param User[] users
+     * @return $this
+     */
+    public function setUsers(array $users): self
+    {
+        foreach ($users as $user) {
+            $this->mapper()->link('users', $user);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Remove users
+     * @param User[] users
+     * @return $this
+     */
+    public function removeUsers(array $users): self
+    {
+        foreach ($users as $user) {
+            $this->mapper()->unlink('users', $user);
         }
 
         return $this;

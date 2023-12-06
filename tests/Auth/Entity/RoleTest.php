@@ -7,6 +7,7 @@ namespace Platine\Test\Framework\Auth\Entity;
 use Platine\Dev\PlatineTestCase;
 use Platine\Framework\Auth\Entity\Permission;
 use Platine\Framework\Auth\Entity\Role;
+use Platine\Framework\Auth\Entity\User;
 use Platine\Framework\Auth\Repository\RoleRepository;
 use Platine\Orm\EntityManager;
 use Platine\Orm\Mapper\EntityMapper;
@@ -23,7 +24,7 @@ class RoleTest extends PlatineTestCase
         $entityMapper->expects($this->exactly(1))
                 ->method('useTimestamp');
 
-        $entityMapper->expects($this->exactly(1))
+        $entityMapper->expects($this->exactly(2))
                 ->method('relation');
 
         $entityMapper->expects($this->exactly(1))
@@ -52,5 +53,20 @@ class RoleTest extends PlatineTestCase
         $this->assertInstanceOf(Role::class, $entity);
         $this->assertInstanceOf(Role::class, $entity->setPermissions([$permission]));
         $this->assertInstanceOf(Role::class, $entity->removePermissions([$permission]));
+    }
+    
+    public function testSetRemoveUsers(): void
+    {
+        $user = $this->getMockInstance(User::class);
+
+        $entityManager = $this->getMockInstance(EntityManager::class, [], [
+            'getEntityMapper'
+        ]);
+        $repository = new RoleRepository($entityManager);
+        /** @var Role $entity */
+        $entity = $repository->create([]);
+        $this->assertInstanceOf(Role::class, $entity);
+        $this->assertInstanceOf(Role::class, $entity->setUsers([$user]));
+        $this->assertInstanceOf(Role::class, $entity->removeUsers([$user]));
     }
 }
