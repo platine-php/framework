@@ -51,6 +51,7 @@ use Platine\Config\Config;
 use Platine\Framework\Security\Csrf\CsrfManager;
 use Platine\Template\Parser\AbstractTag;
 use Platine\Template\Parser\Context;
+use Platine\Template\Parser\Parser;
 
 /**
  * @class CsrfTag
@@ -59,6 +60,15 @@ use Platine\Template\Parser\Context;
  */
 class CsrfTag extends AbstractTag
 {
+    /**
+    * {@inheritdoc}
+    */
+    public function __construct(string $markup, &$tokens, Parser $parser)
+    {
+        parent::__construct($markup, $tokens, $parser);
+        $this->extractAttributes($markup);
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -69,6 +79,12 @@ class CsrfTag extends AbstractTag
 
         /** @var CsrfManager<T> $csrfManager */
         $csrfManager = app(CsrfManager::class);
+
+        $query = array_key_exists('query', $this->attributes);
+
+        if ($query) {
+            return http_build_query($csrfManager->getTokenQuery());
+        }
 
         $key = $config->get('security.csrf.key', '');
         $token = $csrfManager->getToken();

@@ -37,4 +37,27 @@ class CsrfTagTest extends PlatineTestCase
 
         $this->assertEquals('<input type = "hidden" name = "csrf" value = "foo" />', $o->render($context));
     }
+
+    public function testRenderUsingQueryString(): void
+    {
+        global $mock_app_to_instance,
+               $mock_app_config_items,
+               $mock_sha1_foo;
+
+        $mock_sha1_foo = true;
+        $mock_app_to_instance = true;
+
+        $mock_app_config_items = [
+            'security.csrf' => ['expire' => 400, 'key' => 'csrf'],
+            'security.csrf.key' => 'csrf',
+        ];
+
+        $parser = $this->getMockInstance(Parser::class);
+        $context = $this->getMockInstance(Context::class);
+
+        $tokens = ['tnh', '{% endcapture %}'];
+        $o = new CsrfTag('myname query:1', $tokens, $parser);
+
+        $this->assertEquals('csrf=foo', $o->render($context));
+    }
 }

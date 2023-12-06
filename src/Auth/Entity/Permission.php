@@ -69,7 +69,7 @@ class Permission extends Entity
             'created_at' => 'date',
             'updated_at' => '?date',
         ]);
-		
-		$mapper->relation('roles')->shareMany(Role::class);
+
+        $mapper->relation('roles')->shareMany(Role::class);
     }
 }
