@@ -103,7 +103,7 @@ class Role extends Entity
 
     /**
      * Set users
-     * @param User[] users
+     * @param User[] $users
      * @return $this
      */
     public function setUsers(array $users): self
@@ -117,7 +117,7 @@ class Role extends Entity
 
     /**
      * Remove users
-     * @param User[] users
+     * @param User[] $users
      * @return $this
      */
     public function removeUsers(array $users): self
