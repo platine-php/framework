@@ -398,13 +398,11 @@ class Application extends Container
      * @param  string|EventInterface $eventName the name of event
      * of instance of EventInterface
      * @param  EventInterface|null $event  the instance of EventInterface or null
-     * @return $this
+     * @return EventInterface
      */
-    public function dispatch($eventName, EventInterface $event = null): self
+    public function dispatch($eventName, EventInterface $event = null): EventInterface
     {
-        $this->dispatcher->dispatch($eventName, $event);
-
-        return $this;
+        return $this->dispatcher->dispatch($eventName, $event);
     }
 
     /**
