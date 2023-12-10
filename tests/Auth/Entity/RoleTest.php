@@ -54,7 +54,7 @@ class RoleTest extends PlatineTestCase
         $this->assertInstanceOf(Role::class, $entity->setPermissions([$permission]));
         $this->assertInstanceOf(Role::class, $entity->removePermissions([$permission]));
     }
-    
+
     public function testSetRemoveUsers(): void
     {
         $user = $this->getMockInstance(User::class);

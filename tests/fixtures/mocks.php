@@ -2,6 +2,98 @@
 
 declare(strict_types=1);
 
+namespace Platine\Framework\Http\RateLimit\Storage;
+
+$mock_extension_loaded_to_false = false;
+$mock_extension_loaded_to_true = false;
+$mock_ini_get_to_false = false;
+$mock_ini_get_to_true = false;
+$mock_apcu_fetch_to_false = false;
+$mock_apcu_store_to_false = false;
+$mock_apcu_store_to_true = false;
+$mock_apcu_delete_to_false = false;
+$mock_apcu_delete_to_true = false;
+$mock_apcu_exists_to_false = false;
+$mock_apcu_exists_to_true = false;
+
+
+function apcu_exists($key): bool
+{
+    global $mock_apcu_exists_to_false, $mock_apcu_exists_to_true;
+    if ($mock_apcu_exists_to_false) {
+        return false;
+    } elseif ($mock_apcu_exists_to_true) {
+        return true;
+    }
+
+    return false;
+}
+
+/**
+ * @return null|string
+ */
+function apcu_fetch($key, bool &$success)
+{
+    global $mock_apcu_fetch_to_false;
+    if ($mock_apcu_fetch_to_false) {
+        $success = false;
+    } else {
+        $success = true;
+        return 6;
+    }
+}
+
+function apcu_store($key, $var, int $ttl = 0): bool
+{
+    global $mock_apcu_store_to_false, $mock_apcu_store_to_true;
+    if ($mock_apcu_store_to_false) {
+        return false;
+    } elseif ($mock_apcu_store_to_true) {
+        return true;
+    }
+
+    return false;
+}
+
+function apcu_delete($key): bool
+{
+    global $mock_apcu_delete_to_false, $mock_apcu_delete_to_true;
+    if ($mock_apcu_delete_to_false) {
+        return false;
+    } elseif ($mock_apcu_delete_to_true) {
+        return true;
+    }
+
+    return false;
+}
+
+function extension_loaded(string $name): bool
+{
+    global $mock_extension_loaded_to_false, $mock_extension_loaded_to_true;
+    if ($mock_extension_loaded_to_false) {
+        return false;
+    } elseif ($mock_extension_loaded_to_true) {
+        return true;
+    } else {
+        return \extension_loaded($name);
+    }
+}
+
+/**
+ * @return bool|string
+ */
+function ini_get(string $option)
+{
+    global $mock_ini_get_to_true, $mock_ini_get_to_false;
+    if ($mock_ini_get_to_false) {
+        return false;
+    } elseif ($mock_ini_get_to_true) {
+        return true;
+    } else {
+        return \ini_get($option);
+    }
+}
+
 namespace Platine\Framework\Task;
 
 $mock_preg_split_to_false = false;
