@@ -45,7 +45,6 @@ class AuthTagTest extends PlatineTestCase
         $mock_app_auth_object = $this->getMockInstance(SessionAuthentication::class, [
             'isLogged' => true
         ]);
-
         $parser = $this->getMockInstance(Parser::class);
         $tokens = ['tnh', '{% endauth %}'];
         $b = new AuthTag('foo', $tokens, $parser);

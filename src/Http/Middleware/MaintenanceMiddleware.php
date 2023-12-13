@@ -141,7 +141,6 @@ class MaintenanceMiddleware implements MiddlewareInterface
                           ->setDescription($message)
                           ->setHeaders($this->getHeaders($data));
 
-            // TODO Add headers
             throw $httpException;
         }
 
