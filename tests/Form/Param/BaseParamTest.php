@@ -27,7 +27,7 @@ class BaseParamTest extends PlatineTestCase
     public function testLoad(): void
     {
         $o = new MyParam([
-            'name' => 'foo',
+            'name' => ' foo',
             'status' => '1'
         ]);
         $this->assertEmpty($o->getDefault());

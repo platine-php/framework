@@ -174,6 +174,10 @@ class BaseParam implements JsonSerializable
         ) {
             return null;
         }
+        
+        if($type === 'string' && $value !== null){
+            $value = trim($value);
+        }
 
         $maps = $this->getPropertiesCastMaps();
         $map = $maps[$type] ?? [];
