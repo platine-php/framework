@@ -174,8 +174,8 @@ class BaseParam implements JsonSerializable
         ) {
             return null;
         }
-        
-        if($type === 'string' && $value !== null){
+
+        if ($type === 'string' && $value !== null) {
             $value = trim($value);
         }
 

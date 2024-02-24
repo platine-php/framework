@@ -48,6 +48,7 @@ declare(strict_types=1);
 namespace Platine\Framework\Audit;
 
 use DateTime;
+use Platine\Container\ContainerInterface;
 use Platine\Framework\Audit\Model\AuditRepository;
 use Platine\Framework\Auth\Repository\UserRepository;
 use Platine\Http\ServerRequestInterface;
@@ -67,10 +68,10 @@ class Auditor
     protected AuditRepository $repository;
 
     /**
-     * The request instance
-     * @var ServerRequestInterface
+     * The Container instance
+     * @var ContainerInterface
      */
-    protected ServerRequestInterface $request;
+    protected ContainerInterface $container;
 
     /**
      * User agent instance
@@ -111,20 +112,20 @@ class Auditor
     /**
      * Create new instance
      * @param AuditRepository $repository
-     * @param ServerRequestInterface $request
+     * @param ContainerInterface $container
      * @param UserAgent $userAgent
      * @param AuditUserInterface $auditUser
      * @param UserRepository $userRepository
      */
     public function __construct(
         AuditRepository $repository,
-        ServerRequestInterface $request,
+        ContainerInterface $container,
         UserAgent $userAgent,
         AuditUserInterface $auditUser,
         UserRepository $userRepository
     ) {
         $this->repository = $repository;
-        $this->request = $request;
+        $this->container = $container;
         $this->userAgent = $userAgent;
         $this->auditUser = $auditUser;
         $this->userRepository = $userRepository;
@@ -145,7 +146,10 @@ class Auditor
      */
     public function save(): bool
     {
-        $userAgentStr = $this->request->getHeaderLine('User-Agent');
+        /** @var ServerRequestInterface $request */
+        $request = $this->container->get(ServerRequestInterface::class);
+
+        $userAgentStr = $request->getHeaderLine('User-Agent');
         $ua = $this->userAgent->parse($userAgentStr);
         $userAgent = sprintf(
             '%s %s - %s %s',
@@ -163,7 +167,7 @@ class Auditor
             'date' => new DateTime('now'),
             'ip' => Str::ip(),
             'user_id' => $this->auditUser->getUserId(),
-            'url' => $this->request->getUri()->getPath(),
+            'url' => $request->getUri()->getPath(),
         ]);
 
         return $this->repository->save($entity);
