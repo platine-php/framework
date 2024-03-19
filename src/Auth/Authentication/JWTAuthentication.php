@@ -148,7 +148,7 @@ class JWTAuthentication implements ApiAuthenticationInterface
      */
     public function getUser(): IdentityInterface
     {
-        if (!$this->isAuthenticated($this->request)) {
+        if ($this->isAuthenticated($this->request) === false) {
             throw new AccountNotFoundException('User not logged', 401);
         }
 
@@ -157,7 +157,7 @@ class JWTAuthentication implements ApiAuthenticationInterface
 
         $user = $this->userRepository->find($id);
 
-        if (!$user) {
+        if ($user === null) {
             throw new AccountNotFoundException(
                 'Can not find the logged user information, may be data is corrupted',
                 401
@@ -215,17 +215,23 @@ class JWTAuthentication implements ApiAuthenticationInterface
         $user = $this->getUserEntity($username, $password);
 
         if ($user === null) {
-            throw new AccountNotFoundException('Can not find the user with the given information', 401);
+            throw new AccountNotFoundException(
+                sprintf(
+                    'Can not find the user [%s]',
+                    $username
+                ),
+                401
+            );
         } elseif ($user->status === 'D') {
             throw new AccountLockedException(
-                'User is locked',
+                sprintf('User [%s] is locked', $username),
                 401
             );
         }
 
-        if (!$this->hash->verify($password, $user->password)) {
+        if ($this->hash->verify($password, $user->password) === false) {
             throw new InvalidCredentialsException(
-                'Invalid credentials',
+                sprintf('Invalid credentials for user [%s]', $username),
                 401
             );
         }
