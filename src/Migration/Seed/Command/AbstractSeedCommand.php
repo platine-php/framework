@@ -119,7 +119,7 @@ abstract class AbstractSeedCommand extends Command
 
         if (!$directory->exists() || !$directory->isWritable()) {
             throw new RuntimeException(sprintf(
-                'Seed directory [%s] does not exist or is writable',
+                'Seed directory [%s] does not exist or is not writable',
                 $this->seedPath
             ));
         }
@@ -128,14 +128,15 @@ abstract class AbstractSeedCommand extends Command
     /**
      * Create seed class for the given name
      * @param string $description
+     * @param string $version
      * @return AbstractSeed
      */
-    protected function createSeedClass(string $description): AbstractSeed
+    protected function createSeedClass(string $description, string $version): AbstractSeed
     {
         $this->checkSeedPath();
 
-        $className = $this->getSeedClassName($description);
-        $filename = $this->getFilenameFromClass($className);
+        $className = $this->getSeedClassName($description, $version);
+        $filename = $this->getFilenameFromClass($className, $version);
         $fullPath = $this->seedPath . $filename;
 
         $file = $this->filesystem->file($fullPath);
@@ -178,8 +179,8 @@ abstract class AbstractSeedCommand extends Command
         $files = $directory->read(DirectoryInterface::FILE);
         foreach ($files as $file) {
             $matches = [];
-            if (preg_match('/^([a-z]+)Seed\.php$/i', $file->getName(), $matches)) {
-                $result[Str::camel($matches[1])] = str_replace('_', ' ', Str::snake($matches[1]));
+            if (preg_match('/^([0-9_]+)_([a-z0-9_]+)\.php$/i', $file->getName(), $matches)) {
+                $result[$matches[1]] = str_replace('_', ' ', $matches[2]);
             }
         }
 
@@ -191,27 +192,32 @@ abstract class AbstractSeedCommand extends Command
     /**
      * Return the seed class name for the given name
      * @param string $description
+     * @param string $version
      * @return string
      */
-    protected function getSeedClassName(string $description): string
+    protected function getSeedClassName(string $description, string $version): string
     {
         $desc = Str::camel($description, false);
+
         if (!Str::endsWith('Seed', $desc)) {
             $desc .= 'Seed';
         }
-        return $desc;
+
+        return $desc . Str::replaceFirst('_', '', $version);
     }
 
     /**
      * Return the name of the seed file
      * @param string $className
+     * @param string $version
      * @return string
      */
-    protected function getFilenameFromClass(string $className): string
+    protected function getFilenameFromClass(string $className, string $version): string
     {
         return $filename = sprintf(
-            '%s.php',
-            $className
+            '%s_%s.php',
+            $version,
+            str_replace(Str::replaceFirst('_', '', $version), '', Str::snake($className))
         );
     }
 }

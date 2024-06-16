@@ -92,13 +92,16 @@ class SeedCreateCommand extends AbstractSeedCommand
     {
         $writer = $this->io()->writer();
 
-        $className = $this->getSeedClassName($this->name);
-        $filename = $this->getFilenameFromClass($className);
+        $version = date('Ymd_His');
+        $className = $this->getSeedClassName($this->name, $version);
+        $filename = $this->getFilenameFromClass($className, $version);
         $fullPath = $this->seedPath . $filename;
 
         $writer->boldGreen('Seed detail: ')->eol();
         $writer->bold('Name: ');
         $writer->boldBlueBgBlack($this->name, true);
+        $writer->bold('Version: ');
+        $writer->boldBlueBgBlack($version, true);
         $writer->bold('Class name: ');
         $writer->boldBlueBgBlack($className, true);
         $writer->bold('Filename: ');

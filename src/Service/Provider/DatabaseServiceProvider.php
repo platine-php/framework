@@ -73,8 +73,15 @@ class DatabaseServiceProvider extends ServiceProvider
             /** @template T @var Config<T> $config */
             $config = $app->get(Config::class);
             $driver = $config->get('database.default', 'default');
+            $slowQueryTime = $config->get('database.slow_query_time', 1.0);
 
-            return new Configuration($config->get('database.connections.' . $driver, []));
+            $dbConfig = $config->get('database.connections.' . $driver, []);
+
+            // Pass the slow query time and name to driver connection
+            $dbConfig['slow_query_time'] = $slowQueryTime;
+            $dbConfig['name'] = $driver;
+
+            return new Configuration($dbConfig);
         });
 
         $this->app->share(Pool::class, function (ContainerInterface $app) {

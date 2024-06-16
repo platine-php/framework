@@ -71,6 +71,8 @@ class SeedExecuteCommand extends AbstractSeedCommand
         parent::__construct($app, $config, $filesystem);
         $this->setName('seed:exec')
              ->setDescription('Command to execute seed');
+
+        $this->addOption('-i|--id', 'the seed version', null, false, true);
     }
 
     /**
@@ -82,18 +84,25 @@ class SeedExecuteCommand extends AbstractSeedCommand
         $writer = $io->writer();
         $writer->boldYellow('SEED EXECUTION', true)->eol();
 
-        $seeds = array_values($this->getAvailableSeeds());
+        $seeds = $this->getAvailableSeeds();
 
-        if (empty($seeds)) {
+        if (count($seeds) === 0) {
             $writer->boldGreen('No seed available for execution');
         } else {
-            $choices = [];
-            foreach ($seeds as $key => $seed) {
-                $choices[$key + 1] = $seed;
-            }
-            $indexes = $io->choices('Choose which seed to execute', $choices, []);
-            foreach ($indexes as $index) {
-                $this->executeSeed($seeds[$index - 1]);
+            $version = $this->getOptionValue('id');
+            if ($version !== null) {
+                if (array_key_exists($version, $seeds) === false) {
+                    $writer->boldRed(sprintf(
+                        'Invalid seed version [%s]',
+                        $version
+                    ));
+                } else {
+                    $this->executeSeed($seeds[$version], $version);
+                }
+            } else {
+                foreach ($seeds as $version => $seed) {
+                    $this->executeSeed($seed, $version);
+                }
             }
         }
 
@@ -104,17 +113,19 @@ class SeedExecuteCommand extends AbstractSeedCommand
     /**
      * Execute seed
      * @param string $description
+     * @param string $version
      * @return void
      */
-    public function executeSeed(string $description): void
+    public function executeSeed(string $description, string $version): void
     {
         $writer = $this->io()->writer();
         $writer->boldGreen(sprintf(
-            '* Execute seed for [%s]',
-            $description,
+            '* Execute seed for %s: %s',
+            $version,
+            $description
         ))->eol();
 
-        $seed = $this->createSeedClass($description);
+        $seed = $this->createSeedClass($description, $version);
         $seed->run();
     }
 }

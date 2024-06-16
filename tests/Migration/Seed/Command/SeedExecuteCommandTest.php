@@ -26,7 +26,7 @@ class SeedExecuteCommandTest extends BaseCommandTestCase
 {
     public function testExecuteNoSeedAvailable(): void
     {
-        $seedDir = $this->createVfsDirectory('migrations', $this->vfsPath);
+        $seedDir = $this->createVfsDirectory('seeds2', $this->vfsPath);
         $seedPath = $seedDir->url();
 
         $localAdapter = new LocalAdapter();
@@ -62,7 +62,7 @@ Command finished successfully
         $this->assertCommandOutput($expected, $this->getConsoleOutputContent());
     }
 
-    public function testExecuteThereIsSeed(): void
+    public function testExecuteAllSeed(): void
     {
         $seedDir = $this->createVfsDirectory('seeds', $this->vfsPath);
         $seedPath = $seedDir->url();
@@ -100,7 +100,7 @@ Command finished successfully
         $o->execute();
         $expected = 'SEED EXECUTION
 
-* Execute seed for [add user]
+* Execute seed for 20240616_100000: add user seed
 
 Command finished successfully
 ';
@@ -108,6 +108,96 @@ Command finished successfully
         $this->assertCommandOutput($expected, $this->getConsoleOutputContent());
     }
 
+    public function testExecuteOnlyOneSeed(): void
+    {
+        $seedDir = $this->createVfsDirectory('seeds', $this->vfsPath);
+        $seedPath = $seedDir->url();
+        $this->createSeedTestFile($seedDir);
+
+        $localAdapter = new LocalAdapter();
+        $filesystem = new Filesystem($localAdapter);
+
+        $writer = $this->getWriterInstance();
+        $reader =  $this->getMockInstance(Reader::class);
+        $cnx =  $this->getMockInstance(Connection::class);
+        $application =  $this->getMockInstanceMap(Application::class, [
+            'get' => [
+                [Connection::class, $cnx]
+            ]
+        ]);
+        $interactor = $this->getMockInstance(Interactor::class, [
+            'writer' => $writer,
+            'choices' => ['1'],
+        ]);
+        $app = $this->getMockInstance(ConsoleApp::class, [
+            'io' => $interactor
+        ]);
+        $config = $this->getMockInstanceMap(Config::class, [
+            'get' => [
+                ['database.migration.seed_path', 'seeds', $seedPath],
+            ]
+        ]);
+
+        $o = new SeedExecuteCommand($application, $config, $filesystem);
+        $o->bind($app);
+        $o->parse(['platine', '-i', '20240616_100000']);
+        $this->assertEquals('seed:exec', $o->getName());
+        $o->interact($reader, $writer);
+        $o->execute();
+        $expected = 'SEED EXECUTION
+
+* Execute seed for 20240616_100000: add user seed
+
+Command finished successfully
+';
+
+        $this->assertCommandOutput($expected, $this->getConsoleOutputContent());
+    }
+
+    public function testExecuteInvalidVersion(): void
+    {
+        $seedDir = $this->createVfsDirectory('seeds', $this->vfsPath);
+        $seedPath = $seedDir->url();
+        $this->createSeedTestFile($seedDir);
+
+        $localAdapter = new LocalAdapter();
+        $filesystem = new Filesystem($localAdapter);
+
+        $writer = $this->getWriterInstance();
+        $reader =  $this->getMockInstance(Reader::class);
+        $cnx =  $this->getMockInstance(Connection::class);
+        $application =  $this->getMockInstanceMap(Application::class, [
+            'get' => [
+                [Connection::class, $cnx]
+            ]
+        ]);
+        $interactor = $this->getMockInstance(Interactor::class, [
+            'writer' => $writer,
+            'choices' => ['1'],
+        ]);
+        $app = $this->getMockInstance(ConsoleApp::class, [
+            'io' => $interactor
+        ]);
+        $config = $this->getMockInstanceMap(Config::class, [
+            'get' => [
+                ['database.migration.seed_path', 'seeds', $seedPath],
+            ]
+        ]);
+
+        $o = new SeedExecuteCommand($application, $config, $filesystem);
+        $o->bind($app);
+        $o->parse(['platine', '-i', '20200101_100000']);
+        $this->assertEquals('seed:exec', $o->getName());
+        $o->interact($reader, $writer);
+        $o->execute();
+        $expected = 'SEED EXECUTION
+
+Invalid seed version [20200101_100000]
+Command finished successfully
+';
+
+        $this->assertCommandOutput($expected, $this->getConsoleOutputContent());
+    }
 
     public function testExecuteInvalidSeedClassName(): void
     {
@@ -137,7 +227,7 @@ Command finished successfully
         $this->expectException(RuntimeException::class);
         $o = new SeedExecuteCommand($application, $config, $filesystem);
         $o->bind($app);
-        $o->parse(['platine']);
+        $o->parse(['platine', '-i', '20210915_100000']);
         $this->assertEquals('seed:exec', $o->getName());
         $o->interact($reader, $writer);
         $o->execute();
@@ -149,7 +239,7 @@ Command finished successfully
         $seedPath = $seedDir->url();
 
         $fileSeed = $this->getMockInstance(File::class, [
-            'getName' => 'AddUserSeed.php'
+            'getName' => '20210915_100000_add_user_seed.php'
         ]);
         $file = $this->getMockInstance(File::class, [
             'exists' => false
@@ -183,7 +273,7 @@ Command finished successfully
         $this->expectException(RuntimeException::class);
         $o = new SeedExecuteCommand($application, $config, $filesystem);
         $o->bind($app);
-        $o->parse(['platine']);
+        $o->parse(['platine', '-i', '20210915_100000']);
         $this->assertEquals('seed:exec', $o->getName());
         $o->interact($reader, $writer);
         $o->execute();
@@ -192,14 +282,14 @@ Command finished successfully
     private function createSeedTestFile($seedDir)
     {
         $this->createVfsFile(
-            'AddUserSeed.php',
+            '20240616_100000_add_user_seed.php',
             $seedDir,
             '<?php
         namespace Platine\Framework\Migration\Seed;
 
         use Platine\Framework\Migration\Seed\AbstractSeed;
 
-        class AddUserSeed extends AbstractSeed
+        class AddUserSeed20240616100000 extends AbstractSeed
         {
 
             public function run(): void
@@ -214,7 +304,7 @@ Command finished successfully
     private function createInvalidSeedClassTestFile($seedDir)
     {
         $this->createVfsFile(
-            'UpdateUserSeed.php',
+            '20210915_100000_add_user_seed.php',
             $seedDir,
             '<?php
         namespace Platine\Framework\Migration\Seed;

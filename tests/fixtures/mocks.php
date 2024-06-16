@@ -456,6 +456,21 @@ function app(string $id)
     return \app($id);
 }
 
+namespace Platine\Framework\Migration\Seed\Command;
+
+$mock_date_to_sample_seed = false;
+
+function date(string $format)
+{
+    global $mock_date_to_sample_seed;
+
+    if ($mock_date_to_sample_seed) {
+        return '20210915_100000';
+    }
+
+    return \date($format);
+}
+
 namespace Platine\Framework\Migration\Command;
 
 $mock_date_to_sample = false;

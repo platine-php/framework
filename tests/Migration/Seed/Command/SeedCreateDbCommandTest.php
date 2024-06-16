@@ -26,6 +26,9 @@ class SeedCreateDbCommandTest extends BaseCommandTestCase
 {
     public function testExecuteTableNotExists(): void
     {
+        global $mock_date_to_sample_seed;
+        $mock_date_to_sample_seed = true;
+
         $seedDir = $this->createVfsDirectory('seed', $this->vfsPath);
         $seedPath = $seedDir->url();
 
@@ -65,7 +68,7 @@ class SeedCreateDbCommandTest extends BaseCommandTestCase
                 'vfs://root',
                 'my_tests',
                 'seed',
-                'AddUserSeed.php'
+                '20210915_100000_add_user_seed.php'
             ]
         );
 
@@ -74,9 +77,10 @@ SEED GENERATION USING EXISTING DATA
 
 Seed detail: 
 Name: add user seed
+Version: 20210915_100000
 Table : mytable
-Class name: AddUserSeed
-Filename: AddUserSeed.php
+Class name: AddUserSeed20210915100000
+Filename: 20210915_100000_add_user_seed.php
 Path: $seedFile
 
 Database table [mytable] does not exist
@@ -86,6 +90,9 @@ E;
 
     public function testExecuteTableExistsButEmpty(): void
     {
+        global $mock_date_to_sample_seed;
+        $mock_date_to_sample_seed = true;
+
         $seedDir = $this->createVfsDirectory('seed', $this->vfsPath);
         $seedPath = $seedDir->url();
 
@@ -132,14 +139,14 @@ E;
         $this->assertEquals('seed:createdb', $o->getName());
         $o->interact($reader, $writer);
         $o->execute();
-        $seedFilename = 'AddUserSeed.php';
+        $seedFilename = '20210915_100000_add_user_seed.php';
         $seedFile = implode(
             DIRECTORY_SEPARATOR,
             [
                 'vfs://root',
                 'my_tests',
                 'seed',
-                'AddUserSeed.php'
+                '20210915_100000_add_user_seed.php'
             ]
         );
         $expected = <<<E
@@ -147,9 +154,10 @@ SEED GENERATION USING EXISTING DATA
 
 Seed detail: 
 Name: add user seed
+Version: 20210915_100000
 Table : mytable
-Class name: AddUserSeed
-Filename: AddUserSeed.php
+Class name: AddUserSeed20210915100000
+Filename: 20210915_100000_add_user_seed.php
 Path: $seedFile
 
 Seed [add user seed] generated successfully
@@ -161,6 +169,9 @@ E;
 
     public function testExecuteSuccess(): void
     {
+        global $mock_date_to_sample_seed;
+        $mock_date_to_sample_seed = true;
+
         $seedDir = $this->createVfsDirectory('seed', $this->vfsPath);
         $seedPath = $seedDir->url();
 
@@ -206,14 +217,14 @@ E;
         $this->assertEquals('seed:createdb', $o->getName());
         $o->interact($reader, $writer);
         $o->execute();
-        $seedFilename = 'AddUserSeed.php';
+        $seedFilename = '20210915_100000_add_user_seed.php';
         $seedFile = implode(
             DIRECTORY_SEPARATOR,
             [
                 'vfs://root',
                 'my_tests',
                 'seed',
-                'AddUserSeed.php'
+                '20210915_100000_add_user_seed.php'
             ]
         );
         $expected = <<<E
@@ -221,9 +232,10 @@ SEED GENERATION USING EXISTING DATA
 
 Seed detail: 
 Name: add user seed
+Version: 20210915_100000
 Table : mytable
-Class name: AddUserSeed
-Filename: AddUserSeed.php
+Class name: AddUserSeed20210915100000
+Filename: 20210915_100000_add_user_seed.php
 Path: $seedFile
 
 Seed [add user seed] generated successfully

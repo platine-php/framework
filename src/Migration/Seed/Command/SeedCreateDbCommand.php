@@ -119,13 +119,16 @@ class SeedCreateDbCommand extends AbstractSeedCommand
         $writer = $this->io()->writer();
 
         $this->table = $this->getArgumentValue('table');
-        $className = $this->getSeedClassName($this->name);
-        $filename = $this->getFilenameFromClass($className);
+        $version = date('Ymd_His');
+        $className = $this->getSeedClassName($this->name, $version);
+        $filename = $this->getFilenameFromClass($className, $version);
         $fullPath = $this->seedPath . $filename;
 
         $writer->boldGreen('Seed detail: ')->eol();
         $writer->bold('Name: ');
         $writer->boldBlueBgBlack($this->name, true);
+        $writer->bold('Version: ');
+        $writer->boldBlueBgBlack($version, true);
         $writer->bold('Table : ');
         $writer->boldBlueBgBlack($this->table, true);
         $writer->bold('Class name: ');
@@ -246,16 +249,15 @@ class SeedCreateDbCommand extends AbstractSeedCommand
      */
     protected function exportSeedData(array $data): string
     {
-        $export = var_export($data, true);
-        $export = (string) preg_replace('/^([ ]*)(.*)/m', '$1$1$2', $export);
-        $array = (array) preg_split("/\r\n|\n|\r/", $export);
+        $varExport = var_export($data, true);
+        $export = (string) preg_replace('/^([ ]*)(.*)/m', '$1$1$2', $varExport);
+        $arrayClean = (array) preg_split("/\r\n|\n|\r/", $export);
         $array = preg_replace(
             ["/\s*array\s\($/", "/\)(,)?$/", "/\s=>\s$/"],
             [null, ']$1', ' => ['],
-            $array
+            $arrayClean
         );
-        $export = join(PHP_EOL, array_filter(['['] + $array));
 
-        return $export;
+        return join(PHP_EOL, array_filter(['['] + $array));
     }
 }

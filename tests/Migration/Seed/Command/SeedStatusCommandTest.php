@@ -68,11 +68,11 @@ SEED STATUS
 Seed path: $seedPath
 All seed: 1
 SEED LIST
-+-----+----------+
-| No. | Seed     |
-+-----+----------+
-| 1   | add user |
-+-----+----------+
++-----------------+---------------+
+| Version         | Seed          |
++-----------------+---------------+
+| 20240616_000000 | add user seed |
++-----------------+---------------+
 
 Command finished successfully
 
@@ -84,14 +84,14 @@ E;
     private function createSeedTestFile($seedDir)
     {
         $this->createVfsFile(
-            'AddUserSeed.php',
+            '20240616_000000_add_user_seed.php',
             $seedDir,
             '<?php
         namespace Platine\Framework\Migration\Seed;
 
         use Platine\Framework\Migration\Seed\AbstractSeed;
 
-        class AddUserSeed extends AbstractSeed
+        class AddUserSeed20240616000000 extends AbstractSeed
         {
 
             public function run(): void

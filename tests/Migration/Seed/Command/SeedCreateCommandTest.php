@@ -23,6 +23,9 @@ class SeedCreateCommandTest extends BaseCommandTestCase
 {
     public function testExecute(): void
     {
+        global $mock_date_to_sample_seed;
+        $mock_date_to_sample_seed = true;
+
         $seedDir = $this->createVfsDirectory('seed', $this->vfsPath);
         $seedPath = $seedDir->url();
 
@@ -52,7 +55,7 @@ class SeedCreateCommandTest extends BaseCommandTestCase
         $this->assertEquals('seed:create', $o->getName());
         $o->interact($reader, $writer);
         $o->execute();
-        $seedFilename = 'AddUserSeed.php';
+        $seedFilename = '20210915_100000_add_user_seed.php';
 
         $seedFile = implode(
             DIRECTORY_SEPARATOR,
@@ -60,7 +63,7 @@ class SeedCreateCommandTest extends BaseCommandTestCase
                 'vfs://root',
                 'my_tests',
                 'seed',
-                'AddUserSeed.php'
+                '20210915_100000_add_user_seed.php'
             ]
         );
 
@@ -69,8 +72,9 @@ SEED GENERATION
 
 Seed detail: 
 Name: add user seed
-Class name: AddUserSeed
-Filename: AddUserSeed.php
+Version: 20210915_100000
+Class name: AddUserSeed20210915100000
+Filename: 20210915_100000_add_user_seed.php
 Path: $seedFile
 
 Seed [add user seed] generated successfully
@@ -91,7 +95,7 @@ E;
         $interactor = $this->getMockInstance(Interactor::class, [
             'writer' => $writer,
             'confirm' => true,
-            'prompt' => 'add user seed',
+            'prompt' => 'add user',
         ]);
         $app = $this->getMockInstance(ConsoleApp::class, [
             'io' => $interactor

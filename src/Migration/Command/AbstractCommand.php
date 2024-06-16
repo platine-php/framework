@@ -137,7 +137,7 @@ abstract class AbstractCommand extends Command
 
         if (!$directory->exists() || !$directory->isWritable()) {
             throw new RuntimeException(sprintf(
-                'Migration directory [%s] does not exist or is writable',
+                'Migration directory [%s] does not exist or is not writable',
                 $this->migrationPath
             ));
         }
