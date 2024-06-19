@@ -60,7 +60,11 @@ class DatabaseConfigLoaderTest extends PlatineTestCase
 
         $cfgRepo = $this->getMockInstance(ConfigurationRepository::class, [
             'query' => $entityQuery,
-        ]);
+         ]);
+
+        $cfgRepo->expects($this->any())
+                    ->method('filters')
+                    ->will($this->returnSelf());
 
         $o = new DatabaseConfigLoader($cfgRepo);
 
@@ -108,6 +112,10 @@ class DatabaseConfigLoaderTest extends PlatineTestCase
         $cfgRepo = $this->getMockInstance(ConfigurationRepository::class, [
             'query' => $entityQuery,
         ]);
+
+        $cfgRepo->expects($this->any())
+                    ->method('filters')
+                    ->will($this->returnSelf());
 
         $o = new DatabaseConfigLoader($cfgRepo);
 

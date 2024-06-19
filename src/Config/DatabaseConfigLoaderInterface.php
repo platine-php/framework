@@ -55,8 +55,18 @@ use Platine\Orm\Entity;
  * @package Platine\Framework\Config
  * @template TDbConfigurationEntity as Entity
  */
-interface DatabaseConfigLoaderInterface extends LoaderInterface
+interface DatabaseConfigLoaderInterface
 {
+    /**
+     * Load the configuration group for the given environment with custom filters
+     * @param  string $environment   the name of the environment
+     * like "dev", "prod", etc
+     * @param  string $group the group name to load
+     * @param  array<string, mixed>  $filters the filters to use if any
+     * @return array<string, mixed>        the loaded configuration items
+     */
+    public function load(string $environment, string $group, array $filters = []): array;
+
     /**
      * Load the configuration from database
      * @param array<string, mixed> $where

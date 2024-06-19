@@ -103,14 +103,15 @@ class AppDatabaseConfig implements ArrayAccess
      * @param  string $key the name of the configuration item
      * @param  mixed $default the default value if can
      * not find the configuration item
+     * @param array<string, mixed>  $filters the filters to use if any
      * @return mixed
      */
-    public function get(string $key, $default = null)
+    public function get(string $key, $default = null, array $filters = [])
     {
         $results = $this->parseKey($key);
         $group = $results['group'];
 
-        $this->load($group);
+        $this->load($group, $filters);
 
         return Arr::get($this->items, $key, $default);
     }
@@ -250,9 +251,10 @@ class AppDatabaseConfig implements ArrayAccess
     /**
      * Load the configuration
      * @param string $group
+     * @param array<string, mixed>  $filters the filters to use if any
      * @return void
      */
-    protected function load(string $group): void
+    protected function load(string $group, array $filters = []): void
     {
         // If we've already loaded this collection, we will just bail out since we do
         // not want to load it again. Once items are loaded a first time they will
@@ -261,7 +263,7 @@ class AppDatabaseConfig implements ArrayAccess
             return;
         }
 
-        $this->items[$group] = $this->loader->load($this->env, $group);
+        $this->items[$group] = $this->loader->load($this->env, $group, $filters);
     }
 
     /**

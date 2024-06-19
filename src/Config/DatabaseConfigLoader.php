@@ -77,9 +77,9 @@ class DatabaseConfigLoader implements DatabaseConfigLoaderInterface
     /**
      * {@inheritdoc}
      */
-    public function load(string $environment, string $group): array
+    public function load(string $environment, string $group, array $filters = []): array
     {
-        return $this->loadDbConfigurations($group, $environment);
+        return $this->loadDbConfigurations($group, $environment, $filters);
     }
 
     /**
@@ -119,12 +119,17 @@ class DatabaseConfigLoader implements DatabaseConfigLoaderInterface
      * Return the configuration
      * @param string $group
      * @param string|null $env
+     * @param array<string, mixed>  $filters the filters to use if any
      * @return array<string, mixed>
      */
-    protected function loadDbConfigurations(string $group, ?string $env = null): array
-    {
+    protected function loadDbConfigurations(
+        string $group,
+        ?string $env = null,
+        array $filters = []
+    ): array {
         // @codeCoverageIgnoreStart
         $query = $this->repository
+                                ->filters($filters)
                                 ->query()
                                 ->where('module')->is($group)
                                 ->where('status')->is('Y')
