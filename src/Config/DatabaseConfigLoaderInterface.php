@@ -47,7 +47,6 @@ declare(strict_types=1);
 
 namespace Platine\Framework\Config;
 
-use Platine\Config\LoaderInterface;
 use Platine\Orm\Entity;
 
 /**
