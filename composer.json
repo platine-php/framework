@@ -48,7 +48,8 @@
         "platine-php/template": "^1.0",
         "platine-php/upload": "^1.0",
         "platine-php/user-agent": "^1.0",
-        "platine-php/validator": "^1.0"
+        "platine-php/validator": "^1.0",
+        "platine-php/webauthn": "^1.0"
     },
 	
     "require-dev": {
