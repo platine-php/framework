@@ -49,6 +49,8 @@ namespace Platine\Framework\Auth\Entity;
 
 use Platine\Orm\Entity;
 use Platine\Orm\Mapper\EntityMapperInterface;
+use Platine\Orm\Query\Query;
+use Platine\Orm\Relation\ForeignKey;
 
 /**
  * @class Permission
@@ -71,5 +73,13 @@ class Permission extends Entity
         ]);
 
         $mapper->relation('roles')->shareMany(Role::class);
+        $mapper->relation('parent')->belongsTo(Permission::class, new ForeignKey([
+            'id' => 'parent_id'
+        ]));
+
+
+        $mapper->filter('parent', function (Query $q, $value) {
+             $q->where('parent_id')->is($value);
+        });
     }
 }
