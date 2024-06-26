@@ -50,6 +50,7 @@ namespace Platine\Framework\Auth\Authentication;
 use Platine\Framework\App\Application;
 use Platine\Framework\Auth\AuthenticationInterface;
 use Platine\Framework\Auth\Entity\User;
+use Platine\Framework\Auth\Enum\UserStatus;
 use Platine\Framework\Auth\Event\AuthInvalidPasswordEvent;
 use Platine\Framework\Auth\Event\AuthLoginEvent;
 use Platine\Framework\Auth\Exception\AccountLockedException;
@@ -143,19 +144,29 @@ class SessionAuthentication implements AuthenticationInterface
     /**
      * {@inheritdoc}
      */
-    public function login(array $credentials = [], bool $remeberMe = false): bool
-    {
-        if (!isset($credentials['username']) || !isset($credentials['password'])) {
+    public function login(
+        array $credentials = [],
+        bool $remeberMe = false,
+        bool $withPassword = true
+    ): bool {
+        if (!isset($credentials['username'])) {
             throw new MissingCredentialsException(
-                'Missing username or password information',
+                'Missing username information',
+                401
+            );
+        }
+
+        if ($withPassword && !isset($credentials['password'])) {
+            throw new MissingCredentialsException(
+                'Missing password information',
                 401
             );
         }
 
         $username = $credentials['username'];
-        $password = $credentials['password'];
+        $password = $credentials['password'] ?? '';
 
-        $user = $this->getUserEntity($username, $password);
+        $user = $this->getUserEntity($username, $password, $withPassword);
         if ($user === null) {
             throw new AccountNotFoundException(
                 sprintf(
@@ -164,14 +175,14 @@ class SessionAuthentication implements AuthenticationInterface
                 ),
                 401
             );
-        } elseif ($user->status === 'D') {
+        } elseif ($user->status === UserStatus::LOCKED) {
             throw new AccountLockedException(
                 sprintf('User [%s] is locked', $username),
                 401
             );
         }
 
-        if ($this->hash->verify($password, $user->password) === false) {
+        if ($withPassword && $this->hash->verify($password, $user->password) === false) {
             $this->app->dispatch(new AuthInvalidPasswordEvent($user));
 
             throw new InvalidCredentialsException(
@@ -230,10 +241,14 @@ class SessionAuthentication implements AuthenticationInterface
      * Return the user entity
      * @param string $username
      * @param string $password
+     * @param bool $withPassword wether to use password to login
      * @return User|null
      */
-    protected function getUserEntity(string $username, string $password): ?User
-    {
+    protected function getUserEntity(
+        string $username,
+        string $password,
+        bool $withPassword = true
+    ): ?User {
         return $this->userRepository
                                     ->with('roles.permissions')
                                     ->findBy(['username' => $username]);

@@ -62,6 +62,7 @@ interface AuthenticationInterface
      * Authenticate the user
      * @param array<string, mixed> $credentials
      * @param bool $remeberMe
+     * @param bool $withPassword wether to use password to login
      * @return bool
      *
      * @throws MissingCredentialsException if the passed credentials is not correct
@@ -69,7 +70,11 @@ interface AuthenticationInterface
      * @throws InvalidCredentialsException if invalid credentials, like wrong password
      * @throws AccountLockedException if account is locked
      */
-    public function login(array $credentials = [], bool $remeberMe = false): bool;
+    public function login(
+        array $credentials = [],
+        bool $remeberMe = false,
+        bool $withPassword = true
+    ): bool;
 
     /**
      * Check if user is logged

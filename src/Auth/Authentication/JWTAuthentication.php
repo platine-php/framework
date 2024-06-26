@@ -52,6 +52,7 @@ use Platine\Config\Config;
 use Platine\Framework\Auth\ApiAuthenticationInterface;
 use Platine\Framework\Auth\Entity\Token;
 use Platine\Framework\Auth\Entity\User;
+use Platine\Framework\Auth\Enum\UserStatus;
 use Platine\Framework\Auth\Exception\AccountLockedException;
 use Platine\Framework\Auth\Exception\AccountNotFoundException;
 use Platine\Framework\Auth\Exception\InvalidCredentialsException;
@@ -201,18 +202,25 @@ class JWTAuthentication implements ApiAuthenticationInterface
     /**
      * {@inheritdoc}
      */
-    public function login(array $credentials = []): array
+    public function login(array $credentials = [], bool $withPassword = true): array
     {
-        if (!isset($credentials['username']) || !isset($credentials['password'])) {
+        if (!isset($credentials['username'])) {
             throw new MissingCredentialsException(
-                'Missing username or password information',
+                'Missing username information',
+                401
+            );
+        }
+
+        if ($withPassword && !isset($credentials['password'])) {
+            throw new MissingCredentialsException(
+                'Missing password information',
                 401
             );
         }
 
         $username = $credentials['username'];
-        $password = $credentials['password'];
-        $user = $this->getUserEntity($username, $password);
+        $password = $credentials['password'] ?? '';
+        $user = $this->getUserEntity($username, $password, $withPassword);
 
         if ($user === null) {
             throw new AccountNotFoundException(
@@ -222,14 +230,14 @@ class JWTAuthentication implements ApiAuthenticationInterface
                 ),
                 401
             );
-        } elseif ($user->status === 'D') {
+        } elseif ($user->status === UserStatus::LOCKED) {
             throw new AccountLockedException(
                 sprintf('User [%s] is locked', $username),
                 401
             );
         }
 
-        if ($this->hash->verify($password, $user->password) === false) {
+        if ($withPassword && $this->hash->verify($password, $user->password) === false) {
             throw new InvalidCredentialsException(
                 sprintf('Invalid credentials for user [%s]', $username),
                 401
@@ -260,7 +268,8 @@ class JWTAuthentication implements ApiAuthenticationInterface
                       'permissions' => $permissions,
                   ])
                   ->sign();
-        $refreshToken = bin2hex(random_bytes(20));
+
+        $refreshToken = Str::random(64);
         $jwtToken = $this->jwt->getToken();
 
         $token = $this->tokenRepository->create([
@@ -292,10 +301,14 @@ class JWTAuthentication implements ApiAuthenticationInterface
      * Return the user entity
      * @param string $username
      * @param string $password
+     * @param @param bool $withPassword wether to use password to login
      * @return User|null
      */
-    protected function getUserEntity(string $username, string $password): ?User
-    {
+    protected function getUserEntity(
+        string $username,
+        string $password,
+        bool $withPassword = true
+    ): ?User {
         return $this->userRepository
                                     ->with('roles.permissions')
                                     ->findBy(['username' => $username]);

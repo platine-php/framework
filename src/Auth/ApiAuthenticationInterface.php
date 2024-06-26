@@ -69,6 +69,7 @@ interface ApiAuthenticationInterface
     /**
      * Authenticate the user
      * @param array<string, mixed> $credentials
+     * @param bool $withPassword wether to use password to login
      * @return array<string, mixed>
      *
      * @throws MissingCredentialsException if the passed credentials is not correct
@@ -76,7 +77,7 @@ interface ApiAuthenticationInterface
      * @throws InvalidCredentialsException if invalid credentials, like wrong password
      * @throws AccountLockedException if account is locked
      */
-    public function login(array $credentials = []): array;
+    public function login(array $credentials = [], bool $withPassword = true): array;
 
     /**
      * Return the current logged user
