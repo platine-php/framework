@@ -237,7 +237,7 @@ class MaintenanceMiddleware implements MiddlewareInterface
                 is_int($payload['expire'] ?? null) &&
                 isset($payload['hash']) &&
                 hash_equals(hash_hmac('sha256', (string) $payload['expire'], $secret), $payload['hash']) &&
-                is_int($payload['expire']) >= time();
+                (int) $payload['expire'] >= time();
     }
 
     /**
