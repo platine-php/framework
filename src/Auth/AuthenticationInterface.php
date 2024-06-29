@@ -84,9 +84,11 @@ interface AuthenticationInterface
 
     /**
      * Logout the user
+     * @param bool $destroy whether to destroy all session data
+     *
      * @return void
      */
-    public function logout(): void;
+    public function logout(bool $destroy = true): void;
 
     /**
      * Return the current logged user

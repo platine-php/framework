@@ -219,22 +219,24 @@ class SessionAuthentication implements AuthenticationInterface
     /**
      * {@inheritdoc}
      */
-    public function logout(): void
+    public function logout(bool $destroy = true): void
     {
         $this->session->remove('user');
 
-        $params = session_get_cookie_params();
-        setcookie(
-            (string) session_name(),
-            '',
-            time() - 42000,
-            $params['path'],
-            $params['domain'],
-            $params['secure'],
-            $params['httponly']
-        );
-        session_unset();
-        session_destroy();
+        if ($destroy) {
+            $params = session_get_cookie_params();
+            setcookie(
+                (string) session_name(),
+                '',
+                time() - 42000,
+                $params['path'],
+                $params['domain'],
+                $params['secure'],
+                $params['httponly']
+            );
+            session_unset();
+            session_destroy();
+        }
     }
 
     /**
