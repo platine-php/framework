@@ -308,6 +308,7 @@ class InputClean
          * So this: <blink>
          * Becomes: &lt;blink&gt;
          */
+
         $pattern = '#'
             . '<((?<slash>/*\s*)((?<tagName>[a-z0-9]+)(?=[^a-z0-9]|$)|.+)' // tag
             // start and name, followed by a non-tag character
@@ -574,7 +575,7 @@ class InputClean
         } elseif (in_array(strtolower($matches['tagName']), $naughtyTags, true)) {
             // Is the element that we caught naughty? If so, escape it
             return '&lt;' . $matches[1] . '&gt;';
-        } elseif (isset($matches['attributes'])) {
+        } elseif (!empty($matches['attributes'])) {
             // For other tags, see if their attributes are "evil" and strip those
             // We'll store the already fitlered attributes here
             $attributes = [];
@@ -696,7 +697,7 @@ class InputClean
         return str_replace(
             $this->getXssHash(),
             '&',
-            $this->htmlEntityDecode($str, $this->charset)
+            $this->htmlEntityDecode($str)
         );
     }
 

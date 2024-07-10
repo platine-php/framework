@@ -82,6 +82,7 @@ class AuditTest extends PlatineTestCase
         $entity = $repository->create();
         $this->runPrivateProtectedMethod($entity, 'mapEntity', [$entityMapper]);
         $entityInfo = $repository->filters([
+            'search' => 'delete',
             'event' => 'delete',
             'user' => 1,
             'start_date' => '2022-03-23',

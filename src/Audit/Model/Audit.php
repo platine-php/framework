@@ -47,6 +47,7 @@ declare(strict_types=1);
 
 namespace Platine\Framework\Audit\Model;
 
+use Platine\Database\Query\WhereStatement;
 use Platine\Framework\Auth\Entity\User;
 use Platine\Orm\Entity;
 use Platine\Orm\Mapper\EntityMapperInterface;
@@ -86,6 +87,14 @@ class Audit extends Entity
 
         $mapper->filter('user', function (Query $q, $value) {
             $q->where('user_id')->is($value);
+        });
+
+        $mapper->filter('search', function (Query $p, $value) {
+            $p->where(function (WhereStatement $where) use ($value) {
+                $where->where('ip')->like(sprintf('%%%s%%', $value));
+                $where->orWhere('detail')->like(sprintf('%%%s%%', $value));
+                $where->orWhere('url')->like(sprintf('%%%s%%', $value));
+            });
         });
     }
 }
