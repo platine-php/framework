@@ -301,7 +301,7 @@ class JWTAuthentication implements ApiAuthenticationInterface
      * Return the user entity
      * @param string $username
      * @param string $password
-     * @param @param bool $withPassword wether to use password to login
+     * @param bool $withPassword wether to use password to login
      * @return User|null
      */
     protected function getUserEntity(

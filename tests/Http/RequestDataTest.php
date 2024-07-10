@@ -8,7 +8,6 @@ use Platine\Dev\PlatineTestCase;
 use Platine\Framework\Http\RequestData;
 use Platine\Http\ServerRequest;
 use Platine\Http\UploadedFile;
-use Platine\Test\Framework\Fixture\MyIterableObject;
 
 /*
  * @group core
@@ -16,6 +15,19 @@ use Platine\Test\Framework\Fixture\MyIterableObject;
  */
 class RequestDataTest extends PlatineTestCase
 {
+    public function testDefault(): void
+    {
+        $request = $this->getMockInstance(ServerRequest::class, [
+            'getParsedBody' => [
+                'foo' => 'bar'
+            ]
+        ]);
+        $o = new RequestData($request);
+        $this->assertTrue($this->getPropertyValue(RequestData::class, $o, 'autoEscape'));
+        $o->setAutoEscape(false);
+        $this->assertFalse($this->getPropertyValue(RequestData::class, $o, 'autoEscape'));
+    }
+
     public function testPosts(): void
     {
         $request = $this->getMockInstance(ServerRequest::class, [
@@ -80,18 +92,5 @@ class RequestDataTest extends PlatineTestCase
         $this->assertCount(1, $o->cookies());
         $this->assertNull($o->cookie('bar'));
         $this->assertEquals('bar', $o->cookie('foo'));
-    }
-
-    public function testCleanInputObject(): void
-    {
-        $request = $this->getMockInstance(ServerRequest::class, [
-            'getParsedBody' => [
-                'foo' => new MyIterableObject(['bar<b>f</b>'])
-            ]
-        ]);
-        $o = new RequestData($request);
-        $o->setAutoEscape(true);
-        $value = $o->post('foo')->getData();
-        $this->assertEquals('bar<b>f</b>', $value[0]);
     }
 }

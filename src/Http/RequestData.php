@@ -227,27 +227,6 @@ class RequestData
     }
 
     /**
-     * Clean the user input, like to prevent XSS, etc.
-     * @param mixed $str
-     * @return mixed
-     */
-    protected function cleanInput($str)
-    {
-        if (is_array($str)) {
-            return array_map([$this, 'cleanInput'], $str);
-        }
-        if (is_object($str)) {
-            $obj = $str;
-            foreach ($str as $var => $value) {
-                $obj->{$var} = $this->cleanInput($value);
-            }
-            return $obj;
-        }
-
-        return htmlspecialchars(strip_tags((string) $str), ENT_COMPAT, 'UTF-8');
-    }
-
-    /**
      * Apply the input cleanup based on the status
      * @param array<mixed> $data
      * @return array<mixed>
@@ -255,7 +234,7 @@ class RequestData
     protected function applyInputClean(array $data): array
     {
         if ($this->autoEscape) {
-            $data = $this->cleanInput($data);
+            $data = (new InputClean())->clean($data);
         }
 
         return $data;
