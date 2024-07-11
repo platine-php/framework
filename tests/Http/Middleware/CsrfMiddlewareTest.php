@@ -121,7 +121,7 @@ class CsrfMiddlewareTest extends PlatineTestCase
         $o = new CsrfMiddleware($logger, $lang, $config, $manager);
         $res = $o->process($request, $handler);
 
-        $this->assertEquals(419, $res->getStatusCode());
+        $this->assertEquals(403, $res->getStatusCode());
     }
 
 
