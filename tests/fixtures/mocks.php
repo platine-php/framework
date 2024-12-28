@@ -2,6 +2,32 @@
 
 declare(strict_types=1);
 
+namespace Platine\Framework\Security\OTP;
+
+$mock_random_int = false;
+$mock_str_pad_to_value = false;
+
+function random_int(int $min, int $max): int
+{
+    global $mock_random_int;
+    if ($mock_random_int) {
+        return 1;
+    }
+
+    return \random_int($min, $max);
+}
+
+function str_pad($string, $max, $pad_string, $min): string
+{
+    global $mock_str_pad_to_value;
+    if ($mock_str_pad_to_value) {
+        return $mock_str_pad_to_value;
+    }
+
+    return \str_pad($string, $max, $pad_string, $min);
+}
+
+
 namespace Platine\Framework\Http\RateLimit\Storage;
 
 $mock_extension_loaded_to_false = false;
