@@ -6,7 +6,7 @@ namespace Platine\Test\Framework\OAuth2\Middleware;
 
 use Platine\Config\Config;
 use Platine\Dev\PlatineTestCase;
-use Platine\Framework\OAuth2\Middleware\OauthResourceMiddleware;
+use Platine\Framework\OAuth2\Middleware\OAuthResourceMiddleware;
 use Platine\Http\Handler\RequestHandlerInterface;
 use Platine\Http\Response;
 use Platine\Http\ResponseInterface;
@@ -20,14 +20,14 @@ use Platine\Route\Route;
  * @group core
  * @group framework
  */
-class OauthResourceMiddlewareTest extends PlatineTestCase
+class OAuthResourceMiddlewareTest extends PlatineTestCase
 {
     public function testConstruct(): void
     {
         $cfg = $this->getMockInstance(Config::class);
         $resourceServer = $this->getMockInstance(ResourceServer::class);
-        $o = new OauthResourceMiddleware($resourceServer, $cfg);
-        $this->assertInstanceOf(OauthResourceMiddleware::class, $o);
+        $o = new OAuthResourceMiddleware($resourceServer, $cfg);
+        $this->assertInstanceOf(OAuthResourceMiddleware::class, $o);
     }
 
     public function testProcessRouteNotFound()

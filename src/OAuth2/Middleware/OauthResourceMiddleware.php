@@ -41,15 +41,15 @@ use Platine\Http\ServerRequestInterface;
 use Platine\OAuth2\Entity\AccessToken;
 use Platine\OAuth2\Exception\InvalidAccessTokenException;
 use Platine\OAuth2\ResourceServerInterface;
-use Platine\OAuth2\Response\JsonResponse;
+use Platine\OAuth2\Response\OAuthJsonResponse;
 use Platine\Route\Route;
 
 /**
- * @class OauthResourceMiddleware
+ * @class OAuthResourceMiddleware
  * @package Platine\Framework\OAuth2\Middleware
  * @template T
  */
-class OauthResourceMiddleware implements MiddlewareInterface
+class OAuthResourceMiddleware implements MiddlewareInterface
 {
     /**
      * The Resource Server
@@ -101,7 +101,7 @@ class OauthResourceMiddleware implements MiddlewareInterface
         } catch (InvalidAccessTokenException $ex) {
             // If we're here, this means that there was an access token, but it's either expired
             // or invalid. If that's the case we must immediately return
-            return new JsonResponse(
+            return new OAuthJsonResponse(
                 [
                     'error' => $ex->getCode(),
                     'error_description' => $ex->getMessage(),
