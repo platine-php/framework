@@ -116,6 +116,7 @@ class OAuthResourceMiddleware implements MiddlewareInterface
     /**
      * Whether we can process this request
      * @param ServerRequestInterface $request
+     * 
      * @return bool
      */
     protected function shouldBeProcessed(ServerRequestInterface $request): bool
