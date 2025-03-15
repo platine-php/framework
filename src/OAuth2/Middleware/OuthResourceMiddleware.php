@@ -71,6 +71,7 @@ class OAuthResourceMiddleware implements MiddlewareInterface
 
     /**
      * Create new instance
+     * 
      * @param ResourceServerInterface $resourceServer
      * @param Config<T> $config
      */
