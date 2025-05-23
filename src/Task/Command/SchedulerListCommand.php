@@ -81,12 +81,14 @@ class SchedulerListCommand extends AbstractCommand
     /**
      * {@inheritdoc}
      */
-    public function execute()
+    public function execute(): mixed
     {
         //Load the task list
         $this->loadTasks();
 
         $this->showTaskList();
+
+        return true;
     }
 
 

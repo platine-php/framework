@@ -72,6 +72,7 @@ class MakeEventCommand extends MakeCommand
         Filesystem $filesystem
     ) {
         parent::__construct($application, $filesystem);
+
         $this->setName('make:event')
                ->setDescription('Command to generate new event class');
     }

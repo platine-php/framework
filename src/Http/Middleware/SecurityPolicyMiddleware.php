@@ -62,18 +62,11 @@ use Platine\Route\Route;
 class SecurityPolicyMiddleware implements MiddlewareInterface
 {
     /**
-     * The SecurityPolicy instance
-     * @var SecurityPolicy<T>
-     */
-    protected SecurityPolicy $securityPolicy;
-
-    /**
      * Create new instance
      * @param SecurityPolicy<T> $securityPolicy
      */
-    public function __construct(SecurityPolicy $securityPolicy)
+    public function __construct(protected SecurityPolicy $securityPolicy)
     {
-        $this->securityPolicy = $securityPolicy;
     }
 
     /**
@@ -84,7 +77,7 @@ class SecurityPolicyMiddleware implements MiddlewareInterface
         RequestHandlerInterface $handler
     ): ResponseInterface {
 
-        if (!$this->shouldBeProcessed($request)) {
+        if ($this->shouldBeProcessed($request) === false) {
             return $handler->handle($request);
         }
 
@@ -117,9 +110,9 @@ class SecurityPolicyMiddleware implements MiddlewareInterface
     protected function shouldBeProcessed(ServerRequestInterface $request): bool
     {
        //If no route has been match no need check for CSRF
-        /** @var ?Route $route */
+        /** @var Route|null $route */
         $route = $request->getAttribute(Route::class);
-        if (!$route) {
+        if ($route === null) {
             return false;
         }
 

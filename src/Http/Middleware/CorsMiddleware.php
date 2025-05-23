@@ -65,18 +65,6 @@ use Platine\Stdlib\Helper\Str;
 class CorsMiddleware implements MiddlewareInterface
 {
     /**
-     * The configuration instance
-     * @var Config<T>
-     */
-    protected Config $config;
-
-    /**
-     * The logger instance
-     * @var LoggerInterface
-     */
-    protected LoggerInterface $logger;
-
-    /**
      * The server request to use
      * @var ServerRequestInterface
      */
@@ -94,11 +82,9 @@ class CorsMiddleware implements MiddlewareInterface
      * @param Config<T> $config
      */
     public function __construct(
-        LoggerInterface $logger,
-        Config $config
+        protected LoggerInterface $logger,
+        protected Config $config
     ) {
-        $this->config = $config;
-        $this->logger = $logger;
     }
 
     /**
@@ -108,7 +94,7 @@ class CorsMiddleware implements MiddlewareInterface
         ServerRequestInterface $request,
         RequestHandlerInterface $handler
     ): ResponseInterface {
-        if (!$this->shouldBeProcessed($request)) {
+        if ($this->shouldBeProcessed($request) === false) {
             return $handler->handle($request);
         }
 
@@ -142,9 +128,9 @@ class CorsMiddleware implements MiddlewareInterface
     protected function shouldBeProcessed(ServerRequestInterface $request): bool
     {
         //If no route has been match no need check for CORS
-        /** @var ?Route $route */
+        /** @var Route|null $route */
         $route = $request->getAttribute(Route::class);
-        if (!$route) {
+        if ($route === null) {
             return false;
         }
 
@@ -217,14 +203,12 @@ class CorsMiddleware implements MiddlewareInterface
      */
     protected function setExposedHeaders(): self
     {
-
         $headers = $this->config->get('security.cors.expose_headers', []);
-        if (!empty($headers)) {
-            $this->response = $this->response
-                                ->withHeader(
-                                    'Access-Control-Expose-Headers',
-                                    implode(', ', $headers)
-                                );
+        if (count($headers) > 0) {
+            $this->response = $this->response->withHeader(
+                'Access-Control-Expose-Headers',
+                implode(', ', $headers)
+            );
         }
 
         return $this;
@@ -238,11 +222,10 @@ class CorsMiddleware implements MiddlewareInterface
     {
         $maxAge = $this->config->get('security.cors.max_age', 1800);
 
-        $this->response = $this->response
-                            ->withHeader(
-                                'Access-Control-Max-Age',
-                                Str::stringify($maxAge)
-                            );
+        $this->response = $this->response->withHeader(
+            'Access-Control-Max-Age',
+            Str::stringify($maxAge)
+        );
 
         return $this;
     }
@@ -256,11 +239,10 @@ class CorsMiddleware implements MiddlewareInterface
         $allowCredentials = $this->config->get('security.cors.allow_credentials', false);
 
         if ($allowCredentials) {
-            $this->response = $this->response
-                                ->withHeader(
-                                    'Access-Control-Allow-Credential',
-                                    Str::stringify($allowCredentials)
-                                );
+            $this->response = $this->response->withHeader(
+                'Access-Control-Allow-Credential',
+                Str::stringify($allowCredentials)
+            );
         }
 
         return $this;
@@ -274,12 +256,11 @@ class CorsMiddleware implements MiddlewareInterface
     {
         $methods = $this->config->get('security.cors.allow_methods', []);
 
-        if (!empty($methods)) {
-            $this->response = $this->response
-                                ->withHeader(
-                                    'Access-Control-Allow-Methods',
-                                    implode(', ', $methods)
-                                );
+        if (count($methods) > 0) {
+            $this->response = $this->response->withHeader(
+                'Access-Control-Allow-Methods',
+                implode(', ', $methods)
+            );
         }
 
         return $this;
@@ -291,28 +272,25 @@ class CorsMiddleware implements MiddlewareInterface
      */
     protected function setAllowHeaders(): self
     {
-
         $headers = $this->config->get('security.cors.allow_headers', []);
-
-        if (empty($headers)) {
+        if (count($headers) === 0) {
             //use request headers
-            $requestHeaders = $this->request
-                                    ->getHeaderLine('Access-Control-Request-Headers');
+            $requestHeaders = $this->request->getHeaderLine('Access-Control-Request-Headers');
 
             if (!empty($requestHeaders)) {
                 $headers = $requestHeaders;
             }
         }
+
         if (!empty($headers)) {
             if (is_array($headers)) {
                 $headers = implode(', ', $headers);
             }
 
-            $this->response = $this->response
-                                ->withHeader(
-                                    'Access-Control-Allow-Headers',
-                                    $headers
-                                );
+            $this->response = $this->response->withHeader(
+                'Access-Control-Allow-Headers',
+                $headers
+            );
         }
 
         return $this;

@@ -46,18 +46,11 @@ use Platine\OAuth2\Entity\TokenOwnerInterface;
 class AuthorizationRequestHandler implements RequestHandlerInterface
 {
     /**
-     * The Authorization Server
-     * @var AuthorizationServerInterface
-     */
-    protected AuthorizationServerInterface $authorizationServer;
-
-    /**
      * Create new instance
      * @param AuthorizationServerInterface $authorizationServer
      */
-    public function __construct(AuthorizationServerInterface $authorizationServer)
+    public function __construct(protected AuthorizationServerInterface $authorizationServer)
     {
-        $this->authorizationServer = $authorizationServer;
     }
 
     /**

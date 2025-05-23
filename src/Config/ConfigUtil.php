@@ -59,7 +59,7 @@ class ConfigUtil
      * @param string $type
      * @return mixed
      */
-    public static function convertToDataType($value, string $type)
+    public static function convertToDataType(mixed $value, string $type): mixed
     {
         switch ($type) {
             case 'integer':
@@ -89,7 +89,7 @@ class ConfigUtil
      * @param string $type
      * @return bool
      */
-    public static function isValueValideForDataType($value, string $type): bool
+    public static function isValueValidForDataType(mixed $value, string $type): bool
     {
         if ($type === 'float' || $type === 'double') {
             return (bool) filter_var($value, FILTER_VALIDATE_FLOAT);

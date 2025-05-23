@@ -136,7 +136,7 @@ class ResponseEmitter implements EmitterInterface
         $code = $response->getStatusCode();
         $text = $response->getReasonPhrase();
         $protocolVersion = $response->getProtocolVersion();
-        $status = $code . (!$text ? '' : ' ' . $text);
+        $status = $code . (empty($text) ? '' : ' ' . $text);
         $header = sprintf('HTTP/%s %s', $protocolVersion, $status);
         header($header, true, $code);
     }
@@ -168,7 +168,7 @@ class ResponseEmitter implements EmitterInterface
             $body->rewind();
         }
 
-        while (!$body->eof()) {
+        while ($body->eof() === false) {
             echo $body->read($this->bufferLength);
         }
     }
@@ -194,7 +194,7 @@ class ResponseEmitter implements EmitterInterface
             echo $contents;
         }
 
-        if ($length > 0 && !$body->eof()) {
+        if ($length > 0 && $body->eof() === false) {
             echo $body->read($length);
         }
     }
@@ -207,7 +207,6 @@ class ResponseEmitter implements EmitterInterface
     protected function parseContentRange(string $header): array
     {
         $matches = [];
-
         if (
             preg_match(
                 '/(?P<unit>[\w]+)\s+(?P<first>\d+)-(?P<last>\d+)\/(?P<length>\d+|\*)/',

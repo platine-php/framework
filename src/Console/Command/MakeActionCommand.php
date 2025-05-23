@@ -101,7 +101,7 @@ class MakeActionCommand extends MakeCommand
                 } else {
                     $shortClass = $this->getClassBaseName($value);
                     $name = Str::camel($shortClass, true);
-                    //replace"interface", "abstract"
+                    //replace "interface", "abstract"
                     $nameClean = str_ireplace(['interface', 'abstract'], '', $name);
 
                     $properties[$value] = [
@@ -111,6 +111,7 @@ class MakeActionCommand extends MakeCommand
                 }
             }
         }
+
         $this->properties = $properties;
     }
 

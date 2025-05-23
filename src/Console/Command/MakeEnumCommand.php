@@ -81,6 +81,7 @@ class MakeEnumCommand extends MakeCommand
         Filesystem $filesystem
     ) {
         parent::__construct($application, $filesystem);
+
         $this->setName('make:enum')
                ->setDescription('Command to generate new enumeration class');
     }
@@ -103,7 +104,7 @@ class MakeEnumCommand extends MakeCommand
             if (!empty($value)) {
                 $value = trim($value);
                 $name = preg_replace('#([^a-z0-9]+)#i', '_', $value);
-                if ($name !== null && substr($name, -1) == '_') {
+                if ($name !== null && substr($name, -1) === '_') {
                     $name = substr($name, 0, -1);
                 }
                 if (is_string($name)) {
@@ -112,7 +113,7 @@ class MakeEnumCommand extends MakeCommand
             }
         }
 
-        if (!empty($properties)) {
+        if (count($properties) > 0) {
             foreach ($properties as $name) {
                 $value = $io->prompt(
                     sprintf('Enumeration value for [%s]', $name),

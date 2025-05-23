@@ -80,6 +80,7 @@ class MakeListenerCommand extends MakeCommand
         Filesystem $filesystem
     ) {
         parent::__construct($application, $filesystem);
+
         $this->setName('make:listener')
                ->setDescription('Command to generate new event listener class');
     }
@@ -96,7 +97,10 @@ class MakeListenerCommand extends MakeCommand
 
         $eventClass = $io->prompt('Enter the event full class name', null);
         while (!class_exists($eventClass)) {
-            $eventClass = $io->prompt('Class does not exists, please enter the event full class name', null);
+            $eventClass = $io->prompt(
+                'Class does not exists, please enter the event full class name',
+                null
+            );
         }
 
         $this->eventClass = $eventClass;

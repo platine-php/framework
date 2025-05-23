@@ -168,7 +168,7 @@ class CsvReader
      */
     public function setDelimiter(string $delimiter): self
     {
-        if (!in_array($delimiter, $this->validDelimiters)) {
+        if (in_array($delimiter, $this->validDelimiters) === false) {
             throw new InvalidArgumentException(sprintf(
                 'Invalid delimiter [%s], must be one of [%s]',
                 $delimiter,
@@ -176,6 +176,7 @@ class CsvReader
             ));
         }
         $this->delimiter = $delimiter;
+
         return $this;
     }
 
@@ -189,7 +190,7 @@ class CsvReader
         $fp = fopen($this->file, 'r');
         if ($fp === false) {
             throw new InvalidArgumentException(sprintf(
-                'The file [%s] does not exist or readable',
+                'The file [%s] does not exist or is not readable',
                 $this->file
             ));
         }
@@ -201,10 +202,7 @@ class CsvReader
                 if ($i === 0) {
                     $this->headers = array_map([$this, 'sanitize'], $data);
                 } else {
-                    $result = array_combine($this->headers, $data);
-                    if ($result !== false) {
-                        $this->data[] = $result;
-                    }
+                    $this->data[] = array_combine($this->headers, $data);
                 }
 
                 $i++;

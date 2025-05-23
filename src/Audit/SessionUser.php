@@ -56,26 +56,18 @@ use Platine\Framework\Auth\AuthenticationInterface;
 class SessionUser implements AuditUserInterface
 {
     /**
-     * The Authentication instance
-     * @var AuthenticationInterface
-     */
-    protected AuthenticationInterface $authentication;
-
-
-    /**
      * Create new instance
      * @param AuthenticationInterface $authentication
      */
-    public function __construct(AuthenticationInterface $authentication)
+    public function __construct(protected AuthenticationInterface $authentication)
     {
-        $this->authentication = $authentication;
     }
 
 
     /**
      * {@inheritdoc}
      */
-    public function getUserId(): int
+    public function getUserId(): mixed
     {
         return $this->authentication->getUser()->getId();
     }

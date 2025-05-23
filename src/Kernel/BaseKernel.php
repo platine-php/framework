@@ -56,18 +56,11 @@ use Platine\Framework\App\Application;
 class BaseKernel
 {
     /**
-     * Application instance
-     * @var Application
-     */
-    protected Application $app;
-
-    /**
      * Create new instance
      * @param Application $app
      */
-    public function __construct(Application $app)
+    public function __construct(protected Application $app)
     {
-        $this->app = $app;
     }
 
     /**

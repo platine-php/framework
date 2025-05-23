@@ -59,18 +59,11 @@ use Platine\OAuth2\Entity\UserAuthenticationInterface;
 class UserAuthentication implements UserAuthenticationInterface
 {
     /**
-     * The Authentication
-     * @var AuthenticationInterface
-     */
-    protected AuthenticationInterface $authentication;
-
-    /**
      * Create new instance
      * @param AuthenticationInterface $authentication
      */
-    public function __construct(AuthenticationInterface $authentication)
+    public function __construct(protected AuthenticationInterface $authentication)
     {
-        $this->authentication = $authentication;
     }
 
 

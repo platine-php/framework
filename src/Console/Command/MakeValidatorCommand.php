@@ -83,6 +83,7 @@ class MakeValidatorCommand extends MakeCommand
         Filesystem $filesystem
     ) {
         parent::__construct($application, $filesystem);
+
         $this->setName('make:validator')
                ->setDescription('Command to generate new validator class');
     }
@@ -94,11 +95,10 @@ class MakeValidatorCommand extends MakeCommand
     {
         parent::interact($reader, $writer);
 
-
         $io = $this->io();
 
         $paramClass = $io->prompt('Enter the form parameter full class name', null);
-        while (!class_exists($paramClass)) {
+        while (class_exists($paramClass) === false) {
             $paramClass = $io->prompt('Class does not exists, please enter the form parameter full class name', null);
         }
 
@@ -187,7 +187,7 @@ class MakeValidatorCommand extends MakeCommand
         $reflection = new ReflectionClass($this->paramClass);
         $methods = $reflection->getMethods(ReflectionMethod::IS_PUBLIC);
 
-        if (!empty($methods)) {
+        if (count($methods) > 0) {
             foreach ($methods as /** @var ReflectionMethod $method */ $method) {
                 $returnType = $method->getReturnType();
                 if ($returnType !== null) {

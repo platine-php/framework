@@ -86,6 +86,7 @@ class MakeProviderCommand extends MakeCommand
         Filesystem $filesystem
     ) {
         parent::__construct($application, $filesystem);
+
         $this->setName('make:provider')
                ->setDescription('Command to generate new service provider class');
     }

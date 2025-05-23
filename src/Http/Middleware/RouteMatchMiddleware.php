@@ -84,9 +84,7 @@ class RouteMatchMiddleware implements MiddlewareInterface
         $this->router = $router;
 
         foreach ($allowedMethods as $method) {
-            if (is_string($method)) {
-                $this->allowedMethods[] = strtoupper($method);
-            }
+            $this->allowedMethods[] = strtoupper($method);
         }
     }
 
@@ -119,9 +117,10 @@ class RouteMatchMiddleware implements MiddlewareInterface
             );
         }
 
-        $request = $request->withAttribute(Route::class, $route);
-
-        return $handler->handle($request);
+        return $handler->handle($request->withAttribute(
+            Route::class,
+            $route
+        ));
     }
 
     /**
@@ -131,7 +130,7 @@ class RouteMatchMiddleware implements MiddlewareInterface
      */
     protected function isAllowedMethod(string $method): bool
     {
-        return (empty($this->allowedMethods)
+        return (count($this->allowedMethods) === 0
                 || in_array(strtoupper($method), $this->allowedMethods, true));
     }
 }

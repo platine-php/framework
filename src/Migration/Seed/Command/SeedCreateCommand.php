@@ -79,16 +79,17 @@ class SeedCreateCommand extends AbstractSeedCommand
         Filesystem $filesystem
     ) {
         parent::__construct($app, $config, $filesystem);
+
         $this->setName('seed:create')
              ->setDescription('Create a new seed');
 
-        $this->addArgument('name', 'name of seed', null, false, true);
+        $this->addArgument('name', 'name of seed', null, false);
     }
 
     /**
      * {@inheritdoc}
      */
-    public function execute()
+    public function execute(): mixed
     {
         $writer = $this->io()->writer();
 
@@ -120,6 +121,8 @@ class SeedCreateCommand extends AbstractSeedCommand
                 $this->name
             ))->eol();
         }
+
+        return true;
     }
 
     /**
@@ -130,7 +133,7 @@ class SeedCreateCommand extends AbstractSeedCommand
         $writer->boldYellow('SEED GENERATION', true)->eol();
 
         $name = $this->getArgumentValue('name');
-        if (!$name) {
+        if (empty($name)) {
             $io = $this->io();
             $name = $io->prompt('Enter the name of the seed', 'Seed description');
         }

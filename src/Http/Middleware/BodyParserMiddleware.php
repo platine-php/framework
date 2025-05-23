@@ -155,7 +155,7 @@ class BodyParserMiddleware implements MiddlewareInterface
      * @param ServerRequestInterface $request
      * @return null|array<mixed>|object
      */
-    protected function parseBody(ServerRequestInterface $request)
+    protected function parseBody(ServerRequestInterface $request): array|object|null
     {
         $contentType = $this->getRequestContentType($request);
         if ($contentType === null) {

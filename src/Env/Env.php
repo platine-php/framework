@@ -64,10 +64,10 @@ class Env
      */
     public static function get(
         string $key,
-        $default = null,
+        mixed $default = null,
         ?string $filter = null,
-        $options = 0
-    ) {
+        int|array $options = 0
+    ): mixed {
         if ($filter !== null) {
             $filterMaps = [
                 'bool' => FILTER_VALIDATE_BOOLEAN,
@@ -112,8 +112,8 @@ class Env
     protected static function prepareValue(
         string $value,
         ?int $filter = null,
-        $options = 0
-    ) {
+        int|array $options = 0
+    ): mixed {
         static $special = [
           'true' => true,
           'TRUE' => true,
@@ -130,7 +130,7 @@ class Env
             return $special[$value];
         }
 
-        if ($filter === null || !function_exists('filter_var')) {
+        if ($filter === null || function_exists('filter_var') === false) {
             return $valueResolved;
         }
 
@@ -144,7 +144,7 @@ class Env
      */
     protected static function resolveReference(string $value): string
     {
-        if (!$value || strpos($value, '${') === false) {
+        if (empty($value) || strpos($value, '${') === false) {
             return $value;
         }
 

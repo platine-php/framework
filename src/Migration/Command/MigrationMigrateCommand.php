@@ -71,6 +71,7 @@ class MigrationMigrateCommand extends AbstractCommand
         Filesystem $filesystem
     ) {
         parent::__construct($app, $repository, $config, $filesystem);
+
         $this->setName('migration:migrate')
              ->setDescription('Upgrade migration to latest');
     }
@@ -78,7 +79,7 @@ class MigrationMigrateCommand extends AbstractCommand
     /**
      * {@inheritdoc}
      */
-    public function execute()
+    public function execute(): mixed
     {
         $io = $this->io();
         $writer = $io->writer();
@@ -88,9 +89,9 @@ class MigrationMigrateCommand extends AbstractCommand
         $executed = $this->getExecuted();
         $diff = array_diff_key($migrations, $executed);
 
-        if (empty($diff)) {
+        if (count($diff) === 0) {
             $writer->boldGreen('Migration already up to date');
-            return;
+            return true;
         }
 
         $writer->bold('Migration list to be upgraded:', true);
@@ -113,5 +114,7 @@ class MigrationMigrateCommand extends AbstractCommand
             $writer->write('', true);
             $writer->boldGreen('Migration upgraded successfully', true);
         }
+
+        return true;
     }
 }

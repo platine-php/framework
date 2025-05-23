@@ -88,6 +88,7 @@ class MakeTaskCommand extends MakeCommand
         Filesystem $filesystem
     ) {
         parent::__construct($application, $filesystem);
+
         $this->setName('make:task')
                ->setDescription('Command to generate new task class');
     }
@@ -99,10 +100,8 @@ class MakeTaskCommand extends MakeCommand
     {
         parent::interact($reader, $writer);
 
-
         $io = $this->io();
         $this->name = $io->prompt('Enter the task name', '');
-
 
         $expression = $io->prompt('Enter the cron expression', '* * * * *');
         while (Cron::parse($expression) === 0) {
@@ -124,7 +123,7 @@ class MakeTaskCommand extends MakeCommand
                 } else {
                     $shortClass = $this->getClassBaseName($value);
                     $name = Str::camel($shortClass, true);
-                    //replace"interface", "abstract"
+                    //replace "interface", "abstract"
                     $nameClean = str_ireplace(['interface', 'abstract'], '', $name);
 
                     $properties[$value] = [
@@ -134,6 +133,7 @@ class MakeTaskCommand extends MakeCommand
                 }
             }
         }
+
         $this->properties = $properties;
     }
 

@@ -71,42 +71,6 @@ use Platine\Template\Template;
 class CrudAction
 {
     /**
-    * The Lang instance
-    * @var Lang
-    */
-    protected Lang $lang;
-
-    /**
-    * The Pagination instance
-    * @var Pagination
-    */
-    protected Pagination $pagination;
-
-    /**
-    * The Template instance
-    * @var Template
-    */
-    protected Template $template;
-
-    /**
-    * The Flash instance
-    * @var Flash
-    */
-    protected Flash $flash;
-
-    /**
-    * The RouteHelper instance
-    * @var RouteHelper
-    */
-    protected RouteHelper $routeHelper;
-
-    /**
-    * The LoggerInterface instance
-    * @var LoggerInterface
-    */
-    protected LoggerInterface $logger;
-
-    /**
     * The Repository instance
     * @var Repository<TEntity>
     */
@@ -206,19 +170,13 @@ class CrudAction
     * @param LoggerInterface $logger
     */
     public function __construct(
-        Lang $lang,
-        Pagination $pagination,
-        Template $template,
-        Flash $flash,
-        RouteHelper $routeHelper,
-        LoggerInterface $logger
+        protected Lang $lang,
+        protected Pagination $pagination,
+        protected Template $template,
+        protected Flash $flash,
+        protected RouteHelper $routeHelper,
+        protected LoggerInterface $logger
     ) {
-        $this->lang = $lang;
-        $this->pagination = $pagination;
-        $this->template = $template;
-        $this->flash = $flash;
-        $this->routeHelper = $routeHelper;
-        $this->logger = $logger;
     }
 
     /**
@@ -260,7 +218,6 @@ class CrudAction
 
         $context['list'] = $results;
         $context['pagination'] = $this->pagination->render();
-
 
         return new TemplateResponse(
             $this->template,
@@ -366,7 +323,6 @@ class CrudAction
             );
         } catch (Exception $ex) {
             $this->logger->error('Error when saved the data {error}', ['error' => $ex->getMessage()]);
-
             $this->flash->setError($this->lang->tr($this->messageProcessError));
 
             return new TemplateResponse(
@@ -455,7 +411,6 @@ class CrudAction
             );
         } catch (Exception $ex) {
             $this->logger->error('Error when saved the data {error}', ['error' => $ex->getMessage()]);
-
             $this->flash->setError($this->lang->tr($this->messageProcessError));
 
             return new TemplateResponse(
@@ -497,7 +452,6 @@ class CrudAction
             );
         } catch (Exception $ex) {
             $this->logger->error('Error when delete the data {error}', ['error' => $ex->getMessage()]);
-
             $this->flash->setError($this->lang->tr($this->messageProcessError));
 
             return new RedirectResponse(
@@ -515,7 +469,6 @@ class CrudAction
     protected function getEntityFields(array $fields, BaseParam $param): array
     {
         $results = [];
-
         foreach ($fields as $field => $paramName) {
             if (is_int($field)) {
                 $field = $paramName;

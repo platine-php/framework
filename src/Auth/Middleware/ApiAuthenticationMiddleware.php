@@ -64,28 +64,14 @@ use Platine\Route\Route;
 class ApiAuthenticationMiddleware implements MiddlewareInterface
 {
     /**
-     * The Authentication instance
-     * @var ApiAuthenticationInterface
-     */
-    protected ApiAuthenticationInterface $authentication;
-
-    /**
-     * The configuration instance
-     * @var Config<T>
-     */
-    protected Config $config;
-
-    /**
      * Create new instance
      * @param ApiAuthenticationInterface $authentication
      * @param Config<T> $config
      */
     public function __construct(
-        ApiAuthenticationInterface $authentication,
-        Config $config
+        protected ApiAuthenticationInterface $authentication,
+        protected Config $config
     ) {
-        $this->authentication = $authentication;
-        $this->config = $config;
     }
 
     /**
@@ -95,11 +81,11 @@ class ApiAuthenticationMiddleware implements MiddlewareInterface
         ServerRequestInterface $request,
         RequestHandlerInterface $handler
     ): ResponseInterface {
-        if (!$this->shouldBeProcessed($request)) {
+        if ($this->shouldBeProcessed($request) === false) {
             return $handler->handle($request);
         }
 
-        if (!$this->authentication->isAuthenticated($request)) {
+        if ($this->authentication->isAuthenticated($request) === false) {
             return $this->unauthorizedResponse();
         }
 
@@ -114,9 +100,9 @@ class ApiAuthenticationMiddleware implements MiddlewareInterface
     protected function shouldBeProcessed(ServerRequestInterface $request): bool
     {
         //If no route has been match no need check for authentication
-        /** @var ?Route $route */
+        /** @var Route|null $route */
         $route = $request->getAttribute(Route::class);
-        if (!$route) {
+        if ($route === null) {
             return false;
         }
 
@@ -128,7 +114,7 @@ class ApiAuthenticationMiddleware implements MiddlewareInterface
 
         //check if is url whitelist
         $urls = $this->config->get('api.auth.url_whitelist', []);
-        if (in_array($route->getName(), $urls)) {
+        if (in_array($route->getName(), $urls, true)) {
             return false;
         }
 
@@ -141,6 +127,13 @@ class ApiAuthenticationMiddleware implements MiddlewareInterface
      */
     protected function unauthorizedResponse(): ResponseInterface
     {
-        return new RestResponse([], [], false, 4010, 'User is not authenticated', 401);
+        return new RestResponse(
+            [],
+            [],
+            false,
+            4010,
+            'User is not authenticated',
+            401
+        );
     }
 }

@@ -99,7 +99,7 @@ abstract class BaseCommand extends Command
      * @param string|object $fullClassName
      * @return string
      */
-    public function getClassBaseName($fullClassName): string
+    public function getClassBaseName(string|object $fullClassName): string
     {
         if (is_object($fullClassName)) {
             $fullClassName = get_class($fullClassName);
@@ -205,7 +205,7 @@ abstract class BaseCommand extends Command
         $location = $file->getLocation();
         if (!empty($location)) {
             $directory = $this->filesystem->directory($location);
-            if (!$directory->exists()) {
+            if ($directory->exists() === false) {
                 $directory->create('', 0775, true);
             }
         }
@@ -218,17 +218,22 @@ abstract class BaseCommand extends Command
      * @param string|array<string> $data
      * @return void
      */
-    public function setReaderContent(Reader $reader, string $filename, $data): void
+    public function setReaderContent(Reader $reader, string $filename, string|array $data): void
     {
         if (is_array($data)) {
             $data = implode(PHP_EOL, $data);
         }
+
         file_put_contents($filename, $data, FILE_APPEND);
 
         $resource = fopen($filename, 'r');
         if ($resource === false) {
-            throw new InvalidArgumentException(sprintf('Could not open filename [%s] for reading', $filename));
+            throw new InvalidArgumentException(sprintf(
+                'Could not open filename [%s] for reading',
+                $filename
+            ));
         }
+
         $reader->setStream($resource);
     }
 }

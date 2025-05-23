@@ -24,15 +24,15 @@ class ConfigUtilTest extends PlatineTestCase
         $this->assertFalse(ConfigUtil::convertToDataType('0', 'boolean'));
     }
 
-    public function testIsValueValideForDataType(): void
+    public function testIsValueValidForDataType(): void
     {
 
-        $this->assertFalse(ConfigUtil::isValueValideForDataType('1.9a', 'integer'));
-        $this->assertTrue(ConfigUtil::isValueValideForDataType('1', 'integer'));
-        $this->assertTrue(ConfigUtil::isValueValideForDataType('1.000078', 'double'));
-        $this->assertTrue(ConfigUtil::isValueValideForDataType('4.078', 'float'));
-        $this->assertTrue(ConfigUtil::isValueValideForDataType('a:1:{s:1:"a";i:3;}', 'array'));
-        $this->assertTrue(ConfigUtil::isValueValideForDataType('1', 'boolean'));
-        $this->assertFalse(ConfigUtil::isValueValideForDataType('0', 'boolean'));
+        $this->assertFalse(ConfigUtil::isValueValidForDataType('1.9a', 'integer'));
+        $this->assertTrue(ConfigUtil::isValueValidForDataType('1', 'integer'));
+        $this->assertTrue(ConfigUtil::isValueValidForDataType('1.000078', 'double'));
+        $this->assertTrue(ConfigUtil::isValueValidForDataType('4.078', 'float'));
+        $this->assertTrue(ConfigUtil::isValueValidForDataType('a:1:{s:1:"a";i:3;}', 'array'));
+        $this->assertTrue(ConfigUtil::isValueValidForDataType('1', 'boolean'));
+        $this->assertFalse(ConfigUtil::isValueValidForDataType('0', 'boolean'));
     }
 }

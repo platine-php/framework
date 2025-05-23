@@ -62,18 +62,11 @@ use Platine\Route\Route;
 class RouteDispatcherMiddleware implements MiddlewareInterface
 {
     /**
-     * The Middleware resolver instance
-     * @var MiddlewareResolverInterface
-     */
-    protected MiddlewareResolverInterface $resolver;
-
-    /**
      * Create new instance
      * @param MiddlewareResolverInterface $resolver
      */
-    public function __construct(MiddlewareResolverInterface $resolver)
+    public function __construct(protected MiddlewareResolverInterface $resolver)
     {
-        $this->resolver = $resolver;
     }
 
     /**

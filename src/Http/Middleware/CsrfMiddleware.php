@@ -67,34 +67,10 @@ use Platine\Route\Route;
 class CsrfMiddleware implements MiddlewareInterface
 {
     /**
-     * The configuration instance
-     * @var Config<T>
-     */
-    protected Config $config;
-
-    /**
-     * The CSRF manager
-     * @var CsrfManager<T>
-     */
-    protected CsrfManager $csrfManager;
-
-    /**
-     * The translator instance
-     * @var Lang
-     */
-    protected Lang $lang;
-
-    /**
      * The request instance to use
      * @var ServerRequestInterface
      */
     protected ServerRequestInterface $request;
-
-    /**
-     * The logger instance
-     * @var LoggerInterface
-     */
-    protected LoggerInterface $logger;
 
     /**
      * Create new instance
@@ -104,15 +80,11 @@ class CsrfMiddleware implements MiddlewareInterface
      * @param CsrfManager<T> $csrfManager
      */
     public function __construct(
-        LoggerInterface $logger,
-        Lang $lang,
-        Config $config,
-        CsrfManager $csrfManager
+        protected LoggerInterface $logger,
+        protected Lang $lang,
+        protected Config $config,
+        protected CsrfManager $csrfManager
     ) {
-        $this->config = $config;
-        $this->csrfManager = $csrfManager;
-        $this->lang = $lang;
-        $this->logger = $logger;
     }
 
     /**
@@ -123,10 +95,9 @@ class CsrfMiddleware implements MiddlewareInterface
         RequestHandlerInterface $handler
     ): ResponseInterface {
 
-        if (!$this->shouldBeProcessed($request)) {
+        if ($this->shouldBeProcessed($request) === false) {
             return $handler->handle($request);
         }
-
         $this->request = $request;
 
         if ($this->isValid() === false) {
@@ -153,17 +124,15 @@ class CsrfMiddleware implements MiddlewareInterface
     protected function shouldBeProcessed(ServerRequestInterface $request): bool
     {
        //If no route has been match no need check for CSRF
-        /** @var ?Route $route */
+        /** @var Route|null $route */
         $route = $request->getAttribute(Route::class);
-        if (!$route) {
+        if ($route === null) {
             return false;
         }
 
         // Check for route attribute (useful for GET method)
         $csrf = (bool) $route->getAttribute('csrf');
-
         $methods = $this->config->get('security.csrf.http_methods', []);
-
         if (!in_array($request->getMethod(), $methods) && $csrf === false) {
             return false;
         }
@@ -191,7 +160,6 @@ class CsrfMiddleware implements MiddlewareInterface
             ]
         );
         $response = new Response(403);
-
         $message = $this->lang->tr('Page expired, or request token invalid');
         $response->getBody()->write($message);
 

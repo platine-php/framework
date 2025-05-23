@@ -81,7 +81,7 @@ class MigrationInitCommand extends AbstractCommand
     ) {
         parent::__construct($app, $repository, $config, $filesystem);
         $this->setName('migration:init')
-             ->setDescription('Initialize the migration by creating migration table');
+             ->setDescription('Initialize the migration by creating the migration table');
 
         $this->schema = $schema;
     }
@@ -89,7 +89,7 @@ class MigrationInitCommand extends AbstractCommand
     /**
      * {@inheritdoc}
      */
-    public function execute()
+    public function execute(): mixed
     {
         $io = $this->io();
         $writer = $io->writer();
@@ -100,7 +100,7 @@ class MigrationInitCommand extends AbstractCommand
                 'Migration table [%s] already created',
                 $this->table
             ));
-            return;
+            return true;
         }
 
         $this->createMigrationTable();
@@ -108,6 +108,8 @@ class MigrationInitCommand extends AbstractCommand
             'Migration table [%s] created successfully',
             $this->table
         ));
+
+        return true;
     }
 
     /**
@@ -121,8 +123,10 @@ class MigrationInitCommand extends AbstractCommand
             $table->string('version', 20)
                    ->description('The migration version')
                    ->primary();
+
             $table->string('description')
                    ->description('The migration description');
+
             $table->datetime('created_at')
                     ->description('Migration run time');
 

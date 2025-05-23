@@ -25,7 +25,10 @@ class PaginationServiceProviderTest extends PlatineTestCase
 
         $o = new PaginationServiceProvider($app);
         $o->register();
-        $this->assertInstanceOf(UrlGeneratorInterface::class, $app->get(UrlGeneratorInterface::class));
+        $this->assertInstanceOf(
+            UrlGeneratorInterface::class,
+            $app->get(UrlGeneratorInterface::class)
+        );
         $this->assertInstanceOf(Pagination::class, $app->get(Pagination::class));
     }
 }

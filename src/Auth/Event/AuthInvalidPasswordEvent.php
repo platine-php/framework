@@ -57,19 +57,12 @@ use Platine\Framework\Auth\Entity\User;
 class AuthInvalidPasswordEvent extends Event
 {
     /**
-     * The authentication user
-     * @var User
-     */
-    protected User $user;
-
-    /**
      * Create new instance
      * @param User $user
      */
-    public function __construct(User $user)
+    public function __construct(protected User $user)
     {
         parent::__construct(__CLASS__, []);
-        $this->user = $user;
     }
 
     /**

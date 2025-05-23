@@ -78,7 +78,7 @@ interface DatabaseConfigLoaderInterface
      * @param array<string, mixed> $data
      * @return mixed
      */
-    public function insertConfig(array $data);
+    public function insertConfig(array $data): mixed;
 
     /**
      * Update the configuration

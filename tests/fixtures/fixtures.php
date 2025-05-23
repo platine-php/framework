@@ -10,7 +10,7 @@ use IteratorAggregate;
 use Platine\Config\Config;
 use Platine\Console\Command\Command;
 use Platine\Event\EventInterface;
-use Platine\Event\ListenerInterface;
+use Platine\Event\Listener\ListenerInterface;
 use Platine\Event\SubscriberInterface;
 use Platine\Framework\App\Application;
 use Platine\Framework\Config\DatabaseConfigLoader;
@@ -289,7 +289,7 @@ class MySession extends Session
         $this->flash = (array) $flash;
     }
 
-    public function get(string $key, $default = null)
+    public function get(string $key, mixed $default = null): mixed
     {
         return isset($this->items[$key])
                 ? $this->items[$key]
@@ -301,11 +301,11 @@ class MySession extends Session
         return isset($this->has[$key]);
     }
 
-    public function set(string $key, $value): void
+    public function set(string $key, mixed $value): void
     {
     }
 
-    public function getFlash(string $key, $default = null)
+    public function getFlash(string $key, mixed $default = null): mixed
     {
         return isset($this->flash[$key])
                 ? $this->flash[$key]
@@ -325,7 +325,7 @@ class MyConfig extends Config
         $this->config = array_merge($this->config, (array) $items);
     }
 
-    public function get(string $key, $default = null)
+    public function get(string $key, mixed $default = null): mixed
     {
         return array_key_exists($key, $this->config)
                ? $this->config[$key]
@@ -486,9 +486,11 @@ class MyEventSubscriber implements SubscriberInterface
 
 class MyEventListener implements ListenerInterface
 {
-    public function handle(EventInterface $event)
+    public function handle(EventInterface $event): mixed
     {
         echo $event->getName();
+
+        return true;
     }
 }
 

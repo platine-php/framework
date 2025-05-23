@@ -83,13 +83,13 @@ class MigrationCreateCommand extends AbstractCommand
         $this->setName('migration:create')
              ->setDescription('Create a new migration');
 
-        $this->addArgument('name', 'name of migration', null, false, true);
+        $this->addArgument('name', 'name of migration', null, false);
     }
 
     /**
      * {@inheritdoc}
      */
-    public function execute()
+    public function execute(): mixed
     {
         $writer = $this->io()->writer();
 
@@ -121,6 +121,8 @@ class MigrationCreateCommand extends AbstractCommand
                 $this->name
             ))->eol();
         }
+
+        return true;
     }
 
     /**
@@ -131,7 +133,7 @@ class MigrationCreateCommand extends AbstractCommand
         $writer->boldYellow('MIGRATION GENERATION', true)->eol();
 
         $name = $this->getArgumentValue('name');
-        if (!$name) {
+        if (empty($name)) {
             $io = $this->io();
             $name = $io->prompt('Enter the name of the migration', 'Migration description');
         }

@@ -69,30 +69,6 @@ use Platine\Session\Session;
 class SessionAuthentication implements AuthenticationInterface
 {
     /**
-     * The session instance to use
-     * @var Session
-     */
-    protected Session $session;
-
-    /**
-     * The user repository instance
-     * @var UserRepository
-     */
-    protected UserRepository $userRepository;
-
-    /**
-     * Hash instance to use
-     * @var HashInterface
-     */
-    protected HashInterface $hash;
-
-    /**
-     * The application instance
-     * @var Application
-     */
-    protected Application $app;
-
-    /**
      * Create new instance
      * @param Application $app
      * @param HashInterface $hash
@@ -100,15 +76,11 @@ class SessionAuthentication implements AuthenticationInterface
      * @param UserRepository $userRepository
      */
     public function __construct(
-        Application $app,
-        HashInterface $hash,
-        Session $session,
-        UserRepository $userRepository
+        protected Application $app,
+        protected HashInterface $hash,
+        protected Session $session,
+        protected UserRepository $userRepository
     ) {
-        $this->app = $app;
-        $this->hash = $hash;
-        $this->session = $session;
-        $this->userRepository = $userRepository;
     }
 
     /**
@@ -192,7 +164,6 @@ class SessionAuthentication implements AuthenticationInterface
         }
 
         $permissions = [];
-
         $roles = $user->roles;
         foreach ($roles as $role) {
             $rolePermissions = $role->permissions;
@@ -211,6 +182,7 @@ class SessionAuthentication implements AuthenticationInterface
 
         $this->session->set('user', array_merge($data, $this->getUserData($user)));
 
+        // Inform the system that the use just login successfully
         $this->app->dispatch(new AuthLoginEvent($user));
 
         return $this->isLogged();
@@ -251,8 +223,7 @@ class SessionAuthentication implements AuthenticationInterface
         string $password,
         bool $withPassword = true
     ): ?User {
-        return $this->userRepository
-                                    ->with('roles.permissions')
+        return $this->userRepository->with('roles.permissions')
                                     ->findBy(['username' => $username]);
     }
 

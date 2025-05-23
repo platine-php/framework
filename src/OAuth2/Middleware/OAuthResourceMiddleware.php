@@ -52,18 +52,6 @@ use Platine\Route\Route;
 class OAuthResourceMiddleware implements MiddlewareInterface
 {
     /**
-     * The Resource Server
-     * @var ResourceServerInterface
-     */
-    protected ResourceServerInterface $resourceServer;
-
-    /**
-     * The configuration instance
-     * @var Config<T>
-     */
-    protected Config $config;
-
-    /**
      * The scope list
      * @var array<string>
      */
@@ -71,16 +59,14 @@ class OAuthResourceMiddleware implements MiddlewareInterface
 
     /**
      * Create new instance
-     * 
+     *
      * @param ResourceServerInterface $resourceServer
      * @param Config<T> $config
      */
     public function __construct(
-        ResourceServerInterface $resourceServer,
-        Config $config
+        protected ResourceServerInterface $resourceServer,
+        protected Config $config
     ) {
-        $this->resourceServer = $resourceServer;
-        $this->config = $config;
     }
 
     /**
@@ -117,7 +103,7 @@ class OAuthResourceMiddleware implements MiddlewareInterface
     /**
      * Whether we can process this request
      * @param ServerRequestInterface $request
-     * 
+     *
      * @return bool
      */
     protected function shouldBeProcessed(ServerRequestInterface $request): bool

@@ -47,7 +47,6 @@ declare(strict_types=1);
 
 namespace Platine\Framework\Form\Validator;
 
-use Platine\Lang\Lang;
 use Platine\Validator\Validator;
 
 /**
@@ -56,15 +55,6 @@ use Platine\Validator\Validator;
  */
 abstract class AbstractValidator extends Validator
 {
-    /**
-     * Create new instance
-     * @param Lang $lang
-     */
-    public function __construct(Lang $lang)
-    {
-        parent::__construct($lang);
-    }
-
     /**
      * {@inheritdoc}
      * @return bool
@@ -83,7 +73,7 @@ abstract class AbstractValidator extends Validator
      * @param mixed $value
      * @return $this
      */
-    public function addData(string $name, $value): self
+    public function addData(string $name, mixed $value): self
     {
         $this->data[$name] = $value;
 

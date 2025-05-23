@@ -185,6 +185,7 @@ class DatabaseConfigLoaderTest extends PlatineTestCase
         ]);
 
         $cfgRepo = $this->getMockInstance(ConfigurationRepository::class, [
+            'save' => true,
         ]);
 
         $cfgRepo->expects($this->exactly(1))

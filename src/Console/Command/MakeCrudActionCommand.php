@@ -73,6 +73,7 @@ class MakeCrudActionCommand extends BaseMakeActionCommand
         Filesystem $filesystem
     ) {
         parent::__construct($application, $filesystem);
+
         $this->setName('make:crud')
               ->setDescription('Command to generate platine CRUD action');
     }
@@ -216,12 +217,12 @@ class MakeCrudActionCommand extends BaseMakeActionCommand
         }
 
 
-        $content = str_replace('%base_entity%', $entityBaseClass, $content);
-        $content = str_replace('%base_repository%', $repositoryBaseClass, $content);
-        $content = str_replace('%base_param%', $paramBaseClass, $content);
-        $content = str_replace('%base_validator%', $validatorBaseClass, $content);
+        $contentBaseEntity = str_replace('%base_entity%', $entityBaseClass, $content);
+        $contentBaseRepository = str_replace('%base_repository%', $repositoryBaseClass, $contentBaseEntity);
+        $contentBaseParam = str_replace('%base_param%', $paramBaseClass, $contentBaseRepository);
+        $contentBaseValidator = str_replace('%base_validator%', $validatorBaseClass, $contentBaseParam);
 
-        return str_replace('%attributes%', $replace, $content);
+        return str_replace('%attributes%', $replace, $contentBaseValidator);
     }
 
     /**

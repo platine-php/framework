@@ -56,26 +56,18 @@ use Platine\Framework\Auth\ApiAuthenticationInterface;
 class ApiUser implements AuditUserInterface
 {
     /**
-     * The API Authentication instance
-     * @var ApiAuthenticationInterface
-     */
-    protected ApiAuthenticationInterface $authentication;
-
-
-    /**
      * Create new instance
      * @param ApiAuthenticationInterface $authentication
      */
-    public function __construct(ApiAuthenticationInterface $authentication)
+    public function __construct(protected ApiAuthenticationInterface $authentication)
     {
-        $this->authentication = $authentication;
     }
 
 
     /**
      * {@inheritdoc}
      */
-    public function getUserId(): int
+    public function getUserId(): mixed
     {
         return $this->authentication->getUser()->getId();
     }

@@ -40,7 +40,7 @@ class ApplicationTest extends PlatineTestCase
     public function testVersion(): void
     {
         $app = new Application('');
-        $this->assertEquals('1.0.0-dev', $app->version());
+        $this->assertEquals('2.0.0-dev', $app->version());
     }
 
     public function testGetSetAll(): void

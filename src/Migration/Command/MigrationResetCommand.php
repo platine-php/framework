@@ -78,7 +78,7 @@ class MigrationResetCommand extends AbstractCommand
     /**
      * {@inheritdoc}
      */
-    public function execute()
+    public function execute(): mixed
     {
         $io = $this->io();
         $writer = $io->writer();
@@ -86,9 +86,9 @@ class MigrationResetCommand extends AbstractCommand
 
         $executed = $this->getExecuted('DESC');
 
-        if (empty($executed)) {
+        if (count($executed) === 0) {
             $writer->boldGreen('No migration done before');
-            return;
+            return true;
         }
 
         $writer->bold('Migration list to be rollback:', true);
@@ -111,5 +111,7 @@ class MigrationResetCommand extends AbstractCommand
             $writer->write('', true);
             $writer->boldGreen('Migration rollback successfully', true);
         }
+
+        return true;
     }
 }

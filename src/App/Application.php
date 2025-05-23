@@ -53,7 +53,7 @@ use Platine\Config\FileLoader;
 use Platine\Container\Container;
 use Platine\Event\DispatcherInterface;
 use Platine\Event\EventInterface;
-use Platine\Event\ListenerInterface;
+use Platine\Event\Listener\ListenerInterface;
 use Platine\Event\SubscriberInterface;
 use Platine\Framework\Env\Loader;
 use Platine\Framework\Helper\Timer\Watch;
@@ -72,7 +72,7 @@ class Application extends Container
     /**
      * The application version
      */
-    public const VERSION = '1.0.0-dev';
+    public const VERSION = '2.0.0-dev';
 
     /**
      * The event dispatcher instance
@@ -253,7 +253,7 @@ class Application extends Container
      * @param string $env
      * @return $this
      */
-    public function setEnvironment(string $env)
+    public function setEnvironment(string $env): self
     {
         $this->env = $env;
 
@@ -400,8 +400,10 @@ class Application extends Container
      * @param  EventInterface|null $event  the instance of EventInterface or null
      * @return EventInterface
      */
-    public function dispatch($eventName, EventInterface $event = null): EventInterface
-    {
+    public function dispatch(
+        string|EventInterface $eventName,
+        ?EventInterface $event = null
+    ): EventInterface {
         return $this->dispatcher->dispatch($eventName, $event);
     }
 
@@ -416,7 +418,7 @@ class Application extends Container
      */
     public function listen(
         string $eventName,
-        $listener,
+        ListenerInterface|callable|string $listener,
         int $priority = DispatcherInterface::PRIORITY_DEFAULT
     ): self {
         if (is_string($listener)) {
@@ -501,7 +503,7 @@ class Application extends Container
      * @return ServiceProvider
      */
     public function registerServiceProvider(
-        $provider,
+        string|ServiceProvider $provider,
         bool $force = false
     ): ServiceProvider {
         $registered = $this->getServiceProvider($provider);
@@ -529,7 +531,7 @@ class Application extends Container
      * @param string|ServiceProvider $provider
      * @return ServiceProvider|null
      */
-    public function getServiceProvider($provider): ?ServiceProvider
+    public function getServiceProvider(string|ServiceProvider $provider): ?ServiceProvider
     {
         $name = is_string($provider)
                 ? $provider

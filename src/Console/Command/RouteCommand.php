@@ -64,38 +64,31 @@ use Platine\Stdlib\Helper\Str;
 class RouteCommand extends Command
 {
     /**
-     * The configuration instance
-     * @var Config<T>
-     */
-    protected Config $config;
-    protected Router $router;
-    protected Application $application;
-
-    /**
      * Create new instance
      * @param Application $application
      * @param Config<T> $config
      * @param Router $router
      */
-    public function __construct(Application $application, Config $config, Router $router)
-    {
+    public function __construct(
+        protected Application $application,
+        protected Config $config,
+        protected Router $router
+    ) {
         parent::__construct('route', 'Command to manage route');
 
         $this->addOption('-l|--list', 'Show route list', null, false);
-
-        $this->router = $router;
-        $this->config = $config;
-        $this->application = $application;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function execute()
+    public function execute(): mixed
     {
         if ($this->getOptionValue('list')) {
             $this->showRouteList();
         }
+
+        return true;
     }
 
     /**
@@ -131,6 +124,7 @@ class RouteCommand extends Command
 
         Arr::multisort($rows, 'path');
         $writer->table($rows);
+
         $writer->green('Command finished successfully')->eol();
     }
 }

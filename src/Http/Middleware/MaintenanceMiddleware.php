@@ -74,28 +74,14 @@ use Throwable;
 class MaintenanceMiddleware implements MiddlewareInterface
 {
     /**
-     * The configuration instance
-     * @var Config<T>
-     */
-    protected Config $config;
-
-    /**
-     * The Application instance
-     * @var Application
-     */
-    protected Application $app;
-
-    /**
      * Create new instance
      * @param Config<T> $config
      * @param Application $app
      */
     public function __construct(
-        Config $config,
-        Application $app
+        protected Config $config,
+        protected Application $app
     ) {
-        $this->config = $config;
-        $this->app = $app;
     }
 
     /**
@@ -117,7 +103,9 @@ class MaintenanceMiddleware implements MiddlewareInterface
                 throw $ex;
             }
 
-            if (isset($data['secret']) && trim($request->getUri()->getPath(), '/') === $data['secret']) {
+            if (
+                    isset($data['secret']) && trim($request->getUri()->getPath(), '/') === $data['secret']
+            ) {
                 return $this->bypassResponse($data['secret']);
             }
 
@@ -126,11 +114,13 @@ class MaintenanceMiddleware implements MiddlewareInterface
             }
 
             if (isset($data['template'])) {
-                return $this->templateResponse($data['template'], $data);
+                return $this->templateResponse(
+                    $data['template'],
+                    $data
+                );
             }
 
             $message = $data['message'] ?? 'The server is temporarily busy, try again later';
-
             $httpException = new HttpException(
                 $request,
                 $message,
@@ -223,7 +213,6 @@ class MaintenanceMiddleware implements MiddlewareInterface
             return false;
         }
 
-
         $secret = $data['secret'];
         $name = $this->getCookieName();
         $cookieValue = (new RequestData($request))->cookie($name);
@@ -236,7 +225,11 @@ class MaintenanceMiddleware implements MiddlewareInterface
         return is_array($payload) &&
                 is_int($payload['expire'] ?? null) &&
                 isset($payload['hash']) &&
-                hash_equals(hash_hmac('sha256', (string) $payload['expire'], $secret), $payload['hash']) &&
+                hash_equals(hash_hmac(
+                    'sha256',
+                    (string) $payload['expire'],
+                    $secret
+                ), $payload['hash']) &&
                 (int) $payload['expire'] >= time();
     }
 
@@ -276,9 +269,9 @@ class MaintenanceMiddleware implements MiddlewareInterface
      */
     protected function getHeaders(array $data): array
     {
-        $headers = isset($data['retry']) ? ['Retry-After' => $data['retry']] : [];
+        $headers = isset($data['retry']) ? ['Retry-After' => (string) $data['retry']] : [];
         if (isset($data['refresh'])) {
-            $headers['Refresh'] = $data['refresh'];
+            $headers['Refresh'] = (string) $data['refresh'];
         }
 
         return $headers;
@@ -317,6 +310,9 @@ class MaintenanceMiddleware implements MiddlewareInterface
      */
     protected function getCookieName(): string
     {
-        return $this->config->get('maintenance.cookie.name', 'platine_maintenance');
+        return $this->config->get(
+            'maintenance.cookie.name',
+            'platine_maintenance'
+        );
     }
 }

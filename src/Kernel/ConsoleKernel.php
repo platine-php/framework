@@ -109,7 +109,7 @@ class ConsoleKernel extends BaseKernel
     {
         parent::bootstrap();
 
-        if (!$this->commandsLoaded) {
+        if ($this->commandsLoaded === false) {
             $this->registerConfiguredCommands();
 
             //Load providers commands
@@ -132,7 +132,7 @@ class ConsoleKernel extends BaseKernel
      * @param string|Command $command
      * @return void
      */
-    public function addCommand($command): void
+    public function addCommand(string|Command $command): void
     {
         if (is_string($command)) {
             $command = $this->createCommand($command);

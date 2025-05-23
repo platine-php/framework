@@ -69,16 +69,17 @@ class SeedExecuteCommand extends AbstractSeedCommand
         Filesystem $filesystem
     ) {
         parent::__construct($app, $config, $filesystem);
+
         $this->setName('seed:exec')
              ->setDescription('Command to execute seed');
 
-        $this->addOption('-i|--id', 'the seed version', null, false, true);
+        $this->addOption('-i|--id', 'the seed version', null, false);
     }
 
     /**
      * {@inheritdoc}
      */
-    public function execute()
+    public function execute(): mixed
     {
         $io = $this->io();
         $writer = $io->writer();
@@ -108,6 +109,8 @@ class SeedExecuteCommand extends AbstractSeedCommand
 
         $writer->eol();
         $writer->boldGreen('Command finished successfully')->eol();
+
+        return true;
     }
 
     /**

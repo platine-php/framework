@@ -60,18 +60,6 @@ use Platine\Stdlib\Helper\Arr;
 class AppDatabaseConfig implements ArrayAccess
 {
     /**
-     * The configuration loader to use
-     * @var DatabaseConfigLoaderInterface<TDbConfigurationEntity>
-     */
-    protected DatabaseConfigLoaderInterface $loader;
-
-    /**
-     * The configuration environment to use
-     * @var string
-     */
-    protected string $env;
-
-    /**
      * The configuration items loaded
      * @var array<string, mixed>
      */
@@ -80,12 +68,12 @@ class AppDatabaseConfig implements ArrayAccess
     /**
      * Create new configuration instance
      * @param DatabaseConfigLoaderInterface<TDbConfigurationEntity> $loader the loader to use
-     * @param string          $env    the name of the environment
+     * @param string $env the name of the environment
      */
-    public function __construct(DatabaseConfigLoaderInterface $loader, string $env = '')
-    {
-        $this->loader = $loader;
-        $this->env = $env;
+    public function __construct(
+        protected DatabaseConfigLoaderInterface $loader,
+        protected string $env = ''
+    ) {
     }
 
     /**
@@ -106,7 +94,7 @@ class AppDatabaseConfig implements ArrayAccess
      * @param array<string, mixed>  $filters the filters to use if any
      * @return mixed
      */
-    public function get(string $key, $default = null, array $filters = [])
+    public function get(string $key, mixed $default = null, array $filters = []): mixed
     {
         $results = $this->parseKey($key);
         $group = $results['group'];
@@ -122,7 +110,7 @@ class AppDatabaseConfig implements ArrayAccess
      * @param  mixed $value the configuration value
      * @return void
      */
-    public function set(string $key, $value): void
+    public function set(string $key, mixed $value): void
     {
         $results = $this->parseKey($key);
         $module = $results['group'];
@@ -216,7 +204,7 @@ class AppDatabaseConfig implements ArrayAccess
     /**
      * {@inheritdoc}
      */
-    public function offsetExists($key)
+    public function offsetExists(mixed $key): bool
     {
         return $this->has($key);
     }
@@ -224,18 +212,18 @@ class AppDatabaseConfig implements ArrayAccess
     /**
      * {@inheritdoc}
      */
-    public function offsetGet($key)
+    public function offsetGet(mixed $key): mixed
     {
         return $this->get($key);
     }
 
     /**
      *
-     * @param string $key
+     * @param mixed $key
      * @param mixed $value
      * @return void
      */
-    public function offsetSet($key, $value)
+    public function offsetSet(mixed $key, mixed $value): void
     {
         $this->set($key, $value);
     }
@@ -243,7 +231,7 @@ class AppDatabaseConfig implements ArrayAccess
     /**
      * {@inheritdoc}
      */
-    public function offsetUnset($key)
+    public function offsetUnset(mixed $key): void
     {
         $this->set($key, null);
     }
@@ -263,7 +251,11 @@ class AppDatabaseConfig implements ArrayAccess
             return;
         }
 
-        $this->items[$group] = $this->loader->load($this->env, $group, $filters);
+        $this->items[$group] = $this->loader->load(
+            $this->env,
+            $group,
+            $filters
+        );
     }
 
     /**
@@ -284,8 +276,8 @@ class AppDatabaseConfig implements ArrayAccess
         $groups = explode('.', $key);
 
         return [
+            'group' => $groups[0],
             'key' => $groups[1],
-            'group' => $groups[0]
         ];
     }
 
@@ -294,7 +286,7 @@ class AppDatabaseConfig implements ArrayAccess
      * @param mixed $value
      * @return mixed
      */
-    protected function getFormattedConfigValue($value)
+    protected function getFormattedConfigValue(mixed $value): mixed
     {
         if (is_array($value) || is_object($value)) {
             return serialize($value);

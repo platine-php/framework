@@ -59,26 +59,21 @@ use Platine\Orm\Entity;
 class DatabaseConfigLoader implements DatabaseConfigLoaderInterface
 {
     /**
-     * The Repository instance
-     * @var ConfigurationRepositoryInterface<Configuration>
-     */
-    protected ConfigurationRepositoryInterface $repository;
-
-
-    /**
      * Create new instance
      * @param ConfigurationRepositoryInterface<Configuration> $repository
      */
-    public function __construct(ConfigurationRepositoryInterface $repository)
+    public function __construct(protected ConfigurationRepositoryInterface $repository)
     {
-        $this->repository = $repository;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function load(string $environment, string $group, array $filters = []): array
-    {
+    public function load(
+        string $environment,
+        string $group,
+        array $filters = []
+    ): array {
         return $this->loadDbConfigurations($group, $environment, $filters);
     }
 
@@ -93,7 +88,7 @@ class DatabaseConfigLoader implements DatabaseConfigLoaderInterface
     /**
      * {@inheritdoc}
      */
-    public function insertConfig(array $data)
+    public function insertConfig(array $data): mixed
     {
         $entity = $this->repository->create($data);
         return $this->repository->insert($entity);
@@ -104,7 +99,7 @@ class DatabaseConfigLoader implements DatabaseConfigLoaderInterface
      */
     public function updateConfig(Entity $entity): bool
     {
-        return $this->repository->save($entity);
+        return (bool) $this->repository->save($entity);
     }
 
     /**
@@ -128,15 +123,14 @@ class DatabaseConfigLoader implements DatabaseConfigLoaderInterface
         array $filters = []
     ): array {
         // @codeCoverageIgnoreStart
-        $query = $this->repository
-                                ->filters($filters)
-                                ->query()
-                                ->where('module')->is($group)
-                                ->where('status')->is('Y')
-                                ->where(function (WhereStatement $where) use ($env) {
+        $query = $this->repository->filters($filters)
+                                  ->query()
+                                  ->where('module')->is($group)
+                                  ->where('status')->is('Y')
+                                  ->where(function (WhereStatement $where) use ($env) {
                                     $where->where('env')->is($env)
                                     ->orWhere('env')->isNull();
-                                });
+                                  });
         // @codeCoverageIgnoreEnd
 
         /** @var Configuration[] $results */

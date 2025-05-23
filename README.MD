@@ -27,7 +27,7 @@ Here are some of the features of Platine Framework:
 ### Requirements 
 You can use **Platine Framework** for web or command line application. For web application: 
 - Any web server **(Apache, nginx, lighttp, etc.)**
-- **PHP >= 7.4**, **PHP 8** 
+- **PHP >= 8.0** 
 
 For CLI application just PHP executable is enough. 
 

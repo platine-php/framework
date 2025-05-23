@@ -52,7 +52,7 @@ use Platine\Container\ContainerInterface;
 use Platine\Framework\OAuth2\Handler\AccessTokenRequestHandler;
 use Platine\Framework\OAuth2\Handler\AuthorizationRequestHandler;
 use Platine\Framework\OAuth2\Handler\TokenRevocationRequestHandler;
-use Platine\Framework\OAuth2\Middleware\OauthResourceMiddleware;
+use Platine\Framework\OAuth2\Middleware\OAuthResourceMiddleware;
 use Platine\Framework\OAuth2\Repository\AccessTokenRepository;
 use Platine\Framework\OAuth2\Repository\AuthorizationCodeRepository;
 use Platine\Framework\OAuth2\Repository\ClientRepository;
@@ -62,7 +62,6 @@ use Platine\Framework\OAuth2\User\UserAuthentication;
 use Platine\Framework\Service\ServiceProvider;
 use Platine\OAuth2\AuthorizationServer;
 use Platine\OAuth2\AuthorizationServerInterface;
-use Platine\OAuth2\Configuration;
 use Platine\OAuth2\Entity\UserAuthenticationInterface;
 use Platine\OAuth2\Grant\AuthorizationGrant;
 use Platine\OAuth2\Grant\ClientCredentialsGrant;
@@ -85,6 +84,9 @@ use Platine\OAuth2\Service\ClientService;
 use Platine\OAuth2\Service\RefreshTokenService;
 use Platine\OAuth2\Service\ScopeService;
 use Platine\Route\Router;
+use Platine\OAuth2\Configuration;
+
+
 
 
 
@@ -151,7 +153,7 @@ class OAuth2ServiceProvider extends ServiceProvider
         $this->app->bind(AuthorizationRequestMiddleware::class);
         $this->app->bind(TokenRequestMiddleware::class);
         $this->app->bind(RevocationRequestMiddleware::class);
-        $this->app->bind(OauthResourceMiddleware::class);
+        $this->app->bind(OAuthResourceMiddleware::class);
 
         // Handlers
         $this->app->bind(AccessTokenRequestHandler::class);

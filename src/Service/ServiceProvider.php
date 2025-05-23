@@ -48,7 +48,7 @@ declare(strict_types=1);
 namespace Platine\Framework\Service;
 
 use Platine\Event\DispatcherInterface;
-use Platine\Event\ListenerInterface;
+use Platine\Event\Listener\ListenerInterface;
 use Platine\Event\SubscriberInterface;
 use Platine\Framework\App\Application;
 use Platine\Route\Router;

@@ -59,13 +59,13 @@ class TokenOwner implements TokenOwnerInterface
      * The owner id
      * @var mixed
      */
-    protected $id = null;
+    protected mixed $id = null;
 
     /**
      * Create new instance
-     * @param mixed|null $id
+     * @param mixed $id
      */
-    public function __construct($id = null)
+    public function __construct(mixed $id = null)
     {
         $this->id = $id;
     }
@@ -73,7 +73,7 @@ class TokenOwner implements TokenOwnerInterface
     /**
      * {@inheritdoc}
      */
-    public function getOwnerId()
+    public function getOwnerId(): mixed
     {
         return $this->id;
     }

@@ -61,33 +61,20 @@ use Throwable;
 class MaintenanceCommand extends Command
 {
     /**
-     * The configuration to use
-     * @var Config<T>
-     */
-    protected Config $config;
-
-    /**
-     * The Platine Application
-     * @var Application
-     */
-    protected Application $application;
-
-    /**
      * Create new instance
-     * @param Application $app
+     * @param Application $application
      * @param Config<T> $config
      */
     public function __construct(
-        Application $app,
-        Config $config
+        protected Application $application,
+        protected Config $config
     ) {
-        $this->application = $app;
-        $this->config = $config;
+
 
         $this->setName('maintenance')
              ->setDescription('Command to manage application maintenance');
 
-        $this->addArgument('type', 'type of action [up|down|status]', 'status', true, true, false, function ($val) {
+        $this->addArgument('type', 'type of action [up|down|status]', 'status', true, false, function ($val) {
             if (!in_array($val, ['up', 'down', 'status'])) {
                 throw new RuntimeException(sprintf(
                     'Invalid argument type [%s], must be one of [up, down, status]',
@@ -103,7 +90,6 @@ class MaintenanceCommand extends Command
             'The template that should be rendered for display during maintenance mode',
             null,
             false,
-            true
         );
 
         $this->addOption(
@@ -111,7 +97,6 @@ class MaintenanceCommand extends Command
             'The number of seconds after which the request may be retried',
             3600,
             false,
-            true,
             false,
             function ($val) {
                 if (strlen($val) > 0 && (!is_numeric($val) || (int) $val <= 0)) {
@@ -129,7 +114,6 @@ class MaintenanceCommand extends Command
             'The number of seconds after which the browser may refresh',
             3600,
             false,
-            true,
             false,
             function ($val) {
                 if (strlen($val) > 0 && (!is_numeric($val) || (int) $val <= 0)) {
@@ -147,14 +131,13 @@ class MaintenanceCommand extends Command
             'The secret phrase that may be used to bypass maintenance mode',
             null,
             false,
-            true
         );
+
         $this->addOption(
             '-c|--status',
             'The status code that should be used when returning the maintenance mode response',
             503,
             false,
-            true,
             false,
             function ($val) {
                 if (strlen($val) > 0 && (!is_numeric($val) || (int) $val < 200 || (int) $val > 505)) {
@@ -172,14 +155,13 @@ class MaintenanceCommand extends Command
             'The message that will be shown to user during maintenance mode',
             null,
             false,
-            true
         );
     }
 
     /**
      * {@inheritdoc}
      */
-    public function execute()
+    public function execute(): mixed
     {
         $type = $this->getArgumentValue('type');
 
@@ -194,6 +176,8 @@ class MaintenanceCommand extends Command
         } else {
             $this->status();
         }
+
+        return true;
     }
 
     /**

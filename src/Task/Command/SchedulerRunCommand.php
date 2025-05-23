@@ -75,13 +75,13 @@ class SchedulerRunCommand extends AbstractCommand
         $this->setName('scheduler:run')
              ->setDescription('Execute the scheduled tasks');
 
-        $this->addArgument('name', 'the name of task to execute instead of all', null, false, true);
+        $this->addArgument('name', 'the name of task to execute instead of all', null, false);
     }
 
     /**
      * {@inheritdoc}
      */
-    public function execute()
+    public function execute(): mixed
     {
         //Load the task
         $this->loadTasks();
@@ -91,10 +91,12 @@ class SchedulerRunCommand extends AbstractCommand
             $task = $this->scheduler->get($name);
             if ($task !== null) {
                 $this->scheduler->execute($task);
-                return;
+                return true;
             }
         }
 
         $this->scheduler->run();
+
+        return true;
     }
 }

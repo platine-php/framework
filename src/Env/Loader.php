@@ -92,7 +92,7 @@ class Loader
         bool $overwrite = false,
         int $mode = self::PUTENV
     ): void {
-        if (!is_file($file)) {
+        if (is_file($file) === false) {
             throw new InvalidArgumentException(sprintf(
                 'The [%s] file does not exist or is not readable',
                 $file
@@ -127,9 +127,10 @@ class Loader
         int $mode
     ): void {
         $default = microtime(true);
+
         foreach ($vars as $key => $value) {
             // Skip if we already have value and cant override.
-            if (!$overwrite && $default !== Env::get($key, $default)) {
+            if ($overwrite === false && $default !== Env::get($key, $default)) {
                 continue;
             }
 

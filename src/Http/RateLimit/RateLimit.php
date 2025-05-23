@@ -57,38 +57,16 @@ use Platine\Framework\Http\RateLimit\Exception\LimitExceededException;
 class RateLimit
 {
     /**
-     * The storage to used
-     * @var RateLimitStorageInterface
-     */
-    protected RateLimitStorageInterface $storage;
-
-    /**
-     * The rate to use
-     * @var Rate
-     */
-    protected Rate $rate;
-
-    /**
-     * prefix used in storage keys.
-     * @var string
-     */
-    protected string $name;
-
-
-    /**
      * Create new instance
      * @param RateLimitStorageInterface $storage
      * @param Rate $rate
      * @param string $name
      */
     public function __construct(
-        RateLimitStorageInterface $storage,
-        Rate $rate,
-        string $name = 'api'
+        protected RateLimitStorageInterface $storage,
+        protected Rate $rate,
+        protected string $name = 'api'
     ) {
-        $this->storage = $storage;
-        $this->rate = $rate;
-        $this->name = $name;
     }
 
     /**
@@ -106,7 +84,11 @@ class RateLimit
         if ($this->storage->exists($timeKey) === false) {
             // first hit; setup storage; allow.
             $this->storage->set($timeKey, time(), $this->rate->getInterval());
-            $this->storage->set($allowKey, ($this->rate->getQuota() - $used), $this->rate->getInterval());
+            $this->storage->set(
+                $allowKey,
+                ($this->rate->getQuota() - $used),
+                $this->rate->getInterval()
+            );
 
             return;
         }
@@ -117,8 +99,6 @@ class RateLimit
 
         $quota = $this->storage->get($allowKey);
         $quota += $timePassed * $rate;
-
-
 
         if ($quota > $this->rate->getQuota()) {
             $quota = $this->rate->getQuota(); // throttle

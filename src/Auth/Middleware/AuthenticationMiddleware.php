@@ -65,37 +65,16 @@ use Platine\Route\Route;
 class AuthenticationMiddleware implements MiddlewareInterface
 {
     /**
-     * The Authentication instance
-     * @var AuthenticationInterface
-     */
-    protected AuthenticationInterface $authentication;
-
-    /**
-     * The configuration instance
-     * @var Config<T>
-     */
-    protected Config $config;
-
-    /**
-     * The route helper
-     * @var RouteHelper
-     */
-    protected RouteHelper $routeHelper;
-
-    /**
      * Create new instance
      * @param AuthenticationInterface $authentication
      * @param Config<T> $config
      * @param RouteHelper $routeHelper
      */
     public function __construct(
-        AuthenticationInterface $authentication,
-        Config $config,
-        RouteHelper $routeHelper
+        protected AuthenticationInterface $authentication,
+        protected Config $config,
+        protected RouteHelper $routeHelper
     ) {
-        $this->authentication = $authentication;
-        $this->config = $config;
-        $this->routeHelper = $routeHelper;
     }
 
     /**
@@ -105,13 +84,14 @@ class AuthenticationMiddleware implements MiddlewareInterface
         ServerRequestInterface $request,
         RequestHandlerInterface $handler
     ): ResponseInterface {
-        if (!$this->shouldBeProcessed($request)) {
+        if ($this->shouldBeProcessed($request) === false) {
             return $handler->handle($request);
         }
 
-        if (!$this->authentication->isLogged()) {
+        if ($this->authentication->isLogged() === false) {
             $authRoute = $this->config->get('auth.authentication.login_route');
             $next = $request->getUri()->getPath();
+
             return new RedirectResponse(
                 $this->routeHelper->generateUrl($authRoute) . '?next=' . $next
             );
@@ -128,18 +108,17 @@ class AuthenticationMiddleware implements MiddlewareInterface
     protected function shouldBeProcessed(ServerRequestInterface $request): bool
     {
         //If no route has been match no need check for authentication
-        /** @var ?Route $route */
+        /** @var Route|null $route */
         $route = $request->getAttribute(Route::class);
-        if (!$route) {
+        if ($route === null) {
             return false;
         }
 
         //check if is url whitelist
         $urls = $this->config->get('auth.authentication.url_whitelist', []);
-        if (in_array($route->getName(), $urls)) {
+        if (in_array($route->getName(), $urls, true)) {
             return false;
         }
-
 
         return true;
     }

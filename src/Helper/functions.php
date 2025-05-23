@@ -55,7 +55,7 @@ if (!function_exists('app')) {
      *  application instance will be returned
      * @return mixed
      */
-    function app(?string $identifier = null)
+    function app(?string $identifier = null): mixed
     {
         $app = Application::getInstance();
 
@@ -75,10 +75,10 @@ if (!function_exists('env')) {
      */
     function env(
         string $key,
-        $default = null,
+        mixed $default = null,
         ?string $filter = null,
-        $options = 0
-    ) {
+        int|array $options = 0
+    ): mixed {
         return Env::get($key, $default, $filter, $options);
     }
 }

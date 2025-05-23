@@ -104,11 +104,12 @@ class HttpKernel extends BaseKernel implements RequestHandlerInterface
 
     /**
      * Add new middleware
-     * @param  mixed $middleware
+     * @param  string|MiddlewareInterface|RequestHandlerInterface|callable $middleware
      * @return $this
      */
-    public function use($middleware): self
-    {
+    public function use(
+        string|MiddlewareInterface|RequestHandlerInterface|callable $middleware
+    ): self {
         $this->middlewares[] = $this->middlewareResolver->resolve($middleware);
 
         return $this;
@@ -139,7 +140,6 @@ class HttpKernel extends BaseKernel implements RequestHandlerInterface
         //Load configured middlewares
         $this->registerConfiguredMiddlewares();
 
-
         /** @var EmitterInterface $emitter */
         $emitter = $this->app->get(EmitterInterface::class);
         $this->app->watch()->start('handle-request');
@@ -149,10 +149,10 @@ class HttpKernel extends BaseKernel implements RequestHandlerInterface
         $this->app->watch()->start('emit-response');
         $emitter->emit(
             $response,
-            !$this->isEmptyResponse(
+            $this->isEmptyResponse(
                 $req->getMethod(),
                 $response->getStatusCode()
-            )
+            ) === false
         );
 
         $this->app->watch()->stop('emit-response');

@@ -75,48 +75,6 @@ use Platine\Stdlib\Helper\Str;
 class JWTAuthentication implements ApiAuthenticationInterface
 {
     /**
-     * The JWT instance
-     * @var JWT
-     */
-    protected JWT $jwt;
-
-    /**
-     * The logger instance
-     * @var LoggerInterface
-     */
-    protected LoggerInterface $logger;
-
-    /**
-     * The configuration instance
-     * @var Config<T>
-     */
-    protected Config $config;
-
-    /**
-     * The user repository instance
-     * @var UserRepository
-     */
-    protected UserRepository $userRepository;
-
-    /**
-     * The token repository
-     * @var TokenRepository
-     */
-    protected TokenRepository $tokenRepository;
-
-    /**
-     * Hash instance to use
-     * @var HashInterface
-     */
-    protected HashInterface $hash;
-
-    /**
-     * The server request instance
-     * @var ServerRequestInterface
-     */
-    protected ServerRequestInterface $request;
-
-    /**
      * Create new instance
      * @param JWT $jwt
      * @param LoggerInterface $logger
@@ -127,21 +85,14 @@ class JWTAuthentication implements ApiAuthenticationInterface
      * @param ServerRequestInterface $request
      */
     public function __construct(
-        JWT $jwt,
-        LoggerInterface $logger,
-        Config $config,
-        HashInterface $hash,
-        UserRepository $userRepository,
-        TokenRepository $tokenRepository,
-        ServerRequestInterface $request
+        protected JWT $jwt,
+        protected LoggerInterface $logger,
+        protected Config $config,
+        protected HashInterface $hash,
+        protected UserRepository $userRepository,
+        protected TokenRepository $tokenRepository,
+        protected ServerRequestInterface $request
     ) {
-        $this->jwt = $jwt;
-        $this->logger = $logger;
-        $this->config = $config;
-        $this->hash = $hash;
-        $this->userRepository = $userRepository;
-        $this->tokenRepository = $tokenRepository;
-        $this->request = $request;
     }
 
     /**
@@ -157,7 +108,6 @@ class JWTAuthentication implements ApiAuthenticationInterface
         $id = (int) ($payload['sub'] ?? -1);
 
         $user = $this->userRepository->find($id);
-
         if ($user === null) {
             throw new AccountNotFoundException(
                 'Can not find the logged user information, may be data is corrupted',
@@ -245,12 +195,11 @@ class JWTAuthentication implements ApiAuthenticationInterface
         }
 
         $permissions = [];
-
         $roles = $user->roles;
         foreach ($roles as $role) {
             $rolePermissions = $role->permissions;
             foreach ($rolePermissions as $permission) {
-                if (!in_array($permission->code, $permissions)) {
+                if (in_array($permission->code, $permissions) === false) {
                     $permissions[] = $permission->code;
                 }
             }
@@ -278,7 +227,6 @@ class JWTAuthentication implements ApiAuthenticationInterface
             'expire_at' => (new DateTime())->setTimestamp($refreshTokenExpire),
             'user_id' => $user->id,
         ]);
-
         $this->tokenRepository->save($token);
 
         $data = [
@@ -309,8 +257,7 @@ class JWTAuthentication implements ApiAuthenticationInterface
         string $password,
         bool $withPassword = true
     ): ?User {
-        return $this->userRepository
-                                    ->with('roles.permissions')
+        return $this->userRepository->with('roles.permissions')
                                     ->findBy(['username' => $username]);
     }
 

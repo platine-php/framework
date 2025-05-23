@@ -93,7 +93,7 @@ abstract class MakeCommand extends BaseCommand
     /**
      * {@inheritdoc}
      */
-    public function execute()
+    public function execute(): mixed
     {
         $io = $this->io();
         $writer = $io->writer();
@@ -116,7 +116,7 @@ abstract class MakeCommand extends BaseCommand
                 $path
             ), true);
 
-            return;
+            return true;
         }
 
         $writer->bold('Class: ');
@@ -136,6 +136,8 @@ abstract class MakeCommand extends BaseCommand
             $file->write($content);
             $writer->boldGreen(sprintf('Class [%s] generated successfully.', $className), true);
         }
+
+        return true;
     }
 
     /**
@@ -255,7 +257,7 @@ abstract class MakeCommand extends BaseCommand
      */
     protected function getPropertiesContent(): string
     {
-        if (empty($this->properties)) {
+        if (count($this->properties) === 0) {
             return '';
         }
 
@@ -274,7 +276,7 @@ abstract class MakeCommand extends BaseCommand
      */
     protected function getUsesContent(): string
     {
-        if (empty($this->properties)) {
+        if (count($this->properties) === 0) {
             return '';
         }
 
@@ -294,7 +296,7 @@ abstract class MakeCommand extends BaseCommand
      */
     protected function getConstructorContent(): string
     {
-        if (empty($this->properties)) {
+        if (count($this->properties) === 0) {
             return '';
         }
 
@@ -350,7 +352,11 @@ abstract class MakeCommand extends BaseCommand
         $i = 1;
         $count = count($this->properties);
         foreach ($this->properties as $className => $info) {
-            $content .= $this->getConstructorParamsTemplate($className, $info, $i === $count);
+            $content .= $this->getConstructorParamsTemplate(
+                $className,
+                $info,
+                $i === $count
+            );
             $i++;
         }
 
@@ -367,7 +373,11 @@ abstract class MakeCommand extends BaseCommand
         $i = 1;
         $count = count($this->properties);
         foreach ($this->properties as $className => $info) {
-            $content .= $this->getConstructorBodyTemplate($className, $info, $i === $count);
+            $content .= $this->getConstructorBodyTemplate(
+                $className,
+                $info,
+                $i === $count
+            );
             $i++;
         }
 
@@ -426,8 +436,11 @@ abstract class MakeCommand extends BaseCommand
      * @param bool $isLast
      * @return string
      */
-    protected function getConstructorBodyTemplate(string $className, array $info, bool $isLast = false): string
-    {
+    protected function getConstructorBodyTemplate(
+        string $className,
+        array $info,
+        bool $isLast = false
+    ): string {
         $name = $info['name'];
 
         if ($isLast) {

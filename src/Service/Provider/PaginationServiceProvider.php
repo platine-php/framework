@@ -57,6 +57,8 @@ use Platine\Pagination\Pagination;
 use Platine\Pagination\RendererInterface;
 use Platine\Pagination\UrlGeneratorInterface;
 
+
+
 /**
  * @class PaginationServiceProvider
  * @package Platine\Framework\Service\Provider

@@ -65,37 +65,16 @@ use Platine\Route\Route;
 class AuthorizationMiddleware implements MiddlewareInterface
 {
     /**
-     * The Authorization instance
-     * @var AuthorizationInterface
-     */
-    protected AuthorizationInterface $authorization;
-
-    /**
-     * The configuration instance
-     * @var Config<T>
-     */
-    protected Config $config;
-
-    /**
-     * The route helper
-     * @var RouteHelper
-     */
-    protected RouteHelper $routeHelper;
-
-    /**
      * Create new instance
      * @param AuthorizationInterface $authorization
      * @param Config<T> $config
      * @param RouteHelper $routeHelper
      */
     public function __construct(
-        AuthorizationInterface $authorization,
-        Config $config,
-        RouteHelper $routeHelper
+        protected AuthorizationInterface $authorization,
+        protected Config $config,
+        protected RouteHelper $routeHelper
     ) {
-        $this->authorization = $authorization;
-        $this->config = $config;
-        $this->routeHelper = $routeHelper;
     }
 
     /**
@@ -106,9 +85,9 @@ class AuthorizationMiddleware implements MiddlewareInterface
         RequestHandlerInterface $handler
     ): ResponseInterface {
         //If no route has been match no need check for authorization
-        /** @var ?Route $route */
+        /** @var Route|null $route */
         $route = $request->getAttribute(Route::class);
-        if (!$route) {
+        if ($route === null) {
             return $handler->handle($request);
         }
 
@@ -118,10 +97,8 @@ class AuthorizationMiddleware implements MiddlewareInterface
             return $handler->handle($request);
         }
 
-        if (!$this->authorization->isGranted($permission)) {
-            $unauthorizedRoute = $this->config->get(
-                'auth.authorization.unauthorized_route'
-            );
+        if ($this->authorization->isGranted($permission) === false) {
+            $unauthorizedRoute = $this->config->get('auth.authorization.unauthorized_route');
 
             return new RedirectResponse(
                 $this->routeHelper->generateUrl($unauthorizedRoute)

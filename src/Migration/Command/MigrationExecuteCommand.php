@@ -75,7 +75,7 @@ class MigrationExecuteCommand extends AbstractCommand
         $this->setName('migration:exec')
              ->setDescription('Execute the migration up/down for one version');
 
-        $this->addArgument('type', 'type of migration [up|down]', 'up', true, true, false, function ($val) {
+        $this->addArgument('type', 'type of migration [up|down]', 'up', true, false, function ($val) {
             if (!in_array($val, ['up', 'down'])) {
                 throw new RuntimeException(sprintf(
                     'Invalid argument type [%s], must be one of [up, down]',
@@ -86,13 +86,13 @@ class MigrationExecuteCommand extends AbstractCommand
              return $val;
         });
 
-        $this->addOption('-i|--id', 'the migration version', null, false, true);
+        $this->addOption('-i|--id', 'the migration version', null, false);
     }
 
     /**
      * {@inheritdoc}
      */
-    public function execute()
+    public function execute(): mixed
     {
         $type = $this->getArgumentValue('type');
 
@@ -106,7 +106,7 @@ class MigrationExecuteCommand extends AbstractCommand
 
         if ($type === 'up') {
             $diff = array_diff_key($migrations, $executed);
-            if (empty($diff)) {
+            if (count($diff) === 0) {
                 $writer->boldGreen('Migration already up to date');
             } else {
                 if (empty($version)) {
@@ -124,7 +124,7 @@ class MigrationExecuteCommand extends AbstractCommand
                 }
             }
         } else {
-            if (empty($executed)) {
+            if (count($executed) === 0) {
                 $writer->boldGreen('No migration to rollback');
             } else {
                 $data = [];
@@ -146,6 +146,8 @@ class MigrationExecuteCommand extends AbstractCommand
                 }
             }
         }
+
+        return true;
     }
 
     /**

@@ -49,9 +49,9 @@ namespace Platine\Framework\Service\Provider;
 
 use Platine\Config\Config;
 use Platine\Console\Application as ConsoleApp;
-use Platine\Container\ConstructorResolver;
 use Platine\Container\ContainerInterface;
-use Platine\Container\ResolverInterface;
+use Platine\Container\Resolver\ConstructorResolver;
+use Platine\Container\Resolver\ResolverInterface;
 use Platine\Framework\App\Application;
 use Platine\Framework\Http\Emitter\EmitterInterface;
 use Platine\Framework\Http\Emitter\ResponseEmitter;
@@ -64,6 +64,7 @@ use Platine\Http\Handler\MiddlewareResolverInterface;
 use Platine\Route\RouteCollection;
 use Platine\Route\RouteCollectionInterface;
 use Platine\Route\Router;
+
 
 /**
  * @class BaseServiceProvider

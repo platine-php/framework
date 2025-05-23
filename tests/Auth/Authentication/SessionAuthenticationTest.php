@@ -44,7 +44,8 @@ class SessionAuthenticationTest extends PlatineTestCase
         $app = $this->getMockInstance(Application::class);
         $hash = $this->getMockInstance(BcryptHash::class);
         $session = $this->getMockInstance(Session::class, [
-            'has' => true
+            'has' => true,
+            'get' => 1
         ]);
         $userRepository = $this->getMockInstance(UserRepository::class, [
             'find' => null
@@ -61,7 +62,8 @@ class SessionAuthenticationTest extends PlatineTestCase
         $app = $this->getMockInstance(Application::class);
         $hash = $this->getMockInstance(BcryptHash::class);
         $session = $this->getMockInstance(Session::class, [
-            'has' => true
+            'has' => true,
+            'get' => 1,
         ]);
         $userRepository = $this->getMockInstance(UserRepository::class, [
             'find' => $user

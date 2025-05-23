@@ -74,18 +74,18 @@ class PasswordGenerateCommand extends Command
      * Create new instance
      * @param HashInterface $hash
      */
-    public function __construct(
-        HashInterface $hash
-    ) {
+    public function __construct(HashInterface $hash)
+    {
         parent::__construct('password:generate', 'Command to generate password');
         $this->hash = $hash;
+
         $this->addArgument('password', 'The password to hash', null, false);
     }
 
     /**
      * {@inheritdoc}
      */
-    public function execute()
+    public function execute(): mixed
     {
         $io = $this->io();
         $writer = $io->writer();
@@ -100,6 +100,8 @@ class PasswordGenerateCommand extends Command
         $writer->boldGreen(sprintf('Hashed password: %s', $passwordHash), true)->eol();
 
         $writer->green('Command finished successfully')->eol();
+
+        return true;
     }
 
     /**
@@ -111,7 +113,7 @@ class PasswordGenerateCommand extends Command
         $password = $this->getArgumentValue('password');
         if (empty($password)) {
             $io = $this->io();
-            $password = $io->prompt('Enter the plain password to generate', '');
+            $password = $io->prompt('Enter the plain password to generate the hash', '');
         }
 
         $this->password = $password;

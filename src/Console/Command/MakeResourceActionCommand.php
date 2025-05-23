@@ -57,7 +57,6 @@ use Platine\Framework\Http\RouteHelper;
 use Platine\Lang\Lang;
 use Platine\Logger\LoggerInterface;
 use Platine\Pagination\Pagination;
-use Platine\Stdlib\Helper\Json;
 use Platine\Stdlib\Helper\Str;
 use Platine\Template\Template;
 
@@ -82,8 +81,9 @@ class MakeResourceActionCommand extends BaseMakeActionCommand
         Filesystem $filesystem
     ) {
         parent::__construct($application, $filesystem);
+
         $this->setName('make:resource')
-              ->setDescription('Command to generate platine resource action');
+              ->setDescription('Command to generate resource action');
     }
 
     /**
@@ -92,7 +92,6 @@ class MakeResourceActionCommand extends BaseMakeActionCommand
     public function interact(Reader $reader, Writer $writer): void
     {
         parent::interact($reader, $writer);
-
         $baseClasses = $this->getBaseClasses();
 
         foreach ($baseClasses as $value) {
@@ -100,7 +99,6 @@ class MakeResourceActionCommand extends BaseMakeActionCommand
         }
 
         $this->recordProperties();
-
         $this->addProperty($this->repositoryClass);
     }
 
@@ -215,7 +213,6 @@ class MakeResourceActionCommand extends BaseMakeActionCommand
     {
         $repositoryName = $this->getPropertyName($this->repositoryClass);
         $templatePrefix = $this->getTemplatePrefix();
-
         $orderByTemplate = $this->getOrderByTemplate();
 
         $result = <<<EOF
@@ -263,9 +260,7 @@ class MakeResourceActionCommand extends BaseMakeActionCommand
         $entityBaseClass = $this->getClassBaseName($this->entityClass);
         $templatePrefix = $this->getTemplatePrefix();
         $notFoundMessage = $this->getMessage('messageNotFound');
-
         $listRoute = $this->getRouteName('list');
-
         $entityContextKey = $this->getEntityContextKey(true);
         $entityContextName = $this->getEntityContextKey(false);
 
@@ -311,10 +306,8 @@ class MakeResourceActionCommand extends BaseMakeActionCommand
         $listRoute = $this->getRouteName('list');
         $createMessage = $this->getMessage('messageCreate');
         $processErrorMessage = $this->getMessage('messageProcessError');
-
         $uniqueCheckStr = $this->getUniqueFieldCheckTemplate(true);
         $fieldTemplates = $this->getEntityFieldsTemplate(true);
-
         $entityContextName = $this->getEntityContextKey(false);
 
         $result = <<<EOF
@@ -392,10 +385,8 @@ class MakeResourceActionCommand extends BaseMakeActionCommand
         $notFoundMessage = $this->getMessage('messageNotFound');
         $updateMessage = $this->getMessage('messageUpdate');
         $processErrorMessage = $this->getMessage('messageProcessError');
-
         $uniqueCheckStr = $this->getUniqueFieldCheckTemplate(false);
         $fieldTemplates = $this->getEntityFieldsTemplate(false);
-
         $entityContextKey = $this->getEntityContextKey(true);
         $entityContextName = $this->getEntityContextKey(false);
 
@@ -535,16 +526,13 @@ class MakeResourceActionCommand extends BaseMakeActionCommand
         if ($uniqueFields !== null) {
             $duplicateMessage = $this->getMessage('messageDuplicate');
 
-            $fields = (array) explode(',', $uniqueFields);
+            $fields = explode(',', $uniqueFields);
             $i = 1;
             $result = '';
             foreach ($fields as $field) {
-                $column = $field;
                 $param = $field;
                 $uniqueField = (array) explode(':', $field);
-                if (isset($uniqueField[0])) {
-                    $column = $uniqueField[0];
-                }
+                $column = $uniqueField[0];
 
                 if (isset($uniqueField[1])) {
                     $param = $uniqueField[1];
@@ -591,12 +579,9 @@ class MakeResourceActionCommand extends BaseMakeActionCommand
             $fields = (array) explode(',', $orderFields);
             $i = 1;
             foreach ($fields as $field) {
-                $column = $field;
                 $dir = 'ASC';
                 $orderField = (array) explode(':', $field);
-                if (isset($orderField[0])) {
-                    $column = $orderField[0];
-                }
+                $column = $orderField[0];
 
                 if (isset($orderField[1]) && in_array(strtolower($orderField[1]), ['asc', 'desc'])) {
                     $dir = $orderField[1];
@@ -626,12 +611,9 @@ class MakeResourceActionCommand extends BaseMakeActionCommand
             $i = 1;
 
             foreach ($fields as $field) {
-                $column = $field;
                 $param = $field;
                 $entityField = (array) explode(':', $field);
-                if (isset($entityField[0])) {
-                    $column = $entityField[0];
-                }
+                $column = $entityField[0];
 
                 if (isset($entityField[1])) {
                     $param = $entityField[1];
@@ -690,13 +672,18 @@ class MakeResourceActionCommand extends BaseMakeActionCommand
         string $field,
         string $param,
         bool $isLast = false,
-        $create = true
+        bool $create = true
     ): string {
         $fieldMethodName = $this->getFormParamMethodName($param);
         if ($create) {
-            return sprintf('\'%s\' => $formParam->%s(),', $field, $fieldMethodName) . ($isLast ? PHP_EOL : '');
+            return sprintf(
+                '\'%s\' => $formParam->%s(),',
+                $field,
+                $fieldMethodName
+            ) . ($isLast ? PHP_EOL : '');
         }
         $entityContextName = $this->getEntityContextKey(false);
+
         return sprintf(
             '$%s->%s = $formParam->%s();',
             $entityContextName,

@@ -59,33 +59,27 @@ use Platine\Stdlib\Helper\Str;
 class ConfigCommand extends Command
 {
     /**
-     * The configuration instance
-     * @var Config<T>
-     */
-    protected Config $config;
-
-    /**
      * Create new instance
      * @param Config<T> $config
      */
-    public function __construct(Config $config)
+    public function __construct(protected Config $config)
     {
         parent::__construct('config', 'Command to manage configuration');
 
         $this->addOption('-l|--list', 'List the configuration', '', false);
         $this->addOption('-t|--type', 'Configuration type', 'app', true);
-
-        $this->config = $config;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function execute()
+    public function execute(): mixed
     {
         if ($this->getOptionValue('list')) {
             $this->showConfigList();
         }
+
+        return true;
     }
 
     /**
@@ -104,6 +98,7 @@ class ConfigCommand extends Command
         $rows = [];
         foreach ($items as $name => $value) {
             $valueStr = Str::stringify($value);
+
             if (is_int($name)) {
                 $rows[] = [
                     'value' => $valueStr

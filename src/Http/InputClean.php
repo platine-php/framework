@@ -138,7 +138,7 @@ class InputClean
      * @param bool $isImage
      * @return mixed
      */
-    public function clean($str, bool $isImage = false)
+    public function clean(mixed $str, bool $isImage = false): mixed
     {
         if (is_array($str)) {
             foreach ($str as $key => &$value) {
@@ -771,7 +771,7 @@ class InputClean
         $nonDisplayables = [];
 
         /* Every control character except newline (dec 10),
-     carriage return (dec 13) and horizontal tab (dec 09)
+        *  carriage return (dec 13) and horizontal tab (dec 09)
         */
 
         if ($urlEncode) {

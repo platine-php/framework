@@ -72,6 +72,7 @@ class MakeMiddlewareCommand extends MakeCommand
         Filesystem $filesystem
     ) {
         parent::__construct($application, $filesystem);
+
         $this->setName('make:middleware')
                ->setDescription('Command to generate new middleware class');
     }

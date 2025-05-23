@@ -79,7 +79,7 @@ class MigrationStatusCommand extends AbstractCommand
     /**
      * {@inheritdoc}
      */
-    public function execute()
+    public function execute(): mixed
     {
         $writer = $this->io()->writer();
         $writer->boldYellow('MIGRATION STATUS', true)->eol();
@@ -103,7 +103,7 @@ class MigrationStatusCommand extends AbstractCommand
             $rows[] = [
                 'version' => (string) $version,
                 'description' => $entity->description,
-                'date' => $entity->created_at,
+                'date' => (string) $entity->created_at,
                 'status' => 'UP'
             ];
         }
@@ -121,5 +121,7 @@ class MigrationStatusCommand extends AbstractCommand
         $writer->table($rows);
 
         $writer->boldGreen('Command finished successfully')->eol();
+
+        return true;
     }
 }

@@ -122,6 +122,7 @@ abstract class AbstractCommand extends Command
         $this->repository = $repository;
         $this->config = $config;
         $this->filesystem = $filesystem;
+
         $path = Path::convert2Absolute($config->get('database.migration.path', 'migrations'));
         $this->migrationPath = Path::normalizePathDS($path, true);
         $this->table = $config->get('database.migration.table', 'migrations');
@@ -135,7 +136,7 @@ abstract class AbstractCommand extends Command
     {
         $directory = $this->filesystem->directory($this->migrationPath);
 
-        if (!$directory->exists() || !$directory->isWritable()) {
+        if ($directory->exists() === false || $directory->isWritable() === false) {
             throw new RuntimeException(sprintf(
                 'Migration directory [%s] does not exist or is not writable',
                 $this->migrationPath
@@ -162,7 +163,7 @@ abstract class AbstractCommand extends Command
         $file = $this->filesystem->file($fullPath);
         $fullClassName = 'Platine\\Framework\\Migration\\' . $className;
 
-        if (!$file->exists()) {
+        if ($file->exists() === false) {
             throw new RuntimeException(sprintf(
                 'Migration file [%s] does not exist',
                 $fullPath
@@ -171,7 +172,7 @@ abstract class AbstractCommand extends Command
 
         require_once $fullPath;
 
-        if (!class_exists($fullClassName)) {
+        if (class_exists($fullClassName) === false) {
             throw new RuntimeException(sprintf(
                 'Migration class [%s] does not exist',
                 $fullClassName

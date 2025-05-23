@@ -124,9 +124,9 @@ class BaseParam implements JsonSerializable
 
     /**
      * Convert parameter to JSON array
-     * @return array<string, mixed>
+     * @return mixed
      */
-    public function jsonSerialize()
+    public function jsonSerialize(): mixed
     {
         return $this->data();
     }
@@ -134,9 +134,9 @@ class BaseParam implements JsonSerializable
     /**
      * Return the value for the given property
      * @param string $name
-     * @return mixed|null
+     * @return mixed
      */
-    public function __get($name)
+    public function __get(string $name): mixed
     {
         if (property_exists($this, $name)) {
             return $this->{$name};
@@ -157,7 +157,7 @@ class BaseParam implements JsonSerializable
      * @param mixed $value
      * @return mixed
      */
-    protected function getPropertyValue(string $attribute, $value)
+    protected function getPropertyValue(string $attribute, mixed $value): mixed
     {
         $types = $this->getPropertyTypes();
         $property = $types[$attribute] ?? null;
@@ -205,7 +205,8 @@ class BaseParam implements JsonSerializable
             /** @var ReflectionNamedType|null $type */
             $type = $property->getType();
             if ($type !== null && $type->isBuiltin()) {
-                $props[$property->getName()] = [$type->getName(), $type->allowsNull(), $property];
+                $props[$property->getName()] = [
+                    $type->getName(), $type->allowsNull(), $property];
             }
         }
 

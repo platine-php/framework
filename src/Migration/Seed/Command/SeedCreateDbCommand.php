@@ -107,14 +107,14 @@ class SeedCreateDbCommand extends AbstractSeedCommand
         $this->setName('seed:createdb')
              ->setDescription('Create a new seed using existing data');
 
-        $this->addArgument('table', 'name of the table', null, true, false);
-        $this->addArgument('name', 'name of seed', null, false, true);
+        $this->addArgument('table', 'name of the table', null, true);
+        $this->addArgument('name', 'name of seed', null, false);
     }
 
     /**
      * {@inheritdoc}
      */
-    public function execute()
+    public function execute(): mixed
     {
         $writer = $this->io()->writer();
 
@@ -138,16 +138,15 @@ class SeedCreateDbCommand extends AbstractSeedCommand
         $writer->bold('Path: ');
         $writer->boldBlueBgBlack($fullPath, true)->eol();
 
-
         $io = $this->io();
 
         if ($io->confirm('Are you confirm the generation of new seed?', 'n')) {
-            if (!$this->schema->hasTable($this->table, true)) {
+            if ($this->schema->hasTable($this->table, true) === false) {
                 $writer->boldRed(sprintf(
                     'Database table [%s] does not exist',
                     $this->table
                 ));
-                return;
+                return true;
             }
             $this->checkSeedPath();
             $this->generateClass($fullPath, $className);
@@ -156,6 +155,8 @@ class SeedCreateDbCommand extends AbstractSeedCommand
                 $this->name
             ))->eol();
         }
+
+        return true;
     }
 
     /**
@@ -166,7 +167,7 @@ class SeedCreateDbCommand extends AbstractSeedCommand
         $writer->boldYellow('SEED GENERATION USING EXISTING DATA', true)->eol();
 
         $name = $this->getArgumentValue('name');
-        if (!$name) {
+        if (empty($name)) {
             $io = $this->io();
             $name = $io->prompt('Enter the name of the seed', 'Seed description');
         }

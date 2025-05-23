@@ -109,7 +109,7 @@ class User extends Entity implements IdentityInterface
     /**
      * {@inheritdoc}
      */
-    public function getId()
+    public function getId(): mixed
     {
         return $this->mapper()->getColumn('id');
     }

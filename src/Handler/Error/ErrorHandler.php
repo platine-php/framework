@@ -108,12 +108,6 @@ class ErrorHandler implements ErrorHandlerInterface
     protected int $statusCode;
 
     /**
-     * The logger instance to use to save error
-     * @var LoggerInterface
-     */
-    protected LoggerInterface $logger;
-
-    /**
      * Whether to show error details
      * @var bool
      */
@@ -123,10 +117,8 @@ class ErrorHandler implements ErrorHandlerInterface
      * Create new instance
      * @param LoggerInterface $logger
      */
-    public function __construct(LoggerInterface $logger)
+    public function __construct(protected LoggerInterface $logger)
     {
-        $this->logger = $logger;
-
         //Add default renderer
         $this->addDefaultsRenderer();
     }
@@ -264,9 +256,7 @@ class ErrorHandler implements ErrorHandlerInterface
                 }
             }
 
-            if (is_string($current)) {
-                return $current;
-            }
+            return $current;
         }
 
         $matches = [];

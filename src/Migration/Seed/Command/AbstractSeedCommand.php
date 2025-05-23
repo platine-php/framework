@@ -102,9 +102,11 @@ abstract class AbstractSeedCommand extends Command
         Filesystem $filesystem
     ) {
         parent::__construct('seed', 'Command to manage database seed');
+
         $this->application = $app;
         $this->config = $config;
         $this->filesystem = $filesystem;
+
         $path = Path::convert2Absolute($config->get('database.migration.seed_path', 'seeds'));
         $this->seedPath = Path::normalizePathDS($path, true);
     }
@@ -117,7 +119,7 @@ abstract class AbstractSeedCommand extends Command
     {
         $directory = $this->filesystem->directory($this->seedPath);
 
-        if (!$directory->exists() || !$directory->isWritable()) {
+        if ($directory->exists() === false || $directory->isWritable() === false) {
             throw new RuntimeException(sprintf(
                 'Seed directory [%s] does not exist or is not writable',
                 $this->seedPath
@@ -142,7 +144,7 @@ abstract class AbstractSeedCommand extends Command
         $file = $this->filesystem->file($fullPath);
         $fullClassName = 'Platine\\Framework\\Migration\\Seed\\' . $className;
 
-        if (!$file->exists()) {
+        if ($file->exists() === false) {
             throw new RuntimeException(sprintf(
                 'Seed file [%s] does not exist',
                 $fullPath
@@ -151,7 +153,7 @@ abstract class AbstractSeedCommand extends Command
 
         require_once $fullPath;
 
-        if (!class_exists($fullClassName)) {
+        if (class_exists($fullClassName) === false) {
             throw new RuntimeException(sprintf(
                 'Seed class [%s] does not exist',
                 $fullClassName
@@ -199,7 +201,7 @@ abstract class AbstractSeedCommand extends Command
     {
         $desc = Str::camel($description, false);
 
-        if (!Str::endsWith('Seed', $desc)) {
+        if (Str::endsWith('Seed', $desc) === false) {
             $desc .= 'Seed';
         }
 

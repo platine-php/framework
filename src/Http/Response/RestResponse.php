@@ -64,7 +64,7 @@ class RestResponse extends JsonResponse
      * @param string $reasonPhrase
      */
     public function __construct(
-        $data = [],
+        mixed $data = [],
         array $extras = [],
         bool $success = true,
         int $code = 0,
@@ -84,7 +84,7 @@ class RestResponse extends JsonResponse
 
         $result['data'] = $data;
 
-        if (!empty($extras)) {
+        if (count($extras) > 0) {
             $result = array_merge($result, $extras);
         }
 

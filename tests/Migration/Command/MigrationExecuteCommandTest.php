@@ -150,7 +150,12 @@ Migration already up to date';
             ]
         ]);
 
-        $o = new MigrationExecuteCommand($application, $repository, $config, $filesystem);
+        $o = new MigrationExecuteCommand(
+            $application,
+            $repository,
+            $config,
+            $filesystem
+        );
         $o->bind($app);
         $o->parse(['platine', '-i', '20210915_100000']);
         $this->assertEquals('migration:exec', $o->getName());

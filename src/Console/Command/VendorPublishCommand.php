@@ -64,12 +64,6 @@ use Platine\Stdlib\Helper\Path;
 class VendorPublishCommand extends Command
 {
     /**
-     * Application instance
-     * @var Application
-     */
-    protected Application $application;
-
-    /**
      * The vendor path
      * @var string
      */
@@ -82,38 +76,28 @@ class VendorPublishCommand extends Command
     protected string $packagePath = '';
 
     /**
-     * The file system to use
-     * @var Filesystem
-     */
-    protected Filesystem $filesystem;
-
-    /**
      * Package manifest information
      * @var array<string, mixed>
      */
     protected array $manifest = [];
 
-    /**
-     * The configuration to use
-     * @var Config<T>
-     */
-    protected Config $config;
 
     /**
      * Create new instance
-     * @param Application $app
+     * @param Application $application
      * @param Filesystem $filesystem
      * @param Config<T> $config
      */
     public function __construct(
-        Application $app,
-        Filesystem $filesystem,
-        Config $config
+        protected Application $application,
+        protected Filesystem $filesystem,
+        protected Config $config
     ) {
         parent::__construct(
             'vendor:publish',
             'Command to publish composer vendor configuration, migration, language etc.'
         );
+
         $this->addArgument('name', 'The package name', null, true);
         $this->addOption('-o|--overwrite', 'Overwrite existing files.', false, false);
         $this->addOption('-c|--config', 'Publish only the configuration.', false, false);
@@ -122,33 +106,29 @@ class VendorPublishCommand extends Command
         $this->addOption('-t|--template', 'Publish only the templates.', false, false);
         $this->addOption('-a|--all', 'Publish all files.', false, false);
 
-        $this->config = $config;
-        $this->filesystem = $filesystem;
-        $this->application = $app;
-        $this->vendorPath = Path::normalizePathDS($app->getVendorPath(), true);
+        $this->vendorPath = Path::normalizePathDS($application->getVendorPath(), true);
     }
 
     /**
      * {@inheritdoc}
      */
-    public function execute()
+    public function execute(): mixed
     {
         $writer = $this->io()->writer();
         $name = $this->getArgumentValue('name');
         $writer->boldGreen(sprintf('PUBLISH OF PACKAGE [%s]', $name), true)->eol();
 
         $package = $this->getPackageInfo($name);
-        if (empty($package)) {
+        if (count($package) === 0) {
             $writer->red(sprintf(
                 'Can not find the composer package [%s].',
                 $name
             ), true);
-            return;
+            return true;
         }
 
         $packagePath = $this->vendorPath . $name;
         $packagePath = Path::convert2Absolute($packagePath);
-
         $this->packagePath = $packagePath;
 
         $writer->bold('Name: ');
@@ -169,17 +149,18 @@ class VendorPublishCommand extends Command
         $extras = $package['extra'] ?? [];
         $manifest = $extras['platine'] ?? [];
 
-        if (empty($manifest)) {
+        if (count($manifest) === 0) {
             $writer->boldGreen('NOTHING TO PUBLISH, COMMAND ENDED!', true);
-            return;
+            return true;
         }
-
         $this->manifest = $manifest;
 
         $this->publishPackage();
 
         $writer->eol();
         $writer->boldGreen('Command finished successfully')->eol();
+
+        return true;
     }
 
     /**
@@ -277,7 +258,6 @@ class VendorPublishCommand extends Command
         $writer = $this->io()->writer();
         $writer->boldYellow('Publish of package migration', true);
 
-
         $path = Path::convert2Absolute(
             $this->config->get('database.migration.path', 'migrations')
         );
@@ -298,7 +278,6 @@ class VendorPublishCommand extends Command
     {
         $writer = $this->io()->writer();
         $writer->boldYellow('Publish of package template', true);
-
 
         $path = Path::convert2Absolute(
             $this->config->get('template.template_dir', 'templates')
@@ -322,7 +301,6 @@ class VendorPublishCommand extends Command
     protected function publishItem(string $src, string $dest, string $type): void
     {
         $writer = $this->io()->writer();
-
         $sourcePath = $this->packagePath . '/' . $src;
         $asset = $this->filesystem->get($sourcePath);
         if ($asset === null) {
@@ -364,7 +342,6 @@ class VendorPublishCommand extends Command
         );
 
         $overwrite = $this->getOptionValue('overwrite');
-
         $writer = $this->io()->writer();
         if ($destFile->exists() && !$overwrite) {
             $writer->red(sprintf(

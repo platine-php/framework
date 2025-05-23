@@ -86,6 +86,7 @@ class ClientRepository extends Repository implements ClientRepositoryInterface
         if ($client === null) {
             return null;
         }
+
         return Client::hydrate([
             'name' => $client->name,
             'id' => $client->id,

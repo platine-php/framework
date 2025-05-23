@@ -72,11 +72,52 @@ class AuditorTest extends PlatineTestCase
     {
         $request = $this->getMockInstance(ServerRequest::class);
 
+        $this->expectMethodCallCount($request, 'getUri', 1);
+        $this->expectMethodCallCount($request, 'getHeaderLine', 1);
+
         $repository = $this->getMockInstance(AuditRepository::class, [
             'save' => true
         ]);
 
         $container = $this->getMockInstance(Container::class, [
+            'has' => true,
+            'get' => $request
+        ]);
+        $userAgent = $this->getMockInstance(UserAgent::class);
+        $audtiUser = $this->getMockInstance(SessionUser::class);
+        $userRepository = $this->getMockInstance(UserRepository::class);
+
+        $o = new Auditor(
+            $repository,
+            $container,
+            $userAgent,
+            $audtiUser,
+            $userRepository
+        );
+
+        $o->setDetail('foo')
+          ->setEvent('create')
+          ->setTags(['one', 'two']);
+
+
+        $result = $o->save();
+
+        $this->assertTrue($result);
+    }
+
+    public function testSaveSuccessServerRequestNotAvailable(): void
+    {
+        $request = $this->getMockInstance(ServerRequest::class);
+
+        $this->expectMethodCallCount($request, 'getUri', 0);
+        $this->expectMethodCallCount($request, 'getHeaderLine', 0);
+
+        $repository = $this->getMockInstance(AuditRepository::class, [
+            'save' => true
+        ]);
+
+        $container = $this->getMockInstance(Container::class, [
+            'has' => false,
             'get' => $request
         ]);
         $userAgent = $this->getMockInstance(UserAgent::class);

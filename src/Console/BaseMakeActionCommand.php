@@ -223,7 +223,7 @@ abstract class BaseMakeActionCommand extends MakeCommand
                 } else {
                     $shortClass = $this->getClassBaseName($value);
                     $name = Str::camel($shortClass, true);
-                    //replace"interface", "abstract"
+                    //replace "interface", "abstract"
                     $nameClean = str_ireplace(['interface', 'abstract'], '', $name);
 
                     $this->properties[$value] = [
@@ -244,34 +244,30 @@ abstract class BaseMakeActionCommand extends MakeCommand
         $io = $this->io();
 
         $paramClass = $io->prompt('Enter the form parameter full class name', null);
-        while (!class_exists($paramClass)) {
+        while (class_exists($paramClass) === false) {
             $paramClass = $io->prompt('Class does not exists, please enter the form parameter full class name', null);
         }
-
         $this->paramClass = $paramClass;
 
         $validatorClass = $io->prompt('Enter the form validator full class name', null);
-        while (!class_exists($validatorClass)) {
+        while (class_exists($validatorClass) === false) {
             $validatorClass = $io->prompt(
                 'Class does not exists, please enter the form validator full class name',
                 null
             );
         }
-
         $this->validatorClass = $validatorClass;
 
         $entityClass = $io->prompt('Enter the entity full class name', null);
-        while (!class_exists($entityClass)) {
+        while (class_exists($entityClass) === false) {
             $entityClass = $io->prompt('Class does not exists, please enter the entity full class name', null);
         }
-
         $this->entityClass = $entityClass;
 
         $repositoryClass = $io->prompt('Enter the repository full class name', null);
-        while (!class_exists($repositoryClass)) {
+        while (class_exists($repositoryClass) === false) {
             $repositoryClass = $io->prompt('Class does not exists, please enter the repository full class name', null);
         }
-
         $this->repositoryClass = $repositoryClass;
     }
 
@@ -288,7 +284,7 @@ abstract class BaseMakeActionCommand extends MakeCommand
             $name = Str::camel($shortClass, true);
         }
 
-        //replace"interface", "abstract"
+        //replace "interface", "abstract"
         $nameClean = str_ireplace(['interface', 'abstract'], '', $name);
 
         $this->properties[$value] = [
@@ -412,25 +408,26 @@ abstract class BaseMakeActionCommand extends MakeCommand
         bool $isLast = false
     ): string {
         $fieldMethodName = $this->getFormParamMethodName($param);
-        return sprintf('\'%s\' => $formParam->%s(),', $field, $fieldMethodName) . ($isLast ? PHP_EOL : '');
+        return sprintf(
+            '\'%s\' => $formParam->%s(),',
+            $field,
+            $fieldMethodName
+        ) . ($isLast ? PHP_EOL : '');
     }
 
     /**
      * Format option fields
      * @param string $values
-     * @return array<string|int, string>
+     * @return array<string, string>
      */
     protected function formatFields(string $values): array
     {
         $result = [];
         $fields = (array) explode(',', $values);
         foreach ($fields as $field) {
-            $column = $field;
             $param = $field;
-            $value = (array) explode(':', $field);
-            if (isset($value[0])) {
-                $column = $value[0];
-            }
+            $value = explode(':', $field);
+            $column = $value[0];
 
             if (isset($value[1])) {
                 $param = $value[1];
@@ -487,6 +484,7 @@ abstract class BaseMakeActionCommand extends MakeCommand
             $file = $this->filesystem->file($filename);
             if ($file->exists() && $file->isReadable()) {
                 $content = $file->read();
+
                 /** @var array<string, string> $config */
                 $config = Json::decode($content, true);
                 foreach ($config as $option => $value) {

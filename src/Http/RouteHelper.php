@@ -58,18 +58,11 @@ use Platine\Route\Router;
 class RouteHelper
 {
     /**
-     * The router instance
-     * @var Router
-     */
-    protected Router $router;
-
-    /**
      * Create new instance
      * @param Router $router
      */
-    public function __construct(Router $router)
+    public function __construct(protected Router $router)
     {
-        $this->router = $router;
     }
 
     /**

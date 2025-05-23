@@ -87,6 +87,7 @@ class MakeFormParamCommand extends MakeCommand
         Filesystem $filesystem
     ) {
         parent::__construct($application, $filesystem);
+
         $this->setName('make:param')
                ->setDescription('Command to generate new form parameter class');
     }
@@ -114,7 +115,7 @@ class MakeFormParamCommand extends MakeCommand
 
                 // 0 = field name, 1 = data type, 2 = required (true/false), 3 = default value
                 $values = (array) explode(':', $value);
-                if (isset($values[0]) && !empty($values[0])) {
+                if (!empty($values[0])) {
                     $value = $values[0];
                 }
 
@@ -144,7 +145,7 @@ class MakeFormParamCommand extends MakeCommand
 
         $this->properties = $properties;
 
-        if (!empty($this->properties)) {
+        if (count($this->properties) > 0) {
             $this->createInstanceFormEntity = $io->confirm('Create instance from entity ?', 'y');
 
             if ($this->createInstanceFormEntity) {
@@ -156,12 +157,13 @@ class MakeFormParamCommand extends MakeCommand
                         null,
                         false
                     );
+
                     if (!empty($value)) {
                         $list[$name] = $value;
                     }
                 }
 
-                if (!empty($list)) {
+                if (count($list) > 0) {
                     $this->fromEntityMaps = $list;
                 }
             }
@@ -321,7 +323,7 @@ class MakeFormParamCommand extends MakeCommand
     {
         $result = '';
         $templateEntity = '';
-        if ($this->createInstanceFormEntity && !empty($this->fromEntityMaps)) {
+        if ($this->createInstanceFormEntity && count($this->fromEntityMaps) > 0) {
             $templateEntity = '@template TEntity as Entity';
             $result = <<<EOF
             /**
@@ -400,7 +402,7 @@ class MakeFormParamCommand extends MakeCommand
      */
     protected function getUsesContent(): string
     {
-        if (!$this->createInstanceFormEntity) {
+        if ($this->createInstanceFormEntity === false) {
             return '';
         }
 

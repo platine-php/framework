@@ -57,7 +57,7 @@ interface IdentityInterface
      * Return the id of the current user
      * @return mixed
      */
-    public function getId();
+    public function getId(): mixed;
 
     /**
      * Return the unique attribute of the current user

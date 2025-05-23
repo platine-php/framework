@@ -57,19 +57,11 @@ use Platine\Session\Session;
 class SessionAuthorization implements AuthorizationInterface
 {
     /**
-     * The session instance to use
-     * @var Session
-     */
-    protected Session $session;
-
-    /**
      * Create new instance
      * @param Session $session
      */
-    public function __construct(
-        Session $session
-    ) {
-        $this->session = $session;
+    public function __construct(protected Session $session)
+    {
     }
 
     /**
@@ -85,6 +77,6 @@ class SessionAuthorization implements AuthorizationInterface
      */
     public function isGranted(string $permission): bool
     {
-        return in_array($permission, $this->getPermissions());
+        return in_array($permission, $this->getPermissions(), true);
     }
 }

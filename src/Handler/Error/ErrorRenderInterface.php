@@ -63,5 +63,9 @@ interface ErrorRenderInterface
      * @param bool $isLog whether to render error to save to log
      * @return string
      */
-    public function render(Throwable $exception, bool $detail, bool $isLog = false): string;
+    public function render(
+        Throwable $exception,
+        bool $detail,
+        bool $isLog = false
+    ): string;
 }

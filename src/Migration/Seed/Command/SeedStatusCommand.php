@@ -69,6 +69,7 @@ class SeedStatusCommand extends AbstractSeedCommand
         Filesystem $filesystem
     ) {
         parent::__construct($app, $config, $filesystem);
+
         $this->setName('seed:status')
              ->setDescription('Show your database seeds status');
     }
@@ -76,7 +77,7 @@ class SeedStatusCommand extends AbstractSeedCommand
     /**
      * {@inheritdoc}
      */
-    public function execute()
+    public function execute(): mixed
     {
         $writer = $this->io()->writer();
         $writer->boldYellow('SEED STATUS', true)->eol();
@@ -99,5 +100,7 @@ class SeedStatusCommand extends AbstractSeedCommand
         $writer->table($rows);
 
         $writer->boldGreen('Command finished successfully')->eol();
+
+        return true;
     }
 }

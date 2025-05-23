@@ -59,7 +59,6 @@ use Platine\Orm\Query\Query;
 class Configuration extends Entity
 {
     /**
-     *
      * @param EntityMapperInterface<Configuration> $mapper
      * @return void
      */

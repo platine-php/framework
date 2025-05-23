@@ -56,18 +56,11 @@ use Platine\Session\Session;
 class Flash
 {
     /**
-     * The session instance
-     * @var Session
-     */
-    protected Session $session;
-
-    /**
      * Create new instance
      * @param Session $session
      */
-    public function __construct(Session $session)
+    public function __construct(protected Session $session)
     {
-        $this->session = $session;
     }
 
     /**

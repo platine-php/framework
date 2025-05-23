@@ -82,7 +82,7 @@ class RequestData
 
     /**
      * The request files data
-     * @var array<string, mixed>
+     * @var array<string|int, mixed|UploadedFileInterface>
      */
     protected array $files = [];
 
@@ -137,7 +137,7 @@ class RequestData
 
     /**
      * Return the files data
-     * @return array<string, mixed>
+     * @return array<string|int, mixed|UploadedFileInterface>
      */
     public function files(): array
     {
@@ -169,7 +169,7 @@ class RequestData
      *
      * @return mixed
      */
-    public function get(string $key, $default = null)
+    public function get(string $key, mixed $default = null): mixed
     {
         $gets = $this->applyInputClean($this->gets);
         return Arr::get($gets, $key, $default);
@@ -182,7 +182,7 @@ class RequestData
      *
      * @return mixed
      */
-    public function post(string $key, $default = null)
+    public function post(string $key, mixed $default = null): mixed
     {
         $posts = $this->applyInputClean($this->posts);
         return Arr::get($posts, $key, $default);
@@ -195,7 +195,7 @@ class RequestData
      *
      * @return mixed
      */
-    public function server(string $key, $default = null)
+    public function server(string $key, mixed $default = null): mixed
     {
         $servers = $this->applyInputClean($this->servers);
         return Arr::get($servers, $key, $default);
@@ -208,7 +208,7 @@ class RequestData
      *
      * @return mixed
      */
-    public function cookie(string $key, $default = null)
+    public function cookie(string $key, mixed $default = null): mixed
     {
         $cookies = $this->applyInputClean($this->cookies);
         return Arr::get($cookies, $key, $default);
@@ -220,7 +220,7 @@ class RequestData
      *
      * @return mixed
      */
-    public function file(string $key)
+    public function file(string $key): mixed
     {
         $files = $this->files;
         return Arr::get($files, $key, null);

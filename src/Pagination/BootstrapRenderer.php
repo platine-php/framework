@@ -47,6 +47,7 @@ declare(strict_types=1);
 
 namespace Platine\Framework\Pagination;
 
+use Platine\Pagination\Page;
 use Platine\Pagination\Pagination;
 use Platine\Pagination\RendererInterface;
 
@@ -73,7 +74,7 @@ class BootstrapRenderer implements RendererInterface
                     . $pagination->getPreviousText() . '</a></li>';
         }
 
-        /** @var array<\Platine\Pagination\Page> $pages */
+        /** @var Page[] $pages */
         $pages = $pagination->getPages();
 
         foreach ($pages as $page) {

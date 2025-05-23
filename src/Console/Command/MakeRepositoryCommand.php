@@ -80,6 +80,7 @@ class MakeRepositoryCommand extends MakeCommand
         Filesystem $filesystem
     ) {
         parent::__construct($application, $filesystem);
+
         $this->setName('make:repository')
                ->setDescription('Command to generate new repository class');
     }
@@ -95,8 +96,11 @@ class MakeRepositoryCommand extends MakeCommand
         $io = $this->io();
 
         $entityClass = $io->prompt('Enter the entity full class name', null);
-        while (!class_exists($entityClass)) {
-            $entityClass = $io->prompt('Class does not exists, please enter the entity full class name', null);
+        while (class_exists($entityClass) === false) {
+            $entityClass = $io->prompt(
+                'Class does not exists, please enter the entity full class name',
+                null
+            );
         }
 
         $this->entityClass = $entityClass;
@@ -168,6 +172,7 @@ class MakeRepositoryCommand extends MakeCommand
         $entityBaseName = $this->getClassBaseName($this->entityClass);
 
         $template = str_replace('%entity_base_class%', $entityBaseName, $content);
+
         return str_replace('%entity_class%', $entityName, $template);
     }
 }

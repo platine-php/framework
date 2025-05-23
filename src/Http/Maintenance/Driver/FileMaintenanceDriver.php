@@ -59,26 +59,14 @@ use Platine\Stdlib\Helper\Json;
 class FileMaintenanceDriver implements MaintenanceDriverInterface
 {
     /**
-     * The application configuration
-     * @var Config<T>
-     */
-    protected Config $config;
-
-    /**
-     * The file system instance
-     * @var Filesystem
-     */
-    protected Filesystem $filesystem;
-
-    /**
      * Create new instance
      * @param Config<T> $config
      * @param Filesystem $filesystem
      */
-    public function __construct(Config $config, Filesystem $filesystem)
-    {
-        $this->config = $config;
-        $this->filesystem = $filesystem;
+    public function __construct(
+        protected Config $config,
+        protected Filesystem $filesystem
+    ) {
     }
 
 

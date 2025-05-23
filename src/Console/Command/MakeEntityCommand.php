@@ -92,6 +92,7 @@ class MakeEntityCommand extends MakeCommand
         Filesystem $filesystem
     ) {
         parent::__construct($application, $filesystem);
+
         $this->setName('make:entity')
                ->setDescription('Command to generate new entity class');
     }
@@ -102,7 +103,6 @@ class MakeEntityCommand extends MakeCommand
     public function interact(Reader $reader, Writer $writer): void
     {
         parent::interact($reader, $writer);
-
 
         $io = $this->io();
 

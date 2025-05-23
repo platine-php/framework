@@ -62,30 +62,6 @@ use Platine\UserAgent\UserAgent;
 class Auditor
 {
     /**
-     * The audit repository
-     * @var AuditRepository
-     */
-    protected AuditRepository $repository;
-
-    /**
-     * The Container instance
-     * @var ContainerInterface
-     */
-    protected ContainerInterface $container;
-
-    /**
-     * User agent instance
-     * @var UserAgent
-     */
-    protected UserAgent $userAgent;
-
-    /**
-     * The Audit User instance
-     * @var AuditUserInterface
-     */
-    protected AuditUserInterface $auditUser;
-
-    /**
      * The audit details
      * @var string
      */
@@ -104,12 +80,6 @@ class Auditor
     protected array $tags = [];
 
     /**
-     * User repository instance
-     * @var UserRepository
-     */
-    protected UserRepository $userRepository;
-
-    /**
      * Create new instance
      * @param AuditRepository $repository
      * @param ContainerInterface $container
@@ -118,17 +88,12 @@ class Auditor
      * @param UserRepository $userRepository
      */
     public function __construct(
-        AuditRepository $repository,
-        ContainerInterface $container,
-        UserAgent $userAgent,
-        AuditUserInterface $auditUser,
-        UserRepository $userRepository
+        protected AuditRepository $repository,
+        protected ContainerInterface $container,
+        protected UserAgent $userAgent,
+        protected AuditUserInterface $auditUser,
+        protected UserRepository $userRepository
     ) {
-        $this->repository = $repository;
-        $this->container = $container;
-        $this->userAgent = $userAgent;
-        $this->auditUser = $auditUser;
-        $this->userRepository = $userRepository;
     }
 
     /**
@@ -146,18 +111,23 @@ class Auditor
      */
     public function save(): bool
     {
-        /** @var ServerRequestInterface $request */
-        $request = $this->container->get(ServerRequestInterface::class);
+        $userAgent = '';
+        $url = '';
+        if ($this->container->has(ServerRequestInterface::class)) {
+            /** @var ServerRequestInterface $request */
+            $request = $this->container->get(ServerRequestInterface::class);
+            $url = $request->getUri()->getPath();
 
-        $userAgentStr = $request->getHeaderLine('User-Agent');
-        $ua = $this->userAgent->parse($userAgentStr);
-        $userAgent = sprintf(
-            '%s %s - %s %s',
-            $ua->os()->getName(),
-            $ua->os()->getVersion(),
-            $ua->browser()->getName(),
-            $ua->browser()->getVersion()
-        );
+            $userAgentStr = $request->getHeaderLine('User-Agent');
+            $ua = $this->userAgent->parse($userAgentStr);
+            $userAgent = sprintf(
+                '%s %s - %s %s',
+                $ua->os()->getName(),
+                $ua->os()->getVersion(),
+                $ua->browser()->getName(),
+                $ua->browser()->getVersion()
+            );
+        }
 
         $entity = $this->repository->create([
             'event' => $this->event,
@@ -167,10 +137,10 @@ class Auditor
             'date' => new DateTime('now'),
             'ip' => Str::ip(),
             'user_id' => $this->auditUser->getUserId(),
-            'url' => $request->getUri()->getPath(),
+            'url' => $url,
         ]);
 
-        return $this->repository->save($entity);
+        return (bool) $this->repository->save($entity);
     }
 
     /**
