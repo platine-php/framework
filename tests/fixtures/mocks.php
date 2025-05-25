@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 namespace Platine\Stdlib\Helper;
+
 $mock_str_pad_to_value = false;
 function str_pad($string, $max, $pad_string, $min): string
 {

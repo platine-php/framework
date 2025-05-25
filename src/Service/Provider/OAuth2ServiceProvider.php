@@ -104,7 +104,10 @@ class OAuth2ServiceProvider extends ServiceProvider
     {
 
         // User authentication
-        $this->app->bind(UserAuthenticationInterface::class, UserAuthentication::class);
+        $this->app->bind(
+            UserAuthenticationInterface::class,
+            UserAuthentication::class
+        );
 
         // Configuration
         $this->app->bind(Configuration::class, function (ContainerInterface $app) {

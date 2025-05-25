@@ -101,7 +101,7 @@ abstract class AbstractCommand extends Command
      * @param string|TaskInterface $task
      * @return void
      */
-    protected function addTask($task): void
+    protected function addTask(string|TaskInterface $task): void
     {
         if (is_string($task)) {
             $task = $this->createTask($task);

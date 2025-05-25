@@ -70,6 +70,7 @@ class SecurityServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
+        // Security policy
         $this->app->bind(SecurityPolicy::class, function (ContainerInterface $app) {
             return new SecurityPolicy(
                 $app->get(Config::class),
@@ -77,10 +78,14 @@ class SecurityServiceProvider extends ServiceProvider
                 $app->get(Config::class)->get('security.policies', [])
             );
         });
+          $this->app->bind(SecurityPolicyMiddleware::class);
+
+        // CSRF
         $this->app->bind(CsrfStorageInterface::class, CsrfSessionStorage::class);
         $this->app->bind(CsrfManager::class);
-        $this->app->bind(SecurityPolicyMiddleware::class);
-        $this->app->bind(CorsMiddleware::class);
         $this->app->bind(CsrfMiddleware::class);
+
+        // CORS
+        $this->app->bind(CorsMiddleware::class);
     }
 }

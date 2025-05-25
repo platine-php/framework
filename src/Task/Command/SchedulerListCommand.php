@@ -105,7 +105,10 @@ class SchedulerListCommand extends AbstractCommand
 
         $rows = [];
         foreach ($tasks as $task) {
-            $nextExecution = date('Y-m-d H:i', Cron::parse($task->expression()));
+            $nextExecution = date(
+                'Y-m-d H:i',
+                Cron::parse($task->expression())
+            );
             $rows[] = [
                 'name' => $task->name(),
                 'expression' => $task->expression(),
@@ -114,8 +117,9 @@ class SchedulerListCommand extends AbstractCommand
             ];
         }
 
-        Arr::multisort($rows, 'name');
+        Arr::multisort($rows, 'next_execution');
         $writer->table($rows);
+
         $writer->green('Command finished successfully')->eol();
     }
 }

@@ -93,6 +93,7 @@ class LangTag extends AbstractTag
         }
         /** @var Lang $lang */
         $lang = app(Lang::class);
+
         return $lang->tr($this->value);
     }
 }

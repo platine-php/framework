@@ -59,12 +59,6 @@ use Throwable;
 class Scheduler implements SchedulerInterface
 {
     /**
-     * The logger instance
-     * @var LoggerInterface
-     */
-    protected LoggerInterface $logger;
-
-    /**
      * The task list
      * @var TaskInterface[]
      */
@@ -74,10 +68,8 @@ class Scheduler implements SchedulerInterface
      * Create new instance
      * @param LoggerInterface $logger
      */
-    public function __construct(
-        LoggerInterface $logger
-    ) {
-        $this->logger = $logger;
+    public function __construct(protected LoggerInterface $logger)
+    {
     }
 
     /**

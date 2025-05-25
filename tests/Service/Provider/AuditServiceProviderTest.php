@@ -17,9 +17,8 @@ class AuditServiceProviderTest extends PlatineTestCase
     public function testRegister(): void
     {
         $app = $this->getMockInstanceMap(Application::class);
+        $this->expectMethodCallCount($app, 'bind', 4);
 
-        $app->expects($this->exactly(3))
-                ->method('bind');
         $o = new AuditServiceProvider($app);
         $o->register();
     }

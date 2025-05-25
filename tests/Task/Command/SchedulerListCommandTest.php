@@ -152,8 +152,8 @@ Command finished successfully
 +------------------+--------------+------------------+------------------------------------------------+
 | Name             | Expression   | Next Execution   | Class                                          |
 +------------------+--------------+------------------+------------------------------------------------+
-| mytask           | */50 * * * * | 2001-09-09 01:50 | Platine\Test\Framework\Fixture\MyTask          |
 | mytask_exception | * * * * *    | 2001-09-09 01:46 | Platine\Test\Framework\Fixture\MyTaskException |
+| mytask           | */50 * * * * | 2001-09-09 01:50 | Platine\Test\Framework\Fixture\MyTask          |
 +------------------+--------------+------------------+------------------------------------------------+
 
 Command finished successfully

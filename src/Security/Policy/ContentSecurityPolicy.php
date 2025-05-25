@@ -222,8 +222,8 @@ class ContentSecurityPolicy extends AbstractPolicy
     {
         $pluginTypes = $this->configurations['plugin-types'] ?? [];
 
-        $filtered = array_filter($pluginTypes, function (string $mime) {
-            return preg_match('/^[a-z\-]+\/[a-z\-]+$/i', $mime);
+        $filtered = array_filter($pluginTypes, function (mixed $mime): bool {
+            return (bool) preg_match('/^[a-z\-]+\/[a-z\-]+$/i', $mime);
         });
 
         if (count($filtered) > 0) {

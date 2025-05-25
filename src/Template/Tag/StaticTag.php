@@ -91,11 +91,16 @@ class StaticTag extends AbstractTag
         /** @template T @var Config<T> $config */
         $config = app(Config::class);
 
-        $baseUrl = $config->get('app.url');
+        $baseUrl = $config->get('app.url', '');
         $baseUrl = rtrim($baseUrl, '/') . '/';
-        $staticDir = $config->get('app.static_dir');
+        $staticDir = $config->get('app.static_dir', 'static');
         $staticDir = rtrim($staticDir, '/') . '/';
 
-        return (string) $baseUrl . $staticDir . $this->path;
+        return sprintf(
+            '%s%s%s',
+            $baseUrl,
+            $staticDir,
+            $this->path
+        );
     }
 }

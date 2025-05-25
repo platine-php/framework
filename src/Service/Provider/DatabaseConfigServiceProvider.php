@@ -67,7 +67,10 @@ class DatabaseConfigServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        $this->app->bind(ConfigurationRepositoryInterface::class, ConfigurationRepository::class);
+        $this->app->bind(
+            ConfigurationRepositoryInterface::class,
+            ConfigurationRepository::class
+        );
         $this->app->bind(
             DatabaseConfigLoaderInterface::class,
             DatabaseConfigLoader::class
@@ -75,7 +78,10 @@ class DatabaseConfigServiceProvider extends ServiceProvider
 
         $this->app->share(AppDatabaseConfig::class, function (ContainerInterface $app) {
             $env = $app->get(Config::class)->get('app.env', '');
-            return new AppDatabaseConfig($app->get(DatabaseConfigLoaderInterface::class), $env);
+            return new AppDatabaseConfig(
+                $app->get(DatabaseConfigLoaderInterface::class),
+                $env
+            );
         });
     }
 }

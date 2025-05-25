@@ -67,9 +67,8 @@ class SessionServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        $cfg = $this->app->get(Config::class)->get('session', []);
-        $this->app->bind(Configuration::class, function (ContainerInterface $app) use ($cfg) {
-            return new Configuration($cfg);
+        $this->app->bind(Configuration::class, function (ContainerInterface $app) {
+            return new Configuration($app->get(Config::class)->get('session', []));
         });
         $this->app->bind(SessionHandlerInterface::class, function (ContainerInterface $app) {
             return new LocalStorage(

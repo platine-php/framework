@@ -60,12 +60,6 @@ use Platine\Route\Router;
 class ServiceProvider
 {
     /**
-     * The Application instance
-     * @var Application
-     */
-    protected Application $app;
-
-    /**
      * Provider command list
      * @var class-string[]
      */
@@ -81,9 +75,8 @@ class ServiceProvider
      * Create new instance
      * @param Application $app
      */
-    public function __construct(Application $app)
+    public function __construct(protected Application $app)
     {
-        $this->app = $app;
     }
 
     /**
@@ -146,7 +139,7 @@ class ServiceProvider
      */
     public function listen(
         string $eventName,
-        $listener,
+        ListenerInterface|callable|string $listener,
         int $priority = DispatcherInterface::PRIORITY_DEFAULT
     ): self {
         $this->app->listen($eventName, $listener, $priority);

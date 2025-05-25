@@ -58,7 +58,7 @@ if (!function_exists('app')) {
     function app(?string $identifier = null): mixed
     {
         $app = Application::getInstance();
-
+        
         return $identifier ? $app->get($identifier) : $app;
     }
 }

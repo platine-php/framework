@@ -63,7 +63,6 @@ use Platine\Stdlib\Helper\Json;
  */
 class SecurityPolicy
 {
- 
     /**
      * The nonce's for script-src and style-src
      * @var array<string, array<string>>
@@ -84,7 +83,6 @@ class SecurityPolicy
         protected Router $router,
         protected array $configurations = []
     ) {
-        
     }
 
     /**

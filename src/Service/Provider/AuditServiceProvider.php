@@ -48,7 +48,9 @@ declare(strict_types=1);
 namespace Platine\Framework\Service\Provider;
 
 use Platine\Framework\Audit\Auditor;
+use Platine\Framework\Audit\AuditUserInterface;
 use Platine\Framework\Audit\Model\AuditRepository;
+use Platine\Framework\Audit\SessionUser;
 use Platine\Framework\Service\ServiceProvider;
 use Platine\UserAgent\UserAgent;
 
@@ -66,5 +68,6 @@ class AuditServiceProvider extends ServiceProvider
         $this->app->bind(AuditRepository::class);
         $this->app->bind(UserAgent::class);
         $this->app->bind(Auditor::class);
+        $this->app->bind(AuditUserInterface::class, SessionUser::class);
     }
 }

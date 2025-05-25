@@ -91,6 +91,7 @@ class SchedulerRunCommand extends AbstractCommand
             $task = $this->scheduler->get($name);
             if ($task !== null) {
                 $this->scheduler->execute($task);
+
                 return true;
             }
         }

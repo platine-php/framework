@@ -80,7 +80,7 @@ class BaseServiceProvider extends ServiceProvider
         $this->app->share(Application::class, $this->app);
         $this->app->share('app', $this->app);
         $this->app->share(ConsoleApp::class, function () {
-            return new ConsoleApp('PLATINE CONSOLE', '1.0.0');
+            return new ConsoleApp('PLATINE CONSOLE', $this->app->version());
         });
         $this->app->share(ContainerInterface::class, $this->app);
         $this->app->bind(ResolverInterface::class, ConstructorResolver::class);

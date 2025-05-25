@@ -74,8 +74,7 @@ class DatabaseServiceProvider extends ServiceProvider
             $config = $app->get(Config::class);
             $driver = $config->get('database.default', 'default');
             $slowQueryTime = $config->get('database.slow_query_time', 1.0);
-
-            $dbConfig = $config->get('database.connections.' . $driver, []);
+            $dbConfig = $config->get(sprintf('database.connections.%s', $driver), []);
 
             // Pass the slow query time and name to driver connection
             $dbConfig['slow_query_time'] = $slowQueryTime;

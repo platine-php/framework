@@ -191,7 +191,10 @@ class JWT
         $tokenSignature = $this->getTokenSignature();
 
         return $this->signer->verify(
-                $this->secret, $decodedSignature, $tokenSignature);
+            $this->secret,
+            $decodedSignature,
+            $tokenSignature
+        );
     }
 
     /**

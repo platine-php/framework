@@ -99,6 +99,7 @@ class RouteUrlTag extends AbstractTag
         }
         /** @var RouteHelper $helper */
         $helper = app(RouteHelper::class);
+
         return $helper->generateUrl($this->name, $parameters);
     }
 }
