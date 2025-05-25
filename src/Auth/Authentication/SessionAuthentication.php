@@ -182,7 +182,7 @@ class SessionAuthentication implements AuthenticationInterface
 
         $this->session->set('user', array_merge($data, $this->getUserData($user)));
 
-        // Inform the system that the use just login successfully
+        // Inform the system that the user just login successfully
         $this->app->dispatch(new AuthLoginEvent($user));
 
         return $this->isLogged();
