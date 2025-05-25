@@ -48,6 +48,8 @@ declare(strict_types=1);
 
 namespace Platine\Framework\Security\OTP;
 
+use Platine\Stdlib\Helper\Str;
+
 /**
  * @class TOTP
  * @package Platine\Framework\Security\OTP
@@ -126,7 +128,7 @@ class TOTP
 
         $otp = $binary % pow(10, $this->digit);
 
-        return str_pad((string) $otp, $this->digit, '0', STR_PAD_LEFT);
+        return Str::padLeft((string) $otp, $this->digit, '0');
     }
 
     /**
@@ -264,8 +266,8 @@ class TOTP
     protected function base32Decode(string $str): string
     {
         $chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ23456';
-        $string = strtoupper($str);
-        $length = strlen($string);
+        $string = Str::upper($str);
+        $length = Str::length($string);
 
         $n = 0;
         $j = 0;

@@ -196,7 +196,7 @@ class ContentSecurityPolicy extends AbstractPolicy
         $result = [];
 
         foreach ($groups as $hash => $items) {
-            if (!in_array($hash, ['sha256', 'sha384', 'sha512'], true)) {
+            if (in_array($hash, ['sha256', 'sha384', 'sha512'], true) === false) {
                 continue;
             }
 
@@ -241,7 +241,7 @@ class ContentSecurityPolicy extends AbstractPolicy
     {
         $sandbox = $this->configurations['sandbox'] ?? [];
 
-        if (!($sandbox['enable'] ?? false)) {
+        if (($sandbox['enable'] ?? false) === false) {
             return '';
         }
 
@@ -276,7 +276,7 @@ class ContentSecurityPolicy extends AbstractPolicy
     {
         $config = $this->configurations['require-trusted-types-for'] ?? [];
 
-        if (!($config['script'] ?? false)) {
+        if (($config['script'] ?? false) === false) {
             return '';
         }
 
@@ -291,7 +291,7 @@ class ContentSecurityPolicy extends AbstractPolicy
     {
         $trustedTypes = $this->configurations['trusted-types'] ?? [];
 
-        if (!($trustedTypes['enable'] ?? false)) {
+        if (($trustedTypes['enable'] ?? false) === false) {
             return '';
         }
 
@@ -316,7 +316,7 @@ class ContentSecurityPolicy extends AbstractPolicy
      */
     public function blockAllMixedContent(): string
     {
-        if (!($this->configurations['block-all-mixed-content'] ?? false)) {
+        if (($this->configurations['block-all-mixed-content'] ?? false) === false) {
             return '';
         }
 
@@ -329,7 +329,7 @@ class ContentSecurityPolicy extends AbstractPolicy
      */
     public function upgradeInsecureRequests(): string
     {
-        if (!($this->configurations['upgrade-insecure-requests'] ?? false)) {
+        if (($this->configurations['upgrade-insecure-requests'] ?? false) === false) {
             return '';
         }
 
@@ -398,7 +398,7 @@ class ContentSecurityPolicy extends AbstractPolicy
     {
         $result = [];
         foreach ($this->configurations as $name => $config) {
-            if (!($this->whitelist[$name] ?? false)) {
+            if (($this->whitelist[$name] ?? false) === false) {
                 continue;
             }
 

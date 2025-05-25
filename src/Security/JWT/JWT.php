@@ -52,6 +52,7 @@ use Platine\Framework\Security\JWT\Encoder\Base64UrlSafeEncoder;
 use Platine\Framework\Security\JWT\Exception\InvalidTokenException;
 use Platine\Framework\Security\JWT\Exception\JWTException;
 use Platine\Framework\Security\JWT\Exception\TokenExpiredException;
+use Platine\Stdlib\Helper\Json;
 
 /**
  * @class JWT
@@ -135,8 +136,8 @@ class JWT
     {
         $parts = explode('.', $token);
         if (count($parts) === 3) {
-            $headers = json_decode($this->encoder->decode($parts[0]), true);
-            $payload = json_decode($this->encoder->decode($parts[1]), true);
+            $headers = Json::decode($this->encoder->decode($parts[0]), true);
+            $payload = Json::decode($this->encoder->decode($parts[1]), true);
             if (is_array($headers) && is_array($payload)) {
                 $algo = $headers['alg'] ?? '';
                 if (empty($algo) || $algo !== $this->signer->getTokenAlgoName()) {
@@ -146,11 +147,11 @@ class JWT
                     ));
                 } else {
                     $this->setHeaders($headers)
-                          ->setPayload($payload)
-                           ->setOriginalToken($token)
-                            ->setEncodedSignature($parts[2]);
+                         ->setPayload($payload)
+                         ->setOriginalToken($token)
+                         ->setEncodedSignature($parts[2]);
 
-                    if (!$this->verify()) {
+                    if ($this->verify() === false) {
                         throw new InvalidTokenException(sprintf(
                             'The token [%s] cannot be verified because it is invalid',
                             $token
@@ -189,7 +190,8 @@ class JWT
         $decodedSignature = $this->encoder->decode($this->getEncodedSignature());
         $tokenSignature = $this->getTokenSignature();
 
-        return $this->signer->verify($this->secret, $decodedSignature, $tokenSignature);
+        return $this->signer->verify(
+                $this->secret, $decodedSignature, $tokenSignature);
     }
 
     /**
@@ -200,7 +202,6 @@ class JWT
     public function getTokenSignature(): string
     {
         $parts = explode('.', $this->originalToken);
-
         if (count($parts) >= 2) {
             return sprintf('%s.%s', $parts[0], $parts[1]);
         }
@@ -288,7 +289,7 @@ class JWT
      */
     public function isValid(): bool
     {
-        return $this->verify() && !$this->isExpired();
+        return $this->verify() && $this->isExpired() === false;
     }
 
     /**

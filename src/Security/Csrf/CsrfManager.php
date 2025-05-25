@@ -104,7 +104,6 @@ class CsrfManager
         }
 
         $token = $this->getRequestToken($request, $key);
-
         if ($token === null || $token !== $storageToken) {
             return false;
         }
@@ -188,7 +187,7 @@ class CsrfManager
      * @param string $key
      * @return mixed
      */
-    private function getConfigValue(string $key)
+    private function getConfigValue(string $key): mixed
     {
         $config = $this->config->get('security.csrf', []);
 

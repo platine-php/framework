@@ -3,13 +3,13 @@
 /**
  * Platine Framework
  *
- * Platine Framework is a lightweight, high-performance, simple and elegant PHP
- * Web framework
+ * Platine Framework is a lightweight, high-performance, simple and elegant
+ * PHP Web framework
  *
  * This content is released under the MIT License (MIT)
  *
  * Copyright (c) 2020 Platine Framework
- * Copyright (c) 2015 - 2023 Paragon Initiative Enterprises
+ * Copyright (c) 2015 JBZoo Content Construction Kit (CCK)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -31,40 +31,49 @@
  */
 
 /**
- *  @file AbstractPolicy.php
+ * @file Helper.php
  *
- *  The base Security Policy class
+ * The Graph helper class
  *
- *  @package    Platine\Framework\Security\Policy
- *  @author Platine Developers team
+ *  @package    Platine\Framework\Helper\Mermaid\Graph
+ *  @author Platine Developers Team
  *  @copyright  Copyright (c) 2020
  *  @license    http://opensource.org/licenses/MIT  MIT License
  *  @link   https://www.platine-php.com
  *  @version 1.0.0
  *  @filesource
  */
-
 declare(strict_types=1);
 
-namespace Platine\Framework\Security\Policy;
+namespace Platine\Framework\Helper\Mermaid\Graph;
 
 /**
- * @class AbstractPolicy
- * @package Platine\Framework\Security\Policy
+ * @class Helper
+ * @package Platine\Framework\Helper\Mermaid\Graph
  */
-abstract class AbstractPolicy
+class Helper
 {
     /**
-     * Create new instance
-     * @param array<string, mixed> $configurations
+     * Escape the given text
+     * @param string $text
+     * @return string
      */
-    public function __construct(protected array $configurations = [])
+    public static function escape(string $text): string
     {
+        $cleanText = trim($text);
+        $cleanHtmltext = htmlentities($cleanText, ENT_COMPAT);
+        $finalText = str_replace(['&', '#lt;', '#gt;'], ['#', '<', '>'], $cleanHtmltext);
+
+        return sprintf('"%s"', $finalText);
     }
 
     /**
-     * Return the headers
+     * Return the id of the given text
+     * @param string $str
      * @return string
      */
-    abstract public function headers(): string;
+    public static function getId(string $str): string
+    {
+        return md5($str);
+    }
 }

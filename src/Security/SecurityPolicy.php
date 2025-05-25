@@ -63,25 +63,7 @@ use Platine\Stdlib\Helper\Json;
  */
 class SecurityPolicy
 {
-    /**
-     * The application configuration
-     * @var Config<T>
-     */
-    protected Config $config;
-
-
-    /**
-     * The Router instance
-     * @var Router
-     */
-    protected Router $router;
-
-    /**
-     * The configuration
-     * @var array<string, mixed>
-     */
-    protected array $configurations = [];
-
+ 
     /**
      * The nonce's for script-src and style-src
      * @var array<string, array<string>>
@@ -98,13 +80,11 @@ class SecurityPolicy
      * @param array<string, mixed> $configurations
      */
     public function __construct(
-        Config $config,
-        Router $router,
-        array $configurations = []
+        protected Config $config,
+        protected Router $router,
+        protected array $configurations = []
     ) {
-        $this->config = $config;
-        $this->router = $router;
-        $this->configurations = $configurations;
+        
     }
 
     /**
