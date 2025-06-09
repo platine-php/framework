@@ -369,19 +369,9 @@ abstract class MakeCommand extends BaseCommand
      */
     protected function getConstructorBodyContent(): string
     {
-        $content = '';
-        $i = 1;
-        $count = count($this->properties);
-        foreach ($this->properties as $className => $info) {
-            $content .= $this->getConstructorBodyTemplate(
-                $className,
-                $info,
-                $i === $count
-            );
-            $i++;
-        }
-
-        return $content;
+        // TODO: since PHP 8 we use the feature
+        // of constructor property promotion
+        return '';
     }
 
     /**
@@ -415,43 +405,16 @@ abstract class MakeCommand extends BaseCommand
     ): string {
         $shortClass = $info['short'];
         $name = $info['name'];
-        $comma = $isLast ? '' : ',';
 
         if ($isLast) {
             return <<<EOF
-            $shortClass \$$name$comma
+            protected $shortClass \$$name,
             EOF;
         }
 
         return <<<EOF
-        $shortClass \$$name$comma
+        protected $shortClass \$$name,
                
-        EOF;
-    }
-
-    /**
-     * Return the constructor body template for the given class
-     * @param string $className
-     * @param array<string, string> $info
-     * @param bool $isLast
-     * @return string
-     */
-    protected function getConstructorBodyTemplate(
-        string $className,
-        array $info,
-        bool $isLast = false
-    ): string {
-        $name = $info['name'];
-
-        if ($isLast) {
-            return <<<EOF
-            \$this->$name = \$$name;
-            EOF;
-        }
-
-        return <<<EOF
-        \$this->$name = \$$name;
-                
         EOF;
     }
 
@@ -463,18 +426,10 @@ abstract class MakeCommand extends BaseCommand
      */
     protected function getPropertyTemplate(string $className, array $info): string
     {
-        $shortClass = $info['short'];
-        $name = $info['name'];
+        // TODO: since PHP 8 we use the feature
+        // of constructor property promotion
 
-        return <<<EOF
-        /**
-            * The $shortClass instance
-            * @var $shortClass
-            */
-            protected $shortClass \$$name;
-        
-            
-        EOF;
+        return '';
     }
 
     /**

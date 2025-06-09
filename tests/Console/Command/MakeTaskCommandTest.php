@@ -173,6 +173,81 @@ E;
     }
 
 
+    public function testExecuteWrongExpressionTimeIsZero(): void
+    {
+        $dir = $this->createVfsDirectory('app', $this->vfsRoot);
+        $actionName = 'Task/' . 'MyTask';
+        $localAdapter = new LocalAdapter();
+        $filesystem = new Filesystem($localAdapter);
+        $app = $this->getMockInstance(Application::class, [
+            'getNamespace' => 'MyApp\\',
+            'getAppPath' => $dir->url()
+        ]);
+
+        $this->createInputContent('mytask');
+        $this->createInputContent("\n");
+        $this->createInputContent('5/* * * * 7');
+        $this->createInputContent("\n");
+        $this->createInputContent('');
+
+
+        $reader = $this->getReaderInstance();
+        $writer = $this->getWriterInstance();
+
+        $interactor = $this->getMockInstance(
+            Interactor::class,
+            [
+            'writer' => $writer,
+            'reader' => $reader
+            ],
+            [
+             'prompt',
+            'confirm',
+            'choice',
+            'isValidChoice',
+            ]
+        );
+
+        $this->setPropertyValue(Interactor::class, $interactor, 'reader', $reader);
+        $this->setPropertyValue(Interactor::class, $interactor, 'writer', $writer);
+
+        $consoleApp = $this->getMockInstance(ConsoleApp::class, [
+            'io' => $interactor
+        ]);
+
+        $o = new MakeTaskCommand($app, $filesystem);
+        $o->bind($consoleApp);
+        $o->parse(['platine', $actionName]);
+        $this->assertEquals('make:task', $o->getName());
+
+        $o->interact($reader, $writer);
+        $o->execute();
+
+        $classPath = implode(
+            DIRECTORY_SEPARATOR,
+            [
+                'vfs://root',
+                'app',
+                'Task',
+                'MyTask.php'
+            ]
+        );
+
+        $expected = <<<E
+GENERATION OF NEW CLASS
+
+Enter the task name []: Enter the cron expression [* * * * *]: Invalid expression format, please enter the cron expression [* * * * *]: Enter the properties list (empty value to finish):
+Property full class name: Generation of new task class [MyApp\Task\MyTask]
+
+Class: MyApp\Task\MyTask
+Path: $classPath
+Namespace: MyApp\Task
+Are you confirm the generation of [MyApp\Task\MyTask] ?Class [MyApp\Task\MyTask] generated successfully.
+
+E;
+        $this->assertCommandOutput($expected, $this->getConsoleOutputContent());
+    }
+
     public function testExecuteWrongExpression(): void
     {
         $dir = $this->createVfsDirectory('app', $this->vfsRoot);
@@ -238,7 +313,7 @@ E;
         $expected = <<<E
 GENERATION OF NEW CLASS
 
-Enter the task name []: Enter the cron expression [* * * * *]: Invalid expression, please enter the cron expression [* * * * *]: Enter the properties list (empty value to finish):
+Enter the task name []: Enter the cron expression [* * * * *]: Invalid expression timestamp, please enter the cron expression [* * * * *]: Enter the properties list (empty value to finish):
 Property full class name: Generation of new task class [MyApp\Task\MyTask]
 
 Class: MyApp\Task\MyTask

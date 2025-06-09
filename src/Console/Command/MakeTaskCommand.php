@@ -47,6 +47,7 @@ declare(strict_types=1);
 
 namespace Platine\Framework\Console\Command;
 
+use Exception;
 use Platine\Console\Input\Reader;
 use Platine\Console\Output\Writer;
 use Platine\Filesystem\Filesystem;
@@ -104,8 +105,23 @@ class MakeTaskCommand extends MakeCommand
         $this->name = $io->prompt('Enter the task name', '');
 
         $expression = $io->prompt('Enter the cron expression', '* * * * *');
-        while (Cron::parse($expression) === 0) {
-            $expression = $io->prompt('Invalid expression, please enter the cron expression', '* * * * *');
+        while (true) {
+            try {
+                $time = Cron::parse($expression);
+                if ($time === 0) {
+                    $expression = $io->prompt(
+                        'Invalid expression timestamp, please enter the cron expression',
+                        '* * * * *'
+                    );
+                } else {
+                    break;
+                }
+            } catch (Exception $ex) {
+                $expression = $io->prompt(
+                    'Invalid expression format, please enter the cron expression',
+                    '* * * * *'
+                );
+            }
         }
         $this->expression = $expression;
 
@@ -158,9 +174,7 @@ class MakeTaskCommand extends MakeCommand
         */
         class %classname% implements TaskInterface
         {
-            
             %properties%
-        
             %constructor%
         
             /**
@@ -195,7 +209,7 @@ class MakeTaskCommand extends MakeCommand
     protected function getTaskBody(string $content): string
     {
         $result = <<<EOF
-            /**
+        /**
             * {@inheritdoc}
             */
             public function expression(): string

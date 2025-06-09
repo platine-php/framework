@@ -204,7 +204,7 @@ class MakeProviderCommand extends MakeCommand
      */
     protected function getUsesContent(): string
     {
-        if (!$this->addRoutes) {
+        if ($this->addRoutes === false) {
             return '';
         }
 

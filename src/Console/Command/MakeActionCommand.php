@@ -138,9 +138,7 @@ class MakeActionCommand extends MakeCommand
         */
         class %classname% implements RequestHandlerInterface
         {
-            
             %properties%
-        
             %constructor%
         
             /**

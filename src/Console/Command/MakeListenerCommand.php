@@ -91,8 +91,6 @@ class MakeListenerCommand extends MakeCommand
     public function interact(Reader $reader, Writer $writer): void
     {
         parent::interact($reader, $writer);
-
-
         $io = $this->io();
 
         $eventClass = $io->prompt('Enter the event full class name', null);
@@ -121,7 +119,7 @@ class MakeListenerCommand extends MakeCommand
         namespace %namespace%;
         
         use Platine\Event\EventInterface;
-        use Platine\Event\ListenerInterface;
+        use Platine\Event\Listener\ListenerInterface;
         %uses%
 
         /**
@@ -134,11 +132,13 @@ class MakeListenerCommand extends MakeCommand
             /**
             * {@inheritdoc}
             */
-            public function handle(EventInterface \$event)
+            public function handle(EventInterface \$event): mixed
             {
                if (\$event instanceof $eventShortName) {
                    %method_body%
                }
+                
+               return true;
             }
         }
         

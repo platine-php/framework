@@ -128,9 +128,7 @@ class MakeResourceActionCommand extends BaseMakeActionCommand
         */
         class %classname%
         {
-            
             %properties%
-        
             %constructor%
         
             /**
@@ -193,7 +191,6 @@ class MakeResourceActionCommand extends BaseMakeActionCommand
     protected function createClass(): string
     {
         $content = parent::createClass();
-
 
         $contentIndex = $this->getIndexMethodBody($content);
         $contentDetail = $this->getDetailMethodBody($contentIndex);
@@ -470,9 +467,7 @@ class MakeResourceActionCommand extends BaseMakeActionCommand
         $notFoundMessage = $this->getMessage('messageNotFound');
         $deleteMessage = $this->getMessage('messageDelete');
         $processErrorMessage = $this->getMessage('messageProcessError');
-
         $listRoute = $this->getRouteName('list');
-
         $entityContextName = $this->getEntityContextKey(false);
 
         $result = <<<EOF

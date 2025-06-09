@@ -206,10 +206,10 @@ class BaseParam implements JsonSerializable
             $type = $property->getType();
             if ($type !== null && $type->isBuiltin()) {
                 $props[$property->getName()] = [
-                    $type->getName(), 
-					$type->allowsNull(), 
-					$property,
-				];
+                    $type->getName(),
+                    $type->allowsNull(),
+                    $property,
+                ];
             }
         }
 

@@ -92,7 +92,6 @@ class MakeRepositoryCommand extends MakeCommand
     {
         parent::interact($reader, $writer);
 
-
         $io = $this->io();
 
         $entityClass = $io->prompt('Enter the entity full class name', null);
