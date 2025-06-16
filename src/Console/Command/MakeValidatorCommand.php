@@ -129,20 +129,13 @@ class MakeValidatorCommand extends MakeCommand
         class %classname% extends AbstractValidator
         {
             /**
-            * The parameter instance
-            * @var %param_class%<TEntity>
-            */
-            protected %param_class% \$param;
-        
-            /**
             * Create new instance
             * @param %param_class%<TEntity> \$param
             * @param Lang \$lang
             */
-           public function __construct(%param_class% \$param, Lang \$lang)
+           public function __construct(protected %param_class% \$param, Lang \$lang)
            {
                parent::__construct(\$lang);
-               \$this->param = \$param;
            }
         
             /**
