@@ -70,7 +70,7 @@ class SessionTag extends AbstractTag
     /**
     * {@inheritdoc}
     */
-    public function __construct(string $markup, &$tokens, Parser $parser)
+    public function __construct(string $markup, array &$tokens, Parser $parser)
     {
         $lexer = new Lexer('/' . Token::QUOTED_FRAGMENT . '/');
         if ($lexer->match($markup)) {
