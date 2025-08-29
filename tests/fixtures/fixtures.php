@@ -13,12 +13,17 @@ use Platine\Event\EventInterface;
 use Platine\Event\Listener\ListenerInterface;
 use Platine\Event\SubscriberInterface;
 use Platine\Framework\App\Application;
+use Platine\Framework\Config\AppDatabaseConfig;
 use Platine\Framework\Config\DatabaseConfigLoader;
 use Platine\Framework\Form\Param\BaseParam;
 use Platine\Framework\Form\Validator\AbstractValidator;
 use Platine\Framework\Helper\Flash;
+use Platine\Framework\Http\Action\BaseAction;
+use Platine\Framework\Http\Action\BaseConfigurationAction;
+use Platine\Framework\Http\Action\BaseResourceAction;
 use Platine\Framework\Http\Action\CrudAction;
 use Platine\Framework\Http\Maintenance\MaintenanceDriverInterface;
+use Platine\Framework\Http\Response\JsonResponse;
 use Platine\Framework\Http\RouteHelper;
 use Platine\Framework\Security\Csrf\CsrfManager;
 use Platine\Framework\Service\ServiceProvider;
@@ -44,6 +49,7 @@ use Platine\Orm\Entity;
 use Platine\Orm\Mapper\EntityMapperInterface;
 use Platine\Orm\Repository;
 use Platine\Pagination\Pagination;
+use Platine\Route\RouteCollection;
 use Platine\Route\Router;
 use Platine\Session\Session;
 use Platine\Template\Template;
@@ -109,6 +115,83 @@ function getTestMaintenanceDriver(bool $exception = false, bool $active = false,
             }
         }
     };
+}
+
+class MyBaseAction extends BaseAction
+{
+    public function respond(): ResponseInterface
+    {
+        $this->setView('foo_view');
+        $this->addContext('foo', 'bar');
+        $this->addContexts(['name' => 'Tony']);
+
+        $this->addSidebar('', 'Add user', 'user_create');
+
+        return $this->viewResponse();
+    }
+
+    protected function getIgnoreDateFilters(): array
+    {
+        return ['status'];
+    }
+}
+
+class MyBaseAction2 extends BaseAction
+{
+    public function respond(): ResponseInterface
+    {
+        return $this->viewResponse();
+    }
+}
+
+class MyBaseResourceAction extends BaseResourceAction
+{
+    public function create(ServerRequestInterface $request): ResponseInterface
+    {
+        return new JsonResponse(['foo' => 'bar']);
+    }
+}
+
+class MyBaseConfigurationAction extends BaseConfigurationAction
+{
+    protected function getModuleName(): string
+    {
+        return 'app';
+    }
+
+    protected function getParamDefinitions(): array
+    {
+        return [
+            'name' => [
+                'type' => 'integer',
+                'comment' => 'Integer value',
+            ],
+            'array' => [
+                'type' => 'array',
+                'comment' => 'Array value',
+            ],
+            'callable' => [
+                'type' => 'callable',
+                'comment' => 'Callable value',
+                'callable' => [$this, 'myCallable'],
+            ],
+        ];
+    }
+
+    protected function myCallable(): int
+    {
+        return 123;
+    }
+
+    protected function getParamName(): string
+    {
+        return MyDbConfigParam::class;
+    }
+
+    protected function getValidatorName(): string
+    {
+        return MyDbConfigValidator::class;
+    }
 }
 
 class MyCrudAction extends CrudAction
@@ -243,6 +326,28 @@ class MyServerRequest extends ServerRequest
 
         return new Uri($url);
     }
+
+    public function getParsedBody(): array|object|null
+    {
+        return $this->mockMethods['getParsedBody'] ?? [];
+    }
+}
+
+class MyRouter extends Router
+{
+    protected array $mockMethods = [];
+
+    public function __construct($mockMethods = [])
+    {
+        $this->mockMethods = (array) $mockMethods;
+    }
+
+    public function routes(): RouteCollection
+    {
+        $routes = $this->mockMethods['routes'] ?? [];
+
+        return new RouteCollection($routes);
+    }
 }
 
 class MyApp extends Application
@@ -318,6 +423,8 @@ class MyConfig extends Config
     protected array $config = [
       'database.migration.table' => 'table',
       'security.encryption.key' => 'foosecret',
+      'mail.smtp.username' => 'user',
+      'mail.smtp.password' => 'foosecret',
     ];
 
     public function __construct($items = [])
@@ -330,6 +437,22 @@ class MyConfig extends Config
         return array_key_exists($key, $this->config)
                ? $this->config[$key]
                 : $default;
+    }
+}
+
+class MyNullMaillerConfig extends Config
+{
+    protected array $config = [
+    ];
+
+    public function __construct($items = [])
+    {
+        $this->config = array_merge($this->config, (array) $items);
+    }
+
+    public function get(string $key, mixed $default = null): mixed
+    {
+        return null;
     }
 }
 
@@ -421,6 +544,29 @@ class MyParam extends BaseParam
     }
 }
 
+class MyDbConfigParam extends BaseParam
+{
+    protected string $name = '';
+    protected string $status = '';
+
+    public function getName(): string
+    {
+        return $this->name;
+    }
+
+    public function getStatus(): string
+    {
+        return $this->status;
+    }
+
+    public function fromConfig(AppDatabaseConfig $cfg): self
+    {
+        $this->name = $cfg->get('app.name', 'foo');
+
+        return $this;
+    }
+}
+
 class MyParam2 extends BaseParam
 {
     protected string $name;
@@ -448,6 +594,32 @@ class MyValidator extends AbstractValidator
     {
         parent::__construct($lang);
         $this->param = $param;
+    }
+
+    public function setValidationData(): void
+    {
+        $this->addData('name', $this->param->getName());
+        $this->addData('status', $this->param->getStatus());
+    }
+
+    public function setValidationRules(): void
+    {
+        $this->addRules('name', [
+            new NotEmpty(),
+            new MinLength(2)
+        ]);
+
+        $this->addRules('status', [
+            new NotEmpty()
+        ]);
+    }
+}
+
+class MyDbConfigValidator extends AbstractValidator
+{
+    public function __construct(protected MyDbConfigParam $param, Lang $lang)
+    {
+        parent::__construct($lang);
     }
 
     public function setValidationData(): void

@@ -54,7 +54,9 @@ use Platine\Database\Connection;
 use Platine\Database\Pool;
 use Platine\Database\QueryBuilder;
 use Platine\Database\Schema;
+use Platine\Framework\Helper\DatabaseHelper;
 use Platine\Framework\Service\ServiceProvider;
+use Platine\Framework\Tool\Database\DatabaseDump;
 use Platine\Logger\LoggerInterface;
 use Platine\Orm\EntityManager;
 
@@ -96,5 +98,7 @@ class DatabaseServiceProvider extends ServiceProvider
         $this->app->bind(EntityManager::class);
         $this->app->bind(QueryBuilder::class);
         $this->app->bind(Schema::class);
+        $this->app->bind(DatabaseHelper::class);
+        $this->app->bind(DatabaseDump::class);
     }
 }

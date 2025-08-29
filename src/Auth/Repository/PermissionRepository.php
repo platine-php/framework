@@ -48,6 +48,7 @@ declare(strict_types=1);
 namespace Platine\Framework\Auth\Repository;
 
 use Platine\Framework\Auth\Entity\Permission;
+use Platine\Framework\Helper\TreeHelper;
 use Platine\Orm\EntityManager;
 use Platine\Orm\Repository;
 
@@ -65,5 +66,41 @@ class PermissionRepository extends Repository
     public function __construct(EntityManager $manager)
     {
         parent::__construct($manager, Permission::class);
+    }
+
+    /**
+     * Return the permission as tree
+     * @param array<string, mixed> $filters
+     * @return array<int, mixed>
+     */
+    public function getTree(array $filters = []): array
+    {
+        $permissions = $this->filters($filters)
+                            ->orderBy(['code'])
+                            ->all();
+
+        return self::getPermissionTree($permissions);
+    }
+
+    /**
+     * Return the permission tree
+     * @param Permission[] $permissions
+     * @return array<int, mixed>
+     */
+    public static function getPermissionTree(array $permissions = []): array
+    {
+        $all = [];
+        foreach ($permissions as $l) {
+            $data = [
+                'id' => $l->id,
+                'code' => $l->code,
+                'description' => $l->description,
+                'parent_id' => (int) $l->parent_id,
+            ];
+
+            $all[] = $data;
+        }
+
+        return TreeHelper::createTree($all);
     }
 }

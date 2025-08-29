@@ -29,46 +29,42 @@
  * SOFTWARE.
  */
 
-/**
- *  @file ApiUser.php
- *
- *  The audit user based on REST API class
- *
- *  @package    Platine\Framework\Audit
- *  @author Platine Developers team
- *  @copyright  Copyright (c) 2020
- *  @license    http://opensource.org/licenses/MIT  MIT License
- *  @link   https://www.platine-php.com
- *  @version 1.0.0
- *  @filesource
- */
-
 declare(strict_types=1);
 
-namespace Platine\Framework\Audit;
+namespace Platine\Framework\Service\Provider;
 
-use Platine\Framework\Auth\ApiAuthenticationInterface;
+use Platine\Config\Config;
+use Platine\Container\ContainerInterface;
+use Platine\Framework\Service\ServiceProvider;
+use Platine\Mail\Transport\SMTP;
+use Platine\Mail\Transport\TransportInterface;
 
 /**
- * @class ApiUser
- * @package Platine\Framework\Audit
+ * @class MailerSMTPServiceProvider
+ * @package Platine\Framework\Service\Provider
  */
-class ApiUser implements AuditUserInterface
+class MailerSMTPServiceProvider extends ServiceProvider
 {
-    /**
-     * Create new instance
-     * @param ApiAuthenticationInterface $authentication
-     */
-    public function __construct(protected ApiAuthenticationInterface $authentication)
-    {
-    }
-
-
     /**
      * {@inheritdoc}
      */
-    public function getUserId(): mixed
+    public function register(): void
     {
-        return $this->authentication->getUser()->getId();
+        $this->app->bind(TransportInterface::class, function (ContainerInterface $app) {
+            $smtp = new SMTP(
+                $app->get(Config::class)->get('mail.smtp.host', 'localhost'),
+                $app->get(Config::class)->get('mail.smtp.port', 25),
+                $app->get(Config::class)->get('mail.smtp.timeout', 30),
+                $app->get(Config::class)->get('mail.smtp.response_timeout', 10),
+            );
+
+            $username = $app->get(Config::class)->get('mail.smtp.username', '');
+            $password = $app->get(Config::class)->get('mail.smtp.password', '');
+            if (!empty($username) && !empty($password)) {
+                $smtp->setAuth($username, $password);
+            }
+
+            return $smtp;
+        });
     }
 }

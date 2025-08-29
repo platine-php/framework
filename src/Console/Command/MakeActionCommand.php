@@ -52,6 +52,7 @@ use Platine\Console\Output\Writer;
 use Platine\Filesystem\Filesystem;
 use Platine\Framework\App\Application;
 use Platine\Framework\Console\MakeCommand;
+use Platine\Framework\Http\Action\BaseAction;
 use Platine\Stdlib\Helper\Str;
 
 /**
@@ -76,7 +77,9 @@ class MakeActionCommand extends MakeCommand
     ) {
         parent::__construct($application, $filesystem);
         $this->setName('make:action')
-               ->setDescription('Command to generate new request handler class');
+               ->setDescription('Command to generate new action class');
+
+        $this->addOption('-a|--base-action', 'The base action class', BaseAction::class, true);
     }
 
     /**
@@ -96,7 +99,7 @@ class MakeActionCommand extends MakeCommand
 
             if (!empty($value)) {
                 $value = trim($value);
-                if (!class_exists($value) && !interface_exists($value)) {
+                if (class_exists($value) === false && interface_exists($value) === false) {
                     $writer->boldWhiteBgRed(sprintf('The class [%s] does not exists', $value), true);
                 } else {
                     $shortClass = $this->getClassBaseName($value);
@@ -120,6 +123,8 @@ class MakeActionCommand extends MakeCommand
      */
     public function getClassTemplate(): string
     {
+        $baseAction = $this->getOptionValue('baseAction');
+
         return <<<EOF
         <?php
         
@@ -127,16 +132,15 @@ class MakeActionCommand extends MakeCommand
         
         namespace %namespace%;
         
-        use Platine\Http\Handler\RequestHandlerInterface;
+        use $baseAction;
         use Platine\Http\ResponseInterface;
-        use Platine\Http\ServerRequestInterface;
         %uses%
 
         /**
         * @class %classname%
         * @package %namespace%
         */
-        class %classname% implements RequestHandlerInterface
+        class %classname% extends BaseAction
         {
             %properties%
             %constructor%
@@ -144,12 +148,58 @@ class MakeActionCommand extends MakeCommand
             /**
             * {@inheritdoc}
             */
-            public function handle(ServerRequestInterface \$request): ResponseInterface
+            public function respond(): ResponseInterface
             {
-                %method_body%
             }
         }
         
+        EOF;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function getConstructorBodyContent(): string
+    {
+        foreach ($this->properties as $info) {
+            $name = $info['name'];
+            if ($name === 'actionHelper') {
+                return <<<EOF
+                parent::__construct(\$actionHelper);
+                EOF;
+            }
+        }
+
+        return '';
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function getConstructorParamsTemplate(
+        string $className,
+        array $info,
+        bool $isLast = false
+    ): string {
+        $shortClass = $info['short'];
+        $name = $info['name'];
+
+        if ($name === 'actionHelper') {
+            return <<<EOF
+        $shortClass \$$name,
+               
+        EOF;
+        }
+
+        if ($isLast) {
+            return <<<EOF
+            protected $shortClass \$$name,
+            EOF;
+        }
+
+        return <<<EOF
+        protected $shortClass \$$name,
+               
         EOF;
     }
 }

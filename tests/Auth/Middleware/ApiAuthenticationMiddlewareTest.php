@@ -96,7 +96,7 @@ class ApiAuthenticationMiddlewareTest extends PlatineTestCase
         $handler = $this->getMockInstance(HttpKernel::class);
 
         $authentication = $this->getMockInstance(JWTAuthentication::class, [
-            'isAuthenticated' => false
+            'isLogged' => false
         ]);
         $config = $this->getMockInstanceMap(Config::class, [
             'get' => [
@@ -123,7 +123,7 @@ class ApiAuthenticationMiddlewareTest extends PlatineTestCase
         $handler->expects($this->exactly(1))
                 ->method('handle');
         $authentication = $this->getMockInstance(JWTAuthentication::class, [
-            'isAuthenticated' => true
+            'isLogged' => true
         ]);
         $config = $this->getMockInstanceMap(Config::class, [
             'get' => [

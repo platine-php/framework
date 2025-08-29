@@ -5,9 +5,7 @@ declare(strict_types=1);
 namespace Platine\Test\Framework\Audit;
 
 use Platine\Dev\PlatineTestCase;
-use Platine\Framework\Audit\Auditor;
-use Platine\Framework\Audit\Model\AuditRepository;
-use Platine\Framework\Audit\SessionUser;
+use Platine\Framework\Audit\AuthUser;
 use Platine\Framework\Auth\Authentication\SessionAuthentication;
 use Platine\Framework\Auth\Entity\User;
 
@@ -15,7 +13,7 @@ use Platine\Framework\Auth\Entity\User;
  * @group core
  * @group framework
  */
-class SessionUserTest extends PlatineTestCase
+class AuthUserTest extends PlatineTestCase
 {
     public function testConstructor(): void
     {
@@ -23,9 +21,9 @@ class SessionUserTest extends PlatineTestCase
         $authentication = $this->getMockInstance(SessionAuthentication::class, [
             'getUser' => $user
         ]);
-        $o = new SessionUser($authentication);
+        $o = new AuthUser($authentication);
 
-        $this->assertInstanceOf(SessionUser::class, $o);
+        $this->assertInstanceOf(AuthUser::class, $o);
     }
 
     public function testGet(): void
@@ -37,7 +35,7 @@ class SessionUserTest extends PlatineTestCase
         $authentication = $this->getMockInstance(SessionAuthentication::class, [
             'getUser' => $user
         ]);
-        $o = new SessionUser($authentication);
+        $o = new AuthUser($authentication);
 
         $this->assertEquals(123, $o->getUserId());
     }

@@ -30,11 +30,11 @@
  */
 
 /**
- *  @file ApiAuthenticationInterface.php
+ *  @file SessionUser.php
  *
- *  The API Authentication interface
+ *  The audit user based on session class
  *
- *  @package    Platine\Framework\Auth
+ *  @package    Platine\Framework\Audit
  *  @author Platine Developers team
  *  @copyright  Copyright (c) 2020
  *  @license    http://opensource.org/licenses/MIT  MIT License
@@ -45,45 +45,30 @@
 
 declare(strict_types=1);
 
-namespace Platine\Framework\Auth;
+namespace Platine\Framework\Audit;
 
-use Platine\Framework\Auth\Exception\AccountLockedException;
-use Platine\Framework\Auth\Exception\AccountNotFoundException;
-use Platine\Framework\Auth\Exception\InvalidCredentialsException;
-use Platine\Framework\Auth\Exception\MissingCredentialsException;
-use Platine\Http\ServerRequestInterface;
+use Platine\Framework\Auth\AuthenticationInterface;
 
 /**
- * @class ApiAuthenticationInterface
- * @package Platine\Framework\Auth
+ * @class AuthUser
+ * @package Platine\Framework\Audit
  */
-interface ApiAuthenticationInterface
+class AuthUser implements AuditUserInterface
 {
     /**
-     * Whether the request is authenticated
-     * @param ServerRequestInterface $request
-     * @return bool
+     * Create new instance
+     * @param AuthenticationInterface $authentication
      */
-    public function isAuthenticated(ServerRequestInterface $request): bool;
+    public function __construct(protected AuthenticationInterface $authentication)
+    {
+    }
+
 
     /**
-     * Authenticate the user
-     * @param array<string, mixed> $credentials
-     * @param bool $withPassword wether to use password to login
-     * @return array<string, mixed>
-     *
-     * @throws MissingCredentialsException if the passed credentials is not correct
-     * @throws AccountNotFoundException if can not find the account information
-     * @throws InvalidCredentialsException if invalid credentials, like wrong password
-     * @throws AccountLockedException if account is locked
+     * {@inheritdoc}
      */
-    public function login(array $credentials = [], bool $withPassword = true): array;
-
-    /**
-     * Return the current logged user
-     * @return IdentityInterface
-     *
-     * @throws AccountNotFoundException if can not find the account information
-     */
-    public function getUser(): IdentityInterface;
+    public function getUserId(): mixed
+    {
+        return $this->authentication->getUser()->getId();
+    }
 }

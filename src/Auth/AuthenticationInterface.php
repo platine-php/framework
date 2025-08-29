@@ -63,7 +63,7 @@ interface AuthenticationInterface
      * @param array<string, mixed> $credentials
      * @param bool $remeberMe
      * @param bool $withPassword wether to use password to login
-     * @return bool
+     * @return array<string, mixed>
      *
      * @throws MissingCredentialsException if the passed credentials is not correct
      * @throws AccountNotFoundException if can not find the account information
@@ -74,7 +74,7 @@ interface AuthenticationInterface
         array $credentials = [],
         bool $remeberMe = false,
         bool $withPassword = true
-    ): bool;
+    ): array;
 
     /**
      * Check if user is logged
@@ -97,4 +97,12 @@ interface AuthenticationInterface
      * @throws AccountNotFoundException if can not find the account information
      */
     public function getUser(): IdentityInterface;
+
+    /**
+     * Return the current logged user identifier
+     * @return int|string
+     *
+     * @throws AccountNotFoundException if can not find the account information
+     */
+    public function getId(): int|string;
 }

@@ -22,8 +22,8 @@ class DatabaseConfigServiceProviderTest extends PlatineTestCase
     {
         $app = $this->getMockInstanceMap(Application::class);
 
-        $app->expects($this->exactly(2))
-                ->method('bind');
+        $app->expects($this->exactly(3))
+            ->method('bind');
 
         $o = new DatabaseConfigServiceProvider($app);
         $o->register();

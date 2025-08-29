@@ -19,7 +19,6 @@ class StaticTagTest extends PlatineTestCase
     public function testConstructWrongSynthax(): void
     {
         $parser = $this->getMockInstance(Parser::class);
-        $context = $this->getMockInstance(Context::class);
 
         $tokens = [];
         $this->expectException(ParseException::class);

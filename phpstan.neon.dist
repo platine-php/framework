@@ -8,6 +8,8 @@ parameters:
     universalObjectCratesClasses:
         - Platine\Orm\Entity
     ignoreErrors:
+        -
+            identifier: missingType.generics
         - '#Call to an undefined method Platine\\Database\\Query\\Where\|Platine\\Database\\Query\\WhereStatement(.*)#'
         - '#Call to an undefined method Platine\\Database\\Query\\WhereStatement(.*)#'
         - '#(.*)Tag has an unused parameter \$parser(.*)#'

@@ -54,6 +54,7 @@ use Platine\Framework\Config\ConfigurationRepositoryInterface;
 use Platine\Framework\Config\DatabaseConfigLoader;
 use Platine\Framework\Config\DatabaseConfigLoaderInterface;
 use Platine\Framework\Config\Model\ConfigurationRepository;
+use Platine\Framework\Console\Command\MakeDatabaseConfigCommand;
 use Platine\Framework\Service\ServiceProvider;
 
 /**
@@ -83,5 +84,9 @@ class DatabaseConfigServiceProvider extends ServiceProvider
                 $env
             );
         });
+
+        $this->app->bind(MakeDatabaseConfigCommand::class);
+
+        $this->addCommand(MakeDatabaseConfigCommand::class);
     }
 }

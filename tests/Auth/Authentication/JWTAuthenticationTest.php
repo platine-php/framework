@@ -142,6 +142,85 @@ class JWTAuthenticationTest extends PlatineTestCase
         $o->getUser();
     }
 
+    public function testGetIdSuccess(): void
+    {
+        $user = $this->getMockInstance(User::class);
+        $jwt = $this->getMockInstance(JWT::class, [
+            'getPayload' => ['sub' => 1]
+        ]);
+        $logger = $this->getMockInstance(Logger::class);
+        $config = $this->getMockInstanceMap(Config::class, [
+            'get' => [
+                ['api.auth.headers.name', 'Authorization', 'Authorization'],
+                ['api.auth.headers.token_type', 'Bearer', 'Bearer'],
+                ['api.sign.secret', '', 'foosecret'],
+            ]
+        ]);
+        $tokenRepository = $this->getMockInstance(TokenRepository::class);
+        $hash = $this->getMockInstance(BcryptHash::class);
+        $request = $this->getMockInstanceMap(ServerRequest::class, [
+            'getHeaderLine' => [
+                ['Authorization', '7676ghggfhfgfghg']
+            ]
+        ]);
+        $userRepository = $this->getMockInstanceMap(UserRepository::class, [
+            'find' => [
+                [1, $user]
+            ]
+        ]);
+
+        $o = new JWTAuthentication(
+            $jwt,
+            $logger,
+            $config,
+            $hash,
+            $userRepository,
+            $tokenRepository,
+            $request
+        );
+        $this->assertEquals(1, $o->getId());
+    }
+
+    public function testGetIdNotLogged(): void
+    {
+        $jwt = $this->getMockInstance(JWT::class, [
+            'getPayload' => ['sub' => 1]
+        ]);
+        $logger = $this->getMockInstance(Logger::class);
+        $config = $this->getMockInstanceMap(Config::class, [
+            'get' => [
+                ['api.auth.headers.name', 'Authorization', 'Authorization'],
+                ['api.auth.headers.token_type', 'Bearer', 'Bearer'],
+                ['api.sign.secret', '', 'foosecret'],
+            ]
+        ]);
+        $tokenRepository = $this->getMockInstance(TokenRepository::class);
+        $hash = $this->getMockInstance(BcryptHash::class);
+        $request = $this->getMockInstanceMap(ServerRequest::class, [
+            'getHeaderLine' => [
+                ['Authorization', '']
+            ]
+        ]);
+        $userRepository = $this->getMockInstanceMap(UserRepository::class, [
+            'find' => [
+                [1, null]
+            ]
+        ]);
+
+        $o = new JWTAuthentication(
+            $jwt,
+            $logger,
+            $config,
+            $hash,
+            $userRepository,
+            $tokenRepository,
+            $request
+        );
+
+        $this->expectException(AccountNotFoundException::class);
+        $o->getId();
+    }
+
     public function testGetUserSuccess(): void
     {
         $user = $this->getMockInstance(User::class);
@@ -250,6 +329,38 @@ class JWTAuthenticationTest extends PlatineTestCase
             'username' => 'foo'
         ];
         $o->login($credentials);
+    }
+
+    public function testLogout(): void
+    {
+        $jwt = $this->getMockInstance(JWT::class);
+        $logger = $this->getMockInstance(Logger::class);
+        $config = $this->getMockInstanceMap(Config::class, [
+            'get' => [
+                ['api.auth.headers.name', 'Authorization', 'Authorization'],
+            ]
+        ]);
+        $tokenRepository = $this->getMockInstance(TokenRepository::class);
+        $hash = $this->getMockInstance(BcryptHash::class);
+        $request = $this->getMockInstanceMap(ServerRequest::class, [
+            'getHeaderLine' => [
+                ['Authorization', '']
+            ]
+        ]);
+        $userRepository = $this->getMockInstance(UserRepository::class);
+
+        $o = new JWTAuthentication(
+            $jwt,
+            $logger,
+            $config,
+            $hash,
+            $userRepository,
+            $tokenRepository,
+            $request
+        );
+        $o->logout(true);
+
+        $this->assertTrue(true);
     }
 
     public function testLoginUserNotFound(): void

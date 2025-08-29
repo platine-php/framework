@@ -103,6 +103,12 @@ class CrudActionTest extends PlatineTestCase
 
     public function testCreateFirstPage(): void
     {
+        global $mock_app_form_to_instance,
+                $mock_app_form_server_request_methods;
+
+        $mock_app_form_to_instance = true;
+        $mock_app_form_server_request_methods = [];
+
         $entity = $this->getMockInstance(MyEntity::class);
         $lang = $this->getMockInstance(MyLang::class);
         $pagination = $this->getMockInstance(Pagination::class);
@@ -126,6 +132,12 @@ class CrudActionTest extends PlatineTestCase
 
     public function testCreateFormValidationFailed(): void
     {
+        global $mock_app_form_to_instance,
+                $mock_app_form_server_request_methods;
+
+        $mock_app_form_to_instance = true;
+        $mock_app_form_server_request_methods = [];
+
         $lang = $this->getMockInstance(MyLang::class);
         $pagination = $this->getMockInstance(Pagination::class);
         $template = $this->getMockInstance(Template::class);
@@ -146,6 +158,12 @@ class CrudActionTest extends PlatineTestCase
 
     public function testCreateDuplicate(): void
     {
+        global $mock_app_form_to_instance,
+                $mock_app_form_server_request_methods;
+
+        $mock_app_form_to_instance = true;
+        $mock_app_form_server_request_methods = [];
+
         $oldEntity = $this->getMockInstance(MyEntity::class);
         $lang = $this->getMockInstance(MyLang::class);
         $pagination = $this->getMockInstance(Pagination::class);
@@ -170,6 +188,12 @@ class CrudActionTest extends PlatineTestCase
 
     public function testCreateSuccess(): void
     {
+        global $mock_app_form_to_instance,
+                $mock_app_form_server_request_methods;
+
+        $mock_app_form_to_instance = true;
+        $mock_app_form_server_request_methods = [];
+
         $lang = $this->getMockInstance(MyLang::class);
         $pagination = $this->getMockInstance(Pagination::class);
         $template = $this->getMockInstance(Template::class);
@@ -193,6 +217,12 @@ class CrudActionTest extends PlatineTestCase
 
     public function testCreateError(): void
     {
+        global $mock_app_form_to_instance,
+                $mock_app_form_server_request_methods;
+
+        $mock_app_form_to_instance = true;
+        $mock_app_form_server_request_methods = [];
+
         $lang = $this->getMockInstance(MyLang::class);
         $pagination = $this->getMockInstance(Pagination::class);
         $template = $this->getMockInstance(Template::class);
@@ -220,6 +250,12 @@ class CrudActionTest extends PlatineTestCase
 
     public function testUpdateNotFound(): void
     {
+        global $mock_app_form_to_instance,
+                $mock_app_form_server_request_methods;
+
+        $mock_app_form_to_instance = true;
+        $mock_app_form_server_request_methods = [];
+
         $lang = $this->getMockInstance(MyLang::class);
         $pagination = $this->getMockInstance(Pagination::class);
         $template = $this->getMockInstance(Template::class);
@@ -240,6 +276,12 @@ class CrudActionTest extends PlatineTestCase
 
     public function testUpdateFirstPage(): void
     {
+        global $mock_app_form_to_instance,
+                $mock_app_form_server_request_methods;
+
+        $mock_app_form_to_instance = true;
+        $mock_app_form_server_request_methods = [];
+
         $entity = $this->getMockInstance(MyEntity::class, [
             '__get' => 'foo'
         ]);
@@ -265,6 +307,12 @@ class CrudActionTest extends PlatineTestCase
 
     public function testUpdateFormValidationFailed(): void
     {
+        global $mock_app_form_to_instance,
+                $mock_app_form_server_request_methods;
+
+        $mock_app_form_to_instance = true;
+        $mock_app_form_server_request_methods = [];
+
         $entity = $this->getMockInstance(MyEntity::class, [
             '__get' => 'foo'
         ]);
@@ -290,6 +338,12 @@ class CrudActionTest extends PlatineTestCase
 
     public function testUpdateDuplicate(): void
     {
+        global $mock_app_form_to_instance,
+                $mock_app_form_server_request_methods;
+
+        $mock_app_form_to_instance = true;
+        $mock_app_form_server_request_methods = [];
+
         $oldEntity = $this->getMockInstance(MyEntity::class);
         $entity = $this->getMockInstance(MyEntity::class, [
             '__get' => 'foo'
@@ -318,6 +372,13 @@ class CrudActionTest extends PlatineTestCase
 
     public function testUpdateSuccess(): void
     {
+        global $mock_app_form_to_instance,
+                $mock_app_form_server_request_methods;
+
+        $mock_app_form_to_instance = true;
+        $mock_app_form_server_request_methods = [];
+
+
         $entity = $this->getMockInstance(MyEntity::class, [
             '__get' => 'foo'
         ]);
@@ -345,6 +406,12 @@ class CrudActionTest extends PlatineTestCase
 
     public function testUpdateError(): void
     {
+        global $mock_app_form_to_instance,
+                $mock_app_form_server_request_methods;
+
+        $mock_app_form_to_instance = true;
+        $mock_app_form_server_request_methods = [];
+
         $entity = $this->getMockInstance(MyEntity::class, [
             '__get' => 'foo'
         ]);

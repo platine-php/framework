@@ -23,7 +23,10 @@ class PermissionTagTest extends PlatineTestCase
         $tokens = ['{% endpermission %}'];
         $b = new PermissionTag('permission', $tokens, $parser);
 
-        $this->assertEquals('permission', $this->getPropertyValue(PermissionTag::class, $b, 'permission'));
+        $this->assertEquals(
+            'permission',
+            $this->getPropertyValue(PermissionTag::class, $b, 'permission')
+        );
     }
 
     public function testConstructorInvalidSyntax(): void

@@ -5,7 +5,10 @@ declare(strict_types=1);
 namespace Platine\Test\Framework\Template\Tag;
 
 use Platine\Dev\PlatineTestCase;
+use Platine\Framework\Auth\Authorization\SessionAuthorization;
+use Platine\Framework\Security\Csrf\CsrfManager;
 use Platine\Framework\Template\Tag\RouteUrlTag;
+use Platine\Route\Route;
 use Platine\Template\Exception\ParseException;
 use Platine\Template\Parser\Context;
 use Platine\Template\Parser\Parser;
@@ -28,26 +31,59 @@ class RouteUrlTagTest extends PlatineTestCase
 
 
 
-    public function testRender(): void
+    public function testRenderNeedAuthButNotGranted(): void
+    {
+        $this->render(true, false);
+    }
+
+    public function testRenderNeedAuthGranted(): void
+    {
+        $this->render(true, true);
+    }
+
+
+    protected function render(bool $needAuth = true, bool $isGranted = false): void
     {
         global $mock_app_to_instance,
+               $mock_app_router_methods,
+               $mock_app_auth_object,
+               $mock_app_csrfmanager_object,
                $mock_app_route_helper_methods;
+
 
         $mock_app_to_instance = true;
 
         $mock_app_route_helper_methods = [
             'generateUrl' => 'http://localhost'
         ];
+        $mock_app_router_methods = [
+            'routes' => [new Route(
+                '/users/{id}',
+                'foo',
+                'user_detail',
+                [],
+                ['permission' => $needAuth ? 'user_create' : null, 'csrf' => true]
+            )],
+        ];
 
-        $parser = $this->getMockInstance(Parser::class);
-        $context = $this->getMockInstance(Context::class, [
-            'hasKey' => true,
-            'get' => 'context_var',
+        $mock_app_auth_object = $this->getMockInstance(SessionAuthorization::class, [
+            'isGranted' => $isGranted
         ]);
 
-        $tokens = [];
-        $o = new RouteUrlTag('users id:1', $tokens, $parser);
+        $mock_app_csrfmanager_object = $this->getMockInstance(CsrfManager::class, [
+            'getTokenQuery' => ['_token' => 'csrftoken']
+        ]);
 
-        $this->assertEquals('http://localhost', $o->render($context));
+        $context = new Context(['route_var' => 'user_detail']);
+
+        $parser = $this->getMockInstance(Parser::class);
+        $tokens = [];
+        $o = new RouteUrlTag('route_var id:1', $tokens, $parser);
+
+        if ($needAuth && $isGranted === false) {
+            $this->assertEquals('#hide', $o->render($context));
+        } else {
+            $this->assertEquals('http://localhost?_token=csrftoken', $o->render($context));
+        }
     }
 }

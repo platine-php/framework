@@ -51,6 +51,7 @@ use Platine\Config\Config;
 use Platine\Container\ContainerInterface;
 use Platine\Framework\Http\Middleware\CorsMiddleware;
 use Platine\Framework\Http\Middleware\CsrfMiddleware;
+use Platine\Framework\Http\Middleware\CsrfTokenMiddleware;
 use Platine\Framework\Http\Middleware\SecurityPolicyMiddleware;
 use Platine\Framework\Security\Csrf\CsrfManager;
 use Platine\Framework\Security\Csrf\CsrfStorageInterface;
@@ -78,7 +79,9 @@ class SecurityServiceProvider extends ServiceProvider
                 $app->get(Config::class)->get('security.policies', [])
             );
         });
-          $this->app->bind(SecurityPolicyMiddleware::class);
+
+        $this->app->bind(SecurityPolicyMiddleware::class);
+        $this->app->bind(CsrfTokenMiddleware::class);
 
         // CSRF
         $this->app->bind(CsrfStorageInterface::class, CsrfSessionStorage::class);

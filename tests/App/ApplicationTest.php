@@ -55,6 +55,7 @@ class ApplicationTest extends PlatineTestCase
         $app->setVendorPath('/vendorpath');
         $app->setRootPath('/rootpath');
         $app->setEnvironmentFile('.envfile');
+
         $this->assertEquals('/app', $app->getAppPath());
         $this->assertEquals('/basepath', $app->getBasePath());
         $this->assertEquals('staging', $app->getEnvironment());

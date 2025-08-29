@@ -21,7 +21,7 @@ class UserAuthenticationTest extends PlatineTestCase
     public function testValidateFailed(): void
     {
         $auth = $this->getMockInstance(SessionAuthentication::class, [
-            'login' => false
+            'login' => []
         ]);
 
         $o = new UserAuthentication($auth);
@@ -49,7 +49,8 @@ class UserAuthenticationTest extends PlatineTestCase
         ]);
 
         $auth = $this->getMockInstance(SessionAuthentication::class, [
-            'login' => true,
+            'login' => [],
+            'isLogged' => true,
             'getUser' => $user,
         ]);
 

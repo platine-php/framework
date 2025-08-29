@@ -16,7 +16,7 @@ use Platine\Template\Parser\Parser;
  */
 class AuthTagTest extends PlatineTestCase
 {
-    public function testRenderNoLogin(): void
+    public function testRenderNotLogin(): void
     {
         global $mock_app_auth_object,
            $mock_app_to_instance;

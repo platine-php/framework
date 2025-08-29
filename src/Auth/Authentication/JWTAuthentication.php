@@ -49,7 +49,7 @@ namespace Platine\Framework\Auth\Authentication;
 
 use DateTime;
 use Platine\Config\Config;
-use Platine\Framework\Auth\ApiAuthenticationInterface;
+use Platine\Framework\Auth\AuthenticationInterface;
 use Platine\Framework\Auth\Entity\Token;
 use Platine\Framework\Auth\Entity\User;
 use Platine\Framework\Auth\Enum\UserStatus;
@@ -72,7 +72,7 @@ use Platine\Stdlib\Helper\Str;
  * @package Platine\Framework\Auth\Authentication
  * @template T
  */
-class JWTAuthentication implements ApiAuthenticationInterface
+class JWTAuthentication implements AuthenticationInterface
 {
     /**
      * Create new instance
@@ -100,7 +100,7 @@ class JWTAuthentication implements ApiAuthenticationInterface
      */
     public function getUser(): IdentityInterface
     {
-        if ($this->isAuthenticated($this->request) === false) {
+        if ($this->isLogged() === false) {
             throw new AccountNotFoundException('User not logged', 401);
         }
 
@@ -121,8 +121,24 @@ class JWTAuthentication implements ApiAuthenticationInterface
     /**
      * {@inheritdoc}
      */
-    public function isAuthenticated(ServerRequestInterface $request): bool
+    public function getId(): int|string
     {
+        if ($this->isLogged() === false) {
+            throw new AccountNotFoundException('User not logged', 401);
+        }
+
+        $payload = $this->jwt->getPayload();
+        $id = (int) ($payload['sub'] ?? -1);
+
+        return $id;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function isLogged(): bool
+    {
+        $request = $this->request;
         $headerName = $this->config->get('api.auth.headers.name', 'Authorization');
         $tokenHeader = $request->getHeaderLine($headerName);
         if (empty($tokenHeader)) {
@@ -152,8 +168,11 @@ class JWTAuthentication implements ApiAuthenticationInterface
     /**
      * {@inheritdoc}
      */
-    public function login(array $credentials = [], bool $withPassword = true): array
-    {
+    public function login(
+        array $credentials = [],
+        bool $remeberMe = false,
+        bool $withPassword = true
+    ): array {
         if (!isset($credentials['username'])) {
             throw new MissingCredentialsException(
                 'Missing username information',
@@ -243,6 +262,14 @@ class JWTAuthentication implements ApiAuthenticationInterface
         ];
 
         return array_merge($data, $this->getUserData($user, $token));
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function logout(bool $destroy = true): void
+    {
+        // do nothing now
     }
 
     /**

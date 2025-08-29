@@ -47,8 +47,8 @@ declare(strict_types=1);
 
 namespace Platine\Framework\Service\Provider;
 
-use Platine\Framework\Auth\ApiAuthenticationInterface;
 use Platine\Framework\Auth\Authentication\JWTAuthentication;
+use Platine\Framework\Auth\AuthenticationInterface;
 use Platine\Framework\Auth\Middleware\ApiAuthenticationMiddleware;
 use Platine\Framework\Auth\Repository\TokenRepository;
 use Platine\Framework\Security\JWT\Encoder\Base64UrlSafeEncoder;
@@ -70,7 +70,7 @@ class ApiAuthServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->bind(ApiAuthenticationMiddleware::class);
-        $this->app->bind(ApiAuthenticationInterface::class, JWTAuthentication::class);
+        $this->app->bind(AuthenticationInterface::class, JWTAuthentication::class);
         $this->app->bind(SignerInterface::class, HMAC::class);
         $this->app->bind(EncoderInterface::class, Base64UrlSafeEncoder::class);
         $this->app->bind(JWT::class);

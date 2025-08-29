@@ -2,6 +2,72 @@
 
 declare(strict_types=1);
 
+namespace Platine\Framework\Tool\Database;
+
+$mock_function_exists_to_false = false;
+$mock_function_exists_to_true = false;
+$mock_gzencode_to_value = false;
+$mock_gzdecode_to_value = false;
+function function_exists($string): bool
+{
+    global $mock_function_exists_to_false,
+           $mock_function_exists_to_true;
+    if ($mock_function_exists_to_false) {
+        return false;
+    } elseif ($mock_function_exists_to_true) {
+        return true;
+    }
+
+    return \function_exists($string);
+}
+
+function gzencode($string): string
+{
+    global $mock_gzencode_to_value;
+    if ($mock_gzencode_to_value) {
+        return $mock_gzencode_to_value;
+    }
+
+    return \gzencode($string);
+}
+
+function gzdecode($string): string
+{
+    global $mock_gzdecode_to_value;
+    if ($mock_gzdecode_to_value) {
+        return $mock_gzdecode_to_value;
+    }
+
+    return \gzdecode($string);
+}
+
+namespace Platine\Upload\Util;
+
+$mock_tempnam_to_value = false;
+function tempnam($string, $prefix): string
+{
+    global $mock_tempnam_to_value;
+    if ($mock_tempnam_to_value) {
+        return $mock_tempnam_to_value;
+    }
+
+    return \tempnam($string, $prefix);
+}
+
+namespace Platine\Upload\Storage;
+
+$mock_realpath_to_value = false;
+function realpath($string): string
+{
+    global $mock_realpath_to_value;
+    if ($mock_realpath_to_value) {
+        return $string;
+    }
+
+    return \realpath($string);
+}
+
+
 namespace Platine\Stdlib\Helper;
 
 $mock_str_pad_to_value = false;
@@ -360,8 +426,7 @@ function current($a)
 }
 
 namespace Platine\Framework\Migration;
-
-use Platine\Test\Framework\Fixture\MyConfig as MyConfigMigration;
+use Platine\Test\Framework\Fixture\MyConfig;
 $mock_app_to_config_instance = false;
 $mock_app_config_items = [];
 
@@ -371,7 +436,7 @@ function app(string $id)
            $mock_app_config_items;
 
     if ($mock_app_to_config_instance) {
-        return new MyConfigMigration($mock_app_config_items);
+        return new MyConfig($mock_app_config_items);
     }
 
     return \app($id);
@@ -391,6 +456,49 @@ function sha1(string $str)
     return \sha1($str);
 }
 
+
+namespace Platine\Framework\Http\Action;
+
+use Platine\Test\Framework\Fixture\MyApp;
+use Platine\Filesystem\Filesystem;
+
+$mock_app_httpaction_to_instance = false;
+function app(?string $id = null)
+{
+    global $mock_app_httpaction_to_instance;
+    if ($mock_app_httpaction_to_instance) {
+        if ($id === null) {
+            $app = new MyApp();
+            $app->bind(Filesystem::class);
+
+            return $app;
+        }
+    }
+
+    return \app($id);
+}
+
+namespace Platine\Framework\Form\Param;
+
+use Platine\Http\ServerRequestInterface;
+use Platine\Test\Framework\Fixture\MyServerRequest;
+
+$mock_app_form_to_instance = false;
+$mock_app_form_server_request_methods = [];
+function app(string $id)
+{
+    global $mock_app_form_to_instance, $mock_app_form_server_request_methods;
+    if ($mock_app_form_to_instance) {
+        if ($id === ServerRequestInterface::class) {
+            return new MyServerRequest(
+                $mock_app_form_server_request_methods
+            );
+        }
+    }
+
+    return \app($id);
+}
+
 namespace Platine\Framework\Template\Tag;
 
 use Platine\Config\Config;
@@ -400,38 +508,35 @@ use Platine\Framework\Http\RouteHelper;
 use Platine\Framework\Security\Csrf\CsrfManager;
 use Platine\Http\ServerRequestInterface;
 use Platine\Lang\Lang;
+use Platine\Route\Router;
 use Platine\Session\Session;
 use Platine\Test\Framework\Fixture\MyConfig;
 use Platine\Test\Framework\Fixture\MyCsrfManager;
 use Platine\Test\Framework\Fixture\MyLang;
 use Platine\Test\Framework\Fixture\MyRouteHelper;
+use Platine\Test\Framework\Fixture\MyRouter;
 use Platine\Test\Framework\Fixture\MyServerRequest;
 use Platine\Test\Framework\Fixture\MySession;
+use Platine\Filesystem\Filesystem;
+use Platine\Framework\Helper\FileHelper;
 
 
 $mock_app_to_instance = false;
 $mock_app_auth_object = null;
+$mock_app_csrfmanager_object = null;
+$mock_app_filesystem_object = null;
+$mock_app_filehelper_object = null;
 $mock_app_lang_methods = [];
 $mock_app_route_helper_methods = [];
 $mock_app_server_request_methods = [];
+$mock_app_router_methods = [];
 $mock_app_session_items = [];
 $mock_app_session_flash = [];
 $mock_app_session_has = [];
 $mock_app_config_items = [];
-$mock_sha1_foo = true;
 
 
-function sha1(string $str)
-{
-    global $mock_sha1_foo;
-    if ($mock_sha1_foo) {
-        return 'foo';
-    }
-
-    return \sha1($str);
-}
-
-function app(string $id)
+function app(?string $id)
 {
     global $mock_app_to_instance,
            $mock_app_session_items,
@@ -439,8 +544,12 @@ function app(string $id)
            $mock_app_config_items,
            $mock_app_server_request_methods,
            $mock_app_lang_methods,
+           $mock_app_csrfmanager_object,
+           $mock_app_filesystem_object,
+           $mock_app_filehelper_object,
            $mock_app_route_helper_methods,
            $mock_app_session_flash,
+           $mock_app_router_methods,
            $mock_app_auth_object;
 
     if ($mock_app_to_instance) {
@@ -450,6 +559,22 @@ function app(string $id)
 
         if ($id === Config::class) {
             return new MyConfig($mock_app_config_items);
+        }
+
+        if ($id === CsrfManager::class && $mock_app_csrfmanager_object !== null) {
+            return $mock_app_csrfmanager_object;
+        }
+
+        if ($id === Filesystem::class && $mock_app_filesystem_object !== null) {
+            return $mock_app_filesystem_object;
+        }
+
+        if ($id === FileHelper::class && $mock_app_filehelper_object !== null) {
+            return $mock_app_filehelper_object;
+        }
+
+        if ($id === Router::class) {
+            return new MyRouter($mock_app_router_methods);
         }
 
         if ($id === CsrfManager::class) {

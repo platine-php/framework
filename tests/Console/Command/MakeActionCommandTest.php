@@ -12,6 +12,7 @@ use Platine\Filesystem\Adapter\Local\LocalAdapter;
 use Platine\Filesystem\Filesystem;
 use Platine\Framework\App\Application;
 use Platine\Framework\Console\Command\MakeActionCommand;
+use Platine\Framework\Helper\ActionHelper;
 use Platine\Test\Framework\Console\BaseCommandTestCase;
 use stdClass;
 
@@ -209,6 +210,83 @@ GENERATION OF NEW CLASS
 
 Enter the properties list (empty value to finish):
 Property full class name: Property full class name: Property full class name: Generation of new action class [MyApp\actions\MyAction]
+
+Class: MyApp\actions\MyAction
+Path: $classPath
+Namespace: MyApp\actions
+Are you confirm the generation of [MyApp\actions\MyAction] ?Class [MyApp\actions\MyAction] generated successfully.
+
+E;
+        $this->assertCommandOutput($expected, $this->getConsoleOutputContent());
+    }
+
+    public function testExecuteWithPropertiesUsingActionHelper(): void
+    {
+        $dir = $this->createVfsDirectory('app', $this->vfsRoot);
+        $actionName = 'actions/' . 'MyAction';
+        $localAdapter = new LocalAdapter();
+        $filesystem = new Filesystem($localAdapter);
+        $app = $this->getMockInstance(Application::class, [
+            'getNamespace' => 'MyApp\\',
+            'getAppPath' => $dir->url()
+        ]);
+
+        $this->createInputContent('Platine\Framework\App\Application');
+        $this->createInputContent("\n");
+        $this->createInputContent(ActionHelper::class);
+        $this->createInputContent("\n");
+        $this->createInputContent('Platine\Template\Template');
+        $this->createInputContent("\n");
+        $this->createInputContent('');
+
+
+        $reader = $this->getReaderInstance();
+        $writer = $this->getWriterInstance();
+
+        $interactor = $this->getMockInstance(
+            Interactor::class,
+            [
+            'writer' => $writer,
+            'reader' => $reader
+            ],
+            [
+             'prompt',
+            'confirm',
+            'choice',
+            'isValidChoice',
+            ]
+        );
+
+        $this->setPropertyValue(Interactor::class, $interactor, 'reader', $reader);
+        $this->setPropertyValue(Interactor::class, $interactor, 'writer', $writer);
+
+        $consoleApp = $this->getMockInstance(ConsoleApp::class, [
+            'io' => $interactor
+        ]);
+
+        $o = new MakeActionCommand($app, $filesystem);
+        $o->bind($consoleApp);
+        $o->parse(['platine', $actionName]);
+        $this->assertEquals('make:action', $o->getName());
+
+        $o->interact($reader, $writer);
+        $o->execute();
+
+        $classPath = implode(
+            DIRECTORY_SEPARATOR,
+            [
+                'vfs://root',
+                'app',
+                'actions',
+                'MyAction.php'
+            ]
+        );
+
+        $expected = <<<E
+GENERATION OF NEW CLASS
+
+Enter the properties list (empty value to finish):
+Property full class name: Property full class name: Property full class name: Property full class name: Generation of new action class [MyApp\actions\MyAction]
 
 Class: MyApp\actions\MyAction
 Path: $classPath

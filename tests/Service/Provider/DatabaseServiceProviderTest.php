@@ -9,7 +9,9 @@ use Platine\Database\Connection;
 use Platine\Database\Exception\ConnectionException;
 use Platine\Database\Pool;
 use Platine\Dev\PlatineTestCase;
+use Platine\Framework\Helper\DatabaseHelper;
 use Platine\Framework\Service\Provider\DatabaseServiceProvider;
+use Platine\Framework\Tool\Database\DatabaseDump;
 use Platine\Test\Framework\Fixture\MyApp;
 
 /*
@@ -29,5 +31,7 @@ class DatabaseServiceProviderTest extends PlatineTestCase
         $this->assertInstanceOf(Pool::class, $app->get(Pool::class));
         $this->expectException(ConnectionException::class);
         $this->assertInstanceOf(Connection::class, $app->get(Connection::class));
+        $this->assertInstanceOf(DatabaseHelper::class, $app->get(DatabaseHelper::class));
+        $this->assertInstanceOf(DatabaseDump::class, $app->get(DatabaseDump::class));
     }
 }

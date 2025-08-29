@@ -74,12 +74,12 @@ class UserAuthentication implements UserAuthenticationInterface
     {
         $userId = null;
         try {
-            $isLogged = $this->authentication->login([
+            $this->authentication->login([
                 'username' => $username,
                 'password' => $password,
             ]);
 
-            if ($isLogged) {
+            if ($this->authentication->isLogged()) {
                 $userId = $this->authentication->getUser()->getId();
             }
         } catch (AuthenticationException $ex) {

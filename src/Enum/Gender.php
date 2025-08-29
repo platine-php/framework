@@ -29,46 +29,16 @@
  * SOFTWARE.
  */
 
-/**
- *  @file SessionUser.php
- *
- *  The audit user based on session class
- *
- *  @package    Platine\Framework\Audit
- *  @author Platine Developers team
- *  @copyright  Copyright (c) 2020
- *  @license    http://opensource.org/licenses/MIT  MIT License
- *  @link   https://www.platine-php.com
- *  @version 1.0.0
- *  @filesource
- */
-
 declare(strict_types=1);
 
-namespace Platine\Framework\Audit;
-
-use Platine\Framework\Auth\AuthenticationInterface;
+namespace Platine\Framework\Enum;
 
 /**
- * @class SessionUser
- * @package Platine\Framework\Audit
- */
-class SessionUser implements AuditUserInterface
+* @class Gender
+* @package Platine\Framework\Enum
+*/
+class Gender
 {
-    /**
-     * Create new instance
-     * @param AuthenticationInterface $authentication
-     */
-    public function __construct(protected AuthenticationInterface $authentication)
-    {
-    }
-
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getUserId(): mixed
-    {
-        return $this->authentication->getUser()->getId();
-    }
+    public const MALE = 'M';
+    public const FEMALE = 'F';
 }

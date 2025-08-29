@@ -47,7 +47,10 @@ declare(strict_types=1);
 
 namespace Platine\Framework\Template\Tag;
 
+use Platine\Framework\Auth\AuthorizationInterface;
 use Platine\Framework\Http\RouteHelper;
+use Platine\Framework\Security\Csrf\CsrfManager;
+use Platine\Route\Router;
 use Platine\Template\Exception\ParseException;
 use Platine\Template\Parser\AbstractTag;
 use Platine\Template\Parser\Context;
@@ -97,9 +100,42 @@ class RouteUrlTag extends AbstractTag
 
             $parameters[$key] = $value;
         }
+
+        if ($context->hasKey($this->name)) {
+            $this->name = (string) $context->get($this->name);
+        }
+
         /** @var RouteHelper $helper */
         $helper = app(RouteHelper::class);
 
-        return $helper->generateUrl($this->name, $parameters);
+        /** @var Router $router */
+        $router = app(Router::class);
+
+        $routeCollection = $router->routes();
+
+        $route = $routeCollection->get($this->name);
+        $permission = $route->getAttribute('permission');
+        if ($permission !== null) {
+            /** @var AuthorizationInterface $authorization */
+            $authorization = app(AuthorizationInterface::class);
+            if ($authorization->isGranted($permission) === false) {
+                return '#hide';
+            }
+        }
+
+        $csrf = (bool) $route->getAttribute('csrf');
+        $queries = [];
+        if ($csrf) {
+            /** @var CsrfManager $csrfManager */
+            $csrfManager = app(CsrfManager::class);
+            $queries = $csrfManager->getTokenQuery();
+        }
+
+        $url = $helper->generateUrl($this->name, $parameters);
+        if (count($queries) > 0) {
+            $url .= '?' . http_build_query($queries);
+        }
+
+        return $url;
     }
 }

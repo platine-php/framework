@@ -108,6 +108,20 @@ class SessionAuthentication implements AuthenticationInterface
     /**
      * {@inheritdoc}
      */
+    public function getId(): int|string
+    {
+        if ($this->isLogged() === false) {
+            throw new AccountNotFoundException('User not logged', 401);
+        }
+
+        $id = $this->session->get('user.id');
+
+        return $id;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function isLogged(): bool
     {
         return $this->session->has('user');
@@ -120,7 +134,7 @@ class SessionAuthentication implements AuthenticationInterface
         array $credentials = [],
         bool $remeberMe = false,
         bool $withPassword = true
-    ): bool {
+    ): array {
         if (!isset($credentials['username'])) {
             throw new MissingCredentialsException(
                 'Missing username information',
@@ -180,12 +194,14 @@ class SessionAuthentication implements AuthenticationInterface
           'permissions' => array_unique($permissions),
         ];
 
-        $this->session->set('user', array_merge($data, $this->getUserData($user)));
+        $loginData = array_merge($data, $this->getUserData($user));
+
+        $this->session->set('user', $loginData);
 
         // Inform the system that the user just login successfully
         $this->app->dispatch(new AuthLoginEvent($user));
 
-        return $this->isLogged();
+        return $loginData;
     }
 
     /**

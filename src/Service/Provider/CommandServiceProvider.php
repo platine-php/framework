@@ -54,6 +54,7 @@ use Platine\Framework\Console\Command\MakeCrudActionCommand;
 use Platine\Framework\Console\Command\MakeEntityCommand;
 use Platine\Framework\Console\Command\MakeEnumCommand;
 use Platine\Framework\Console\Command\MakeEventCommand;
+use Platine\Framework\Console\Command\MakeFilterCommand;
 use Platine\Framework\Console\Command\MakeFormParamCommand;
 use Platine\Framework\Console\Command\MakeListenerCommand;
 use Platine\Framework\Console\Command\MakeMiddlewareCommand;
@@ -82,6 +83,7 @@ class CommandServiceProvider extends ServiceProvider
         $this->app->bind(ConfigCommand::class);
         $this->app->bind(VendorPublishCommand::class);
         $this->app->bind(MakeActionCommand::class);
+        $this->app->bind(MakeFilterCommand::class);
         $this->app->bind(MakeEntityCommand::class);
         $this->app->bind(MakeEnumCommand::class);
         $this->app->bind(MakeRepositoryCommand::class);
@@ -96,6 +98,7 @@ class CommandServiceProvider extends ServiceProvider
         $this->app->bind(MakeCrudActionCommand::class);
 
         //Commands
+        $this->addCommand(MakeFilterCommand::class);
         $this->addCommand(MaintenanceCommand::class);
         $this->addCommand(VendorPublishCommand::class);
         $this->addCommand(MakeActionCommand::class);

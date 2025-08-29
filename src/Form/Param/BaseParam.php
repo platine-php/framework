@@ -48,6 +48,9 @@ declare(strict_types=1);
 namespace Platine\Framework\Form\Param;
 
 use JsonSerializable;
+use Platine\Framework\Config\AppDatabaseConfig;
+use Platine\Framework\Http\RequestData;
+use Platine\Http\ServerRequestInterface;
 use Platine\Orm\Entity;
 use Platine\Stdlib\Helper\Str;
 use ReflectionClass;
@@ -61,6 +64,12 @@ use ReflectionProperty;
  */
 class BaseParam implements JsonSerializable
 {
+    /**
+     * The list of fields to ignore
+     * @var array<string>
+     */
+    protected array $ignores = ['from'];
+
     /**
      * Create new instance
      * @param array<string, mixed> $data
@@ -110,7 +119,21 @@ class BaseParam implements JsonSerializable
      */
     public function getDefault(): array
     {
-        return [];
+        // TODO
+        /** @var ServerRequestInterface $request */
+        $request = app(ServerRequestInterface::class);
+        $param = new RequestData($request);
+
+        $defaults = [];
+        $queries = $param->gets();
+        foreach ($queries as $name => $value) {
+            $field = Str::camel($name, true);
+            if (property_exists($this, $field) && in_array($name, $this->ignores) === false) {
+                $defaults[$name] = $value;
+            }
+        }
+
+        return $defaults;
     }
 
     /**
@@ -119,7 +142,10 @@ class BaseParam implements JsonSerializable
      */
     public function data(): array
     {
-        return get_object_vars($this);
+        $values = get_object_vars($this);
+        unset($values['ignores']);
+
+        return $values;
     }
 
     /**
@@ -149,6 +175,16 @@ class BaseParam implements JsonSerializable
         }
 
         return null;
+    }
+
+    /**
+    * Create instance using database configuration
+    * @param AppDatabaseConfig $cfg
+    * @return $this
+    */
+    public function fromConfig(AppDatabaseConfig $cfg): self
+    {
+        return $this;
     }
 
     /**
@@ -202,6 +238,10 @@ class BaseParam implements JsonSerializable
         /** @var ReflectionProperty[] $properties */
         $properties = $reflectionClass->getProperties(ReflectionProperty::IS_PROTECTED);
         foreach ($properties as $property) {
+            if ($property->getName() === 'ignores') {
+                continue;
+            }
+
             /** @var ReflectionNamedType|null $type */
             $type = $property->getType();
             if ($type !== null && $type->isBuiltin()) {

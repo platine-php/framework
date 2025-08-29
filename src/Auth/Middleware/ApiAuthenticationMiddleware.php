@@ -48,7 +48,7 @@ declare(strict_types=1);
 namespace Platine\Framework\Auth\Middleware;
 
 use Platine\Config\Config;
-use Platine\Framework\Auth\ApiAuthenticationInterface;
+use Platine\Framework\Auth\AuthenticationInterface;
 use Platine\Framework\Http\Response\RestResponse;
 use Platine\Http\Handler\MiddlewareInterface;
 use Platine\Http\Handler\RequestHandlerInterface;
@@ -65,11 +65,11 @@ class ApiAuthenticationMiddleware implements MiddlewareInterface
 {
     /**
      * Create new instance
-     * @param ApiAuthenticationInterface $authentication
+     * @param AuthenticationInterface $authentication
      * @param Config<T> $config
      */
     public function __construct(
-        protected ApiAuthenticationInterface $authentication,
+        protected AuthenticationInterface $authentication,
         protected Config $config
     ) {
     }
@@ -85,7 +85,7 @@ class ApiAuthenticationMiddleware implements MiddlewareInterface
             return $handler->handle($request);
         }
 
-        if ($this->authentication->isAuthenticated($request) === false) {
+        if ($this->authentication->isLogged() === false) {
             return $this->unauthorizedResponse();
         }
 
