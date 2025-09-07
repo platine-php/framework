@@ -36,6 +36,7 @@ namespace Platine\Framework\Console\Command;
 use Platine\Filesystem\Filesystem;
 use Platine\Framework\App\Application;
 use Platine\Framework\Config\AppDatabaseConfig;
+use Platine\Framework\Config\Model\Configuration;
 use Platine\Framework\Console\MakeCommand;
 use Platine\Orm\Entity;
 use Platine\Stdlib\Helper\Str;
@@ -66,6 +67,8 @@ class MakeDatabaseConfigCommand extends MakeCommand
 
         $this->setName('make:dbconfig')
                ->setDescription('Command to generate class that hold database configuration value');
+
+        $this->addOption('-c|--config-entity', 'The configuration entity class', Configuration::class, true);
     }
 
     /**
@@ -88,7 +91,7 @@ class MakeDatabaseConfigCommand extends MakeCommand
         *
         * @class %classname%
         * @package %namespace%
-        * @template TDbConfigurationEntity as \Platine\App\Model\Entity\Configuration
+        * @template TDbConfigurationEntity as \%config_entity%
         */
         class %classname%
         {
@@ -139,7 +142,10 @@ class MakeDatabaseConfigCommand extends MakeCommand
             $methods .= $this->getConfigMethod($row);
         }
 
-        return str_replace('%config_content%', $methods, $content);
+        $configEntity = $this->getOptionValue('configEntity');
+        $configEntityContent = str_replace('%config_entity%', $configEntity, $content);
+
+        return str_replace('%config_content%', $methods, $configEntityContent);
     }
 
     /**
