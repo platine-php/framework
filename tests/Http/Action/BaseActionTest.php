@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Platine\Test\Framework\Http\Action;
 
 use Platine\Dev\PlatineTestCase;
+use Platine\Framework\Auth\Repository\UserRepository;
 use Platine\Framework\Helper\ActionHelper;
 use Platine\Framework\Helper\Sidebar;
 use Platine\Framework\Http\Action\BaseAction;
@@ -16,6 +17,7 @@ use Platine\Framework\Security\SecurityPolicy;
 use Platine\Http\ServerRequest;
 use Platine\Lang\Lang;
 use Platine\Logger\Logger;
+use Platine\Orm\Query\EntityQuery;
 use Platine\Pagination\Pagination;
 use Platine\Test\Framework\Fixture\MyBaseAction;
 use Platine\Test\Framework\Fixture\MyBaseAction2;
@@ -140,6 +142,63 @@ class BaseActionTest extends PlatineTestCase
         $this->assertEquals('mariadb error lang', $error);
     }
 
+    public function testHandleRestPaginationDefaultSort(): void
+    {
+        $this->handleRestPagination(true);
+    }
+
+    public function testHandleRestPaginationQueryParamSort(): void
+    {
+        $this->handleRestPagination(false);
+    }
+
+    private function handleRestPagination(bool $defaultSort = false): void
+    {
+        $query = $this->getMockInstance(EntityQuery::class, [
+            'count' => 23,
+        ]);
+        $repo1 = $this->getMockInstance(UserRepository::class, [
+            'query' => $query,
+        ]);
+        $repo = $this->getMockInstance(UserRepository::class, [
+            'filters' => $repo1,
+        ]);
+        $logger = $this->getMockInstance(Logger::class);
+        $pagination = $this->getMockInstance(Pagination::class, [
+            'getTotalItems' => 16,
+            'getInfo' => ['page' => 1],
+        ]);
+        $this->setClassCreateObjectMaps(ActionHelper::class, [
+            'logger' => $logger,
+            'pagination' => $pagination,
+        ]);
+        $request = $this->getMockInstanceMap(ServerRequest::class, [
+            'getQueryParams' => [
+                [[
+                    'sort' => $defaultSort === false ? 'name:desc,status' : '',
+                    'page' => 1,
+                    'limit' => 101,
+                ]]
+            ],
+        ]);
+        $actionHelper = $this->createObject(ActionHelper::class);
+
+        $o = new MyBaseAction($actionHelper);
+        /** @var RestResponse $resp */
+        $resp = $o->handle($request);
+
+        $this->expectMethodCallCount($repo, 'filters');
+        $this->expectMethodCallCount($query, 'count');
+        $this->expectMethodCallCount($pagination, 'setTotalItems');
+        $this->runPrivateProtectedMethod(
+            $o,
+            'handleRestPagination',
+            [$repo, $query]
+        );
+        $this->assertEquals(200, $resp->getStatusCode());
+        $this->assertEquals('OK', $resp->getReasonPhrase());
+    }
+
     public function testRestResponse(): void
     {
         global $mock_time_to_1000;
@@ -174,6 +233,64 @@ class BaseActionTest extends PlatineTestCase
         );
     }
 
+    public function testRestCreatedResponse(): void
+    {
+        global $mock_time_to_1000;
+        $mock_time_to_1000 = true;
+
+        $logger = $this->getMockInstance(Logger::class);
+        $this->setClassCreateObjectMaps(ActionHelper::class, [
+            'logger' => $logger,
+        ]);
+        $actionHelper = $this->createObject(ActionHelper::class);
+
+        $o = new MyBaseAction($actionHelper);
+        /** @var RestResponse $resp */
+        $resp = $this->runPrivateProtectedMethod(
+            $o,
+            'restCreatedResponse',
+            [['foo' => 'bar'], 0]
+        );
+        $this->assertInstanceOf(RestResponse::class, $resp);
+        $this->assertEquals(201, $resp->getStatusCode());
+        $this->assertEquals('Created', $resp->getReasonPhrase());
+        $this->assertEquals(63, $resp->getBody()->getSize());
+        $resp->getBody()->rewind();
+        $this->assertEquals(
+            '{"success":true,"timestamp":1000,"code":0,"data":{"foo":"bar"}}',
+            $resp->getBody()->getContents()
+        );
+    }
+
+    public function testRestNoContentResponse(): void
+    {
+        global $mock_time_to_1000;
+        $mock_time_to_1000 = true;
+
+        $logger = $this->getMockInstance(Logger::class);
+        $this->setClassCreateObjectMaps(ActionHelper::class, [
+            'logger' => $logger,
+        ]);
+        $actionHelper = $this->createObject(ActionHelper::class);
+
+        $o = new MyBaseAction($actionHelper);
+        /** @var RestResponse $resp */
+        $resp = $this->runPrivateProtectedMethod(
+            $o,
+            'restNoContentResponse',
+            [0]
+        );
+        $this->assertInstanceOf(RestResponse::class, $resp);
+        $this->assertEquals(204, $resp->getStatusCode());
+        $this->assertEquals('No Content', $resp->getReasonPhrase());
+        $this->assertEquals(42, $resp->getBody()->getSize());
+        $resp->getBody()->rewind();
+        $this->assertEquals(
+            '{"success":true,"timestamp":1000,"code":0}',
+            $resp->getBody()->getContents()
+        );
+    }
+
     public function testRestErrorResponse(): void
     {
         global $mock_time_to_1000;
@@ -194,10 +311,10 @@ class BaseActionTest extends PlatineTestCase
         );
         $this->assertInstanceOf(RestResponse::class, $resp);
         $this->assertEquals(401, $resp->getStatusCode());
-        $this->assertEquals(83, $resp->getBody()->getSize());
+        $this->assertEquals(73, $resp->getBody()->getSize());
         $resp->getBody()->rewind();
         $this->assertEquals(
-            '{"success":false,"timestamp":1000,"code":4000,"message":"Error response","data":[]}',
+            '{"success":false,"timestamp":1000,"code":4000,"message":"Error response"}',
             $resp->getBody()->getContents()
         );
     }
@@ -223,10 +340,10 @@ class BaseActionTest extends PlatineTestCase
             ['Server Error']
         );
         $this->assertEquals(500, $resp1->getStatusCode());
-        $this->assertEquals(81, $resp1->getBody()->getSize());
+        $this->assertEquals(71, $resp1->getBody()->getSize());
         $resp1->getBody()->rewind();
         $this->assertEquals(
-            '{"success":false,"timestamp":1000,"code":5000,"message":"Server Error","data":[]}',
+            '{"success":false,"timestamp":1000,"code":5000,"message":"Server Error"}',
             $resp1->getBody()->getContents()
         );
 
@@ -237,10 +354,10 @@ class BaseActionTest extends PlatineTestCase
             ['Bad Error']
         );
         $this->assertEquals(400, $resp2->getStatusCode());
-        $this->assertEquals(78, $resp2->getBody()->getSize());
+        $this->assertEquals(68, $resp2->getBody()->getSize());
         $resp2->getBody()->rewind();
         $this->assertEquals(
-            '{"success":false,"timestamp":1000,"code":4000,"message":"Bad Error","data":[]}',
+            '{"success":false,"timestamp":1000,"code":4000,"message":"Bad Error"}',
             $resp2->getBody()->getContents()
         );
 
@@ -251,10 +368,10 @@ class BaseActionTest extends PlatineTestCase
             ['Conflict Error']
         );
         $this->assertEquals(409, $resp3->getStatusCode());
-        $this->assertEquals(83, $resp3->getBody()->getSize());
+        $this->assertEquals(73, $resp3->getBody()->getSize());
         $resp3->getBody()->rewind();
         $this->assertEquals(
-            '{"success":false,"timestamp":1000,"code":4090,"message":"Conflict Error","data":[]}',
+            '{"success":false,"timestamp":1000,"code":4090,"message":"Conflict Error"}',
             $resp3->getBody()->getContents()
         );
 
@@ -265,10 +382,10 @@ class BaseActionTest extends PlatineTestCase
             ['Not Found Error']
         );
         $this->assertEquals(404, $resp4->getStatusCode());
-        $this->assertEquals(84, $resp4->getBody()->getSize());
+        $this->assertEquals(74, $resp4->getBody()->getSize());
         $resp4->getBody()->rewind();
         $this->assertEquals(
-            '{"success":false,"timestamp":1000,"code":4040,"message":"Not Found Error","data":[]}',
+            '{"success":false,"timestamp":1000,"code":4040,"message":"Not Found Error"}',
             $resp4->getBody()->getContents()
         );
 
@@ -279,11 +396,11 @@ class BaseActionTest extends PlatineTestCase
             [['email' => 'invalid email address']]
         );
         $this->assertEquals(422, $resp5->getStatusCode());
-        $this->assertEquals(120, $resp5->getBody()->getSize());
+        $this->assertEquals(110, $resp5->getBody()->getSize());
         $resp5->getBody()->rewind();
         $this->assertEquals(
             '{"success":false,"timestamp":1000,"code":4220,"message":"lang msg",'
-                . '"data":[],"errors":{"email":"invalid email address"}}',
+                . '"errors":{"email":"invalid email address"}}',
             $resp5->getBody()->getContents()
         );
     }

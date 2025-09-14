@@ -162,7 +162,7 @@ class EntityHelper
                 $className = Php::getShortClassName($entity);
 
                 $auditor->setDetail(sprintf(
-                    'Update of %s %s',
+                    'Update of "%s" %s',
                     $className,
                     Str::stringify($entityData)
                 ))
@@ -189,7 +189,7 @@ class EntityHelper
                 $className = Php::getShortClassName($entity);
 
                 $auditor->setDetail(sprintf(
-                    'Delete of %s %s',
+                    'Delete of "%s" %s',
                     $className,
                     Str::stringify($entityData)
                 ))

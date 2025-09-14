@@ -51,6 +51,8 @@ use Platine\Http\ResponseInterface;
 use Platine\Http\ServerRequestInterface;
 use Platine\Lang\Lang;
 use Platine\Logger\LoggerInterface;
+use Platine\Orm\Query\EntityQuery;
+use Platine\Orm\RepositoryInterface;
 use Platine\Pagination\Pagination;
 use Platine\Stdlib\Helper\Arr;
 use Platine\Stdlib\Helper\Str;
@@ -589,17 +591,57 @@ abstract class BaseAction implements RequestHandlerInterface
         return $this->redirect($originRoute, ['id' => $originId]);
     }
 
+    /**
+     * Process pagination and sort
+     * @param RepositoryInterface $repository
+     * @param EntityQuery $query
+     * @param string|array<string> $sortFields
+     * @param string $sortDir
+     * @return void
+     */
+    protected function handleRestPagination(
+        RepositoryInterface $repository,
+        EntityQuery $query,
+        string|array $sortFields = 'name',
+        string $sortDir = 'ASC'
+    ): void {
+        if ($this->all === false) {
+            $totalItems = $repository->filters($this->filters)
+                                     ->query()
+                                     ->count('id');
+
+            $currentPage = (int) $this->param->get('page', 1);
+
+            $this->pagination->setTotalItems($totalItems)
+                             ->setCurrentPage($currentPage);
+
+            $limit = $this->pagination->getItemsPerPage();
+            $offset = $this->pagination->getOffset();
+
+            $query = $query->limit($limit)
+                           ->offset($offset);
+        }
+
+        if (count($this->sorts) > 0) {
+            foreach ($this->sorts as $column => $order) {
+                $query = $query->orderBy($column, $order);
+            }
+        } else {
+            $query = $query->orderBy($sortFields, $sortDir);
+        }
+    }
+
     // REST API Part
     /**
      * Return the rest response
-     * @param array<string, mixed>|object|mixed $data
+     * @param mixed $data
      * @param int $statusCode
-     * @param int $code
+     * @param int $code the custom code
      *
      * @return ResponseInterface
      */
     protected function restResponse(
-        $data = [],
+        mixed $data = [],
         int $statusCode = 200,
         int $code = 0
     ): ResponseInterface {
@@ -615,6 +657,37 @@ abstract class BaseAction implements RequestHandlerInterface
             $code,
             '',
             $statusCode
+        );
+    }
+
+    /**
+     * Return the rest created response
+     * @param array<string, mixed>|object|mixed $data
+     * @param int $code the custom code
+     *
+     * @return ResponseInterface
+     */
+    protected function restCreatedResponse(mixed $data = [], int $code = 0): ResponseInterface
+    {
+        return $this->restResponse(
+            $data,
+            201,
+            $code
+        );
+    }
+
+    /**
+     * Return the rest no content response
+     * @param int $code the custom code
+     *
+     * @return ResponseInterface
+     */
+    protected function restNoContentResponse(int $code = 0): ResponseInterface
+    {
+        return $this->restResponse(
+            [],
+            204,
+            $code
         );
     }
 
