@@ -27,9 +27,16 @@ class CsvReaderTest extends PlatineTestCase
         $o = new CsvReader();
         $this->assertEquals(';', $o->getDelimiter());
         $this->assertEquals(0, $o->getLimit());
+        $this->assertEquals('\\', $o->getEscape());
+        $this->assertEquals('"', $o->getEnclosure());
         $this->assertEquals(0, $o->count());
         $this->assertEmpty($o->getHeaders());
         $this->assertEmpty($o->all());
+
+        $o->setEscape('~');
+        $o->setEnclosure('|');
+        $this->assertEquals('~', $o->getEscape());
+        $this->assertEquals('|', $o->getEnclosure());
     }
 
     public function testSetLimit(): void

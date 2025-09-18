@@ -93,6 +93,18 @@ class CsvReader
     protected string $delimiter = ';';
 
     /**
+     * The CSV field enclosure
+     * @var string
+     */
+    protected string $enclosure = '"';
+
+    /**
+     * The escape character
+     * @var string
+     */
+    protected string $escape = '\\';
+
+    /**
      * Return the data list
      * @return array<int, array<string, mixed>>
      */
@@ -180,6 +192,47 @@ class CsvReader
         return $this;
     }
 
+    /**
+     * Return the field enclosure
+     * @return string
+     */
+    public function getEnclosure(): string
+    {
+        return $this->enclosure;
+    }
+
+    /**
+     * Return the escape character
+     * @return string
+     */
+    public function getEscape(): string
+    {
+        return $this->escape;
+    }
+
+    /**
+     * Set field enclosure
+     * @param string $enclosure
+     * @return $this
+     */
+    public function setEnclosure(string $enclosure): self
+    {
+        $this->enclosure = $enclosure;
+        return $this;
+    }
+
+    /**
+     * Set the escape character
+     * @param string $escape
+     * @return $this
+     */
+    public function setEscape(string $escape): self
+    {
+        $this->escape = $escape;
+        return $this;
+    }
+
+
 
     /**
      * Parse the CSV file
@@ -196,7 +249,15 @@ class CsvReader
         }
 
         $i = 0;
-        while (($data = fgetcsv($fp, $this->limit, $this->delimiter)) !== false) {
+        while (
+            ($data = fgetcsv(
+                $fp,
+                $this->limit,
+                $this->delimiter,
+                $this->enclosure,
+                $this->escape
+            )) !== false
+        ) {
             // skip all empty lines
             if ($data[0] !== null) {
                 if ($i === 0) {

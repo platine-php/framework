@@ -34,10 +34,17 @@ class BaseTestRepository extends PlatineTestCase
         return $em;
     }
 
+    /**
+     *
+     * @param array<string, mixed> $columns
+     * @param EntityManager|null $em
+     * @param EntityMapper|null $mapper
+     * @return Entity
+     */
     protected function getEntityInstance(
         array $columns = [],
-        EntityManager $em = null,
-        EntityMapper $mapper = null
+        ?EntityManager $em = null,
+        ?EntityMapper $mapper = null
     ): Entity {
         if (!$em) {
             $em = $this->getMockBuilder(EntityManager::class)
