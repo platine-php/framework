@@ -267,7 +267,7 @@ class SessionAuthenticationTest extends PlatineTestCase
             'username' => 'foo',
             'password' => 'foo',
         ];
-        $this->assertCount(5, $o->login($credentials));
+        $this->assertCount(2, $o->login($credentials));
     }
 
     public function testLogout(): void

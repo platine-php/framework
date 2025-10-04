@@ -92,7 +92,7 @@ class SessionAuthentication implements AuthenticationInterface
             throw new AccountNotFoundException('User not logged', 401);
         }
 
-        $id = $this->session->get('user.id');
+        $id = $this->session->get('auth.user.id');
         $user = $this->userRepository->find($id);
 
         if ($user === null) {
@@ -124,7 +124,7 @@ class SessionAuthentication implements AuthenticationInterface
      */
     public function isLogged(): bool
     {
-        return $this->session->has('user');
+        return $this->session->has('auth');
     }
 
     /**
@@ -187,16 +187,20 @@ class SessionAuthentication implements AuthenticationInterface
         }
 
         $data = [
-          'id' => $user->id,
-          'username' => $user->username,
-          'lastname' => $user->lastname,
-          'firstname' => $user->firstname,
-          'permissions' => array_unique($permissions),
+          'user' => [
+            'id' => $user->id,
+            'username' => $user->username,
+            'lastname' => $user->lastname,
+            'firstname' => $user->firstname,
+            'email' => $user->email,
+            'status' => $user->status,
+          ],
+          'permissions' => $permissions,
         ];
 
         $loginData = array_merge($data, $this->getUserData($user));
 
-        $this->session->set('user', $loginData);
+        $this->session->set('auth', $loginData);
 
         // Inform the system that the user just login successfully
         $this->app->dispatch(new AuthLoginEvent($user));
@@ -209,7 +213,7 @@ class SessionAuthentication implements AuthenticationInterface
      */
     public function logout(bool $destroy = true): void
     {
-        $this->session->remove('user');
+        $this->session->remove('auth');
 
         if ($destroy) {
             $params = session_get_cookie_params();

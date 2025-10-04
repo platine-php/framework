@@ -69,7 +69,7 @@ class SessionAuthorization implements AuthorizationInterface
      */
     public function getPermissions(): array
     {
-        return $this->session->get('user.permissions', []);
+        return $this->session->get('auth.permissions', []);
     }
 
     /**

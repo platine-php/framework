@@ -255,8 +255,9 @@ class JWTAuthentication implements AuthenticationInterface
             'lastname' => $user->lastname,
             'firstname' => $user->firstname,
             'email' => $user->email,
-            'permissions' => $permissions,
+            'status' => $user->status,
           ],
+          'permissions' => $permissions,
           'token' => $jwtToken,
           'refresh_token' => $refreshToken,
         ];
@@ -296,8 +297,6 @@ class JWTAuthentication implements AuthenticationInterface
      */
     protected function getUserData(User $user, Token $token): array
     {
-        return [
-            'refresh_token_expire' => $token->expire_at->getTimestamp()
-        ];
+        return [];
     }
 }
