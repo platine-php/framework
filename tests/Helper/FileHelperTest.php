@@ -70,7 +70,7 @@ class FileHelperTest extends PlatineTestCase
         $this->expectMethodCallCount($filesystem, 'file');
         $this->expectMethodCallCount($file, 'exists');
         $this->expectMethodCallCount($file, 'delete');
-        $o->deleteUploadFile($info);
+        $o->deleteFile($info);
     }
 
     public function testExists(): void
@@ -93,6 +93,50 @@ class FileHelperTest extends PlatineTestCase
         $this->expectMethodCallCount($filesystem, 'get');
         $this->expectMethodCallCount($file, 'exists');
         $this->assertFalse($o->exists('my_filename', 'folder'));
+    }
+
+    public function testExistImage(): void
+    {
+        $file = $this->getMockInstance(File::class, [
+            'exists' => false,
+            'getPath' => 'report_file',
+        ]);
+
+        $lang = $this->getMockInstance(Lang::class);
+        $filesystem = $this->getMockInstance(Filesystem::class, [
+            'get' => $file,
+        ]);
+        $config = $this->getMockInstanceMap(Config::class, [
+            'get' => [
+                ['platform.data_image_path', null, 'data_image_path'],
+            ],
+        ]);
+        $o = new FileHelper($config, $filesystem, $lang);
+        $this->expectMethodCallCount($filesystem, 'get');
+        $this->expectMethodCallCount($file, 'exists');
+        $this->assertFalse($o->existImage('my_filename', 'folder'));
+    }
+
+    public function testExistPublicImage(): void
+    {
+        $file = $this->getMockInstance(File::class, [
+            'exists' => false,
+            'getPath' => 'report_file',
+        ]);
+
+        $lang = $this->getMockInstance(Lang::class);
+        $filesystem = $this->getMockInstance(Filesystem::class, [
+            'get' => $file,
+        ]);
+        $config = $this->getMockInstanceMap(Config::class, [
+            'get' => [
+                ['platform.public_image_path', null, 'public_image_path'],
+            ],
+        ]);
+        $o = new FileHelper($config, $filesystem, $lang);
+        $this->expectMethodCallCount($filesystem, 'get');
+        $this->expectMethodCallCount($file, 'exists');
+        $this->assertFalse($o->existPublicImage('my_filename', 'folder'));
     }
 
     public function testDelete(): void
@@ -152,7 +196,7 @@ class FileHelperTest extends PlatineTestCase
         $o = new FileHelper($config, $filesystem, $lang);
         $this->expectMethodCallCount($filesystem, 'get');
         $this->expectMethodCallCount($file, 'delete');
-        $this->assertTrue($o->deleteUploadPublicImage('my_filename'));
+        $this->assertTrue($o->deletePublicImage('my_filename'));
     }
 
     public function testDeleteUploadImage(): void
@@ -174,7 +218,7 @@ class FileHelperTest extends PlatineTestCase
         $o = new FileHelper($config, $filesystem, $lang);
         $this->expectMethodCallCount($filesystem, 'get');
         $this->expectMethodCallCount($file, 'delete');
-        $this->assertTrue($o->deleteUploadImage('my_filename'));
+        $this->assertTrue($o->deleteImage('my_filename', 'folder'));
     }
 
     public function testDeleteUploadImageFileNotFound(): void
@@ -190,7 +234,7 @@ class FileHelperTest extends PlatineTestCase
         ]);
         $o = new FileHelper($config, $filesystem, $lang);
         $this->expectMethodCallCount($filesystem, 'get');
-        $this->assertTrue($o->deleteUploadImage('my_filename'));
+        $this->assertTrue($o->deleteImage('my_filename'));
     }
 
     /**
@@ -244,7 +288,7 @@ class FileHelperTest extends PlatineTestCase
         if ($isPublic) {
             $res = $o->uploadPublicImage('file');
         } else {
-            $res = $o->uploadImage('file');
+            $res = $o->uploadImage('file', '');
         }
         $this->assertInstanceOf(UploadFileInfo::class, $res);
         $this->assertEquals(174, $res->getSize());

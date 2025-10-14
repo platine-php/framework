@@ -87,7 +87,7 @@ class FileHelper
      * @param UploadFileInfo $info
      * @return void
      */
-    public function deleteUploadFile(UploadFileInfo $info): void
+    public function deleteFile(UploadFileInfo $info): void
     {
         $file = $this->filesystem->file($info->getPath());
         if ($file->exists()) {
@@ -121,14 +121,57 @@ class FileHelper
     }
 
     /**
+     * Whether the given image file exist
+     * @param string $filename
+     * @param string|null $folder
+     * @param bool $useRoot
+     * @return bool
+     */
+    public function existImage(
+        string $filename,
+        ?string $folder = null,
+        bool $useRoot = true
+    ): bool {
+        return $this->isImageExists(
+            $filename,
+            'platform.data_image_path',
+            $folder,
+            $useRoot
+        );
+    }
+
+    /**
+     * Whether the given public image file exist
+     * @param string $filename
+     * @param string|null $folder
+     * @param bool $useRoot
+     * @return bool
+     */
+    public function existPublicImage(
+        string $filename,
+        ?string $folder = null,
+        bool $useRoot = true
+    ): bool {
+        return $this->isImageExists(
+            $filename,
+            'platform.public_image_path',
+            $folder,
+            $useRoot
+        );
+    }
+
+    /**
      * Delete the given file
      * @param string $filename
      * @param string|null $folder
      * @param bool $useRoot
      * @return bool
      */
-    public function delete(string $filename, ?string $folder = null, bool $useRoot = true): bool
-    {
+    public function delete(
+        string $filename,
+        ?string $folder = null,
+        bool $useRoot = true
+    ): bool {
         $configPath = $this->getRootPath(
             $this->config->get('platform.data_attachment_path'),
             $useRoot
@@ -152,14 +195,19 @@ class FileHelper
     /**
      * Delete the given upload public image file
      * @param string $filename
+     * @param string|null $folder
      * @param bool $useRoot
      * @return bool
      */
-    public function deleteUploadPublicImage(string $filename, bool $useRoot = true): bool
-    {
-        return $this->handleDeleteUploadImage(
+    public function deletePublicImage(
+        string $filename,
+        ?string $folder = null,
+        bool $useRoot = true
+    ): bool {
+        return $this->handleDeleteImage(
             $filename,
             'platform.public_image_path',
+            $folder,
             $useRoot
         );
     }
@@ -167,14 +215,19 @@ class FileHelper
     /**
      * Delete the given upload image file
      * @param string $filename
+     * @param string|null $folder
      * @param bool $useRoot
      * @return bool
      */
-    public function deleteUploadImage(string $filename, bool $useRoot = true): bool
-    {
-        return $this->handleDeleteUploadImage(
+    public function deleteImage(
+        string $filename,
+        ?string $folder = null,
+        bool $useRoot = true
+    ): bool {
+        return $this->handleDeleteImage(
             $filename,
             'platform.data_image_path',
+            $folder,
             $useRoot
         );
     }
@@ -182,14 +235,19 @@ class FileHelper
     /**
      * Upload an image
      * @param string $name
+     * @param string|null $folder
      * @param bool $useRoot
      * @return UploadFileInfo
      */
-    public function uploadImage(string $name, bool $useRoot = true): UploadFileInfo
-    {
+    public function uploadImage(
+        string $name,
+        ?string $folder = null,
+        bool $useRoot = true
+    ): UploadFileInfo {
         return $this->doUploadImage(
             $name,
             'platform.data_image_path',
+            $folder,
             $useRoot
         );
     }
@@ -197,14 +255,19 @@ class FileHelper
     /**
      * Upload an public image
      * @param string $name
+     * @param string|null $folder
      * @param bool $useRoot
      * @return UploadFileInfo
      */
-    public function uploadPublicImage(string $name, bool $useRoot = true): UploadFileInfo
-    {
+    public function uploadPublicImage(
+        string $name,
+        ?string $folder = null,
+        bool $useRoot = true
+    ): UploadFileInfo {
         return $this->doUploadImage(
             $name,
             'platform.public_image_path',
+            $folder,
             $useRoot
         );
     }
@@ -310,6 +373,36 @@ class FileHelper
     }
 
     /**
+     * Whether the given image file exist
+     * @param string $filename
+     * @param string $configPathKey
+     * @param string|null $folder
+     * @param bool $useRoot
+     * @return bool
+     */
+    protected function isImageExists(
+        string $filename,
+        string $configPathKey,
+        ?string $folder = null,
+        bool $useRoot = true
+    ): bool {
+        $configPath = $this->getRootPath(
+            $this->config->get($configPathKey),
+            $useRoot
+        );
+
+        $path = $configPath;
+        if ($folder !== null) {
+            $path .= DIRECTORY_SEPARATOR . $folder;
+        }
+
+        $filepath = sprintf('%s/%s', $path, $filename);
+        $handle = $this->filesystem->get($filepath);
+
+        return $handle !== null && $handle->exists();
+    }
+
+    /**
      * Process the upload
      * @param string $name
      * @param RuleInterface[] $rules
@@ -360,6 +453,7 @@ class FileHelper
      * Upload an image
      * @param string $name
      * @param string $path
+     * @param string|null $folder
      * @param bool $useRoot
      *
      * @return UploadFileInfo
@@ -367,9 +461,22 @@ class FileHelper
     protected function doUploadImage(
         string $name,
         string $path,
+        ?string $folder = null,
         bool $useRoot = true
     ): UploadFileInfo {
         $configPath = $this->getRootPath($this->config->get($path), $useRoot);
+
+        $imagePath = $configPath;
+
+        if ($folder !== null) {
+            $directory = $this->filesystem->directory($configPath);
+            $imagePath .= DIRECTORY_SEPARATOR . $folder;
+            // Create the folder if it does not exist
+            if ($this->filesystem->directory($imagePath)->exists() === false) {
+                $directory->create($folder, 0775, true);
+            }
+        }
+
         return $this->doUpload(
             $name,
             [
@@ -382,7 +489,7 @@ class FileHelper
                     'image/jpeg',
                 ])
             ],
-            $configPath
+            $imagePath
         );
     }
 
@@ -390,16 +497,21 @@ class FileHelper
      * Delete the given upload image file
      * @param string $filename
      * @param string $cfgPath
+     * @param string|null $folder
      * @param bool $useRoot
      * @return bool
      */
-    protected function handleDeleteUploadImage(
+    protected function handleDeleteImage(
         string $filename,
         string $cfgPath,
+        ?string $folder = null,
         bool $useRoot = true
     ): bool {
         $configPath = $this->getRootPath($this->config->get($cfgPath), $useRoot);
         $path = $configPath;
+        if ($folder !== null) {
+            $path .= DIRECTORY_SEPARATOR . $folder;
+        }
 
         $filepath = sprintf('%s/%s', $path, $filename);
         $handle = $this->filesystem->get($filepath);
