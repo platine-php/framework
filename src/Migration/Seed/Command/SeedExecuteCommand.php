@@ -73,7 +73,7 @@ class SeedExecuteCommand extends AbstractSeedCommand
         $this->setName('seed:exec')
              ->setDescription('Command to execute seed');
 
-        $this->addOption('-i|--id', 'the seed version', null, false);
+        $this->addOption('-i|--id', 'The seed version', null, false);
     }
 
     /**

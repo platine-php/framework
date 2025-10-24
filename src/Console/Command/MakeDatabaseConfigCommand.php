@@ -69,6 +69,7 @@ class MakeDatabaseConfigCommand extends MakeCommand
                ->setDescription('Command to generate class that hold database configuration value');
 
         $this->addOption('-c|--config-entity', 'The configuration entity class', Configuration::class, true);
+        $this->addOption('-m|--module', 'The configuration module to use', null, false);
     }
 
     /**
@@ -137,9 +138,12 @@ class MakeDatabaseConfigCommand extends MakeCommand
         $content = parent::createClass();
 
         $methods = '';
+        $module = $this->getOptionValue('module');
         $results = $this->dbConfig->getLoader()->all();
         foreach ($results as $row) {
-            $methods .= $this->getConfigMethod($row);
+            if ($module === null || $row->module === $module) {
+                $methods .= $this->getConfigMethod($row);
+            }
         }
 
         $configEntity = $this->getOptionValue('configEntity');
