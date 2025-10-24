@@ -113,13 +113,19 @@ class MakeDatabaseConfigCommand extends MakeCommand
     /**
      * Generate the method of the given entity
      * @param Entity $entity
+     * @param string|null $module
      * @return string
      */
-    protected function getConfigMethod(Entity $entity): string
+    protected function getConfigMethod(Entity $entity, ?string $module = null): string
     {
         $types = $this->getDataTypeMaps();
         $methodTemplate = $this->getMethodTemplate();
-        $methodName = Str::camel(sprintf('%s_%s', $entity->module, $entity->name), false);
+
+        $method = sprintf('%s_%s', $entity->module, $entity->name);
+        if ($module !== null) {
+            $method = $entity->name;
+        }
+        $methodName = Str::camel($method, false);
 
         $strMethodName = str_replace('%method_name%', $methodName, $methodTemplate);
         $strType = str_replace('%type%', $types[$entity->type][0], $strMethodName);
@@ -142,7 +148,7 @@ class MakeDatabaseConfigCommand extends MakeCommand
         $results = $this->dbConfig->getLoader()->all();
         foreach ($results as $row) {
             if ($module === null || $row->module === $module) {
-                $methods .= $this->getConfigMethod($row);
+                $methods .= $this->getConfigMethod($row, $module);
             }
         }
 
