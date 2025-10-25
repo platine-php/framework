@@ -30,7 +30,7 @@
  */
 
 /**
- *  @file AuthorizationMiddleware.php
+ *  @file ApiAuthorizationMiddleware.php
  *
  *  The API Authorization middleware class
  *
@@ -47,10 +47,8 @@ declare(strict_types=1);
 
 namespace Platine\Framework\Auth\Middleware;
 
-use Platine\Config\Config;
 use Platine\Framework\Auth\AuthorizationInterface;
 use Platine\Framework\Http\Response\RestResponse;
-use Platine\Framework\Http\RouteHelper;
 use Platine\Http\Handler\MiddlewareInterface;
 use Platine\Http\Handler\RequestHandlerInterface;
 use Platine\Http\ResponseInterface;
@@ -99,7 +97,7 @@ class ApiAuthorizationMiddleware implements MiddlewareInterface
                 [],
                 false,
                 4030,
-                'Permission denied for this user',
+                'Authorization failed for this user',
                 403
             );
         }

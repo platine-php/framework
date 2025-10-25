@@ -251,11 +251,10 @@ class JWTAuthentication implements AuthenticationInterface
                   ])
                   ->sign();
 
-        $refreshToken = Str::random(64);
+        $refreshToken = Str::random(128);
         $jwtToken = $this->jwt->getToken();
 
         $token = $this->tokenRepository->create([
-            'token' => $jwtToken,
             'refresh_token' => $refreshToken,
             'expire_at' => (new DateTime())->setTimestamp($refreshTokenExpire),
             'user_id' => $user->id,
