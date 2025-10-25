@@ -105,4 +105,10 @@ interface AuthenticationInterface
      * @throws AccountNotFoundException if can not find the account information
      */
     public function getId(): int|string;
+
+    /**
+     * Return the list of current user permissions
+     * @return string[]
+     */
+    public function getPermissions(): array;
 }

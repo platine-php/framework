@@ -73,6 +73,20 @@ class SessionAuthenticationTest extends PlatineTestCase
         $this->assertInstanceOf(User::class, $o->getUser());
     }
 
+    public function testGetPermissions(): void
+    {
+        $app = $this->getMockInstance(Application::class);
+        $hash = $this->getMockInstance(BcryptHash::class);
+        $session = $this->getMockInstance(Session::class, [
+            'has' => true,
+            'get' => ['user_create', 'user_update'],
+        ]);
+        $userRepository = $this->getMockInstance(UserRepository::class);
+
+        $o = new SessionAuthentication($app, $hash, $session, $userRepository);
+        $this->assertCount(2, $o->getPermissions());
+    }
+
     public function testGetIdSuccess(): void
     {
         $user = $this->getMockInstance(User::class);

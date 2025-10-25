@@ -47,29 +47,21 @@ declare(strict_types=1);
 
 namespace Platine\Framework\Auth\Authorization;
 
+use Platine\Framework\Auth\AuthenticationInterface;
 use Platine\Framework\Auth\AuthorizationInterface;
-use Platine\Session\Session;
 
 /**
- * class SessionAuthorization
+ * @class DefaultAuthorization
  * @package Platine\Framework\Auth\Authorization
  */
-class SessionAuthorization implements AuthorizationInterface
+class DefaultAuthorization implements AuthorizationInterface
 {
     /**
      * Create new instance
-     * @param Session $session
+     * @param AuthenticationInterface $authentication
      */
-    public function __construct(protected Session $session)
+    public function __construct(protected AuthenticationInterface $authentication)
     {
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getPermissions(): array
-    {
-        return $this->session->get('auth.permissions', []);
     }
 
     /**
@@ -77,6 +69,10 @@ class SessionAuthorization implements AuthorizationInterface
      */
     public function isGranted(string $permission): bool
     {
-        return in_array($permission, $this->getPermissions(), true);
+        return in_array(
+            $permission,
+            $this->authentication->getPermissions(),
+            true
+        );
     }
 }

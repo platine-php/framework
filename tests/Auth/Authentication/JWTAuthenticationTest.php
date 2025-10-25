@@ -261,6 +261,76 @@ class JWTAuthenticationTest extends PlatineTestCase
         $this->assertInstanceOf(User::class, $o->getUser());
     }
 
+    public function testGetPermissions(): void
+    {
+        $jwt = $this->getMockInstance(JWT::class, [
+            'getPayload' => ['permissions' => ['user_create', 'user_update']]
+        ]);
+        $logger = $this->getMockInstance(Logger::class);
+        $config = $this->getMockInstanceMap(Config::class, [
+            'get' => [
+                ['api.auth.headers.name', 'Authorization', 'Authorization'],
+                ['api.auth.headers.token_type', 'Bearer', 'Bearer'],
+                ['api.sign.secret', '', 'foosecret'],
+            ]
+        ]);
+        $tokenRepository = $this->getMockInstance(TokenRepository::class);
+        $hash = $this->getMockInstance(BcryptHash::class);
+        $request = $this->getMockInstanceMap(ServerRequest::class, [
+            'getHeaderLine' => [
+                ['Authorization', '7676ghggfhfgfghg']
+            ]
+        ]);
+        $userRepository = $this->getMockInstanceMap(UserRepository::class);
+
+        $o = new JWTAuthentication(
+            $jwt,
+            $logger,
+            $config,
+            $hash,
+            $userRepository,
+            $tokenRepository,
+            $request
+        );
+
+        $this->assertCount(2, $o->getPermissions());
+    }
+
+    public function testGetPermissionsUserNotLogged(): void
+    {
+        $jwt = $this->getMockInstance(JWT::class, [
+            'getPayload' => ['permissions' => ['user_create', 'user_update']]
+        ]);
+        $logger = $this->getMockInstance(Logger::class);
+        $config = $this->getMockInstanceMap(Config::class, [
+            'get' => [
+                ['api.auth.headers.name', 'Authorization', 'Authorization'],
+                ['api.auth.headers.token_type', 'Bearer', 'Bearer'],
+                ['api.sign.secret', '', 'foosecret'],
+            ]
+        ]);
+        $tokenRepository = $this->getMockInstance(TokenRepository::class);
+        $hash = $this->getMockInstance(BcryptHash::class);
+        $request = $this->getMockInstanceMap(ServerRequest::class, [
+            'getHeaderLine' => [
+                ['Authorization', '']
+            ]
+        ]);
+        $userRepository = $this->getMockInstanceMap(UserRepository::class);
+
+        $o = new JWTAuthentication(
+            $jwt,
+            $logger,
+            $config,
+            $hash,
+            $userRepository,
+            $tokenRepository,
+            $request
+        );
+
+        $this->assertCount(0, $o->getPermissions());
+    }
+
     public function testLoginUsernameEmpty(): void
     {
         $jwt = $this->getMockInstance(JWT::class);

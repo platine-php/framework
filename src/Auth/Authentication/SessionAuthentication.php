@@ -108,6 +108,15 @@ class SessionAuthentication implements AuthenticationInterface
     /**
      * {@inheritdoc}
      */
+    public function getPermissions(): array
+    {
+        return $this->session->get('auth.permissions', []);
+    }
+
+
+    /**
+     * {@inheritdoc}
+     */
     public function getId(): int|string
     {
         if ($this->isLogged() === false) {

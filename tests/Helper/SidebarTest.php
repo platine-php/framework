@@ -6,7 +6,7 @@ namespace Platine\Test\Framework\Helper;
 
 use Platine\Config\Config;
 use Platine\Dev\PlatineTestCase;
-use Platine\Framework\Auth\Authorization\SessionAuthorization;
+use Platine\Framework\Auth\Authorization\DefaultAuthorization;
 use Platine\Framework\Helper\Sidebar;
 use Platine\Framework\Security\Csrf\CsrfManager;
 use Platine\Http\Uri;
@@ -23,7 +23,7 @@ class SidebarTest extends PlatineTestCase
         $lang = $this->getMockInstance(Lang::class);
         $csrfManager = $this->getMockInstance(CsrfManager::class);
         $config = $this->getMockInstance(Config::class);
-        $authorization = $this->getMockInstance(SessionAuthorization::class);
+        $authorization = $this->getMockInstance(DefaultAuthorization::class);
         $o = new Sidebar($router, $lang, $csrfManager, $config, $authorization);
 
         $this->assertInstanceOf(Sidebar::class, $o);
@@ -49,7 +49,7 @@ class SidebarTest extends PlatineTestCase
         $csrfManager = $this->getMockInstance(CsrfManager::class, [
             'getTokenQuery' => ['_token' => 'foobar']]);
         $config = $this->getMockInstance(Config::class, ['get' => 'primary']);
-        $authorization = $this->getMockInstance(SessionAuthorization::class);
+        $authorization = $this->getMockInstance(DefaultAuthorization::class);
         $o = new Sidebar($router, $lang, $csrfManager, $config, $authorization);
 
         $this->assertEmpty($o->render());
@@ -86,7 +86,7 @@ class SidebarTest extends PlatineTestCase
         $csrfManager = $this->getMockInstance(CsrfManager::class, [
             'getTokenQuery' => ['_token' => 'foobar']]);
         $config = $this->getMockInstance(Config::class, ['get' => 'primary']);
-        $authorization = $this->getMockInstance(SessionAuthorization::class, [
+        $authorization = $this->getMockInstance(DefaultAuthorization::class, [
             'isGranted' => false]);
         $o = new Sidebar($router, $lang, $csrfManager, $config, $authorization);
 

@@ -121,6 +121,20 @@ class JWTAuthentication implements AuthenticationInterface
     /**
      * {@inheritdoc}
      */
+    public function getPermissions(): array
+    {
+        if ($this->isLogged() === false) {
+            return [];
+        }
+
+        $payload = $this->jwt->getPayload();
+        return $payload['permissions'] ?? [];
+    }
+
+
+    /**
+     * {@inheritdoc}
+     */
     public function getId(): int|string
     {
         if ($this->isLogged() === false) {

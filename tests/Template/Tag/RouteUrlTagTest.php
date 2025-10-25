@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Platine\Test\Framework\Template\Tag;
 
 use Platine\Dev\PlatineTestCase;
-use Platine\Framework\Auth\Authorization\SessionAuthorization;
+use Platine\Framework\Auth\Authorization\DefaultAuthorization;
 use Platine\Framework\Security\Csrf\CsrfManager;
 use Platine\Framework\Template\Tag\RouteUrlTag;
 use Platine\Route\Route;
@@ -66,7 +66,7 @@ class RouteUrlTagTest extends PlatineTestCase
             )],
         ];
 
-        $mock_app_auth_object = $this->getMockInstance(SessionAuthorization::class, [
+        $mock_app_auth_object = $this->getMockInstance(DefaultAuthorization::class, [
             'isGranted' => $isGranted
         ]);
 

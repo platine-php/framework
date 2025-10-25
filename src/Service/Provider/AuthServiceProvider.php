@@ -49,7 +49,7 @@ namespace Platine\Framework\Service\Provider;
 
 use Platine\Framework\Auth\Authentication\SessionAuthentication;
 use Platine\Framework\Auth\AuthenticationInterface;
-use Platine\Framework\Auth\Authorization\SessionAuthorization;
+use Platine\Framework\Auth\Authorization\DefaultAuthorization;
 use Platine\Framework\Auth\AuthorizationInterface;
 use Platine\Framework\Auth\Middleware\AuthenticationMiddleware;
 use Platine\Framework\Auth\Middleware\AuthorizationMiddleware;
@@ -78,15 +78,15 @@ class AuthServiceProvider extends ServiceProvider
         $this->app->bind(UserRepository::class);
 
         //Authentication
-        $this->app->bind(AuthenticationMiddleware::class);
-        $this->app->bind(AuthenticationInterface::class, SessionAuthentication::class);
+        $this->app->share(AuthenticationMiddleware::class);
+        $this->app->share(AuthenticationInterface::class, SessionAuthentication::class);
 
         //Authorization
-        $this->app->bind(AuthorizationMiddleware::class);
-        $this->app->bind(AuthorizationInterface::class, SessionAuthorization::class);
+        $this->app->share(AuthorizationMiddleware::class);
+        $this->app->share(AuthorizationInterface::class, DefaultAuthorization::class);
 
         //Hash
-        $this->app->bind(HashInterface::class, BcryptHash::class);
+        $this->app->share(HashInterface::class, BcryptHash::class);
 
         // Command
         $this->app->bind(PasswordGenerateCommand::class);

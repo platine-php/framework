@@ -18,8 +18,11 @@ class AuthServiceProviderTest extends PlatineTestCase
     {
         $app = $this->getMockInstanceMap(Application::class);
 
-        $app->expects($this->exactly(9))
+        $app->expects($this->exactly(4))
                 ->method('bind');
+
+        $app->expects($this->exactly(5))
+                ->method('share');
         $o = new AuthServiceProvider($app);
         $o->register();
     }

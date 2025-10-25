@@ -59,10 +59,4 @@ interface AuthorizationInterface
      * @return bool
      */
     public function isGranted(string $permission): bool;
-
-    /**
-     * Return the list of current user permissions
-     * @return string[]
-     */
-    public function getPermissions(): array;
 }
