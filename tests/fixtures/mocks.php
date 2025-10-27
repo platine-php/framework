@@ -727,7 +727,60 @@ namespace Platine\Framework\Helper;
 
 $mock_file_exists_to_false = false;
 $mock_fopen_to_false = false;
+$mock_stream_socket_client_to_value = false;
+$mock_stream_socket_client_to_false = false;
+$mock_fgets_to_value = false;
+$mock_fgets_to_false = false;
+$mock_fread_to_value = false;
+$mock_fread_to_false = false;
 
+function fread($stream, ?int $length = null)
+{
+    global $mock_fread_to_false,
+           $mock_fread_to_value;
+
+    if ($mock_fread_to_false) {
+        return false;
+    }
+
+    if ($mock_fread_to_value) {
+        return $mock_fread_to_value;
+    }
+
+    return \fread($stream, $length);
+}
+
+function fgets($stream, ?int $length = null)
+{
+    global $mock_fgets_to_false,
+           $mock_fgets_to_value;
+
+    if ($mock_fgets_to_false) {
+        return false;
+    }
+
+    if ($mock_fgets_to_value) {
+        return $mock_fgets_to_value;
+    }
+
+    return \fgets($stream, $length);
+}
+
+function stream_socket_client(string $address, ?int &$error_code = null, ?string &$error_message = null)
+{
+    global $mock_stream_socket_client_to_value,
+           $mock_stream_socket_client_to_false;
+
+    if ($mock_stream_socket_client_to_false) {
+        return false;
+    }
+
+    if ($mock_stream_socket_client_to_value) {
+        return $mock_stream_socket_client_to_value;
+    }
+
+    return \stream_socket_client($address, $error_code, $error_message);
+}
 
 function file_exists(string $str)
 {
