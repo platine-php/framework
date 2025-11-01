@@ -25,7 +25,7 @@ class RestResponseTest extends PlatineTestCase
         );
         $this->assertEquals(200, $o->getStatusCode());
         $this->assertEquals('application/json', $o->getHeaderLine('Content-Type'));
-        $expected = '{"success":true,"timestamp":1000,"code":0,"data":{"foo":"bar"},'
+        $expected = '{"success":true,"timestamp":1000,"code":"OK","data":{"foo":"bar"},'
                 . '"message":"my rest message"}';
         $this->assertEquals($expected, (string) $o->getBody());
     }

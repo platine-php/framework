@@ -636,14 +636,14 @@ abstract class BaseAction implements RequestHandlerInterface
      * Return the rest response
      * @param mixed $data
      * @param int $statusCode
-     * @param int $code the custom code
+     * @param string|int $code the custom code
      *
      * @return ResponseInterface
      */
     protected function restResponse(
         mixed $data = [],
         int $statusCode = 200,
-        int $code = 0
+        string|int $code = 'OK'
     ): ResponseInterface {
         $extras = $this->context->all();
         if ($this->pagination->getTotalItems() > 0) {
@@ -663,11 +663,11 @@ abstract class BaseAction implements RequestHandlerInterface
     /**
      * Return the rest created response
      * @param array<string, mixed>|object|mixed $data
-     * @param int $code the custom code
+     * @param string|int $code the custom code
      *
      * @return ResponseInterface
      */
-    protected function restCreatedResponse(mixed $data = [], int $code = 0): ResponseInterface
+    protected function restCreatedResponse(mixed $data = [], string|int $code = 'CREATED'): ResponseInterface
     {
         return $this->restResponse(
             $data,
@@ -678,11 +678,11 @@ abstract class BaseAction implements RequestHandlerInterface
 
     /**
      * Return the rest no content response
-     * @param int $code the custom code
+     * @param string|int $code the custom code
      *
      * @return ResponseInterface
      */
-    protected function restNoContentResponse(int $code = 0): ResponseInterface
+    protected function restNoContentResponse(string|int $code = 'NO_CONTENT'): ResponseInterface
     {
         return $this->restResponse(
             [],
@@ -695,7 +695,7 @@ abstract class BaseAction implements RequestHandlerInterface
      * Return the rest error response
      * @param string $message
      * @param int $statusCode
-     * @param int $code
+     * @param string|int $code
      * @param array<string, mixed> $extras
      *
      * @return ResponseInterface
@@ -703,7 +703,7 @@ abstract class BaseAction implements RequestHandlerInterface
     protected function restErrorResponse(
         string $message,
         int $statusCode = 401,
-        int $code = 4000,
+        string|int $code = 'ERROR',
         array $extras = []
     ): ResponseInterface {
         return new RestResponse(
@@ -719,13 +719,13 @@ abstract class BaseAction implements RequestHandlerInterface
     /**
      * Return the rest server error response
      * @param string $message
-     * @param int $code the custom error code
+     * @param string|int $code the custom error code
      *
      * @return ResponseInterface
      */
     protected function restServerErrorResponse(
         string $message = '',
-        int $code = 5000
+        string|int $code = 'INTERNAL_SERVER_ERROR'
     ): ResponseInterface {
         return $this->restErrorResponse(
             $message,
@@ -738,13 +738,13 @@ abstract class BaseAction implements RequestHandlerInterface
     /**
      * Return the rest bad request error response
      * @param string $message
-     * @param int $code the custom error code
+     * @param string|int $code the custom error code
      *
      * @return ResponseInterface
      */
     protected function restBadRequestErrorResponse(
         string $message = '',
-        int $code = 4000
+        string|int $code = 'BAD_REQUEST'
     ): ResponseInterface {
         return $this->restErrorResponse(
             $message,
@@ -757,13 +757,13 @@ abstract class BaseAction implements RequestHandlerInterface
     /**
      * Return the rest duplicate resource error response
      * @param string $message
-     * @param int $code the custom error code
+     * @param string|int $code the custom error code
      *
      * @return ResponseInterface
      */
     protected function restConflictErrorResponse(
         string $message = '',
-        int $code = 4090
+        string|int $code = 'DUPLICATE_RESOURCE'
     ): ResponseInterface {
         return $this->restErrorResponse(
             $message,
@@ -776,13 +776,13 @@ abstract class BaseAction implements RequestHandlerInterface
     /**
      * Return the rest not found error response
      * @param string $message
-     * @param int $code the custom error code
+     * @param string|int $code the custom error code
      *
      * @return ResponseInterface
      */
     protected function restNotFoundErrorResponse(
         string $message = '',
-        int $code = 4040
+        string|int $code = 'RESOURCE_NOT_FOUND'
     ): ResponseInterface {
         return $this->restErrorResponse(
             $message,
@@ -793,15 +793,34 @@ abstract class BaseAction implements RequestHandlerInterface
     }
 
     /**
+     * Return the rest unauthorized error response
+     * @param string $message
+     * @param string|int $code the custom error code
+     *
+     * @return ResponseInterface
+     */
+    protected function restUnauthorizedErrorResponse(
+        string $message = '',
+        string|int $code = 'UNAUTHORIZED_ACCESS'
+    ): ResponseInterface {
+        return $this->restErrorResponse(
+            $message,
+            401,
+            $code,
+            []
+        );
+    }
+
+    /**
      * Return the rest form validation error response
      * @param array<string, string> $errors
-     * @param int $code the custom error code
+     * @param string|int $code the custom error code
      *
      * @return ResponseInterface
      */
     protected function restFormValidationErrorResponse(
         array $errors = [],
-        int $code = 4220
+        string|int $code = 'INVALID_INPUT'
     ): ResponseInterface {
         return $this->restErrorResponse(
             $this->lang->tr('Invalid Request Parameter(s)'),

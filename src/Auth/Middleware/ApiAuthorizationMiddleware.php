@@ -96,7 +96,7 @@ class ApiAuthorizationMiddleware implements MiddlewareInterface
                 [],
                 [],
                 false,
-                4030,
+                'AUTHORIZATION_FAILED',
                 'Authorization failed for this user',
                 403
             );

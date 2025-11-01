@@ -283,10 +283,10 @@ class BaseActionTest extends PlatineTestCase
         $this->assertInstanceOf(RestResponse::class, $resp);
         $this->assertEquals(204, $resp->getStatusCode());
         $this->assertEquals('No Content', $resp->getReasonPhrase());
-        $this->assertEquals(42, $resp->getBody()->getSize());
+        $this->assertEquals(52, $resp->getBody()->getSize());
         $resp->getBody()->rewind();
         $this->assertEquals(
-            '{"success":true,"timestamp":1000,"code":0}',
+            '{"success":true,"timestamp":1000,"code":0,"data":[]}',
             $resp->getBody()->getContents()
         );
     }
@@ -311,10 +311,10 @@ class BaseActionTest extends PlatineTestCase
         );
         $this->assertInstanceOf(RestResponse::class, $resp);
         $this->assertEquals(401, $resp->getStatusCode());
-        $this->assertEquals(73, $resp->getBody()->getSize());
+        $this->assertEquals(86, $resp->getBody()->getSize());
         $resp->getBody()->rewind();
         $this->assertEquals(
-            '{"success":false,"timestamp":1000,"code":4000,"message":"Error response"}',
+            '{"success":false,"timestamp":1000,"code":"ERROR","message":"Error response","data":[]}',
             $resp->getBody()->getContents()
         );
     }
@@ -340,10 +340,10 @@ class BaseActionTest extends PlatineTestCase
             ['Server Error']
         );
         $this->assertEquals(500, $resp1->getStatusCode());
-        $this->assertEquals(71, $resp1->getBody()->getSize());
+        $this->assertEquals(100, $resp1->getBody()->getSize());
         $resp1->getBody()->rewind();
         $this->assertEquals(
-            '{"success":false,"timestamp":1000,"code":5000,"message":"Server Error"}',
+            '{"success":false,"timestamp":1000,"code":"INTERNAL_SERVER_ERROR","message":"Server Error","data":[]}',
             $resp1->getBody()->getContents()
         );
 
@@ -354,10 +354,10 @@ class BaseActionTest extends PlatineTestCase
             ['Bad Error']
         );
         $this->assertEquals(400, $resp2->getStatusCode());
-        $this->assertEquals(68, $resp2->getBody()->getSize());
+        $this->assertEquals(87, $resp2->getBody()->getSize());
         $resp2->getBody()->rewind();
         $this->assertEquals(
-            '{"success":false,"timestamp":1000,"code":4000,"message":"Bad Error"}',
+            '{"success":false,"timestamp":1000,"code":"BAD_REQUEST","message":"Bad Error","data":[]}',
             $resp2->getBody()->getContents()
         );
 
@@ -368,10 +368,10 @@ class BaseActionTest extends PlatineTestCase
             ['Conflict Error']
         );
         $this->assertEquals(409, $resp3->getStatusCode());
-        $this->assertEquals(73, $resp3->getBody()->getSize());
+        $this->assertEquals(99, $resp3->getBody()->getSize());
         $resp3->getBody()->rewind();
         $this->assertEquals(
-            '{"success":false,"timestamp":1000,"code":4090,"message":"Conflict Error"}',
+            '{"success":false,"timestamp":1000,"code":"DUPLICATE_RESOURCE","message":"Conflict Error","data":[]}',
             $resp3->getBody()->getContents()
         );
 
@@ -382,10 +382,10 @@ class BaseActionTest extends PlatineTestCase
             ['Not Found Error']
         );
         $this->assertEquals(404, $resp4->getStatusCode());
-        $this->assertEquals(74, $resp4->getBody()->getSize());
+        $this->assertEquals(100, $resp4->getBody()->getSize());
         $resp4->getBody()->rewind();
         $this->assertEquals(
-            '{"success":false,"timestamp":1000,"code":4040,"message":"Not Found Error"}',
+            '{"success":false,"timestamp":1000,"code":"RESOURCE_NOT_FOUND","message":"Not Found Error","data":[]}',
             $resp4->getBody()->getContents()
         );
 
@@ -396,12 +396,26 @@ class BaseActionTest extends PlatineTestCase
             [['email' => 'invalid email address']]
         );
         $this->assertEquals(422, $resp5->getStatusCode());
-        $this->assertEquals(110, $resp5->getBody()->getSize());
+        $this->assertEquals(131, $resp5->getBody()->getSize());
         $resp5->getBody()->rewind();
         $this->assertEquals(
-            '{"success":false,"timestamp":1000,"code":4220,"message":"lang msg",'
+            '{"success":false,"timestamp":1000,"code":"INVALID_INPUT","message":"lang msg","data":[],'
                 . '"errors":{"email":"invalid email address"}}',
             $resp5->getBody()->getContents()
+        );
+
+        //
+        $resp6 = $this->runPrivateProtectedMethod(
+            $o,
+            'restUnauthorizedErrorResponse',
+            ['User not login']
+        );
+        $this->assertEquals(401, $resp6->getStatusCode());
+        $this->assertEquals(100, $resp6->getBody()->getSize());
+        $resp6->getBody()->rewind();
+        $this->assertEquals(
+            '{"success":false,"timestamp":1000,"code":"UNAUTHORIZED_ACCESS","message":"User not login","data":[]}',
+            $resp6->getBody()->getContents()
         );
     }
 

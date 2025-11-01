@@ -58,7 +58,7 @@ class RestResponse extends JsonResponse
      * @param mixed $data
      * @param array<string, mixed> $extras
      * @param bool $success
-     * @param int $code
+     * @param string|int $code
      * @param string $message
      * @param int $statusCode
      * @param string $reasonPhrase
@@ -67,7 +67,7 @@ class RestResponse extends JsonResponse
         mixed $data = [],
         array $extras = [],
         bool $success = true,
-        int $code = 0,
+        string|int $code = 'OK',
         string $message = '',
         int $statusCode = 200,
         string $reasonPhrase = ''
@@ -82,9 +82,7 @@ class RestResponse extends JsonResponse
             $result['message'] = $message;
         }
 
-        if (!empty($data)) {
-            $result['data'] = $data;
-        }
+        $result['data'] = $data;
 
         if (count($extras) > 0) {
             $result = array_merge($result, $extras);
