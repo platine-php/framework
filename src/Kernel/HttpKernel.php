@@ -59,6 +59,7 @@ use Platine\Http\Handler\RequestHandlerInterface;
 use Platine\Http\ResponseInterface;
 use Platine\Http\ServerRequest;
 use Platine\Http\ServerRequestInterface;
+use Platine\Logger\LoggerInterface;
 use Platine\Route\Router;
 
 /**
@@ -69,19 +70,7 @@ use Platine\Route\Router;
 class HttpKernel extends BaseKernel implements RequestHandlerInterface
 {
     /**
-     * The router instance
-     * @var Router
-     */
-    protected Router $router;
-
-    /**
-     * The middleware resolver instance
-     * @var MiddlewareResolverInterface
-     */
-    protected MiddlewareResolverInterface $middlewareResolver;
-
-    /**
-     * The list of middlewares
+     * The list of middleware's
      * @var MiddlewareInterface[]
      */
     protected array $middlewares = [];
@@ -89,17 +78,17 @@ class HttpKernel extends BaseKernel implements RequestHandlerInterface
     /**
      * Create new instance
      * @param Application $app
-     * @param Router $router
-     * @param MiddlewareResolverInterface $middlewareResolver
+     * @param Router $router The router instance
+     * @param MiddlewareResolverInterface $middlewareResolver The middleware resolver instance
+     * @param LoggerInterface $logger
      */
     public function __construct(
         Application $app,
-        Router $router,
-        MiddlewareResolverInterface $middlewareResolver
+        protected Router $router,
+        protected MiddlewareResolverInterface $middlewareResolver,
+        protected LoggerInterface $logger,
     ) {
         parent::__construct($app);
-        $this->router = $router;
-        $this->middlewareResolver = $middlewareResolver;
     }
 
     /**
@@ -156,6 +145,16 @@ class HttpKernel extends BaseKernel implements RequestHandlerInterface
         );
 
         $this->app->watch()->stop('emit-response');
+        $this->app->watch()->start('request-handling');
+
+        $watchInfo = $this->app->watch()->info();
+        $metrics = [];
+        foreach ($watchInfo as $name => $ms) {
+            $metrics[] = sprintf('[%s]: %d ms', $name, $ms);
+        }
+        $this->logger->info('Application processing times: {metrics}', [
+            'metrics' => implode("\n", $metrics),
+        ]);
     }
 
     /**

@@ -162,6 +162,7 @@ class Application extends Container
 
         $this->basePath = $basePath;
         $this->watch = new Watch();
+        $this->watch()->start('request-handling');
         $this->loadCoreServiceProviders();
 
         $this->dispatcher = $this->get(DispatcherInterface::class);

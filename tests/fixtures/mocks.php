@@ -727,12 +727,95 @@ namespace Platine\Framework\Helper;
 
 $mock_file_exists_to_false = false;
 $mock_fopen_to_false = false;
+$mock_extension_loaded_to_false = false;
+$mock_imagerotate_to_false = false;
+$mock_imagecolorallocatealpha_to_false = false;
+$mock_imagecolorallocate_to_false = false;
+$mock_getimagesize_to_value = false;
+$mock_hexdec_to_value = false;
+$mock_getimagesize_to_false = false;
+$mock_imagecreatefrompng_to_false = false;
 $mock_stream_socket_client_to_value = false;
 $mock_stream_socket_client_to_false = false;
 $mock_fgets_to_value = false;
 $mock_fgets_to_false = false;
 $mock_fread_to_value = false;
 $mock_fread_to_false = false;
+
+function hexdec($hex_string)
+{
+    global $mock_hexdec_to_value;
+    if ($mock_hexdec_to_value) {
+        return $mock_hexdec_to_value;
+    }
+
+    return \hexdec($hex_string);
+}
+function imagerotate($image, $angle, $background_color)
+{
+    global $mock_imagerotate_to_false;
+    if ($mock_imagerotate_to_false) {
+        return false;
+    }
+
+    return \imagerotate($image, $angle, $background_color);
+}
+
+function imagecolorallocate($image, $red, $green, $blue)
+{
+    global $mock_imagecolorallocate_to_false;
+    if ($mock_imagecolorallocate_to_false) {
+        return false;
+    }
+
+    return \imagecolorallocate($image, $red, $green, $blue);
+}
+
+function imagecolorallocatealpha($image, $red, $green, $blue, $alpha)
+{
+    global $mock_imagecolorallocatealpha_to_false;
+    if ($mock_imagecolorallocatealpha_to_false) {
+        return false;
+    }
+
+    return \imagecolorallocatealpha($image, $red, $green, $blue, $alpha);
+}
+
+function extension_loaded($ext)
+{
+    global $mock_extension_loaded_to_false;
+    if ($mock_extension_loaded_to_false) {
+        return false;
+    }
+
+    return \extension_loaded($ext);
+}
+
+function imagecreatefrompng($file)
+{
+    global $mock_imagecreatefrompng_to_false;
+    if ($mock_imagecreatefrompng_to_false) {
+        return false;
+    }
+
+    return \imagecreatefrompng($file);
+}
+
+function getimagesize($file)
+{
+    global $mock_getimagesize_to_value,
+            $mock_getimagesize_to_false;
+
+    if ($mock_getimagesize_to_false) {
+        return false;
+    }
+
+    if ($mock_getimagesize_to_value) {
+        return $mock_getimagesize_to_value;
+    }
+
+    return \getimagesize($file);
+}
 
 function fread($stream, ?int $length = null)
 {
