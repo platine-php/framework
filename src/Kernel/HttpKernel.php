@@ -143,7 +143,9 @@ class HttpKernel extends BaseKernel implements RequestHandlerInterface
         );
 
         $this->app->watch()->stop('emit-response');
-        $this->app->watch()->start('request-handling');
+
+        $watchKey = sprintf('request-handling-%s', $this->app->reference());
+        $this->app->watch()->stop($watchKey);
 
 
         // May be at this time the logger instance is not yet available in the

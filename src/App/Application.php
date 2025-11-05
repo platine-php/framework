@@ -62,6 +62,7 @@ use Platine\Framework\Service\Provider\BaseServiceProvider;
 use Platine\Framework\Service\Provider\EventServiceProvider;
 use Platine\Framework\Service\ServiceProvider;
 use Platine\Stdlib\Helper\Path;
+use Platine\Stdlib\Helper\Str;
 
 /**
  * @class Application
@@ -153,16 +154,26 @@ class Application extends Container
     protected string $environmentFile = '.env';
 
     /**
+     * The application instance reference useful to track the handling
+     * of each request
+     * @var string
+     */
+    protected string $reference;
+
+    /**
      * Create new instance
      * @param string $basePath
      */
     public function __construct(string $basePath = '')
     {
         parent::__construct();
+        $this->reference = Str::randomString('hexdec');
 
         $this->basePath = $basePath;
         $this->watch = new Watch();
-        $this->watch()->start('request-handling');
+
+        $watchKey = sprintf('request-handling-%s', $this->reference);
+        $this->watch()->start($watchKey);
         $this->loadCoreServiceProviders();
 
         $this->dispatcher = $this->get(DispatcherInterface::class);
@@ -175,6 +186,15 @@ class Application extends Container
     public function version(): string
     {
         return self::VERSION;
+    }
+
+    /**
+     * Return the application instance reference
+     * @return string
+     */
+    public function reference(): string
+    {
+        return $this->reference;
     }
 
     /**
