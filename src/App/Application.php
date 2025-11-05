@@ -172,7 +172,7 @@ class Application extends Container
         $this->basePath = $basePath;
         $this->watch = new Watch();
 
-        $watchKey = sprintf('request-handling-%s', $this->reference);
+        $watchKey = sprintf('request-%s', $this->reference);
         $this->watch()->start($watchKey);
         $this->loadCoreServiceProviders();
 

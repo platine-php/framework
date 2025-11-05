@@ -144,7 +144,7 @@ class HttpKernel extends BaseKernel implements RequestHandlerInterface
 
         $this->app->watch()->stop('emit-response');
 
-        $watchKey = sprintf('request-handling-%s', $this->app->reference());
+        $watchKey = sprintf('request-%s', $this->app->reference());
         $this->app->watch()->stop($watchKey);
 
 
@@ -155,7 +155,7 @@ class HttpKernel extends BaseKernel implements RequestHandlerInterface
             $logger = $this->app->get(LoggerInterface::class);
 
             $watchInfo = $this->app->watch()->info();
-            $metrics = [];
+            $metrics = ["\n"];
             foreach ($watchInfo as $name => $ms) {
                 $metrics[] = sprintf('[%s]: %d ms', $name, $ms);
             }
