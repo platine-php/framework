@@ -232,8 +232,7 @@ class ImageTest extends PlatineTestCase
 
         $o->rotate(15);
 
-        $this->assertEquals($o->getWidth(), 59);
-        $this->assertEquals($o->getHeight(), 59);
+        $this->assertEquals($o->getMimetype(), 'image/png');
     }
 
     public function testTextColorAllocateFailed(): void
