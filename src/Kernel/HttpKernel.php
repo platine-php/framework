@@ -144,23 +144,20 @@ class HttpKernel extends BaseKernel implements RequestHandlerInterface
 
         $this->app->watch()->stop('emit-response');
 
-        $watchKey = sprintf('request-%s', $this->app->reference());
+        $reference = $this->app->reference();
+        $watchKey = sprintf('request-%s', $reference);
         $this->app->watch()->stop($watchKey);
 
-
-        // May be at this time the logger instance is not yet available in the
-        // container
+        // At this time the logger instance may be not yet available in the container
         if ($this->app->has(LoggerInterface::class)) {
             /** @var LoggerInterface $logger */
             $logger = $this->app->get(LoggerInterface::class);
 
-            $watchInfo = $this->app->watch()->info();
-            $metrics = ["\n"];
-            foreach ($watchInfo as $name => $ms) {
-                $metrics[] = sprintf('[%s]: %d ms', $name, $ms);
-            }
-            $logger->info('Application processing times: {metrics}', [
-                'metrics' => implode("\n", $metrics),
+            $requestTime = (int)($this->app->watch()->getTime($watchKey) * 1000);
+
+            $logger->info('Request {reference} cost: {time}ms', [
+                'reference' => $reference,
+                'time' => $requestTime,
             ]);
         }
     }
