@@ -80,13 +80,11 @@ class HttpKernel extends BaseKernel implements RequestHandlerInterface
      * @param Application $app
      * @param Router $router The router instance
      * @param MiddlewareResolverInterface $middlewareResolver The middleware resolver instance
-     * @param LoggerInterface $logger
      */
     public function __construct(
         Application $app,
         protected Router $router,
         protected MiddlewareResolverInterface $middlewareResolver,
-        protected LoggerInterface $logger,
     ) {
         parent::__construct($app);
     }
@@ -147,14 +145,22 @@ class HttpKernel extends BaseKernel implements RequestHandlerInterface
         $this->app->watch()->stop('emit-response');
         $this->app->watch()->start('request-handling');
 
-        $watchInfo = $this->app->watch()->info();
-        $metrics = [];
-        foreach ($watchInfo as $name => $ms) {
-            $metrics[] = sprintf('[%s]: %d ms', $name, $ms);
+
+        // May be at this time the logger instance is not yet available in the
+        // container
+        if ($this->app->has(LoggerInterface::class)) {
+            /** @var LoggerInterface $logger */
+            $logger = $this->app->get(LoggerInterface::class);
+
+            $watchInfo = $this->app->watch()->info();
+            $metrics = [];
+            foreach ($watchInfo as $name => $ms) {
+                $metrics[] = sprintf('[%s]: %d ms', $name, $ms);
+            }
+            $logger->info('Application processing times: {metrics}', [
+                'metrics' => implode("\n", $metrics),
+            ]);
         }
-        $this->logger->info('Application processing times: {metrics}', [
-            'metrics' => implode("\n", $metrics),
-        ]);
     }
 
     /**

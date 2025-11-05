@@ -16,6 +16,7 @@ use Platine\Http\Handler\MiddlewareResolver;
 use Platine\Http\ServerRequest;
 use Platine\Http\ServerRequestInterface;
 use Platine\Logger\Logger;
+use Platine\Logger\LoggerInterface;
 use Platine\Route\Router;
 use Platine\Test\Framework\Fixture\MyMiddleware;
 use Platine\Test\Framework\Fixture\MyRequestHandle;
@@ -30,13 +31,12 @@ class HttpKernelTest extends PlatineTestCase
     public function testUse(): void
     {
         $router = $this->getMockInstance(Router::class);
-        $logger = $this->getMockInstance(Logger::class);
         $middlewareResolver = $this->getMockInstance(MiddlewareResolver::class);
         $middlewareResolver->expects($this->exactly(1))
                 ->method('resolve');
         $app = $this->getMockInstance(Application::class);
 
-        $o = new HttpKernel($app, $router, $middlewareResolver, $logger);
+        $o = new HttpKernel($app, $router, $middlewareResolver);
         $o->use(MyMiddleware::class);
     }
 
@@ -54,16 +54,20 @@ class HttpKernelTest extends PlatineTestCase
         $watch = $this->getMockInstance(Watch::class, [
             'info' => ['foo' => 356],
         ]);
+        $logger = $this->getMockInstance(Logger::class);
         $emiter = $this->getMockInstance(ResponseEmitter::class);
         $request = $this->getMockInstance(ServerRequest::class);
         $router = $this->getMockInstance(Router::class);
         $middlewareResolver = $this->getMockInstance(MiddlewareResolver::class);
-        $logger = $this->getMockInstance(Logger::class);
         $app = $this->getMockInstanceMap(Application::class, [
+            'has' => [
+                [LoggerInterface::class, true],
+            ],
             'get' => [
                 [EmitterInterface::class, $emiter],
                 [Config::class, $config],
                 [ServerRequestInterface::class, $request],
+                [LoggerInterface::class, $logger],
             ],
             'getProviders' => [
                 [[$provider]]
@@ -72,9 +76,9 @@ class HttpKernelTest extends PlatineTestCase
         ]);
         $app->expects($this->exactly(2))
                 ->method('instance');
-        $app->expects($this->exactly(5))
+        $app->expects($this->exactly(6))
                 ->method('get');
-        $o = new HttpKernel($app, $router, $middlewareResolver, $logger);
+        $o = new HttpKernel($app, $router, $middlewareResolver);
         $o->run($request);
     }
 
@@ -96,7 +100,6 @@ class HttpKernelTest extends PlatineTestCase
         $request = $this->getMockInstance(ServerRequest::class);
         $router = $this->getMockInstance(Router::class);
         $middlewareResolver = $this->getMockInstance(MiddlewareResolver::class);
-        $logger = $this->getMockInstance(Logger::class);
         $app = $this->getMockInstanceMap(Application::class, [
             'get' => [
                 [EmitterInterface::class, $emiter],
@@ -111,7 +114,7 @@ class HttpKernelTest extends PlatineTestCase
                 ->method('instance');
         $app->expects($this->exactly(5))
                 ->method('get');
-        $o = new HttpKernel($app, $router, $middlewareResolver, $logger);
+        $o = new HttpKernel($app, $router, $middlewareResolver);
 
         $this->expectException(HttpNotFoundException::class);
         $o->run($request);
@@ -127,9 +130,7 @@ class HttpKernelTest extends PlatineTestCase
                 ['/appbasepath']
             ]
         ]);
-        $logger = $this->getMockInstance(Logger::class);
-
-        $o = new HttpKernel($app, $router, $middlewareResolver, $logger);
+        $o = new HttpKernel($app, $router, $middlewareResolver);
 
         $res = $this->runPrivateProtectedMethod($o, 'determineBasePath');
         $this->assertEquals($res, '/appbasepath');
@@ -144,7 +145,6 @@ class HttpKernelTest extends PlatineTestCase
         ]);
         $router = $this->getMockInstance(Router::class);
         $middlewareResolver = $this->getMockInstance(MiddlewareResolver::class);
-        $logger = $this->getMockInstance(Logger::class);
         $app = $this->getMockInstanceMap(Application::class, [
             'getBasePath' => [
                 ['']
@@ -154,7 +154,7 @@ class HttpKernelTest extends PlatineTestCase
             ],
         ]);
 
-        $o = new HttpKernel($app, $router, $middlewareResolver, $logger);
+        $o = new HttpKernel($app, $router, $middlewareResolver);
 
         $res = $this->runPrivateProtectedMethod($o, 'determineBasePath');
         $this->assertEquals($res, '/configbasepath');
@@ -183,9 +183,8 @@ class HttpKernelTest extends PlatineTestCase
                 [ServerRequestInterface::class, $request],
             ],
         ]);
-        $logger = $this->getMockInstance(Logger::class);
 
-        $o = new HttpKernel($app, $router, $middlewareResolver, $logger);
+        $o = new HttpKernel($app, $router, $middlewareResolver);
 
         $res = $this->runPrivateProtectedMethod($o, 'determineBasePath');
         $this->assertEquals($res, '/path/to');
