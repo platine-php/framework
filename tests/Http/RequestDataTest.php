@@ -15,19 +15,6 @@ use Platine\Http\UploadedFile;
  */
 class RequestDataTest extends PlatineTestCase
 {
-    public function testDefault(): void
-    {
-        $request = $this->getMockInstance(ServerRequest::class, [
-            'getParsedBody' => [
-                'foo' => 'bar'
-            ]
-        ]);
-        $o = new RequestData($request);
-        $this->assertTrue($this->getPropertyValue(RequestData::class, $o, 'autoEscape'));
-        $o->setAutoEscape(false);
-        $this->assertFalse($this->getPropertyValue(RequestData::class, $o, 'autoEscape'));
-    }
-
     public function testPosts(): void
     {
         $request = $this->getMockInstance(ServerRequest::class, [
@@ -92,5 +79,22 @@ class RequestDataTest extends PlatineTestCase
         $this->assertCount(1, $o->cookies());
         $this->assertNull($o->cookie('bar'));
         $this->assertEquals('bar', $o->cookie('foo'));
+    }
+
+    public function testFilterXss(): void
+    {
+        $request = $this->getMockInstance(ServerRequest::class, [
+            'getQueryParams' => [
+                'foo' => 'bar',
+                'xss_ok' => '<b>bar</b>',
+                'xss_nok' => '<a href="foo">bar</a>',
+            ]
+        ]);
+        $o = new RequestData($request);
+        $this->assertNull($o->get('bar'));
+        $this->assertEquals('bar', $o->get('foo'));
+        $this->assertEquals('<b>bar</b>', $o->get('xss_ok'));
+        $this->assertEquals('<a>bar</a>', $o->get('xss_nok'));
+        $this->assertEquals('<a href="foo">bar</a>', $o->get('xss_nok', null, false)); // disable XSS
     }
 }

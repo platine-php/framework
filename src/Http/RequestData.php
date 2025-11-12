@@ -87,12 +87,6 @@ class RequestData
     protected array $files = [];
 
     /**
-     * Whether to apply input cleanup
-     * @var bool
-     */
-    protected bool $autoEscape = true;
-
-    /**
      * Create new instance
      * @param ServerRequestInterface $request
      */
@@ -106,33 +100,23 @@ class RequestData
     }
 
     /**
-     * Set clean input status
-     * @param bool $autoEscape
-     * @return $this
-     */
-    public function setAutoEscape(bool $autoEscape = true): self
-    {
-        $this->autoEscape = $autoEscape;
-        return $this;
-    }
-
-
-    /**
      * Return the post data
+     * @param bool $autoEscape whether to apply XSS rule on inputs
      * @return array<string, mixed>
      */
-    public function posts(): array
+    public function posts(bool $autoEscape = true): array
     {
-        return $this->applyInputClean($this->posts);
+        return $this->applyInputClean($this->posts, $autoEscape);
     }
 
     /**
      * Return the get data
+     * @param bool $autoEscape whether to apply XSS rule on inputs
      * @return array<string, mixed>
      */
-    public function gets(): array
+    public function gets(bool $autoEscape = true): array
     {
-        return $this->applyInputClean($this->gets);
+        return $this->applyInputClean($this->gets, $autoEscape);
     }
 
     /**
@@ -146,32 +130,38 @@ class RequestData
 
     /**
      * Return the server data
+     * @param bool $autoEscape whether to apply XSS rule on inputs
      * @return array<string, mixed>
      */
-    public function servers(): array
+    public function servers(bool $autoEscape = true): array
     {
-        return $this->applyInputClean($this->servers);
+        return $this->applyInputClean($this->servers, $autoEscape);
     }
 
     /**
      * Return the cookie data
+     * @param bool $autoEscape whether to apply XSS rule on inputs
      * @return array<string, mixed>
      */
-    public function cookies(): array
+    public function cookies(bool $autoEscape = true): array
     {
-        return $this->applyInputClean($this->cookies);
+        return $this->applyInputClean($this->cookies, $autoEscape);
     }
 
     /**
      * Return the request query value for the given key
      * @param string $key the key to fetch also support for dot notation
      * @param mixed $default
+     * @param bool $autoEscape whether to apply XSS rule on inputs
      *
      * @return mixed
      */
-    public function get(string $key, mixed $default = null): mixed
-    {
-        $gets = $this->applyInputClean($this->gets);
+    public function get(
+        string $key,
+        mixed $default = null,
+        bool $autoEscape = true
+    ): mixed {
+        $gets = $this->applyInputClean($this->gets, $autoEscape);
         return Arr::get($gets, $key, $default);
     }
 
@@ -179,12 +169,16 @@ class RequestData
      * Return the request body or post value for the given key
      * @param string $key the key to fetch also support for dot notation
      * @param mixed $default
+     * @param bool $autoEscape whether to apply XSS rule on inputs
      *
      * @return mixed
      */
-    public function post(string $key, mixed $default = null): mixed
-    {
-        $posts = $this->applyInputClean($this->posts);
+    public function post(
+        string $key,
+        mixed $default = null,
+        bool $autoEscape = true
+    ): mixed {
+        $posts = $this->applyInputClean($this->posts, $autoEscape);
         return Arr::get($posts, $key, $default);
     }
 
@@ -192,12 +186,16 @@ class RequestData
      * Return the request server value for the given key
      * @param string $key the key to fetch also support for dot notation
      * @param mixed $default
+     * @param bool $autoEscape whether to apply XSS rule on inputs
      *
      * @return mixed
      */
-    public function server(string $key, mixed $default = null): mixed
-    {
-        $servers = $this->applyInputClean($this->servers);
+    public function server(
+        string $key,
+        mixed $default = null,
+        bool $autoEscape = true
+    ): mixed {
+        $servers = $this->applyInputClean($this->servers, $autoEscape);
         return Arr::get($servers, $key, $default);
     }
 
@@ -205,12 +203,16 @@ class RequestData
      * Return the request cookie value for the given key
      * @param string $key the key to fetch also support for dot notation
      * @param mixed $default
+     * @param bool $autoEscape whether to apply XSS rule on inputs
      *
      * @return mixed
      */
-    public function cookie(string $key, mixed $default = null): mixed
-    {
-        $cookies = $this->applyInputClean($this->cookies);
+    public function cookie(
+        string $key,
+        mixed $default = null,
+        bool $autoEscape = true
+    ): mixed {
+        $cookies = $this->applyInputClean($this->cookies, $autoEscape);
         return Arr::get($cookies, $key, $default);
     }
 
@@ -229,11 +231,12 @@ class RequestData
     /**
      * Apply the input cleanup based on the status
      * @param array<mixed> $data
+     * @param bool $autoEscape whether to apply XSS rule on inputs
      * @return array<mixed>
      */
-    protected function applyInputClean(array $data): array
+    protected function applyInputClean(array $data, bool $autoEscape = true): array
     {
-        if ($this->autoEscape) {
+        if ($autoEscape) {
             $data = (new InputClean())->clean($data);
         }
 
