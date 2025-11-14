@@ -141,15 +141,24 @@ class MailHelper
 
         $reportData = $data + $mainInformations;
 
-        // If need debug
-        $this->printHelper->debugReport($reportId, $reportData);
-
         $receivers = Arr::wrap($receiverAddress);
-        $mailBody = $this->template->renderString($content, $reportData);
 
         $mailer = new Mailer($this->transport);
 
         foreach ($receivers as $receiver) {
+            /*
+             * TODO: normally the next lines should not be added in the loop
+             * but in order to customized the message content based on receiver user
+             * we had it here in the loop the in the mail template we can know which user is
+             * the current receiver and adapt the mail content based on the receiver email
+             * address.
+             */
+            $reportData['receiver_email'] = $receiver;
+            $mailBody = $this->template->renderString($content, $reportData);
+            // If need debug
+            $this->printHelper->debugReport($reportId, $reportData);
+
+
             $message = new Message();
             $message->setFrom($senderAddress, $senderName)
                     ->setTo($receiver)
