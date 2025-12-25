@@ -275,13 +275,17 @@ class FileHelper
     /**
      * Upload an attachment
      * @param string $name
-     * @param null|string $folder
+     * @param string|null $folder
+     * @param string[] $mimes the allowed mime types to use on fly
+     * @param string[] $extensions the allowed extensions to use on fly
      * @param bool $useRoot
      * @return UploadFileInfo
      */
     public function uploadAttachment(
         string $name,
         ?string $folder = null,
+        array $mimes = [],
+        array $extensions = [],
         bool $useRoot = true
     ): UploadFileInfo {
         $configPath = $this->getRootPath(
@@ -304,7 +308,10 @@ class FileHelper
             new Size($this->getAttachmentMaxSize()),
         ];
 
-        $extensions = $this->getAttachmentExtensionRules();
+        if (count($extensions) === 0) {
+            $extensions = $this->getAttachmentExtensionRules();
+        }
+
         if (count($extensions) === 0) {
             $extensions = [
                     'png',
@@ -325,12 +332,13 @@ class FileHelper
                 ];
         }
         $rules[] = new Extension($extensions);
+        if (count($mimes) === 0) {
+            $mimes = $this->getAttachmentMimeRules();
+        }
 
-        $mimes = $this->getAttachmentMimeRules();
         if (count($mimes) > 0) {
             $rules[] = new MimeType($mimes);
         }
-
 
         return $this->doUpload(
             $name,
