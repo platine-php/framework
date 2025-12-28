@@ -224,7 +224,6 @@ class EntityHelperTest extends PlatineTestCase
         $o = new EntityHelper($auditor, $authentication);
         $o->setIgnore($ignore);
 
-        $this->expectMethodCallCount($authentication, 'isLogged');
         $this->expectMethodCallCount($auditor, 'setDetail', $ignore ? 0 : 1);
 
         $o->subscribeEvents($mapper);

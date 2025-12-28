@@ -106,12 +106,14 @@ class EntityHelper
         int $type = self::ALL,
         array $ignoreFields = []
     ): void {
+        if ($this->ignore) {
+            return;
+        }
         if ($this->authentication->isLogged() === false) {
             return;
         }
 
         $auditor = $this->auditor;
-        $ignore = $this->ignore;
         $fieldIgnores = [
             ...$ignoreFields,
             ...['password', 'created_at', 'updated_at'],
@@ -123,13 +125,8 @@ class EntityHelper
                 DataMapper $dm
             ) use (
                 $auditor,
-                $ignore,
                 $fieldIgnores
-) {
-                if ($ignore) {
-                    return;
-                }
-
+            ) {
                 $data = $entity->jsonSerialize();
                 $entityData = Arr::except($data, $fieldIgnores);
                 $className = Php::getShortClassName($entity);
@@ -150,13 +147,8 @@ class EntityHelper
                 DataMapper $dm
             ) use (
                 $auditor,
-                $ignore,
                 $fieldIgnores
             ) {
-                if ($ignore) {
-                    return;
-                }
-
                 $data = $entity->jsonSerialize();
                 $entityData = Arr::except($data, $fieldIgnores);
                 $className = Php::getShortClassName($entity);
@@ -177,13 +169,8 @@ class EntityHelper
                 DataMapper $dm
             ) use (
                 $auditor,
-                $ignore,
                 $fieldIgnores
             ) {
-                if ($ignore) {
-                    return;
-                }
-
                 $data = $entity->jsonSerialize();
                 $entityData = Arr::except($data, $fieldIgnores);
                 $className = Php::getShortClassName($entity);
