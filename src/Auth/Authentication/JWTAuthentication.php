@@ -49,6 +49,7 @@ namespace Platine\Framework\Auth\Authentication;
 
 use DateTime;
 use Platine\Config\Config;
+use Platine\Container\ContainerInterface;
 use Platine\Framework\Auth\AuthenticationInterface;
 use Platine\Framework\Auth\Entity\Token;
 use Platine\Framework\Auth\Entity\User;
@@ -82,7 +83,7 @@ class JWTAuthentication implements AuthenticationInterface
      * @param HashInterface $hash
      * @param UserRepository $userRepository
      * @param TokenRepository $tokenRepository
-     * @param ServerRequestInterface $request
+     * @param ContainerInterface $container
      */
     public function __construct(
         protected JWT $jwt,
@@ -91,7 +92,7 @@ class JWTAuthentication implements AuthenticationInterface
         protected HashInterface $hash,
         protected UserRepository $userRepository,
         protected TokenRepository $tokenRepository,
-        protected ServerRequestInterface $request
+        protected ContainerInterface $container
     ) {
     }
 
@@ -152,7 +153,16 @@ class JWTAuthentication implements AuthenticationInterface
      */
     public function isLogged(): bool
     {
-        $request = $this->request;
+        $request = null;
+        if ($this->container->has(ServerRequestInterface::class)) {
+            /** @var ServerRequestInterface $request */
+            $request = $this->container->get(ServerRequestInterface::class);
+        }
+
+        if ($request === null) {
+            return false;
+        }
+
         $headerName = $this->config->get('api.auth.headers.name', 'Authorization');
         $tokenHeader = $request->getHeaderLine($headerName);
         if (empty($tokenHeader)) {

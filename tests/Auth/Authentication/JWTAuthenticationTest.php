@@ -6,6 +6,7 @@ namespace Platine\Test\Framework\Auth\Authentication;
 
 use DateTime;
 use Platine\Config\Config;
+use Platine\Container\Container;
 use Platine\Dev\PlatineTestCase;
 use Platine\Framework\Auth\Authentication\JWTAuthentication;
 use Platine\Framework\Auth\Entity\Permission;
@@ -21,6 +22,7 @@ use Platine\Framework\Auth\Repository\UserRepository;
 use Platine\Framework\Security\JWT\Exception\JWTException;
 use Platine\Framework\Security\JWT\JWT;
 use Platine\Http\ServerRequest;
+use Platine\Http\ServerRequestInterface;
 use Platine\Logger\Logger;
 use Platine\Orm\Repository;
 use Platine\Security\Hash\BcryptHash;
@@ -47,6 +49,15 @@ class JWTAuthenticationTest extends PlatineTestCase
                 ['Authorization', '']
             ]
         ]);
+        $containter = $this->getMockInstanceMap(Container::class, [
+            'has' => [
+                [ServerRequestInterface::class, true],
+            ],
+            'get' => [
+                [ServerRequestInterface::class, $request],
+            ],
+        ]);
+
         $userRepository = $this->getMockInstance(UserRepository::class);
 
         $o = new JWTAuthentication(
@@ -56,11 +67,43 @@ class JWTAuthenticationTest extends PlatineTestCase
             $hash,
             $userRepository,
             $tokenRepository,
-            $request
+            $containter
         );
 
         $this->expectException(AccountNotFoundException::class);
         $o->getUser();
+    }
+
+    public function testIsLoggedServerRequestNotAvailable(): void
+    {
+        $jwt = $this->getMockInstance(JWT::class);
+        $logger = $this->getMockInstance(Logger::class);
+        $config = $this->getMockInstanceMap(Config::class, [
+            'get' => [
+                ['api.auth.headers.name', 'Authorization', 'Authorization'],
+            ]
+        ]);
+        $tokenRepository = $this->getMockInstance(TokenRepository::class);
+        $hash = $this->getMockInstance(BcryptHash::class);
+        $containter = $this->getMockInstanceMap(Container::class, [
+            'has' => [
+                [ServerRequestInterface::class, false],
+            ],
+        ]);
+
+        $userRepository = $this->getMockInstance(UserRepository::class);
+
+        $o = new JWTAuthentication(
+            $jwt,
+            $logger,
+            $config,
+            $hash,
+            $userRepository,
+            $tokenRepository,
+            $containter
+        );
+
+        $this->assertFalse($o->isLogged());
     }
 
     public function testGetUserFailedWrongJWTToken(): void
@@ -85,6 +128,14 @@ class JWTAuthenticationTest extends PlatineTestCase
                 ['Authorization', '7676ghggfhfgfghg']
             ]
         ]);
+        $containter = $this->getMockInstanceMap(Container::class, [
+            'has' => [
+                [ServerRequestInterface::class, true],
+            ],
+            'get' => [
+                [ServerRequestInterface::class, $request],
+            ],
+        ]);
         $userRepository = $this->getMockInstance(UserRepository::class);
 
         $o = new JWTAuthentication(
@@ -94,7 +145,7 @@ class JWTAuthenticationTest extends PlatineTestCase
             $hash,
             $userRepository,
             $tokenRepository,
-            $request
+            $containter
         );
 
         $this->expectException(AccountNotFoundException::class);
@@ -122,6 +173,14 @@ class JWTAuthenticationTest extends PlatineTestCase
                 ['Authorization', '7676ghggfhfgfghg']
             ]
         ]);
+        $containter = $this->getMockInstanceMap(Container::class, [
+            'has' => [
+                [ServerRequestInterface::class, true],
+            ],
+            'get' => [
+                [ServerRequestInterface::class, $request],
+            ],
+        ]);
         $userRepository = $this->getMockInstanceMap(UserRepository::class, [
             'find' => [
                 [1, null]
@@ -135,7 +194,7 @@ class JWTAuthenticationTest extends PlatineTestCase
             $hash,
             $userRepository,
             $tokenRepository,
-            $request
+            $containter
         );
 
         $this->expectException(AccountNotFoundException::class);
@@ -163,6 +222,14 @@ class JWTAuthenticationTest extends PlatineTestCase
                 ['Authorization', '7676ghggfhfgfghg']
             ]
         ]);
+        $containter = $this->getMockInstanceMap(Container::class, [
+            'has' => [
+                [ServerRequestInterface::class, true],
+            ],
+            'get' => [
+                [ServerRequestInterface::class, $request],
+            ],
+        ]);
         $userRepository = $this->getMockInstanceMap(UserRepository::class, [
             'find' => [
                 [1, $user]
@@ -176,7 +243,7 @@ class JWTAuthenticationTest extends PlatineTestCase
             $hash,
             $userRepository,
             $tokenRepository,
-            $request
+            $containter
         );
         $this->assertEquals(1, $o->getId());
     }
@@ -201,6 +268,14 @@ class JWTAuthenticationTest extends PlatineTestCase
                 ['Authorization', '']
             ]
         ]);
+        $containter = $this->getMockInstanceMap(Container::class, [
+            'has' => [
+                [ServerRequestInterface::class, true],
+            ],
+            'get' => [
+                [ServerRequestInterface::class, $request],
+            ],
+        ]);
         $userRepository = $this->getMockInstanceMap(UserRepository::class, [
             'find' => [
                 [1, null]
@@ -214,7 +289,7 @@ class JWTAuthenticationTest extends PlatineTestCase
             $hash,
             $userRepository,
             $tokenRepository,
-            $request
+            $containter
         );
 
         $this->expectException(AccountNotFoundException::class);
@@ -242,6 +317,14 @@ class JWTAuthenticationTest extends PlatineTestCase
                 ['Authorization', '7676ghggfhfgfghg']
             ]
         ]);
+        $containter = $this->getMockInstanceMap(Container::class, [
+            'has' => [
+                [ServerRequestInterface::class, true],
+            ],
+            'get' => [
+                [ServerRequestInterface::class, $request],
+            ],
+        ]);
         $userRepository = $this->getMockInstanceMap(UserRepository::class, [
             'find' => [
                 [1, $user]
@@ -255,7 +338,7 @@ class JWTAuthenticationTest extends PlatineTestCase
             $hash,
             $userRepository,
             $tokenRepository,
-            $request
+            $containter
         );
 
         $this->assertInstanceOf(User::class, $o->getUser());
@@ -281,6 +364,14 @@ class JWTAuthenticationTest extends PlatineTestCase
                 ['Authorization', '7676ghggfhfgfghg']
             ]
         ]);
+        $containter = $this->getMockInstanceMap(Container::class, [
+            'has' => [
+                [ServerRequestInterface::class, true],
+            ],
+            'get' => [
+                [ServerRequestInterface::class, $request],
+            ],
+        ]);
         $userRepository = $this->getMockInstanceMap(UserRepository::class);
 
         $o = new JWTAuthentication(
@@ -290,7 +381,7 @@ class JWTAuthenticationTest extends PlatineTestCase
             $hash,
             $userRepository,
             $tokenRepository,
-            $request
+            $containter
         );
 
         $this->assertCount(2, $o->getPermissions());
@@ -316,6 +407,14 @@ class JWTAuthenticationTest extends PlatineTestCase
                 ['Authorization', '']
             ]
         ]);
+        $containter = $this->getMockInstanceMap(Container::class, [
+            'has' => [
+                [ServerRequestInterface::class, true],
+            ],
+            'get' => [
+                [ServerRequestInterface::class, $request],
+            ],
+        ]);
         $userRepository = $this->getMockInstanceMap(UserRepository::class);
 
         $o = new JWTAuthentication(
@@ -325,7 +424,7 @@ class JWTAuthenticationTest extends PlatineTestCase
             $hash,
             $userRepository,
             $tokenRepository,
-            $request
+            $containter
         );
 
         $this->assertCount(0, $o->getPermissions());
@@ -347,6 +446,14 @@ class JWTAuthenticationTest extends PlatineTestCase
                 ['Authorization', '']
             ]
         ]);
+        $containter = $this->getMockInstanceMap(Container::class, [
+            'has' => [
+                [ServerRequestInterface::class, true],
+            ],
+            'get' => [
+                [ServerRequestInterface::class, $request],
+            ],
+        ]);
         $userRepository = $this->getMockInstance(UserRepository::class);
 
         $o = new JWTAuthentication(
@@ -356,7 +463,7 @@ class JWTAuthenticationTest extends PlatineTestCase
             $hash,
             $userRepository,
             $tokenRepository,
-            $request
+            $containter
         );
         $this->expectException(MissingCredentialsException::class);
 
@@ -382,6 +489,14 @@ class JWTAuthenticationTest extends PlatineTestCase
                 ['Authorization', '']
             ]
         ]);
+        $containter = $this->getMockInstanceMap(Container::class, [
+            'has' => [
+                [ServerRequestInterface::class, true],
+            ],
+            'get' => [
+                [ServerRequestInterface::class, $request],
+            ],
+        ]);
         $userRepository = $this->getMockInstance(UserRepository::class);
 
         $o = new JWTAuthentication(
@@ -391,7 +506,7 @@ class JWTAuthenticationTest extends PlatineTestCase
             $hash,
             $userRepository,
             $tokenRepository,
-            $request
+            $containter
         );
         $this->expectException(MissingCredentialsException::class);
 
@@ -417,6 +532,14 @@ class JWTAuthenticationTest extends PlatineTestCase
                 ['Authorization', '']
             ]
         ]);
+        $containter = $this->getMockInstanceMap(Container::class, [
+            'has' => [
+                [ServerRequestInterface::class, true],
+            ],
+            'get' => [
+                [ServerRequestInterface::class, $request],
+            ],
+        ]);
         $userRepository = $this->getMockInstance(UserRepository::class);
 
         $o = new JWTAuthentication(
@@ -426,7 +549,7 @@ class JWTAuthenticationTest extends PlatineTestCase
             $hash,
             $userRepository,
             $tokenRepository,
-            $request
+            $containter
         );
         $o->logout(true);
 
@@ -449,6 +572,14 @@ class JWTAuthenticationTest extends PlatineTestCase
                 ['Authorization', '']
             ]
         ]);
+        $containter = $this->getMockInstanceMap(Container::class, [
+            'has' => [
+                [ServerRequestInterface::class, true],
+            ],
+            'get' => [
+                [ServerRequestInterface::class, $request],
+            ],
+        ]);
         $userRepository = $this->getMockInstance(UserRepository::class, [
             'findBy' => null
         ]);
@@ -460,7 +591,7 @@ class JWTAuthenticationTest extends PlatineTestCase
             $hash,
             $userRepository,
             $tokenRepository,
-            $request
+            $containter
         );
         $this->expectException(AccountNotFoundException::class);
 
@@ -493,6 +624,14 @@ class JWTAuthenticationTest extends PlatineTestCase
                 ['Authorization', '']
             ]
         ]);
+        $containter = $this->getMockInstanceMap(Container::class, [
+            'has' => [
+                [ServerRequestInterface::class, true],
+            ],
+            'get' => [
+                [ServerRequestInterface::class, $request],
+            ],
+        ]);
         $userRepository = $this->getMockInstance(UserRepository::class, [
             'with' => $middleRepository,
         ]);
@@ -504,7 +643,7 @@ class JWTAuthenticationTest extends PlatineTestCase
             $hash,
             $userRepository,
             $tokenRepository,
-            $request
+            $containter
         );
         $this->expectException(AccountLockedException::class);
 
@@ -537,6 +676,14 @@ class JWTAuthenticationTest extends PlatineTestCase
                 ['Authorization', '']
             ]
         ]);
+        $containter = $this->getMockInstanceMap(Container::class, [
+            'has' => [
+                [ServerRequestInterface::class, true],
+            ],
+            'get' => [
+                [ServerRequestInterface::class, $request],
+            ],
+        ]);
         $userRepository = $this->getMockInstance(UserRepository::class, [
             'with' => $middleRepository,
         ]);
@@ -548,7 +695,7 @@ class JWTAuthenticationTest extends PlatineTestCase
             $hash,
             $userRepository,
             $tokenRepository,
-            $request
+            $containter
         );
         $this->expectException(InvalidCredentialsException::class);
 
@@ -613,6 +760,14 @@ class JWTAuthenticationTest extends PlatineTestCase
                 ['Authorization', '']
             ]
         ]);
+        $containter = $this->getMockInstanceMap(Container::class, [
+            'has' => [
+                [ServerRequestInterface::class, true],
+            ],
+            'get' => [
+                [ServerRequestInterface::class, $request],
+            ],
+        ]);
         $userRepository = $this->getMockInstance(UserRepository::class, [
             'with' => $middleRepository,
         ]);
@@ -624,7 +779,7 @@ class JWTAuthenticationTest extends PlatineTestCase
             $hash,
             $userRepository,
             $tokenRepository,
-            $request
+            $containter
         );
 
         $credentials = [
