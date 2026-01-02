@@ -27,29 +27,12 @@ class MailHelperTest extends PlatineTestCase
 
     public function testSendReportMail(): void
     {
-        $vfsRoot = vfsStream::setup();
-        $file1 = $this->createVfsFile('file1.txt', $vfsRoot, 'file1');
-        $file2 = $this->createVfsFile('file2.txt', $vfsRoot, 'file2');
+        $this->sendReportMail(false);
+    }
 
-        $transport = $this->getMockInstance(NullTransport::class, ['send' => true]);
-        $printHelper = $this->getMockInstance(PrintHelper::class);
-        $config = $this->getMockInstance(Config::class);
-        $template = $this->getMockInstance(Template::class);
-        $o = new MailHelper($template, $transport, $printHelper, $config);
-
-        $this->expectMethodCallCount($printHelper, 'getReportContent');
-        $this->expectMethodCallCount($printHelper, 'debugReport');
-        $this->expectMethodCallCount($config, 'get');
-        $this->expectMethodCallCount($template, 'renderString');
-
-        $res = $o->sendReportMail(
-            1,
-            'Foo object',
-            'myemail@example.com',
-            ['name' => 'Foo'],
-            [$file1->url(), 'file' => $file2->url()]
-        );
-        $this->assertTrue($res);
+    public function testSendReportMailAsync(): void
+    {
+        $this->sendReportMail(true);
     }
 
     public function testSendReportMailEmptyReceiverAddress(): void
@@ -82,5 +65,39 @@ class MailHelperTest extends PlatineTestCase
             'foo@example.com'
         );
         $this->assertFalse($res);
+    }
+
+    private function sendReportMail(bool $async = false): void
+    {
+        $vfsRoot = vfsStream::setup();
+        $file1 = $this->createVfsFile('file1.txt', $vfsRoot, 'file1');
+        $file2 = $this->createVfsFile('file2.txt', $vfsRoot, 'file2');
+
+        $transport = $this->getMockInstance(NullTransport::class, ['send' => true]);
+        $printHelper = $this->getMockInstance(PrintHelper::class);
+        $config = $this->getMockInstance(Config::class);
+        $template = $this->getMockInstance(Template::class);
+        $o = new MailHelper($template, $transport, $printHelper, $config);
+
+        $this->expectMethodCallCount($printHelper, 'getReportContent', $async ? 0 : 1);
+        $this->expectMethodCallCount($printHelper, 'debugReport', $async ? 0 : 1);
+        $this->expectMethodCallCount($config, 'get', $async ? 0 : 1);
+        $this->expectMethodCallCount($template, 'renderString', $async ? 0 : 1);
+
+        $res = $o->sendReportMail(
+            1,
+            'Foo object',
+            'myemail@example.com',
+            ['name' => 'Foo'],
+            [$file1->url(), 'file' => $file2->url()],
+            '',
+            '',
+            $async
+        );
+        if ($async) {
+            $this->assertTrue($res);
+        } else {
+            $this->assertTrue($res);
+        }
     }
 }

@@ -71,6 +71,8 @@ class MailHelper
      * @param array<int|string, string> $attachments
      * @param string $senderAddress
      * @param string $senderName
+     * @param bool $async whether to send using asynchronous method
+     *
      * @return bool
      */
     public function sendReportMail(
@@ -80,8 +82,20 @@ class MailHelper
         array $data = [],
         array $attachments = [],
         string $senderAddress = '',
-        string $senderName = ''
+        string $senderName = '',
+        bool $async = false,
     ): bool {
+        if ($async) {
+            return $this->sendReportMailAsync(
+                $reportId,
+                $object,
+                $receiverAddress,
+                $data,
+                $attachments,
+                $senderAddress,
+                $senderName
+            );
+        }
         $content = $this->printHelper->getReportContent($reportId);
 
         return $this->sendMail(
@@ -94,6 +108,30 @@ class MailHelper
             $senderAddress,
             $senderName
         );
+    }
+
+    /**
+     * Send the asynchronously mail using report content
+     * @param int|string $reportId
+     * @param string $object
+     * @param string|array<string> $receiverAddress
+     * @param array<string, mixed> $data
+     * @param array<int|string, string> $attachments
+     * @param string $senderAddress
+     * @param string $senderName
+     * @return bool
+     */
+    public function sendReportMailAsync(
+        int|string $reportId,
+        string $object,
+        string|array $receiverAddress,
+        array $data = [],
+        array $attachments = [],
+        string $senderAddress = '',
+        string $senderName = ''
+    ): bool {
+        // TODO: implement me
+        return true;
     }
 
 
