@@ -49,6 +49,8 @@ namespace Platine\Framework\Service\Provider;
 
 use Platine\Framework\Auth\Authentication\JWTAuthentication;
 use Platine\Framework\Auth\AuthenticationInterface;
+use Platine\Framework\Auth\Authorization\Cache\NullCacheStorage;
+use Platine\Framework\Auth\Authorization\PermissionCacheInterface;
 use Platine\Framework\Auth\Middleware\ApiAuthenticationMiddleware;
 use Platine\Framework\Auth\Middleware\ApiAuthorizationMiddleware;
 use Platine\Framework\Auth\Repository\TokenRepository;
@@ -77,5 +79,6 @@ class ApiAuthServiceProvider extends ServiceProvider
         $this->app->share(EncoderInterface::class, Base64UrlSafeEncoder::class);
         $this->app->share(JWT::class);
         $this->app->bind(TokenRepository::class);
+        $this->app->bind(PermissionCacheInterface::class, NullCacheStorage::class);
     }
 }

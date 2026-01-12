@@ -29,50 +29,17 @@
  * SOFTWARE.
  */
 
-/**
- *  @file DefaultAuthorization.php
- *
- *  The Authorization using JWT feature class
- *
- *  @package    Platine\Framework\Auth\Authorization
- *  @author Platine Developers team
- *  @copyright  Copyright (c) 2020
- *  @license    http://opensource.org/licenses/MIT  MIT License
- *  @link   https://www.platine-php.com
- *  @version 1.0.0
- *  @filesource
- */
-
 declare(strict_types=1);
 
-namespace Platine\Framework\Auth\Authorization;
+namespace Platine\Framework\Auth\Authorization\Cache;
 
-use Platine\Framework\Auth\AuthenticationInterface;
-use Platine\Framework\Auth\AuthorizationInterface;
+use Platine\Cache\Storage\NullStorage;
+use Platine\Framework\Auth\Authorization\PermissionCacheInterface;
 
 /**
- * @class DefaultAuthorization
- * @package Platine\Framework\Auth\Authorization
+ * @class NullCacheStorage
+ * @package Platine\Framework\Auth\Authorization\Cache
  */
-class DefaultAuthorization implements AuthorizationInterface
+class NullCacheStorage extends NullStorage implements PermissionCacheInterface
 {
-    /**
-     * Create new instance
-     * @param AuthenticationInterface $authentication
-     */
-    public function __construct(protected AuthenticationInterface $authentication)
-    {
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function isGranted(string $permission): bool
-    {
-        return in_array(
-            $permission,
-            $this->authentication->getPermissions(),
-            true
-        );
-    }
 }

@@ -9,6 +9,7 @@ use Platine\Config\Config;
 use Platine\Container\Container;
 use Platine\Dev\PlatineTestCase;
 use Platine\Framework\Auth\Authentication\JWTAuthentication;
+use Platine\Framework\Auth\Authorization\Cache\NullCacheStorage;
 use Platine\Framework\Auth\Entity\Permission;
 use Platine\Framework\Auth\Entity\Role;
 use Platine\Framework\Auth\Entity\Token;
@@ -59,6 +60,7 @@ class JWTAuthenticationTest extends PlatineTestCase
         ]);
 
         $userRepository = $this->getMockInstance(UserRepository::class);
+        $cacheStorage = $this->getMockInstance(NullCacheStorage::class);
 
         $o = new JWTAuthentication(
             $jwt,
@@ -67,7 +69,8 @@ class JWTAuthenticationTest extends PlatineTestCase
             $hash,
             $userRepository,
             $tokenRepository,
-            $containter
+            $containter,
+            $cacheStorage
         );
 
         $this->expectException(AccountNotFoundException::class);
@@ -92,7 +95,8 @@ class JWTAuthenticationTest extends PlatineTestCase
         ]);
 
         $userRepository = $this->getMockInstance(UserRepository::class);
-
+        $cacheStorage = $this->getMockInstance(NullCacheStorage::class);
+        
         $o = new JWTAuthentication(
             $jwt,
             $logger,
@@ -100,7 +104,8 @@ class JWTAuthenticationTest extends PlatineTestCase
             $hash,
             $userRepository,
             $tokenRepository,
-            $containter
+            $containter,
+            $cacheStorage
         );
 
         $this->assertFalse($o->isLogged());
@@ -137,7 +142,8 @@ class JWTAuthenticationTest extends PlatineTestCase
             ],
         ]);
         $userRepository = $this->getMockInstance(UserRepository::class);
-
+        $cacheStorage = $this->getMockInstance(NullCacheStorage::class);
+        
         $o = new JWTAuthentication(
             $jwt,
             $logger,
@@ -145,7 +151,8 @@ class JWTAuthenticationTest extends PlatineTestCase
             $hash,
             $userRepository,
             $tokenRepository,
-            $containter
+            $containter,
+            $cacheStorage
         );
 
         $this->expectException(AccountNotFoundException::class);
@@ -186,6 +193,7 @@ class JWTAuthenticationTest extends PlatineTestCase
                 [1, null]
             ]
         ]);
+        $cacheStorage = $this->getMockInstance(NullCacheStorage::class);
 
         $o = new JWTAuthentication(
             $jwt,
@@ -194,7 +202,8 @@ class JWTAuthenticationTest extends PlatineTestCase
             $hash,
             $userRepository,
             $tokenRepository,
-            $containter
+            $containter,
+            $cacheStorage
         );
 
         $this->expectException(AccountNotFoundException::class);
@@ -235,6 +244,7 @@ class JWTAuthenticationTest extends PlatineTestCase
                 [1, $user]
             ]
         ]);
+        $cacheStorage = $this->getMockInstance(NullCacheStorage::class);
 
         $o = new JWTAuthentication(
             $jwt,
@@ -243,7 +253,8 @@ class JWTAuthenticationTest extends PlatineTestCase
             $hash,
             $userRepository,
             $tokenRepository,
-            $containter
+            $containter,
+            $cacheStorage
         );
         $this->assertEquals(1, $o->getId());
     }
@@ -281,6 +292,7 @@ class JWTAuthenticationTest extends PlatineTestCase
                 [1, null]
             ]
         ]);
+        $cacheStorage = $this->getMockInstance(NullCacheStorage::class);
 
         $o = new JWTAuthentication(
             $jwt,
@@ -289,7 +301,8 @@ class JWTAuthenticationTest extends PlatineTestCase
             $hash,
             $userRepository,
             $tokenRepository,
-            $containter
+            $containter,
+            $cacheStorage
         );
 
         $this->expectException(AccountNotFoundException::class);
@@ -330,6 +343,7 @@ class JWTAuthenticationTest extends PlatineTestCase
                 [1, $user]
             ]
         ]);
+        $cacheStorage = $this->getMockInstance(NullCacheStorage::class);
 
         $o = new JWTAuthentication(
             $jwt,
@@ -338,7 +352,8 @@ class JWTAuthenticationTest extends PlatineTestCase
             $hash,
             $userRepository,
             $tokenRepository,
-            $containter
+            $containter,
+            $cacheStorage
         );
 
         $this->assertInstanceOf(User::class, $o->getUser());
@@ -347,7 +362,7 @@ class JWTAuthenticationTest extends PlatineTestCase
     public function testGetPermissions(): void
     {
         $jwt = $this->getMockInstance(JWT::class, [
-            'getPayload' => ['permissions' => ['user_create', 'user_update']]
+            'getPayload' => ['roles' => ['1', '2']]
         ]);
         $logger = $this->getMockInstance(Logger::class);
         $config = $this->getMockInstanceMap(Config::class, [
@@ -373,7 +388,10 @@ class JWTAuthenticationTest extends PlatineTestCase
             ],
         ]);
         $userRepository = $this->getMockInstanceMap(UserRepository::class);
-
+        $cacheStorage = $this->getMockInstance(NullCacheStorage::class, [
+            'get' => ['user_create', 'user_delete']
+        ]);
+        
         $o = new JWTAuthentication(
             $jwt,
             $logger,
@@ -381,7 +399,8 @@ class JWTAuthenticationTest extends PlatineTestCase
             $hash,
             $userRepository,
             $tokenRepository,
-            $containter
+            $containter,
+            $cacheStorage
         );
 
         $this->assertCount(2, $o->getPermissions());
@@ -416,7 +435,8 @@ class JWTAuthenticationTest extends PlatineTestCase
             ],
         ]);
         $userRepository = $this->getMockInstanceMap(UserRepository::class);
-
+        $cacheStorage = $this->getMockInstance(NullCacheStorage::class);
+        
         $o = new JWTAuthentication(
             $jwt,
             $logger,
@@ -424,7 +444,8 @@ class JWTAuthenticationTest extends PlatineTestCase
             $hash,
             $userRepository,
             $tokenRepository,
-            $containter
+            $containter,
+            $cacheStorage
         );
 
         $this->assertCount(0, $o->getPermissions());
@@ -455,7 +476,8 @@ class JWTAuthenticationTest extends PlatineTestCase
             ],
         ]);
         $userRepository = $this->getMockInstance(UserRepository::class);
-
+        $cacheStorage = $this->getMockInstance(NullCacheStorage::class);
+        
         $o = new JWTAuthentication(
             $jwt,
             $logger,
@@ -463,7 +485,8 @@ class JWTAuthenticationTest extends PlatineTestCase
             $hash,
             $userRepository,
             $tokenRepository,
-            $containter
+            $containter,
+            $cacheStorage
         );
         $this->expectException(MissingCredentialsException::class);
 
@@ -498,6 +521,7 @@ class JWTAuthenticationTest extends PlatineTestCase
             ],
         ]);
         $userRepository = $this->getMockInstance(UserRepository::class);
+        $cacheStorage = $this->getMockInstance(NullCacheStorage::class);
 
         $o = new JWTAuthentication(
             $jwt,
@@ -506,7 +530,8 @@ class JWTAuthenticationTest extends PlatineTestCase
             $hash,
             $userRepository,
             $tokenRepository,
-            $containter
+            $containter,
+            $cacheStorage
         );
         $this->expectException(MissingCredentialsException::class);
 
@@ -541,6 +566,7 @@ class JWTAuthenticationTest extends PlatineTestCase
             ],
         ]);
         $userRepository = $this->getMockInstance(UserRepository::class);
+        $cacheStorage = $this->getMockInstance(NullCacheStorage::class);
 
         $o = new JWTAuthentication(
             $jwt,
@@ -549,7 +575,8 @@ class JWTAuthenticationTest extends PlatineTestCase
             $hash,
             $userRepository,
             $tokenRepository,
-            $containter
+            $containter,
+            $cacheStorage
         );
         $o->logout(true);
 
@@ -583,6 +610,7 @@ class JWTAuthenticationTest extends PlatineTestCase
         $userRepository = $this->getMockInstance(UserRepository::class, [
             'findBy' => null
         ]);
+        $cacheStorage = $this->getMockInstance(NullCacheStorage::class);
 
         $o = new JWTAuthentication(
             $jwt,
@@ -591,7 +619,8 @@ class JWTAuthenticationTest extends PlatineTestCase
             $hash,
             $userRepository,
             $tokenRepository,
-            $containter
+            $containter,
+            $cacheStorage
         );
         $this->expectException(AccountNotFoundException::class);
 
@@ -635,6 +664,7 @@ class JWTAuthenticationTest extends PlatineTestCase
         $userRepository = $this->getMockInstance(UserRepository::class, [
             'with' => $middleRepository,
         ]);
+        $cacheStorage = $this->getMockInstance(NullCacheStorage::class);
 
         $o = new JWTAuthentication(
             $jwt,
@@ -643,7 +673,8 @@ class JWTAuthenticationTest extends PlatineTestCase
             $hash,
             $userRepository,
             $tokenRepository,
-            $containter
+            $containter,
+            $cacheStorage
         );
         $this->expectException(AccountLockedException::class);
 
@@ -687,6 +718,7 @@ class JWTAuthenticationTest extends PlatineTestCase
         $userRepository = $this->getMockInstance(UserRepository::class, [
             'with' => $middleRepository,
         ]);
+        $cacheStorage = $this->getMockInstance(NullCacheStorage::class);
 
         $o = new JWTAuthentication(
             $jwt,
@@ -695,7 +727,8 @@ class JWTAuthenticationTest extends PlatineTestCase
             $hash,
             $userRepository,
             $tokenRepository,
-            $containter
+            $containter,
+            $cacheStorage
         );
         $this->expectException(InvalidCredentialsException::class);
 
@@ -771,6 +804,7 @@ class JWTAuthenticationTest extends PlatineTestCase
         $userRepository = $this->getMockInstance(UserRepository::class, [
             'with' => $middleRepository,
         ]);
+        $cacheStorage = $this->getMockInstance(NullCacheStorage::class);
 
         $o = new JWTAuthentication(
             $jwt,
@@ -779,7 +813,8 @@ class JWTAuthenticationTest extends PlatineTestCase
             $hash,
             $userRepository,
             $tokenRepository,
-            $containter
+            $containter,
+            $cacheStorage
         );
 
         $credentials = [

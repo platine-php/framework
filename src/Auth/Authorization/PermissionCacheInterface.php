@@ -30,9 +30,9 @@
  */
 
 /**
- *  @file DefaultAuthorization.php
+ *  @file PermissionCacheInterface.php
  *
- *  The Authorization using JWT feature class
+ *  The permissions cache feature class
  *
  *  @package    Platine\Framework\Auth\Authorization
  *  @author Platine Developers team
@@ -47,32 +47,12 @@ declare(strict_types=1);
 
 namespace Platine\Framework\Auth\Authorization;
 
-use Platine\Framework\Auth\AuthenticationInterface;
-use Platine\Framework\Auth\AuthorizationInterface;
+use Platine\Cache\Storage\StorageInterface;
 
 /**
- * @class DefaultAuthorization
+ * @class PermissionCacheInterface
  * @package Platine\Framework\Auth\Authorization
  */
-class DefaultAuthorization implements AuthorizationInterface
+interface PermissionCacheInterface extends StorageInterface
 {
-    /**
-     * Create new instance
-     * @param AuthenticationInterface $authentication
-     */
-    public function __construct(protected AuthenticationInterface $authentication)
-    {
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function isGranted(string $permission): bool
-    {
-        return in_array(
-            $permission,
-            $this->authentication->getPermissions(),
-            true
-        );
-    }
 }

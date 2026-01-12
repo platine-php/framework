@@ -18,7 +18,7 @@ class ApiAuthServiceProviderTest extends PlatineTestCase
     {
         $app = $this->getMockInstanceMap(Application::class);
 
-        $app->expects($this->exactly(1))
+        $app->expects($this->exactly(2))
                 ->method('bind');
 
         $app->expects($this->exactly(6))

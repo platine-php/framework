@@ -51,6 +51,7 @@ use DateTime;
 use Platine\Config\Config;
 use Platine\Container\ContainerInterface;
 use Platine\Framework\Auth\AuthenticationInterface;
+use Platine\Framework\Auth\Authorization\PermissionCacheInterface;
 use Platine\Framework\Auth\Entity\Token;
 use Platine\Framework\Auth\Entity\User;
 use Platine\Framework\Auth\Enum\UserStatus;
@@ -66,6 +67,7 @@ use Platine\Framework\Security\JWT\JWT;
 use Platine\Http\ServerRequestInterface;
 use Platine\Logger\LoggerInterface;
 use Platine\Security\Hash\HashInterface;
+use Platine\Stdlib\Helper\Arr;
 use Platine\Stdlib\Helper\Str;
 
 /**
@@ -84,6 +86,7 @@ class JWTAuthentication implements AuthenticationInterface
      * @param UserRepository $userRepository
      * @param TokenRepository $tokenRepository
      * @param ContainerInterface $container
+     * @param PermissionCacheInterface $permissionCache
      */
     public function __construct(
         protected JWT $jwt,
@@ -92,7 +95,8 @@ class JWTAuthentication implements AuthenticationInterface
         protected HashInterface $hash,
         protected UserRepository $userRepository,
         protected TokenRepository $tokenRepository,
-        protected ContainerInterface $container
+        protected ContainerInterface $container,
+        protected PermissionCacheInterface $permissionCache
     ) {
     }
 
@@ -129,7 +133,16 @@ class JWTAuthentication implements AuthenticationInterface
         }
 
         $payload = $this->jwt->getPayload();
-        return $payload['permissions'] ?? [];
+        $roles = $payload['roles'] ?? [];
+        $permissions = [];
+        foreach ($roles as $id) {
+            $permissions = [
+                ...$this->permissionCache->get($id, []),
+                ...$permissions
+            ];
+        }
+
+        return array_unique($permissions);
     }
 
 
@@ -197,14 +210,14 @@ class JWTAuthentication implements AuthenticationInterface
         bool $remeberMe = false,
         bool $withPassword = true
     ): array {
-        if (!isset($credentials['username'])) {
+        if (isset($credentials['username']) === false) {
             throw new MissingCredentialsException(
                 'Missing username information',
                 401
             );
         }
 
-        if ($withPassword && !isset($credentials['password'])) {
+        if ($withPassword && isset($credentials['password']) === false) {
             throw new MissingCredentialsException(
                 'Missing password information',
                 401
@@ -239,6 +252,7 @@ class JWTAuthentication implements AuthenticationInterface
 
         $permissions = [];
         $roles = $user->roles;
+        $roleIds = Arr::getColumn($roles, 'id');
         foreach ($roles as $role) {
             $rolePermissions = $role->permissions;
             foreach ($rolePermissions as $permission) {
@@ -257,7 +271,7 @@ class JWTAuthentication implements AuthenticationInterface
                   ->setPayload([
                       'sub' => $user->id,
                       'exp' => $tokenExpire,
-                      'permissions' => $permissions,
+                      'roles' => $roleIds,
                   ])
                   ->sign();
 
