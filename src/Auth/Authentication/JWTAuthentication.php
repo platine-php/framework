@@ -136,8 +136,10 @@ class JWTAuthentication implements AuthenticationInterface
         $roles = $payload['roles'] ?? [];
         $permissions = [];
         foreach ($roles as $id) {
+            // TODO: add configuration for prefix
+            $roleKey = sprintf('api_role_%d', $id);
             $permissions = [
-                ...$this->permissionCache->get($id, []),
+                ...$this->permissionCache->get($roleKey, []),
                 ...$permissions
             ];
         }
