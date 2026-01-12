@@ -406,6 +406,53 @@ class JWTAuthenticationTest extends PlatineTestCase
         $this->assertCount(2, $o->getPermissions());
     }
 
+    public function testGetPermissionsFromDB(): void
+    {
+        $jwt = $this->getMockInstance(JWT::class, [
+            'getPayload' => ['roles' => ['1', '2']]
+        ]);
+        $logger = $this->getMockInstance(Logger::class);
+        $config = $this->getMockInstanceMap(Config::class, [
+            'get' => [
+                ['api.auth.headers.name', 'Authorization', 'Authorization'],
+                ['api.auth.headers.token_type', 'Bearer', 'Bearer'],
+                ['api.sign.secret', '', 'foosecret'],
+            ]
+        ]);
+        $tokenRepository = $this->getMockInstance(TokenRepository::class);
+        $hash = $this->getMockInstance(BcryptHash::class);
+        $request = $this->getMockInstanceMap(ServerRequest::class, [
+            'getHeaderLine' => [
+                ['Authorization', '7676ghggfhfgfghg']
+            ]
+        ]);
+        $containter = $this->getMockInstanceMap(Container::class, [
+            'has' => [
+                [ServerRequestInterface::class, true],
+            ],
+            'get' => [
+                [ServerRequestInterface::class, $request],
+            ],
+        ]);
+        $userRepository = $this->getMockInstanceMap(UserRepository::class);
+        $cacheStorage = $this->getMockInstance(NullCacheStorage::class, [
+            'get' => []
+        ]);
+
+        $o = new JWTAuthentication(
+            $jwt,
+            $logger,
+            $config,
+            $hash,
+            $userRepository,
+            $tokenRepository,
+            $containter,
+            $cacheStorage
+        );
+
+        $this->assertCount(0, $o->getPermissions());
+    }
+
     public function testGetPermissionsUserNotLogged(): void
     {
         $jwt = $this->getMockInstance(JWT::class, [

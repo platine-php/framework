@@ -147,7 +147,13 @@ class JWTAuthentication implements AuthenticationInterface
             }
         }
 
-        return array_unique($permissions);
+        if (count($permissions) > 0) {
+            return array_unique($permissions);
+        }
+
+        // May be cache feature not available or expired
+        // get user permissions from database
+        return $this->getUserPermissions((int) ($payload['sub'] ?? -1));
     }
 
 
@@ -255,18 +261,8 @@ class JWTAuthentication implements AuthenticationInterface
             );
         }
 
-        $permissions = [];
-        $roles = $user->roles;
-        $roleIds = Arr::getColumn($roles, 'id');
-        foreach ($roles as $role) {
-            $rolePermissions = $role->permissions;
-            foreach ($rolePermissions as $permission) {
-                if (in_array($permission->code, $permissions) === false) {
-                    $permissions[] = $permission->code;
-                }
-            }
-        }
-
+        $permissions = $this->getUserPermissions($user);
+        $roles = Arr::getColumn($user->roles, 'id');
         $secret = $this->config->get('api.sign.secret');
         $expire = $this->config->get('api.auth.token_expire', 900);
         $refreshExpire = $this->config->get('api.auth.refresh_token_expire', 30 * 86400);
@@ -276,7 +272,7 @@ class JWTAuthentication implements AuthenticationInterface
                   ->setPayload([
                       'sub' => $user->id,
                       'exp' => $tokenExpire,
-                      'roles' => $roleIds,
+                      'roles' => $roles,
                   ])
                   ->sign();
 
@@ -340,5 +336,34 @@ class JWTAuthentication implements AuthenticationInterface
     protected function getUserData(User $user, Token $token): array
     {
         return [];
+    }
+
+    /**
+     * Return the permission list of the given user
+     * @param User|int $user
+     * @return string[]
+     */
+    protected function getUserPermissions(User|int $user): array
+    {
+        $permissions = [];
+        if (is_int($user)) {
+            $user = $this->userRepository->with('roles.permissions')
+                                         ->find($user);
+            if ($user === null) {
+                return [];
+            }
+        }
+
+        $roles = $user->roles;
+        foreach ($roles as $role) {
+            $rolePermissions = $role->permissions;
+            foreach ($rolePermissions as $permission) {
+                if (in_array($permission->code, $permissions) === false) {
+                    $permissions[] = $permission->code;
+                }
+            }
+        }
+
+        return $permissions;
     }
 }
