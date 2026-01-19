@@ -400,23 +400,7 @@ abstract class BaseAction implements RequestHandlerInterface
             $queries['all']
         );
 
-        $filterParams = $queries;
-        if (count($filterParams) > 0) {
-            $filters = [];
-            foreach ($filterParams as $key => $value) {
-                $name = $this->filterMaps[$key] ?? $key;
-                if (is_string($value) && Str::length($value) > 0) {
-                    $filters[$name] = $value;
-                    continue;
-                }
-
-                if (is_array($value) && count($value) > 1) {
-                    $filters[$name] = $value;
-                }
-            }
-
-            $this->filters = $filters;
-        }
+        $this->filters = Arr::filterValue($queries);
 
         // Handle default filters
         $this->handleFilterDefault();

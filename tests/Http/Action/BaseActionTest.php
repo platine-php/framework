@@ -451,6 +451,7 @@ class BaseActionTest extends PlatineTestCase
                     'start_date' => '2025-09-01',
                     'end_date' => '2025-09-30',
                     'permissions' => [5,7],
+                    'multi' => [5,7, null],
                     'all' => $bypassPagination ? 1 : 0
                 ]]
             ],
@@ -491,7 +492,7 @@ class BaseActionTest extends PlatineTestCase
             $this->getPropertyValue(BaseAction::class, $o, 'sorts')
         );
         $this->assertEquals(
-            ['permissions' => [5,7], 'status' => 'Y'],
+            ['permissions' => [5,7], 'status' => 'Y', 'multi' => [5, 7]],
             $this->getPropertyValue(BaseAction::class, $o, 'filters')
         );
     }
