@@ -11,12 +11,12 @@
           stderr="true">
   <testsuites>
     <testsuite name="Platine Framework Tests Suite">
-      <directory suffix="Test.php">tests</directory>
+      <directory suffix="Test.php">tests/Http/Middleware</directory>
     </testsuite>
   </testsuites>
   <coverage>
     <include>
-      <directory suffix=".php">src</directory>
+      <directory suffix=".php">src/Http/Middleware</directory>
     </include>
   </coverage>
 </phpunit>

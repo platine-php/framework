@@ -99,6 +99,27 @@ class BodyParserMiddlewareTest extends PlatineTestCase
         $this->assertEquals(0, $res->getStatusCode());
     }
 
+    public function testProcessInvalidJson(): void
+    {
+        $body = new Stream('{"foo": "bar}');
+        $request = $this->getMockInstance(ServerRequest::class, [
+            'getParsedBody' => null,
+            'getBody' => $body,
+            'getHeader' => ['application/json'],
+        ]);
+
+        $request->expects($this->exactly(1))
+                ->method('withParsedBody')
+                ->with(null);
+
+        $handler = $this->getMockInstance(HttpKernel::class);
+
+        $o = new BodyParserMiddleware();
+        $res = $o->process($request, $handler);
+
+        $this->assertEquals(0, $res->getStatusCode());
+    }
+
     public function testProcessForm(): void
     {
         $body = new Stream('foo=bar');

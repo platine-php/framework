@@ -47,6 +47,7 @@ declare(strict_types=1);
 
 namespace Platine\Framework\Http\Middleware;
 
+use InvalidArgumentException;
 use Platine\Http\Handler\MiddlewareInterface;
 use Platine\Http\Handler\RequestHandlerInterface;
 use Platine\Http\ResponseInterface;
@@ -139,7 +140,11 @@ class BodyParserMiddleware implements MiddlewareInterface
     protected function registerDefaultParsers(): void
     {
         $this->registerParser('application/json', static function ($body) {
-            return Json::decode($body, true);
+            try {
+                return Json::decode($body, true);
+            } catch (InvalidArgumentException $ex) {
+                return null;
+            }
         });
 
         $this->registerParser('application/x-www-form-urlencoded', static function ($body) {
