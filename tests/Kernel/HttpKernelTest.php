@@ -80,6 +80,7 @@ class HttpKernelTest extends PlatineTestCase
                 ->method('get');
         $o = new HttpKernel($app, $router, $middlewareResolver);
         $o->run($request);
+        $this->assertEquals(0, $this->runPrivateProtectedMethod($o, 'getCostLevel', [-19000]));
     }
 
     public function testRun404(): void

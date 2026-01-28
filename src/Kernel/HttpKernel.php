@@ -61,6 +61,7 @@ use Platine\Http\ServerRequest;
 use Platine\Http\ServerRequestInterface;
 use Platine\Logger\LoggerInterface;
 use Platine\Route\Router;
+use Platine\Stdlib\Helper\Str;
 
 /**
  * @class HttpKernel
@@ -144,20 +145,26 @@ class HttpKernel extends BaseKernel implements RequestHandlerInterface
 
         $this->app->watch()->stop('emit-response');
 
-        $reference = $this->app->reference();
-        $watchKey = sprintf('request-%s', $reference);
-        $this->app->watch()->stop($watchKey);
+        $requestId = $req->getHeaderLine('X-Request-ID');
+        if (empty($requestId)) {
+            $requestId = Str::randomString('hexdec');
+        }
+        $this->app->watch()->stop('request-total-time');
 
         // At this time the logger instance may be not yet available in the container
         if ($this->app->has(LoggerInterface::class)) {
             /** @var LoggerInterface $logger */
             $logger = $this->app->get(LoggerInterface::class);
 
-            $requestTime = (int)($this->app->watch()->getTime($watchKey) * 1000);
+            $requestTime = (int)($this->app->watch()->getTime('request-total-time') * 1000);
+            $level = $this->getCostLevel($requestTime);
 
-            $logger->info('Request {reference} cost: {time}ms', [
-                'reference' => $reference,
+            $logger->info('Request {reference} -> {method}:{path} cost: {time}ms, cost level: {level}', [
+                'reference' => $requestId,
                 'time' => $requestTime,
+                'level' => $level,
+                'method' => $req->getMethod(),
+                'path' => $req->getUri()->getPath(),
             ]);
         }
     }
@@ -264,6 +271,29 @@ class HttpKernel extends BaseKernel implements RequestHandlerInterface
         }
 
         return '/';
+    }
+
+    /**
+     * Return the cost level based on request processing time
+     * @param int $requestTime
+     * @return int
+     */
+    protected function getCostLevel(int $requestTime): int
+    {
+        $times = [
+            [1, 0, 100],
+            [2, 100, 300],
+            [3, 300, 700],
+            [4, 700, 2000],
+            [5, 2000, PHP_INT_MAX],
+        ];
+        foreach ($times as $time) {
+            if ($requestTime >= $time[1] && $requestTime <= $time[2]) {
+                return $time[0];
+            }
+        }
+
+        return 0;
     }
 
     /**

@@ -65,7 +65,6 @@ class ApplicationTest extends PlatineTestCase
         $this->assertEquals('/vendorpath', $app->getVendorPath());
         $this->assertEquals('/rootpath', $app->getRootPath());
         $this->assertEquals('.envfile', $app->getEnvironmentFile());
-        $this->assertNotEmpty($app->reference());
     }
 
     public function testDispatchAndListenUsingCallable(): void
