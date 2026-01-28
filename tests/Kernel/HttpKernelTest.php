@@ -56,7 +56,10 @@ class HttpKernelTest extends PlatineTestCase
         ]);
         $logger = $this->getMockInstance(Logger::class);
         $emiter = $this->getMockInstance(ResponseEmitter::class);
-        $request = $this->getMockInstance(ServerRequest::class);
+        $request1 = $this->getMockInstance(ServerRequest::class);
+        $request = $this->getMockInstance(ServerRequest::class, [
+            'withHeader' => $request1
+        ]);
         $router = $this->getMockInstance(Router::class);
         $middlewareResolver = $this->getMockInstance(MiddlewareResolver::class);
         $app = $this->getMockInstanceMap(Application::class, [
@@ -98,7 +101,11 @@ class HttpKernelTest extends PlatineTestCase
             ]
         ]);
         $emiter = $this->getMockInstance(ResponseEmitter::class);
-        $request = $this->getMockInstance(ServerRequest::class);
+        $request = $this->getMockInstanceMap(ServerRequest::class, [
+            'hasHeader' => [
+                ['X-Request-ID', true],
+            ],
+        ]);
         $router = $this->getMockInstance(Router::class);
         $middlewareResolver = $this->getMockInstance(MiddlewareResolver::class);
         $app = $this->getMockInstanceMap(Application::class, [

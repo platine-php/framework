@@ -16,26 +16,27 @@ class JsonErrorRendererTest extends BaseErrorHandlerTestCase
     public function testRender(): void
     {
         $o = new JsonErrorRenderer();
-        $ex = $this->throwTestException();
-        $file = $this->getExceptionThrownFilePath();
+        $ex = $this->throwTestHttpException();
+        $file = $this->getExceptionThrownFilePath(true);
         $expected = <<<E
 {
-    "title": "Application Error",
-    "message": "An error has occurred. Sorry for the temporary inconvenience.",
+    "title": "404 Not found",
+    "message": "The requested resource [] could not be found. Please verify the URI and try again",
+    "request_id": "",
     "exception": [
         {
-            "type": "Exception",
-            "code": 100,
-            "message": "Foo exception 2",
+            "type": "Platine\\\Framework\\\Http\\\Exception\\\HttpNotFoundException",
+            "code": 404,
+            "message": "not found",
             "file": "$file",
-            "line": 23
+            "line": 39
         },
         {
             "type": "Exception",
             "code": 0,
             "message": "Foo exception 1",
             "file": "$file",
-            "line": 20
+            "line": 36
         }
     ]
 }

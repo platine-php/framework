@@ -48,6 +48,7 @@ declare(strict_types=1);
 
 namespace Platine\Framework\Handler\Error\Renderer;
 
+use Platine\Framework\Http\Exception\HttpException;
 use Platine\Stdlib\Helper\Php;
 use Throwable;
 
@@ -63,11 +64,18 @@ class HtmlErrorRenderer extends AbstractErrorRenderer
     public function render(Throwable $exception, bool $detail, bool $isLog = false): string
     {
         if ($isLog) {
+            $requestId = '';
+            if ($exception instanceof HttpException) {
+                $request = $exception->getRequest();
+                $requestId = $request->getHeaderLine('X-Request-ID');
+            }
+
             return sprintf(
-                '%s: %s, %s',
+                '%s: %s, %s, reference: %s',
                 $this->getErrorTitle($exception),
                 $this->getErrorDescription($exception),
-                Php::exceptionToString($exception, '', true)
+                Php::exceptionToString($exception, '', true),
+                $requestId
             );
         }
 

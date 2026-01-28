@@ -48,6 +48,7 @@ declare(strict_types=1);
 
 namespace Platine\Framework\Handler\Error\Renderer;
 
+use Platine\Framework\Http\Exception\HttpException;
 use Throwable;
 
 /**
@@ -64,6 +65,11 @@ class XmlErrorRenderer extends AbstractErrorRenderer
         $xml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' . "\n";
         $xml .= '<error>';
         $xml .= '<message>' . $this->addCharacterData($exception->getMessage()) . '</message>';
+        if ($exception instanceof HttpException) {
+            $request = $exception->getRequest();
+            $requestId = $request->getHeaderLine('X-Request-ID');
+            $xml .= '<reference>' . $requestId . '</reference>';
+        }
 
         if ($detail) {
             $xml .= '<exceptions>';

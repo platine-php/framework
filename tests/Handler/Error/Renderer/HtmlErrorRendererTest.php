@@ -35,7 +35,7 @@ class HtmlErrorRendererTest extends BaseErrorHandlerTestCase
         $ex = $this->throwTestException();
         $expected = 'Application Error: An error has occurred. Sorry for'
                 . ' the temporary inconvenience., Exception(code:100) '
-                . 'Foo exception 2 at ' . $file . ' line 23';
+                . 'Foo exception 2 at ' . $file . ' line 23, reference: ';
         $this->assertEquals($expected, $o->render($ex, false, true));
     }
 
@@ -71,7 +71,7 @@ class HtmlErrorRendererTest extends BaseErrorHandlerTestCase
         $expected = '404 Not found: The requested resource [] could not be found. '
                 . 'Please verify the URI and try again, '
                 . 'Platine\Framework\Http\Exception\HttpNotFoundException(code:404) '
-                . 'not found at ' . $file . ' line 39';
+                . 'not found at ' . $file . ' line 39, reference: ';
         $this->assertEquals($expected, $o->render($ex, true, true));
     }
 }

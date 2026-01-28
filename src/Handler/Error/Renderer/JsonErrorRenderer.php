@@ -48,6 +48,7 @@ declare(strict_types=1);
 
 namespace Platine\Framework\Handler\Error\Renderer;
 
+use Platine\Framework\Http\Exception\HttpException;
 use Platine\Stdlib\Helper\Json;
 use Throwable;
 
@@ -66,6 +67,12 @@ class JsonErrorRenderer extends AbstractErrorRenderer
             'title' => $this->getErrorTitle($exception),
             'message' => $this->getErrorDescription($exception),
         ];
+
+        if ($exception instanceof HttpException) {
+            $request = $exception->getRequest();
+            $requestId = $request->getHeaderLine('X-Request-ID');
+            $error['request_id'] = $requestId;
+        }
 
         if ($detail) {
             $error['exception'] = [];

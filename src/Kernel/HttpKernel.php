@@ -111,6 +111,9 @@ class HttpKernel extends BaseKernel implements RequestHandlerInterface
     public function run(?ServerRequestInterface $request = null): void
     {
         $req = $request ?? ServerRequest::createFromGlobals();
+        if ($req->hasHeader('X-Request-ID') === false) {
+            $req = $req->withHeader('X-Request-ID', Str::randomString('hexdec'));
+        }
 
         //Share the instance to use later
         $this->app->instance($req, ServerRequestInterface::class);
@@ -145,16 +148,13 @@ class HttpKernel extends BaseKernel implements RequestHandlerInterface
 
         $this->app->watch()->stop('emit-response');
 
-        $requestId = $req->getHeaderLine('X-Request-ID');
-        if (empty($requestId)) {
-            $requestId = Str::randomString('hexdec');
-        }
         $this->app->watch()->stop('request-total-time');
 
         // At this time the logger instance may be not yet available in the container
         if ($this->app->has(LoggerInterface::class)) {
             /** @var LoggerInterface $logger */
             $logger = $this->app->get(LoggerInterface::class);
+            $requestId = $req->getHeaderLine('X-Request-ID');
 
             $requestTime = (int)($this->app->watch()->getTime('request-total-time') * 1000);
             $level = $this->getCostLevel($requestTime);
