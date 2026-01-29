@@ -12,6 +12,8 @@ build:
                         use_website_config: true
     environment:
         php: 8.0
+        extensions:
+        - gd
 filter:
     excluded_paths:
         - 'tests/*'
