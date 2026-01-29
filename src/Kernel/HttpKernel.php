@@ -166,6 +166,13 @@ class HttpKernel extends BaseKernel implements RequestHandlerInterface
                 'method' => $req->getMethod(),
                 'path' => $req->getUri()->getPath(),
             ]);
+
+            if ($level >= 5) {
+                $logger->warning('Request {reference} cost too much time: {time}ms', [
+                    'reference' => $requestId,
+                    'time' => $requestTime,
+                ]);
+            }
         }
     }
 

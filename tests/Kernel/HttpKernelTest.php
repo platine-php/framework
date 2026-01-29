@@ -53,6 +53,7 @@ class HttpKernelTest extends PlatineTestCase
         ]);
         $watch = $this->getMockInstance(Watch::class, [
             'info' => ['foo' => 356],
+            'getTime' => 9000,
         ]);
         $logger = $this->getMockInstance(Logger::class);
         $emiter = $this->getMockInstance(ResponseEmitter::class);
