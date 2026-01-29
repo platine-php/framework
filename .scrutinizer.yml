@@ -13,8 +13,7 @@ build:
     environment:
         php:
          version: 8.0
-         extensions:
-           - gd
+         compile_options: '--with-gd'
 filter:
     excluded_paths:
         - 'tests/*'
