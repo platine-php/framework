@@ -11,9 +11,7 @@ build:
                         command: phpcs-run
                         use_website_config: true
     environment:
-        php:
-         version: 8.0
-         compile_options: '--with-gd'
+        php: 8.0
 filter:
     excluded_paths:
         - 'tests/*'
