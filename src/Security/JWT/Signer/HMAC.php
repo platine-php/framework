@@ -77,7 +77,7 @@ class HMAC implements SignerInterface
     public function __construct(Config $config)
     {
         $this->config = $config;
-        $algo = $config->get('api.sign.hmac.signature_algo', '');
+        $algo = $config->get('api.sign.signature_algo', '');
         if (!in_array($algo, hash_hmac_algos())) {
             throw new InvalidAlgorithmException(sprintf(
                 'Invalid HMAC algorithm [%s]',
@@ -120,7 +120,7 @@ class HMAC implements SignerInterface
      */
     public function getTokenAlgoName(): string
     {
-        return $this->config->get('api.sign.hmac.token_header_algo', '');
+        return $this->config->get('api.sign.token_header_algo', '');
     }
 
     /**

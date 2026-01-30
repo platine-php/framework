@@ -22,7 +22,7 @@ class HMACTest extends PlatineTestCase
 
         $config = $this->getMockInstanceMap(Config::class, [
             'get' => [
-                ['api.sign.hmac.signature_algo', '', 'foo_algo']
+                ['api.sign.signature_algo', '', 'foo_algo']
             ]
         ]);
         $this->expectException(InvalidAlgorithmException::class);
@@ -36,8 +36,8 @@ class HMACTest extends PlatineTestCase
 
         $config = $this->getMockInstanceMap(Config::class, [
             'get' => [
-                ['api.sign.hmac.signature_algo', '', 'foo'],
-                ['api.sign.hmac.token_header_algo', '', 'foo_header'],
+                ['api.sign.signature_algo', '', 'foo'],
+                ['api.sign.token_header_algo', '', 'foo_header'],
             ]
         ]);
         $o = new HMAC($config);
@@ -54,7 +54,7 @@ class HMACTest extends PlatineTestCase
 
         $config = $this->getMockInstanceMap(Config::class, [
             'get' => [
-                ['api.sign.hmac.signature_algo', '', 'foo']
+                ['api.sign.signature_algo', '', 'foo']
             ]
         ]);
         $o = new HMAC($config);
@@ -73,7 +73,7 @@ class HMACTest extends PlatineTestCase
 
         $config = $this->getMockInstanceMap(Config::class, [
             'get' => [
-                ['api.sign.hmac.signature_algo', '', 'foo']
+                ['api.sign.signature_algo', '', 'foo']
             ]
         ]);
         $o = new HMAC($config);
