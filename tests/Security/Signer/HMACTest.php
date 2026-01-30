@@ -77,10 +77,10 @@ class HMACTest extends PlatineTestCase
             ]
         ]);
         $o = new HMAC($config);
-        $this->assertFalse($o->verify('my_data', 'signature', 'my_key'));
+        $this->assertFalse($o->verify('my_key', 'signature', 'my_data'));
 
         $mock_hash_equals_to_false = false;
         $mock_hash_equals_to_true = true;
-        $this->assertTrue($o->verify('my_data', 'signature', 'my_key'));
+        $this->assertTrue($o->verify('my_key', 'signature', 'my_data'));
     }
 }

@@ -674,6 +674,17 @@ $mock_hash_hmac_algos_to_foo = false;
 $mock_hash_hmac_to_same = false;
 $mock_hash_equals_to_false = false;
 $mock_hash_equals_to_true = false;
+$mock_openssl_sign_to_false = false;
+
+function openssl_sign($data, &$signature, $private_key, $algorithm)
+{
+    global $mock_openssl_sign_to_false;
+    if ($mock_openssl_sign_to_false) {
+        return false;
+    }
+
+    return \openssl_sign($data, $signature, $private_key, $algorithm);
+}
 
 function hash_hmac_algos()
 {

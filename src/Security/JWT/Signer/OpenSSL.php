@@ -30,9 +30,9 @@
  */
 
 /**
- *  @file HMAC.php
+ *  @file OpenSSL.php
  *
- *  The Signer using HMAC
+ *  The Signer using OpenSSL (asymmetric)
  *
  *  @package    Platine\Framework\Security\JWT\Signer
  *  @author Platine Developers team
@@ -48,15 +48,16 @@ declare(strict_types=1);
 namespace Platine\Framework\Security\JWT\Signer;
 
 use Platine\Config\Config;
+use Platine\Filesystem\Filesystem;
 use Platine\Framework\Security\JWT\Exception\InvalidAlgorithmException;
 use Platine\Framework\Security\JWT\SignerInterface;
 
 /**
- * @class HMAC
+ * @class OpenSSL
  * @package Platine\Framework\Security\JWT\Signer
  * @template T
  */
-class HMAC implements SignerInterface
+class OpenSSL implements SignerInterface
 {
     /**
      * The algorithm to use
@@ -67,14 +68,16 @@ class HMAC implements SignerInterface
     /**
      * Create new instance
      * @param Config<T> $config
+     * @param Filesystem $filesystem
      */
-    public function __construct(protected Config $config)
-    {
-        $this->config = $config;
+    public function __construct(
+        protected Config $config,
+        protected Filesystem $filesystem
+    ) {
         $algo = $config->get('api.sign.signature_algo', '');
-        if (!in_array($algo, hash_hmac_algos())) {
+        if (!in_array($algo, openssl_get_md_methods())) {
             throw new InvalidAlgorithmException(sprintf(
-                'Invalid HMAC algorithm [%s]',
+                'Invalid OpenSSL algorithm [%s]',
                 $algo
             ));
         }
@@ -88,7 +91,30 @@ class HMAC implements SignerInterface
      */
     public function sign(string $data, string $key): string
     {
-        return hash_hmac($this->algo, $data, $key, true);
+        // Fetch the private key from a file
+        $privateKeyPem = $this->filesystem->file($key);
+        if ($privateKeyPem->exists() === false) {
+            throw new InvalidAlgorithmException(sprintf(
+                'Private key file [%s] does not exist',
+                $key
+            ));
+        }
+        $signature = '';
+        $success = openssl_sign(
+            $data,
+            $signature,
+            $privateKeyPem->read(),
+            $this->algo
+        );
+
+        if ($success === false) {
+            throw new InvalidAlgorithmException(sprintf(
+                'Can not sign data using OpenSSL private key file [%s]',
+                $key
+            ));
+        }
+
+        return $signature;
     }
 
     /**
@@ -96,9 +122,21 @@ class HMAC implements SignerInterface
      */
     public function verify(string $key, string $signature, string $data): bool
     {
-        $signed = $this->sign($data, $key);
+        $publicKeyFile = $this->config->get('api.sign.public_key', '');
+        $publicKeyPem = $this->filesystem->file($publicKeyFile);
+        if ($publicKeyPem->exists() === false) {
+            throw new InvalidAlgorithmException(sprintf(
+                'Public key file [%s] does not exist',
+                $publicKeyFile
+            ));
+        }
 
-        return $this->hashEquals($signed, $signature);
+        return openssl_verify(
+            $data,
+            $signature,
+            $publicKeyPem->read(),
+            $this->algo
+        ) === 1;
     }
 
     /**
@@ -115,16 +153,5 @@ class HMAC implements SignerInterface
     public function getTokenAlgoName(): string
     {
         return $this->config->get('api.sign.token_header_algo', '');
-    }
-
-    /**
-     * Test if two hash is equals
-     * @param string $signature
-     * @param string $data
-     * @return bool
-     */
-    protected function hashEquals(string $signature, string $data): bool
-    {
-        return hash_equals($signature, $data);
     }
 }
