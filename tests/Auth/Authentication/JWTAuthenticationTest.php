@@ -809,6 +809,7 @@ class JWTAuthenticationTest extends PlatineTestCase
         ]);
         $user = $this->getMockInstanceMap(User::class, [
             '__get' => [
+                ['id', 1],
                 ['password', 'password'],
                 ['status', 'A'],
                 ['roles', [$role]]

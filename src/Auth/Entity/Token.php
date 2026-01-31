@@ -76,5 +76,9 @@ class Token extends Entity
         $mapper->filter('not_expire', function (Query $q, $date) {
             $q->where('expire_at')->gt($date);
         });
+        
+        $mapper->filter('user', function (Query $q, $value) {
+            $q->where('user_id')->is($value);
+        });
     }
 }

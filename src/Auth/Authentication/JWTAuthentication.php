@@ -265,9 +265,7 @@ class JWTAuthentication implements AuthenticationInterface
         $roles = Arr::getColumn($user->roles, 'id');
         $secret = $this->config->get('api.sign.secret');
         $expire = $this->config->get('api.auth.token_expire', 900);
-        $refreshExpire = $this->config->get('api.auth.refresh_token_expire', 30 * 86400);
         $tokenExpire = time() + $expire;
-        $refreshTokenExpire = time() + $refreshExpire;
         $this->jwt->setSecret($secret)
                   ->setPayload([
                       'sub' => $user->id,
@@ -276,16 +274,8 @@ class JWTAuthentication implements AuthenticationInterface
                   ])
                   ->sign();
 
-        $refreshToken = Str::random(128);
-        $refreshTokenHash = hash('sha256', $refreshToken);
         $jwtToken = $this->jwt->getToken();
-
-        $token = $this->tokenRepository->create([
-            'refresh_token' => $refreshTokenHash,
-            'expire_at' => (new DateTime())->setTimestamp($refreshTokenExpire),
-            'user_id' => $user->id,
-        ]);
-        $this->tokenRepository->save($token);
+        [$refreshToken, $token] = $this->generateRefreshToken($user->id);
 
         $data = [
           'user' => [
@@ -366,5 +356,35 @@ class JWTAuthentication implements AuthenticationInterface
         }
 
         return $permissions;
+    }
+
+    /**
+     * Generate the refresh token of the given user
+     * @param int $userId
+     * @return array{0: string, 1: Token}
+     */
+    protected function generateRefreshToken(int $userId): array
+    {
+        $refreshExpire = $this->config->get('api.auth.refresh_token_expire', 30 * 86400);
+        $refreshTokenExpire = time() + $refreshExpire;
+        $refreshToken = Str::random(128);
+        $refreshTokenHash = hash('sha256', $refreshToken);
+
+        /** @var Token|null $token */
+        $token = $this->tokenRepository->filters(['user' => $userId])
+                                       ->query()
+                                       ->get();
+
+        if ($token === null) {
+            /** @var Token $token */
+            $token = $this->tokenRepository->create([]);
+        }
+        $token->refresh_token = $refreshTokenHash;
+        $token->expire_at = (new DateTime())->setTimestamp($refreshTokenExpire);
+        $token->user_id = $userId;
+
+        $this->tokenRepository->save($token);
+
+        return [$refreshToken, $token];
     }
 }

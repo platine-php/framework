@@ -79,7 +79,7 @@ class TokenTest extends PlatineTestCase
         $repository = new TokenRepository($entityManager);
         $entity = $repository->create();
         $this->runPrivateProtectedMethod($entity, 'mapEntity', [$entityMapper]);
-        $entityInfo = $repository->filters(['not_expire' => '2021-01-02'])->find(1);
+        $entityInfo = $repository->filters(['not_expire' => '2021-01-02', 'user' => 1])->find(1);
         $this->assertInstanceOf(Token::class, $entityInfo);
     }
 }
