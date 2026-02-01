@@ -55,6 +55,11 @@ namespace Platine\Framework\Env;
 class Env
 {
     /**
+     * The custom filter validate used for array values
+     */
+    protected const FILTER_VALIDATE_ARRAY = 111900;
+
+    /**
      * Get the environment variable by its key/name.
      * @param string $key
      * @param mixed $default
@@ -76,6 +81,7 @@ class Env
                 'email' => FILTER_VALIDATE_EMAIL,
                 'ip' => FILTER_VALIDATE_IP,
                 'url' => FILTER_VALIDATE_URL,
+                'array' => self::FILTER_VALIDATE_ARRAY, // special case
             ];
 
             if (isset($filterMaps[$filter])) {
@@ -128,6 +134,15 @@ class Env
         // strlen($valueResolved) < 6.
         if (!isset($valueResolved[5]) && array_key_exists($valueResolved, $special)) {
             return $special[$value];
+        }
+
+        if ($filter === self::FILTER_VALIDATE_ARRAY) {
+            $separator = ',';
+            if (is_array($options) && isset($options['separator'])) {
+                $separator = $options['separator'];
+            }
+
+            return explode($separator, $value);
         }
 
         if ($filter === null || function_exists('filter_var') === false) {

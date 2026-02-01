@@ -45,6 +45,21 @@ class EnvTest extends PlatineTestCase
         $this->assertEquals('foo/bar', Env::get('server_key2'));
     }
 
+    public function testGetUsingArray(): void
+    {
+        $_ENV['policies'] = 'foo;bar';
+        $this->assertCount(0, Env::get('array_not_found', [], 'array'));
+        $res = Env::get('policies', [], 'array', ['separator' => ';']);
+        $this->assertCount(2, $res);
+        $this->assertEquals('foo', $res[0]);
+        $this->assertEquals('bar', $res[1]);
+
+        $_ENV['policies'] = 'foo';
+        $res1 = Env::get('policies', [], 'array');
+        $this->assertCount(1, $res1);
+        $this->assertEquals('foo', $res1[0]);
+    }
+
     public function testGetUsingArgumentValue(): void
     {
         global $mock_preg_replace_callback_to_null;
