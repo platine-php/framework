@@ -38,7 +38,6 @@ use Platine\Http\Handler\MiddlewareInterface;
 use Platine\Http\Handler\RequestHandlerInterface;
 use Platine\Http\ResponseInterface;
 use Platine\Http\ServerRequestInterface;
-use Platine\Route\Route;
 
 /**
 * @class CsrfTokenMiddleware
@@ -62,29 +61,11 @@ class CsrfTokenMiddleware implements MiddlewareInterface
         ServerRequestInterface $request,
         RequestHandlerInterface $handler
     ): ResponseInterface {
-        if ($this->shouldBeProcessed($request) === false) {
-            return $handler->handle($request);
-        }
-
-        $newRequest = $request->withAttribute('csrf_token', $this->csrfManager->getToken());
+        $newRequest = $request->withAttribute(
+            'csrf_token',
+            $this->csrfManager->getToken()
+        );
 
         return $handler->handle($newRequest);
-    }
-
-   /**
-     * Whether we can process this request
-     * @param ServerRequestInterface $request
-     * @return bool
-     */
-    protected function shouldBeProcessed(ServerRequestInterface $request): bool
-    {
-       //If no route has been match no need check for CSRF
-        /** @var Route|null $route */
-        $route = $request->getAttribute(Route::class);
-        if ($route === null) {
-            return false;
-        }
-
-        return true;
     }
 }

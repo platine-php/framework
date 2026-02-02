@@ -52,7 +52,6 @@ use Platine\Http\Handler\MiddlewareInterface;
 use Platine\Http\Handler\RequestHandlerInterface;
 use Platine\Http\ResponseInterface;
 use Platine\Http\ServerRequestInterface;
-use Platine\Route\Route;
 
 /**
  * @class SecurityPolicyMiddleware
@@ -76,23 +75,18 @@ class SecurityPolicyMiddleware implements MiddlewareInterface
         ServerRequestInterface $request,
         RequestHandlerInterface $handler
     ): ResponseInterface {
-
-        if ($this->shouldBeProcessed($request) === false) {
-            return $handler->handle($request);
-        }
-
         // Generate the nonces to be used in script and style
         $scriptNonce = $this->securityPolicy->nonce('script');
         $styleNonce = $this->securityPolicy->nonce('style');
 
-        $request = $request->withAttribute(SecurityPolicy::class, [
+        $newRequest = $request->withAttribute(SecurityPolicy::class, [
             'nonces' => [
                 'style' => $styleNonce,
                 'script' => $scriptNonce,
             ]
         ]);
 
-        $response = $handler->handle($request);
+        $response = $handler->handle($newRequest);
 
         $headers = $this->securityPolicy->headers();
         foreach ($headers as $name => $value) {
@@ -100,22 +94,5 @@ class SecurityPolicyMiddleware implements MiddlewareInterface
         }
 
         return $response;
-    }
-
-    /**
-     * Whether we can process this request
-     * @param ServerRequestInterface $request
-     * @return bool
-     */
-    protected function shouldBeProcessed(ServerRequestInterface $request): bool
-    {
-       //If no route has been match no need check for CSRF
-        /** @var Route|null $route */
-        $route = $request->getAttribute(Route::class);
-        if ($route === null) {
-            return false;
-        }
-
-        return true;
     }
 }
