@@ -60,6 +60,25 @@ class EnvTest extends PlatineTestCase
         $this->assertEquals('foo', $res1[0]);
     }
 
+    public function testGetUsingDuration(): void
+    {
+        $_ENV['default'] = '34';
+        $_ENV['ms'] = '367090ms';
+        $_ENV['s'] = '64s';
+        $_ENV['m'] = '5m';
+        $_ENV['h'] = '4h';
+        $_ENV['w'] = '2w';
+        $_ENV['unknow'] = '34i';
+
+        $this->assertEquals(34, Env::get('default', null, 'duration'));
+        $this->assertEquals(367, Env::get('ms', null, 'duration'));
+        $this->assertEquals(64, Env::get('s', null, 'duration'));
+        $this->assertEquals(300, Env::get('m', null, 'duration'));
+        $this->assertEquals(14400, Env::get('h', null, 'duration'));
+        $this->assertEquals(1209600, Env::get('w', null, 'duration'));
+        $this->assertEquals(34, Env::get('unknow', null, 'duration'));
+    }
+
     public function testGetUsingArgumentValue(): void
     {
         global $mock_preg_replace_callback_to_null;

@@ -108,9 +108,7 @@ class JWTAuthentication implements AuthenticationInterface
         if ($this->isLogged() === false) {
             throw new AccountNotFoundException('User not logged', 401);
         }
-
-        $payload = $this->jwt->getPayload();
-        $id = (int) ($payload['sub'] ?? -1);
+        $id = (int) $this->getJwtPayload('sub', -1);
 
         $user = $this->userRepository->find($id);
         if ($user === null) {
@@ -132,8 +130,7 @@ class JWTAuthentication implements AuthenticationInterface
             return [];
         }
 
-        $payload = $this->jwt->getPayload();
-        $roles = $payload['roles'] ?? [];
+        $roles = $this->getJwtPayload('roles', []);
         $permissions = [];
         foreach ($roles as $id) {
             // TODO: add configuration for prefix
@@ -153,7 +150,8 @@ class JWTAuthentication implements AuthenticationInterface
 
         // May be cache feature not available or expired
         // get user permissions from database
-        return $this->getUserPermissions((int) ($payload['sub'] ?? -1));
+        $id = (int) $this->getJwtPayload('sub', -1);
+        return $this->getUserPermissions($id);
     }
 
 
@@ -166,8 +164,7 @@ class JWTAuthentication implements AuthenticationInterface
             throw new AccountNotFoundException('User not logged', 401);
         }
 
-        $payload = $this->jwt->getPayload();
-        $id = (int) ($payload['sub'] ?? -1);
+        $id = (int) $this->getJwtPayload('sub', -1);
 
         return $id;
     }
@@ -190,8 +187,6 @@ class JWTAuthentication implements AuthenticationInterface
         $headerName = $this->config->get('api.auth.headers.name', 'Authorization');
         $tokenHeader = $request->getHeaderLine($headerName);
         if (empty($tokenHeader)) {
-            $this->logger->error('API authentication failed missing token header');
-
             return false;
         }
         $tokenType = $this->config->get('api.auth.headers.token_type', 'Bearer');
@@ -299,7 +294,13 @@ class JWTAuthentication implements AuthenticationInterface
      */
     public function logout(bool $destroy = true): void
     {
-        // do nothing now
+        if ($this->isLogged() === false) {
+            return;
+        }
+        $userId = $this->getId();
+        $this->tokenRepository->query()
+                              ->where('user_id')->is($userId)
+                              ->delete();
     }
 
     /**
@@ -386,5 +387,17 @@ class JWTAuthentication implements AuthenticationInterface
         $this->tokenRepository->save($token);
 
         return [$refreshToken, $token];
+    }
+
+    /**
+     * Return the JWT payload value
+     * @param string $key
+     * @param mixed $default
+     * @return mixed
+     */
+    protected function getJwtPayload(string $key, mixed $default = null): mixed
+    {
+        $payload = $this->jwt->getPayload();
+        return $payload[$key] ?? $default;
     }
 }

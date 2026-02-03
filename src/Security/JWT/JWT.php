@@ -273,12 +273,12 @@ class JWT
     {
         $this->setDefaults();
 
-        $encodedPayload = $this->encoder->encode((string) json_encode(
+        $encodedPayload = $this->encoder->encode((string) Json::encode(
             $this->getPayload(),
             JSON_UNESCAPED_SLASHES
         ));
 
-        $encodedHeaders = $this->encoder->encode((string) json_encode(
+        $encodedHeaders = $this->encoder->encode((string) Json::encode(
             $this->getHeaders(),
             JSON_UNESCAPED_SLASHES
         ));

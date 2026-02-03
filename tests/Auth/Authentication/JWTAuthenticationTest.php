@@ -7,6 +7,8 @@ namespace Platine\Test\Framework\Auth\Authentication;
 use DateTime;
 use Platine\Config\Config;
 use Platine\Container\Container;
+use Platine\Database\Query\Delete;
+use Platine\Database\Query\Where;
 use Platine\Dev\PlatineTestCase;
 use Platine\Framework\Auth\Authentication\JWTAuthentication;
 use Platine\Framework\Auth\Authorization\Cache\NullCacheStorage;
@@ -25,6 +27,7 @@ use Platine\Framework\Security\JWT\JWT;
 use Platine\Http\ServerRequest;
 use Platine\Http\ServerRequestInterface;
 use Platine\Logger\Logger;
+use Platine\Orm\Query\EntityQuery;
 use Platine\Orm\Repository;
 use Platine\Security\Hash\BcryptHash;
 
@@ -357,6 +360,63 @@ class JWTAuthenticationTest extends PlatineTestCase
         );
 
         $this->assertInstanceOf(User::class, $o->getUser());
+    }
+
+    public function testLogoutSuccess(): void
+    {
+        $user = $this->getMockInstance(User::class);
+        $jwt = $this->getMockInstance(JWT::class, [
+            'getPayload' => ['sub' => 1]
+        ]);
+        $logger = $this->getMockInstance(Logger::class);
+        $config = $this->getMockInstanceMap(Config::class, [
+            'get' => [
+                ['api.auth.headers.name', 'Authorization', 'Authorization'],
+                ['api.auth.headers.token_type', 'Bearer', 'Bearer'],
+                ['api.sign.secret', '', 'foosecret'],
+            ]
+        ]);
+        $tokenWhereIs = $this->getMockInstance(Delete::class);
+        $tokenWhere = $this->getMockInstance(Where::class, [
+            'is' => $tokenWhereIs,
+        ]);
+        $tokenQuery = $this->getMockInstance(EntityQuery::class, [
+            'where' => $tokenWhere,
+        ]);
+        $tokenRepository = $this->getMockInstance(TokenRepository::class, [
+            'query' => $tokenQuery,
+        ]);
+        $hash = $this->getMockInstance(BcryptHash::class);
+        $request = $this->getMockInstanceMap(ServerRequest::class, [
+            'getHeaderLine' => [
+                ['Authorization', '7676ghggfhfgfghg']
+            ]
+        ]);
+        $containter = $this->getMockInstanceMap(Container::class, [
+            'has' => [
+                [ServerRequestInterface::class, true],
+            ],
+            'get' => [
+                [ServerRequestInterface::class, $request],
+            ],
+        ]);
+        $userRepository = $this->getMockInstance(UserRepository::class);
+        $cacheStorage = $this->getMockInstance(NullCacheStorage::class);
+
+        $o = new JWTAuthentication(
+            $jwt,
+            $logger,
+            $config,
+            $hash,
+            $userRepository,
+            $tokenRepository,
+            $containter,
+            $cacheStorage
+        );
+
+        $this->expectMethodCallCount($tokenRepository, 'query');
+
+        $o->logout();
     }
 
     public function testGetPermissions(): void

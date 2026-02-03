@@ -55,9 +55,10 @@ namespace Platine\Framework\Env;
 class Env
 {
     /**
-     * The custom filter validate used for array values
+     * The custom filter validate used for array, duration values
      */
     protected const FILTER_VALIDATE_ARRAY = 111900;
+    protected const FILTER_VALIDATE_DURATION = 111901;
 
     /**
      * Get the environment variable by its key/name.
@@ -82,6 +83,7 @@ class Env
                 'ip' => FILTER_VALIDATE_IP,
                 'url' => FILTER_VALIDATE_URL,
                 'array' => self::FILTER_VALIDATE_ARRAY, // special case
+                'duration' => self::FILTER_VALIDATE_DURATION, // special case
             ];
 
             if (isset($filterMaps[$filter])) {
@@ -145,11 +147,43 @@ class Env
             return explode($separator, $value);
         }
 
+        if ($filter === self::FILTER_VALIDATE_DURATION) {
+            return static::getDurationValue($value);
+        }
+
         if ($filter === null || function_exists('filter_var') === false) {
             return $valueResolved;
         }
 
         return filter_var($valueResolved, $filter, $options);
+    }
+
+    /**
+     * Return the duration value
+     * @param string $value
+     * @return int
+     */
+    protected static function getDurationValue(string $value): int
+    {
+        $maps = [
+            'ms' => fn($val) => (int)($val / 1000),
+            's' => fn($val) => $val,
+            'm' => fn($val) => $val * 60,
+            'h' => fn($val) => $val * 3600,
+            'd' => fn($val) => $val * 86400,
+            'w' => fn($val) => $val * 604800,
+        ];
+
+        $val = strtolower($value);
+        foreach ($maps as $unit => $cb) {
+            if (strpos($val, $unit) !== false) {
+                $val = str_replace($unit, '', $val);
+                return $cb((int) $val);
+            }
+        }
+
+        // default
+        return (int) $value;
     }
 
     /**
