@@ -100,8 +100,10 @@ class InfoCommand extends Command
         $writer->boldBlueBgBlack($this->config->get('app.debug', false) ? 'On' : 'Off', true);
 
         $packages = $this->getPackages();
+        
+        $writer->bold('Installed Packages: ');
+        $writer->boldBlueBgBlack(count($packages), true);
 
-        $writer->bold(sprintf('Installed Packages: (%d)', count($packages)), true);
         /** @var array<int, array<int, array<string, string>>> $rows*/
         $rows = [];
         foreach ($packages as $package) {
