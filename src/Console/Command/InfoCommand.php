@@ -107,7 +107,7 @@ class InfoCommand extends Command
         foreach ($packages as $package) {
             $rows[] = [
                 'name' => $package['name'],
-                'description' => Str::limit($package['description']),
+                'description' => Str::limit($package['description'], 60),
                 'version' => $package['version'],
                 'type' => $package['type'],
             ];
