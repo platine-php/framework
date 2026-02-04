@@ -52,6 +52,7 @@ use Platine\Console\Command\Command;
 use Platine\Framework\App\Application;
 use Platine\Stdlib\Helper\Arr;
 use Platine\Stdlib\Helper\Composer;
+use Platine\Stdlib\Helper\Str;
 
 /**
  * @class InfoCommand
@@ -106,7 +107,7 @@ class InfoCommand extends Command
         foreach ($packages as $package) {
             $rows[] = [
                 'name' => $package['name'],
-                'description' => $package['description'],
+                'description' => Str::limit($package['description'], 60),
                 'version' => $package['version'],
                 'type' => $package['type'],
             ];
