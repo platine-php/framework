@@ -109,8 +109,8 @@ class InfoCommand extends Command
                 'description' => $package['description'],
                 'version' => $package['version'],
                 'type' => $package['type'],
-                'homepage' => $package['homepage'],
-                'Install Date' => $package['time'],
+                'homepage' => $package['homepage'] ?? '',
+                'Install Date' => $package['time'] ?? '',
             ];
         }
         $writer->table($rows);
