@@ -48,6 +48,7 @@ declare(strict_types=1);
 namespace Platine\Framework\Service\Provider;
 
 use Platine\Framework\Console\Command\ConfigCommand;
+use Platine\Framework\Console\Command\InfoCommand;
 use Platine\Framework\Console\Command\MaintenanceCommand;
 use Platine\Framework\Console\Command\MakeActionCommand;
 use Platine\Framework\Console\Command\MakeCrudActionCommand;
@@ -81,6 +82,7 @@ class CommandServiceProvider extends ServiceProvider
         $this->app->bind(RouteCommand::class);
         $this->app->bind(MaintenanceCommand::class);
         $this->app->bind(ConfigCommand::class);
+        $this->app->bind(InfoCommand::class);
         $this->app->bind(VendorPublishCommand::class);
         $this->app->bind(MakeActionCommand::class);
         $this->app->bind(MakeFilterCommand::class);
@@ -113,6 +115,7 @@ class CommandServiceProvider extends ServiceProvider
         $this->addCommand(MakeListenerCommand::class);
         $this->addCommand(MakeTaskCommand::class);
         $this->addCommand(ConfigCommand::class);
+        $this->addCommand(InfoCommand::class);
         $this->addCommand(MakeResourceActionCommand::class);
         $this->addCommand(MakeCrudActionCommand::class);
     }
