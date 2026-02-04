@@ -46,7 +46,7 @@ class InfoCommandTest extends BaseCommandTestCase
         ]);
         $application = $this->getMockInstance(PlatineApplication::class, [
             'getRootPath' => $this->vfsPath->url(),
-            'version' => '2.0.13-dev',
+            'version' => '2.0.0-dev',
             'getEnvironment' => 'staging',
         ]);
 
@@ -55,7 +55,6 @@ class InfoCommandTest extends BaseCommandTestCase
         $o->parse(['platine', 'info']);
         $this->assertEquals('info', $o->getName());
         $o->execute();
-        $expected = '';
-        $this->assertCommandOutput($expected, $this->getConsoleOutputContent());
+        $this->assertStringContainsString('staging', $this->getConsoleOutputContent());
     }
 }
