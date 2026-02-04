@@ -102,7 +102,7 @@ class InfoCommand extends Command
         $packages = $this->getPackages();
         
         $writer->bold('Installed Packages: ');
-        $writer->boldBlueBgBlack(count($packages), true);
+        $writer->boldBlueBgBlack((string) count($packages), true);
 
         /** @var array<int, array<int, array<string, string>>> $rows*/
         $rows = [];
