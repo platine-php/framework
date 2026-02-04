@@ -110,6 +110,7 @@ class InfoCommand extends Command
                 'description' => Str::limit($package['description'], 60),
                 'version' => $package['version'],
                 'type' => $package['type'],
+                'dev' => $package['dev'] ? 'Yes' : 'No',
             ];
         }
         $writer->table($rows);
