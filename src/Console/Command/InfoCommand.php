@@ -127,7 +127,7 @@ class InfoCommand extends Command
     protected function getPackages(): array
     {
         $packages = Composer::parseLockFile($this->application->getRootPath());
-        Arr::multisort($packages, 'name');
+        Arr::multisort($packages, 'dev');
 
         return $packages;
     }
