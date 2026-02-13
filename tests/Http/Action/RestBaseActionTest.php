@@ -293,7 +293,7 @@ class RestBaseActionTest extends PlatineTestCase
         //
         $resp5 = $this->runPrivateProtectedMethod(
             $o,
-            'formValidationResponse',
+            'formValidationErrorResponse',
             [['email' => 'invalid email address']]
         );
         $this->assertEquals(422, $resp5->getStatusCode());

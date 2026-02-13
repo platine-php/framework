@@ -356,13 +356,13 @@ abstract class RestBaseAction extends BaseHttpAction
     }
 
     /**
-     * Return the REST form validation response
+     * Return the REST form validation error response
      * @param array<string, string> $errors
      * @param string|int $code the custom error code
      *
      * @return ResponseInterface
      */
-    protected function formValidationResponse(
+    protected function formValidationErrorResponse(
         array $errors = [],
         string|int $code = 'INVALID_INPUT'
     ): ResponseInterface {
