@@ -53,6 +53,7 @@ use Platine\Filesystem\Filesystem;
 use Platine\Framework\App\Application;
 use Platine\Framework\Console\MakeCommand;
 use Platine\Framework\Http\Action\BaseAction;
+use Platine\Stdlib\Helper\Php;
 use Platine\Stdlib\Helper\Str;
 
 /**
@@ -124,6 +125,7 @@ class MakeActionCommand extends MakeCommand
     public function getClassTemplate(): string
     {
         $baseAction = $this->getOptionValue('baseAction');
+        $baseClassName = Php::getShortClassName($baseAction);
 
         return <<<EOF
         <?php
@@ -140,7 +142,7 @@ class MakeActionCommand extends MakeCommand
         * @class %classname%
         * @package %namespace%
         */
-        class %classname% extends BaseAction
+        class %classname% extends $baseClassName
         {
             %properties%
             %constructor%

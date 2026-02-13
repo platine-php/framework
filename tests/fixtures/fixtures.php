@@ -22,6 +22,7 @@ use Platine\Framework\Http\Action\BaseAction;
 use Platine\Framework\Http\Action\BaseConfigurationAction;
 use Platine\Framework\Http\Action\BaseResourceAction;
 use Platine\Framework\Http\Action\CrudAction;
+use Platine\Framework\Http\Action\RestBaseAction;
 use Platine\Framework\Http\Maintenance\MaintenanceDriverInterface;
 use Platine\Framework\Http\Response\JsonResponse;
 use Platine\Framework\Http\RouteHelper;
@@ -128,6 +129,22 @@ class MyBaseAction extends BaseAction
         $this->addSidebar('', 'Add user', 'user_create');
 
         return $this->viewResponse();
+    }
+
+    protected function getIgnoreDateFilters(): array
+    {
+        return ['status'];
+    }
+}
+
+class MyRestBaseAction extends RestBaseAction
+{
+    public function respond(): ResponseInterface
+    {
+        $this->addContext('foo', 'bar');
+        $this->addContexts(['name' => 'Tony']);
+
+        return $this->restResponse();
     }
 
     protected function getIgnoreDateFilters(): array

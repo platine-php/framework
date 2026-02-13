@@ -39,14 +39,13 @@ use Platine\Framework\Http\RouteHelper;
 use Platine\Lang\Lang;
 use Platine\Logger\LoggerInterface;
 use Platine\Pagination\Pagination;
-use Platine\Template\Template;
 
 /**
- * @class ActionHelper
+ * @class BaseActionHelper
  * @package Platine\Framework\Helper
  * @template T
  */
-class ActionHelper extends BaseActionHelper
+class BaseActionHelper
 {
     /**
      * Create new instance
@@ -58,59 +57,88 @@ class ActionHelper extends BaseActionHelper
      * @param Auditor $auditor
      * @param FileHelper<T> $fileHelper
      * @param Config<T> $config
-     * @param Sidebar $sidebar
-     * @param Template $template
-     * @param Flash $flash
      */
     public function __construct(
-        Pagination $pagination,
-        ViewContext $context,
-        RouteHelper $routeHelper,
-        Lang $lang,
-        LoggerInterface $logger,
-        Auditor $auditor,
-        FileHelper $fileHelper,
-        Config $config,
-        protected Sidebar $sidebar,
-        protected Template $template,
-        protected Flash $flash,
+        protected Pagination $pagination,
+        protected ViewContext $context,
+        protected RouteHelper $routeHelper,
+        protected Lang $lang,
+        protected LoggerInterface $logger,
+        protected Auditor $auditor,
+        protected FileHelper $fileHelper,
+        protected Config $config
     ) {
-        parent::__construct(
-            $pagination,
-            $context,
-            $routeHelper,
-            $lang,
-            $logger,
-            $auditor,
-            $fileHelper,
-            $config
-        );
+    }
+
+    /**
+     * Return the configuration instance
+     * @return Config<T>
+     */
+    public function getConfig(): Config
+    {
+        return $this->config;
+    }
+
+    /**
+     * Return the FileHelper
+     * @return FileHelper<T>
+     */
+    public function getFileHelper(): FileHelper
+    {
+        return $this->fileHelper;
     }
 
     /**
      *
-     * @return Flash
+     * @return Lang
      */
-    public function getFlash(): Flash
+    public function getLang(): Lang
     {
-        return $this->flash;
+        return $this->lang;
     }
 
     /**
      *
-     * @return Sidebar
+     * @return LoggerInterface
      */
-    public function getSidebar(): Sidebar
+    public function getLogger(): LoggerInterface
     {
-        return $this->sidebar;
+        return $this->logger;
     }
 
     /**
      *
-     * @return Template
+     * @return Auditor
      */
-    public function getTemplate(): Template
+    public function getAuditor(): Auditor
     {
-        return $this->template;
+        return $this->auditor;
+    }
+
+        /**
+     *
+     * @return Pagination
+     */
+    public function getPagination(): Pagination
+    {
+        return $this->pagination;
+    }
+
+    /**
+     *
+     * @return ViewContext<T>
+     */
+    public function getContext(): ViewContext
+    {
+        return $this->context;
+    }
+
+    /**
+     *
+     * @return RouteHelper
+     */
+    public function getRouteHelper(): RouteHelper
+    {
+        return $this->routeHelper;
     }
 }

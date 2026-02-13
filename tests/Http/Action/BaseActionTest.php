@@ -4,23 +4,18 @@ declare(strict_types=1);
 
 namespace Platine\Test\Framework\Http\Action;
 
+use Platine\Config\Config;
 use Platine\Dev\PlatineTestCase;
-use Platine\Framework\Auth\Repository\UserRepository;
 use Platine\Framework\Helper\ActionHelper;
 use Platine\Framework\Helper\Sidebar;
 use Platine\Framework\Http\Action\BaseAction;
 use Platine\Framework\Http\Response\RedirectResponse;
-use Platine\Framework\Http\Response\RestResponse;
 use Platine\Framework\Http\Response\TemplateResponse;
 use Platine\Framework\Http\RouteHelper;
 use Platine\Framework\Security\SecurityPolicy;
 use Platine\Http\ServerRequest;
-use Platine\Lang\Lang;
 use Platine\Logger\Logger;
-use Platine\Orm\Query\EntityQuery;
-use Platine\Pagination\Pagination;
 use Platine\Test\Framework\Fixture\MyBaseAction;
-use Platine\Test\Framework\Fixture\MyBaseAction2;
 
 class BaseActionTest extends PlatineTestCase
 {
@@ -36,6 +31,7 @@ class BaseActionTest extends PlatineTestCase
         $this->assertInstanceOf(MyBaseAction::class, $o);
     }
 
+
     public function testHandleBypassPagination(): void
     {
         $this->handle(true);
@@ -45,6 +41,7 @@ class BaseActionTest extends PlatineTestCase
     {
         $this->handle(false);
     }
+
 
     public function testRedirect(): void
     {
@@ -61,16 +58,13 @@ class BaseActionTest extends PlatineTestCase
         ]);
         $actionHelper = $this->createObject(ActionHelper::class);
 
-        $o = new MyBaseAction2($actionHelper);
+        $o = new MyBaseAction($actionHelper);
 
         $this->expectMethodCallCount($routeHelper, 'generateUrl');
         $resp = $this->runPrivateProtectedMethod($o, 'redirect', ['user_create', [], ['foo' => 'bar']]);
         $this->assertInstanceOf(RedirectResponse::class, $resp);
         $this->assertEquals(302, $resp->getStatusCode());
         $this->assertEquals('/user/create?foo=bar', $resp->getHeaderLine('location'));
-
-        // Why put this here?
-        $this->assertEmpty($this->runPrivateProtectedMethod($o, 'getIgnoreDateFilters', []));
     }
 
     public function testRedirectBackToOriginMissingRoute(): void
@@ -88,336 +82,6 @@ class BaseActionTest extends PlatineTestCase
         $this->redirectBackToOrigin('1', 'user_detail');
     }
 
-    public function testParseForeignConstraintErrorMessageMySQL(): void
-    {
-        global $mock_app_httpaction_to_instance;
-        $mock_app_httpaction_to_instance = true;
-
-        $logger = $this->getMockInstance(Logger::class);
-        $lang = $this->getMockInstance(Lang::class, [
-            'tr' => 'mysql error lang',
-        ]);
-        $this->setClassCreateObjectMaps(ActionHelper::class, [
-            'logger' => $logger,
-            'lang' => $lang,
-        ]);
-        $actionHelper = $this->createObject(ActionHelper::class);
-
-        $o = new MyBaseAction($actionHelper);
-
-        $error = $this->runPrivateProtectedMethod(
-            $o,
-            'parseForeignConstraintErrorMessage',
-            [
-                'SQLSTATE[23000]: Integrity constraint violation: 1217 Cannot delete or update a parent row'
-            ]
-        );
-        $this->assertEquals('mysql error lang', $error);
-    }
-
-    public function testParseForeignConstraintErrorMessageMariaDB(): void
-    {
-        global $mock_app_httpaction_to_instance;
-        $mock_app_httpaction_to_instance = true;
-
-        $logger = $this->getMockInstance(Logger::class);
-        $lang = $this->getMockInstance(Lang::class, [
-            'tr' => 'mariadb error lang',
-        ]);
-        $this->setClassCreateObjectMaps(ActionHelper::class, [
-            'logger' => $logger,
-            'lang' => $lang,
-        ]);
-        $actionHelper = $this->createObject(ActionHelper::class);
-
-        $o = new MyBaseAction($actionHelper);
-
-        $error = $this->runPrivateProtectedMethod(
-            $o,
-            'parseForeignConstraintErrorMessage',
-            [
-                'SQLSTATE[23000]: Integrity constraint violation: 1451 Cannot delete or update a parent row'
-            ]
-        );
-        $this->assertEquals('mariadb error lang', $error);
-    }
-
-    public function testHandleRestPaginationDefaultSort(): void
-    {
-        $this->handleRestPagination(true);
-    }
-
-    public function testHandleRestPaginationQueryParamSort(): void
-    {
-        $this->handleRestPagination(false);
-    }
-
-    private function handleRestPagination(bool $defaultSort = false): void
-    {
-        $query = $this->getMockInstance(EntityQuery::class, [
-            'count' => 23,
-        ]);
-        $repo1 = $this->getMockInstance(UserRepository::class, [
-            'query' => $query,
-        ]);
-        $repo = $this->getMockInstance(UserRepository::class, [
-            'filters' => $repo1,
-        ]);
-        $logger = $this->getMockInstance(Logger::class);
-        $pagination = $this->getMockInstance(Pagination::class, [
-            'getTotalItems' => 16,
-            'getInfo' => ['page' => 1],
-        ]);
-        $this->setClassCreateObjectMaps(ActionHelper::class, [
-            'logger' => $logger,
-            'pagination' => $pagination,
-        ]);
-        $request = $this->getMockInstanceMap(ServerRequest::class, [
-            'getQueryParams' => [
-                [[
-                    'sort' => $defaultSort === false ? 'name:desc,status' : '',
-                    'page' => 1,
-                    'limit' => 101,
-                ]]
-            ],
-        ]);
-        $actionHelper = $this->createObject(ActionHelper::class);
-
-        $o = new MyBaseAction($actionHelper);
-        /** @var RestResponse $resp */
-        $resp = $o->handle($request);
-
-        $this->expectMethodCallCount($repo, 'filters');
-        $this->expectMethodCallCount($query, 'count');
-        $this->expectMethodCallCount($pagination, 'setTotalItems');
-        $this->runPrivateProtectedMethod(
-            $o,
-            'handleRestPagination',
-            [$repo, $query]
-        );
-        $this->assertEquals(200, $resp->getStatusCode());
-        $this->assertEquals('OK', $resp->getReasonPhrase());
-    }
-
-    public function testRestResponse(): void
-    {
-        global $mock_time_to_1000;
-        $mock_time_to_1000 = true;
-
-        $logger = $this->getMockInstance(Logger::class);
-        $pagination = $this->getMockInstance(Pagination::class, [
-            'getTotalItems' => 16,
-            'getInfo' => ['page' => 1],
-        ]);
-        $this->setClassCreateObjectMaps(ActionHelper::class, [
-            'logger' => $logger,
-            'pagination' => $pagination,
-        ]);
-        $actionHelper = $this->createObject(ActionHelper::class);
-
-        $o = new MyBaseAction($actionHelper);
-        /** @var RestResponse $resp */
-        $resp = $this->runPrivateProtectedMethod(
-            $o,
-            'restResponse',
-            [['foo' => 'bar'], 201, 0]
-        );
-        $this->assertInstanceOf(RestResponse::class, $resp);
-        $this->assertEquals(201, $resp->getStatusCode());
-        $this->assertEquals('Created', $resp->getReasonPhrase());
-        $this->assertEquals(87, $resp->getBody()->getSize());
-        $resp->getBody()->rewind();
-        $this->assertEquals(
-            '{"success":true,"timestamp":1000,"code":0,"data":{"foo":"bar"},"pagination":{"page":1}}',
-            $resp->getBody()->getContents()
-        );
-    }
-
-    public function testRestCreatedResponse(): void
-    {
-        global $mock_time_to_1000;
-        $mock_time_to_1000 = true;
-
-        $logger = $this->getMockInstance(Logger::class);
-        $this->setClassCreateObjectMaps(ActionHelper::class, [
-            'logger' => $logger,
-        ]);
-        $actionHelper = $this->createObject(ActionHelper::class);
-
-        $o = new MyBaseAction($actionHelper);
-        /** @var RestResponse $resp */
-        $resp = $this->runPrivateProtectedMethod(
-            $o,
-            'restCreatedResponse',
-            [['foo' => 'bar'], 0]
-        );
-        $this->assertInstanceOf(RestResponse::class, $resp);
-        $this->assertEquals(201, $resp->getStatusCode());
-        $this->assertEquals('Created', $resp->getReasonPhrase());
-        $this->assertEquals(63, $resp->getBody()->getSize());
-        $resp->getBody()->rewind();
-        $this->assertEquals(
-            '{"success":true,"timestamp":1000,"code":0,"data":{"foo":"bar"}}',
-            $resp->getBody()->getContents()
-        );
-    }
-
-    public function testRestNoContentResponse(): void
-    {
-        global $mock_time_to_1000;
-        $mock_time_to_1000 = true;
-
-        $logger = $this->getMockInstance(Logger::class);
-        $this->setClassCreateObjectMaps(ActionHelper::class, [
-            'logger' => $logger,
-        ]);
-        $actionHelper = $this->createObject(ActionHelper::class);
-
-        $o = new MyBaseAction($actionHelper);
-        /** @var RestResponse $resp */
-        $resp = $this->runPrivateProtectedMethod(
-            $o,
-            'restNoContentResponse',
-            [0]
-        );
-        $this->assertInstanceOf(RestResponse::class, $resp);
-        $this->assertEquals(204, $resp->getStatusCode());
-        $this->assertEquals('No Content', $resp->getReasonPhrase());
-        $this->assertEquals(52, $resp->getBody()->getSize());
-        $resp->getBody()->rewind();
-        $this->assertEquals(
-            '{"success":true,"timestamp":1000,"code":0,"data":[]}',
-            $resp->getBody()->getContents()
-        );
-    }
-
-    public function testRestErrorResponse(): void
-    {
-        global $mock_time_to_1000;
-        $mock_time_to_1000 = true;
-
-        $logger = $this->getMockInstance(Logger::class);
-        $this->setClassCreateObjectMaps(ActionHelper::class, [
-            'logger' => $logger,
-        ]);
-        $actionHelper = $this->createObject(ActionHelper::class);
-
-        $o = new MyBaseAction($actionHelper);
-        /** @var RestResponse $resp */
-        $resp = $this->runPrivateProtectedMethod(
-            $o,
-            'restErrorResponse',
-            ['Error response']
-        );
-        $this->assertInstanceOf(RestResponse::class, $resp);
-        $this->assertEquals(401, $resp->getStatusCode());
-        $this->assertEquals(86, $resp->getBody()->getSize());
-        $resp->getBody()->rewind();
-        $this->assertEquals(
-            '{"success":false,"timestamp":1000,"code":"ERROR","message":"Error response","data":[]}',
-            $resp->getBody()->getContents()
-        );
-    }
-
-    public function testAllRestErrorResponse(): void
-    {
-        global $mock_time_to_1000;
-        $mock_time_to_1000 = true;
-
-        $logger = $this->getMockInstance(Logger::class);
-        $lang = $this->getMockInstance(Lang::class, ['tr' => 'lang msg']);
-        $this->setClassCreateObjectMaps(ActionHelper::class, [
-            'logger' => $logger,
-            'lang' => $lang,
-        ]);
-        $actionHelper = $this->createObject(ActionHelper::class);
-
-        $o = new MyBaseAction($actionHelper);
-
-        $resp1 = $this->runPrivateProtectedMethod(
-            $o,
-            'restServerErrorResponse',
-            ['Server Error']
-        );
-        $this->assertEquals(500, $resp1->getStatusCode());
-        $this->assertEquals(100, $resp1->getBody()->getSize());
-        $resp1->getBody()->rewind();
-        $this->assertEquals(
-            '{"success":false,"timestamp":1000,"code":"INTERNAL_SERVER_ERROR","message":"Server Error","data":[]}',
-            $resp1->getBody()->getContents()
-        );
-
-        //
-        $resp2 = $this->runPrivateProtectedMethod(
-            $o,
-            'restBadRequestErrorResponse',
-            ['Bad Error']
-        );
-        $this->assertEquals(400, $resp2->getStatusCode());
-        $this->assertEquals(87, $resp2->getBody()->getSize());
-        $resp2->getBody()->rewind();
-        $this->assertEquals(
-            '{"success":false,"timestamp":1000,"code":"BAD_REQUEST","message":"Bad Error","data":[]}',
-            $resp2->getBody()->getContents()
-        );
-
-        //
-        $resp3 = $this->runPrivateProtectedMethod(
-            $o,
-            'restConflictErrorResponse',
-            ['Conflict Error']
-        );
-        $this->assertEquals(409, $resp3->getStatusCode());
-        $this->assertEquals(99, $resp3->getBody()->getSize());
-        $resp3->getBody()->rewind();
-        $this->assertEquals(
-            '{"success":false,"timestamp":1000,"code":"DUPLICATE_RESOURCE","message":"Conflict Error","data":[]}',
-            $resp3->getBody()->getContents()
-        );
-
-        //
-        $resp4 = $this->runPrivateProtectedMethod(
-            $o,
-            'restNotFoundErrorResponse',
-            ['Not Found Error']
-        );
-        $this->assertEquals(404, $resp4->getStatusCode());
-        $this->assertEquals(100, $resp4->getBody()->getSize());
-        $resp4->getBody()->rewind();
-        $this->assertEquals(
-            '{"success":false,"timestamp":1000,"code":"RESOURCE_NOT_FOUND","message":"Not Found Error","data":[]}',
-            $resp4->getBody()->getContents()
-        );
-
-        //
-        $resp5 = $this->runPrivateProtectedMethod(
-            $o,
-            'restFormValidationErrorResponse',
-            [['email' => 'invalid email address']]
-        );
-        $this->assertEquals(422, $resp5->getStatusCode());
-        $this->assertEquals(131, $resp5->getBody()->getSize());
-        $resp5->getBody()->rewind();
-        $this->assertEquals(
-            '{"success":false,"timestamp":1000,"code":"INVALID_INPUT","message":"lang msg","data":[],'
-                . '"errors":{"email":"invalid email address"}}',
-            $resp5->getBody()->getContents()
-        );
-
-        //
-        $resp6 = $this->runPrivateProtectedMethod(
-            $o,
-            'restUnauthorizedErrorResponse',
-            ['User not login']
-        );
-        $this->assertEquals(401, $resp6->getStatusCode());
-        $this->assertEquals(100, $resp6->getBody()->getSize());
-        $resp6->getBody()->rewind();
-        $this->assertEquals(
-            '{"success":false,"timestamp":1000,"code":"UNAUTHORIZED_ACCESS","message":"User not login","data":[]}',
-            $resp6->getBody()->getContents()
-        );
-    }
 
     protected function handle(bool $bypassPagination = false): void
     {
@@ -446,7 +110,7 @@ class BaseActionTest extends PlatineTestCase
                     'fields' => 'name,status',
                     'sort' => 'name:desc,status',
                     'page' => 1,
-                    'limit' => 101,
+                    'limit' => 200,
                     'status' => 'Y',
                     'start_date' => '2025-09-01',
                     'end_date' => '2025-09-30',
@@ -456,9 +120,16 @@ class BaseActionTest extends PlatineTestCase
                 ]]
             ],
         ]);
+        $config = $this->getMockInstanceMap(Config::class, [
+            'get' => [
+                ['pagination.max_limit', 1000, 1000],
+            ],
+        ]);
+
         $this->setClassCreateObjectMaps(ActionHelper::class, [
             'logger' => $logger,
             'sidebar' => $sidebar,
+            'config' => $config,
         ]);
         $actionHelper = $this->createObject(ActionHelper::class);
 
@@ -473,7 +144,7 @@ class BaseActionTest extends PlatineTestCase
         $this->assertEquals(200, $resp->getStatusCode());
 
         $this->assertEquals(
-            $bypassPagination ? null : 100,
+            $bypassPagination ? null : 200,
             $this->getPropertyValue(BaseAction::class, $o, 'limit')
         );
         $this->assertEquals('foo_view', $this->getPropertyValue(BaseAction::class, $o, 'viewName'));
@@ -487,10 +158,6 @@ class BaseActionTest extends PlatineTestCase
             $this->getPropertyValue(BaseAction::class, $o, 'all')
         );
 
-        $this->assertEquals(
-            ['name' => 'DESC', 'status' => 'ASC'],
-            $this->getPropertyValue(BaseAction::class, $o, 'sorts')
-        );
         $this->assertEquals(
             ['permissions' => [5,7], 'status' => 'Y', 'multi' => [5, 7]],
             $this->getPropertyValue(BaseAction::class, $o, 'filters')

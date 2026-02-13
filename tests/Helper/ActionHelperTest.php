@@ -35,16 +35,16 @@ class ActionHelperTest extends PlatineTestCase
         $context = $this->getMockInstance(ViewContext::class);
         $o = new ActionHelper(
             $pagination,
-            $sidebar,
             $context,
-            $template,
             $routeHelper,
-            $flash,
             $lang,
             $logger,
             $auditor,
             $fileHelper,
-            $config
+            $config,
+            $sidebar,
+            $template,
+            $flash,
         );
 
         $this->assertInstanceOf(ActionHelper::class, $o);

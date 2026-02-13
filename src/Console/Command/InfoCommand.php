@@ -100,7 +100,7 @@ class InfoCommand extends Command
         $writer->boldBlueBgBlack($this->config->get('app.debug', false) ? 'On' : 'Off', true);
 
         $packages = $this->getPackages();
-        
+
         $writer->bold('Installed Packages: ');
         $writer->boldBlueBgBlack((string) count($packages), true);
 
