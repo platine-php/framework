@@ -279,7 +279,7 @@ abstract class BaseHttpAction implements RequestHandlerInterface
         $perPage = $this->config->get('pagination.item_per_page', 20);
 
         $this->limit = (int) $param->get('limit', $perPage);
-        $page = $param->get('page', null);
+        $page = $param->get('page', 1);
         if ($page) {
             $this->page = (int) $page;
         }

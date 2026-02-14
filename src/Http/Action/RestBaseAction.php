@@ -150,10 +150,7 @@ abstract class RestBaseAction extends BaseHttpAction
                                  ->query()
                                  ->count('id');
 
-        $currentPage = (int) $this->param->get('page', 1);
-
-        $this->pagination->setTotalItems($totalItems)
-                         ->setCurrentPage($currentPage);
+        $this->pagination->setTotalItems($totalItems);
 
         $limit = $this->pagination->getItemsPerPage();
         $offset = $this->pagination->getOffset();
