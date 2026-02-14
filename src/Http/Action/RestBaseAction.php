@@ -146,22 +146,20 @@ abstract class RestBaseAction extends BaseHttpAction
         string|array $sortFields = 'name',
         string $sortDir = 'ASC'
     ): void {
-        if ($this->all === false) {
-            $totalItems = $repository->filters($this->filters)
-                                     ->query()
-                                     ->count('id');
+        $totalItems = $repository->filters($this->filters)
+                                 ->query()
+                                 ->count('id');
 
-            $currentPage = (int) $this->param->get('page', 1);
+        $currentPage = (int) $this->param->get('page', 1);
 
-            $this->pagination->setTotalItems($totalItems)
-                             ->setCurrentPage($currentPage);
+        $this->pagination->setTotalItems($totalItems)
+                         ->setCurrentPage($currentPage);
 
-            $limit = $this->pagination->getItemsPerPage();
-            $offset = $this->pagination->getOffset();
+        $limit = $this->pagination->getItemsPerPage();
+        $offset = $this->pagination->getOffset();
 
-            $query = $query->limit($limit)
-                           ->offset($offset);
-        }
+        $query->limit($limit)
+              ->offset($offset);
 
         if (count($this->sorts) > 0) {
             foreach ($this->sorts as $column => $order) {

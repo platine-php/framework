@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Platine\Test\Framework\Http\Action;
 
+use Platine\Config\Config;
 use Platine\Dev\PlatineTestCase;
 use Platine\Framework\Helper\ActionHelper;
 use Platine\Framework\Http\Exception\HttpNotFoundException;
@@ -22,7 +23,14 @@ class BaseResourceActionTest extends PlatineTestCase
         $request = $this->getMockInstance(ServerRequest::class, [
             'getAttribute' => $route,
         ]);
+        $config = $this->getMockInstanceMap(Config::class, [
+            'get' => [
+                ['pagination.max_per_page', 100, 100],
+                ['pagination.max_limit', 1000, 1000],
+            ],
+        ]);
         $this->setClassCreateObjectMaps(ActionHelper::class, [
+            'config' => $config,
             'logger' => $logger,
         ]);
         $actionHelper = $this->createObject(ActionHelper::class);
@@ -40,7 +48,14 @@ class BaseResourceActionTest extends PlatineTestCase
         $request = $this->getMockInstance(ServerRequest::class, [
             'getAttribute' => $route,
         ]);
+        $config = $this->getMockInstanceMap(Config::class, [
+            'get' => [
+                ['pagination.max_per_page', 100, 100],
+                ['pagination.max_limit', 1000, 1000],
+            ],
+        ]);
         $this->setClassCreateObjectMaps(ActionHelper::class, [
+            'config' => $config,
             'logger' => $logger,
         ]);
         $actionHelper = $this->createObject(ActionHelper::class);

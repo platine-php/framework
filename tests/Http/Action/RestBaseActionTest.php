@@ -69,7 +69,14 @@ class RestBaseActionTest extends PlatineTestCase
             'getTotalItems' => 16,
             'getInfo' => ['page' => 1],
         ]);
+        $config = $this->getMockInstanceMap(Config::class, [
+            'get' => [
+                ['pagination.max_per_page', 100, 100],
+                ['pagination.max_limit', 1000, 1000],
+            ],
+        ]);
         $this->setClassCreateObjectMaps(ActionHelper::class, [
+            'config' => $config,
             'logger' => $logger,
             'pagination' => $pagination,
         ]);
@@ -368,6 +375,7 @@ class RestBaseActionTest extends PlatineTestCase
         ]);
         $config = $this->getMockInstanceMap(Config::class, [
             'get' => [
+                ['pagination.max_per_page', 100, 100],
                 ['pagination.max_limit', 1000, 1000],
             ],
         ]);
@@ -385,17 +393,12 @@ class RestBaseActionTest extends PlatineTestCase
         $this->assertEquals(200, $resp->getStatusCode());
 
         $this->assertEquals(
-            $bypassPagination ? null : 101,
+            $bypassPagination ? 1000 : 100,
             $this->getPropertyValue(RestBaseAction::class, $o, 'limit')
         );
         $this->assertEquals(
-            $bypassPagination ? null : 1,
+            $bypassPagination ? 1 : 1,
             $this->getPropertyValue(RestBaseAction::class, $o, 'page')
-        );
-
-        $this->assertEquals(
-            $bypassPagination ? true : false,
-            $this->getPropertyValue(RestBaseAction::class, $o, 'all')
         );
 
         $this->assertEquals(

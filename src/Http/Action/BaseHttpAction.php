@@ -70,21 +70,27 @@ abstract class BaseHttpAction implements RequestHandlerInterface
 
     /**
      * The pagination limit
-     * @var int|null
+     * @var int
      */
-    protected ?int $limit = null;
+    protected int $limit;
+
+    /**
+     * The pagination max limit to fetch "all" record
+     * @var int
+     */
+    protected int $maxLimit = 0;
+
+    /**
+     * The pagination max per page
+     * @var int
+     */
+    protected int $maxPerPage = 0;
 
     /**
      * The pagination current page
-     * @var int|null
+     * @var int
      */
-    protected ?int $page = null;
-
-    /**
-     * Whether to query all list without pagination
-     * @var bool
-     */
-    protected bool $all = false;
+    protected int $page = 1;
 
     /**
      * The pagination instance
@@ -269,37 +275,35 @@ abstract class BaseHttpAction implements RequestHandlerInterface
     protected function setPagination(): void
     {
         $param = $this->param;
-        if ($param->get('all', null)) {
-            $this->all = true;
-            return;
-        }
+        $all = boolval($param->get('all', null));
+        $perPage = $this->config->get('pagination.item_per_page', 20);
 
-        $limit = $param->get('limit', null);
-        if ($limit !== null) {
-            $this->limit = (int) $limit;
-        }
-
-        $maxLimit = $this->config->get('pagination.max_limit', 1000);
-        if ($this->limit !== null && $this->limit > $maxLimit) {
-            $this->limit = $maxLimit;
-        }
-
+        $this->limit = (int) $param->get('limit', $perPage);
         $page = $param->get('page', null);
         if ($page) {
             $this->page = (int) $page;
         }
 
-        if ($limit > 0 || $page > 0) {
-            $this->all = false;
+        if ($this->maxLimit === 0) {
+            $this->maxLimit = $this->config->get('pagination.max_limit', 1000);
         }
 
-        if ($this->limit > 0) {
-            $this->pagination->setItemsPerPage($this->limit);
+        if ($this->maxPerPage === 0) {
+            $this->maxPerPage = $this->config->get('pagination.max_per_page', 100);
         }
 
-        $currentPage = $this->page ?? 1;
+        // Handle fetching all records
+        if ($all) {
+            $this->page = 1;
+            $this->limit = $this->maxLimit;
+        } else {
+            if ($this->limit > $this->maxPerPage) {
+                $this->limit = $this->maxPerPage;
+            }
+        }
 
-        $this->pagination->setCurrentPage($currentPage);
+        $this->pagination->setItemsPerPage($this->limit);
+        $this->pagination->setCurrentPage($this->page);
     }
 
     /**

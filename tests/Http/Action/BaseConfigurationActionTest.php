@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Platine\Test\Framework\Http\Action;
 
+use Platine\Config\Config;
 use Platine\Dev\PlatineTestCase;
 use Platine\Framework\Config\AppDatabaseConfig;
 use Platine\Framework\Config\DatabaseConfigLoader;
@@ -64,7 +65,15 @@ class BaseConfigurationActionTest extends PlatineTestCase
                 ['GET'],
             ],
         ]);
+        $config = $this->getMockInstanceMap(Config::class, [
+            'get' => [
+                ['pagination.max_per_page', 100, 100],
+                ['pagination.max_limit', 1000, 1000],
+            ],
+        ]);
+
         $this->setClassCreateObjectMaps(ActionHelper::class, [
+            'config' => $config,
             'logger' => $logger,
         ]);
         $actionHelper = $this->createObject(ActionHelper::class);
@@ -77,8 +86,7 @@ class BaseConfigurationActionTest extends PlatineTestCase
         $this->assertEquals(200, $resp->getStatusCode());
 
         $this->assertEquals('', $this->getPropertyValue(BaseAction::class, $o, 'viewName'));
-        $this->assertEquals(null, $this->getPropertyValue(BaseAction::class, $o, 'page'));
-        $this->assertFalse($this->getPropertyValue(BaseAction::class, $o, 'all'));
+        $this->assertEquals(1, $this->getPropertyValue(BaseAction::class, $o, 'page'));
     }
 
     public function testRespondSaveFormValidationFailed(): void
@@ -100,7 +108,14 @@ class BaseConfigurationActionTest extends PlatineTestCase
                 ['POST'],
             ],
         ]);
+        $config = $this->getMockInstanceMap(Config::class, [
+            'get' => [
+                ['pagination.max_per_page', 100, 100],
+                ['pagination.max_limit', 1000, 1000],
+            ],
+        ]);
         $this->setClassCreateObjectMaps(ActionHelper::class, [
+            'config' => $config,
             'logger' => $logger,
             'context' => $viewContext,
         ]);
@@ -114,8 +129,7 @@ class BaseConfigurationActionTest extends PlatineTestCase
         $this->assertInstanceOf(TemplateResponse::class, $resp);
         $this->assertEquals(200, $resp->getStatusCode());
         $this->assertEquals('', $this->getPropertyValue(BaseAction::class, $o, 'viewName'));
-        $this->assertEquals(null, $this->getPropertyValue(BaseAction::class, $o, 'page'));
-        $this->assertFalse($this->getPropertyValue(BaseAction::class, $o, 'all'));
+        $this->assertEquals(1, $this->getPropertyValue(BaseAction::class, $o, 'page'));
     }
 
     public function testRespondSaveSuccess(): void
@@ -151,7 +165,14 @@ class BaseConfigurationActionTest extends PlatineTestCase
                 [['name' => 'foo', 'status' => 'bar']],
             ],
         ]);
+        $config = $this->getMockInstanceMap(Config::class, [
+            'get' => [
+                ['pagination.max_per_page', 100, 100],
+                ['pagination.max_limit', 1000, 1000],
+            ],
+        ]);
         $this->setClassCreateObjectMaps(ActionHelper::class, [
+            'config' => $config,
             'logger' => $logger,
             'context' => $viewContext,
         ]);
@@ -168,7 +189,6 @@ class BaseConfigurationActionTest extends PlatineTestCase
         $this->assertInstanceOf(RedirectResponse::class, $resp);
         $this->assertEquals(302, $resp->getStatusCode());
         $this->assertEquals('', $this->getPropertyValue(BaseAction::class, $o, 'viewName'));
-        $this->assertEquals(null, $this->getPropertyValue(BaseAction::class, $o, 'page'));
-        $this->assertFalse($this->getPropertyValue(BaseAction::class, $o, 'all'));
+        $this->assertEquals(1, $this->getPropertyValue(BaseAction::class, $o, 'page'));
     }
 }

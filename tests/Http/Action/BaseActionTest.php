@@ -122,6 +122,7 @@ class BaseActionTest extends PlatineTestCase
         ]);
         $config = $this->getMockInstanceMap(Config::class, [
             'get' => [
+                ['pagination.max_per_page', 100, 100],
                 ['pagination.max_limit', 1000, 1000],
             ],
         ]);
@@ -144,18 +145,13 @@ class BaseActionTest extends PlatineTestCase
         $this->assertEquals(200, $resp->getStatusCode());
 
         $this->assertEquals(
-            $bypassPagination ? null : 200,
+            $bypassPagination ? 1000 : 100,
             $this->getPropertyValue(BaseAction::class, $o, 'limit')
         );
         $this->assertEquals('foo_view', $this->getPropertyValue(BaseAction::class, $o, 'viewName'));
         $this->assertEquals(
-            $bypassPagination ? null : 1,
+            $bypassPagination ? 1 : 1,
             $this->getPropertyValue(BaseAction::class, $o, 'page')
-        );
-
-        $this->assertEquals(
-            $bypassPagination ? true : false,
-            $this->getPropertyValue(BaseAction::class, $o, 'all')
         );
 
         $this->assertEquals(
@@ -181,7 +177,15 @@ class BaseActionTest extends PlatineTestCase
                 ]]
             ],
         ]);
+        $config = $this->getMockInstanceMap(Config::class, [
+            'get' => [
+                ['pagination.max_per_page', 100, 100],
+                ['pagination.max_limit', 1000, 1000],
+            ],
+        ]);
+
         $this->setClassCreateObjectMaps(ActionHelper::class, [
+            'config' => $config,
             'logger' => $logger,
             'routeHelper' => $routeHelper,
         ]);
