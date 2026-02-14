@@ -190,12 +190,6 @@ abstract class BaseAction extends BaseHttpAction
     }
 
     /**
-     * Return the response
-     * @return ResponseInterface
-     */
-    abstract public function respond(): ResponseInterface;
-
-    /**
      * Redirect back to origin if user want to create new entity from
      * detail page
      * @return ResponseInterface|null
