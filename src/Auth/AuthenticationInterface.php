@@ -61,7 +61,7 @@ interface AuthenticationInterface
     /**
      * Authenticate the user
      * @param array<string, mixed> $credentials
-     * @param bool $remeberMe
+     * @param bool $rememberMe
      * @param bool $withPassword wether to use password to login
      * @return array<string, mixed>
      *
@@ -72,7 +72,7 @@ interface AuthenticationInterface
      */
     public function login(
         array $credentials = [],
-        bool $remeberMe = false,
+        bool $rememberMe = false,
         bool $withPassword = true
     ): array;
 

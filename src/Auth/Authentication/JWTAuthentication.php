@@ -213,7 +213,7 @@ class JWTAuthentication implements AuthenticationInterface
      */
     public function login(
         array $credentials = [],
-        bool $remeberMe = false,
+        bool $rememberMe = false,
         bool $withPassword = true
     ): array {
         if (isset($credentials['username']) === false) {

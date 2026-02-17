@@ -123,7 +123,7 @@ class SessionAuthentication implements AuthenticationInterface
             throw new AccountNotFoundException('User not logged', 401);
         }
 
-        $id = $this->session->get('user.id');
+        $id = $this->session->get('auth.user.id');
 
         return $id;
     }
@@ -141,7 +141,7 @@ class SessionAuthentication implements AuthenticationInterface
      */
     public function login(
         array $credentials = [],
-        bool $remeberMe = false,
+        bool $rememberMe = false,
         bool $withPassword = true
     ): array {
         if (!isset($credentials['username'])) {
