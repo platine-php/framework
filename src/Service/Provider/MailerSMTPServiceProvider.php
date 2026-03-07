@@ -60,6 +60,8 @@ class MailerSMTPServiceProvider extends ServiceProvider
 
             $username = $app->get(Config::class)->get('mail.smtp.username', '');
             $password = $app->get(Config::class)->get('mail.smtp.password', '');
+            $encryption = $app->get(Config::class)->get('mail.smtp.encryption', SMTP::ENCRYPTION_NONE);
+            $smtp->setEncryption($encryption);
             if (!empty($username) && !empty($password)) {
                 $smtp->setAuth($username, $password);
             }
