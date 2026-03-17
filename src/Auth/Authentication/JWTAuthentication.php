@@ -186,9 +186,7 @@ class JWTAuthentication implements AuthenticationInterface
 
         $headerName = $this->config->get('api.auth.headers.name', 'Authorization');
         $tokenHeader = $request->getHeaderLine($headerName);
-        if (empty($tokenHeader)) {
-            $this->logger->error('API authentication failed: missing token header');
-            
+        if (empty($tokenHeader)) {            
             return false;
         }
         $tokenType = $this->config->get('api.auth.headers.token_type', 'Bearer');
