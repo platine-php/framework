@@ -128,29 +128,13 @@ class EntityHelperTest extends PlatineTestCase
         $this->assertEquals('Bar', $changes[1]['new']);
     }
 
-    public function testSubscribeEventsNotLogged(): void
-    {
-        $auditor = $this->getMockInstance(Auditor::class);
-        $authentication = $this->getMockInstance(SessionAuthentication::class, [
-            'isLogged' => false,
-        ]);
-        $mapper = $this->getMockInstance(EntityMapper::class);
-        $o = new EntityHelper($auditor, $authentication);
-
-        $this->expectMethodCallCount($authentication, 'isLogged');
-        $o->subscribeEvents($mapper);
-    }
-
     public function testSubscribeEventsSuccess(): void
     {
         $auditor = $this->getMockInstance(Auditor::class);
-        $authentication = $this->getMockInstance(SessionAuthentication::class, [
-            'isLogged' => true,
-        ]);
+        $authentication = $this->getMockInstance(SessionAuthentication::class);
         $mapper = $this->getMockInstance(EntityMapper::class);
         $o = new EntityHelper($auditor, $authentication);
 
-        $this->expectMethodCallCount($authentication, 'isLogged');
         $this->expectMethodCallCount($mapper, 'on', 3);
         $o->subscribeEvents($mapper);
     }
@@ -165,6 +149,11 @@ class EntityHelperTest extends PlatineTestCase
         $this->subscribeEventsRecordChange(false);
     }
 
+    public function testSubscribeEventsCreateNotIgnoreNotLogged(): void
+    {
+        $this->subscribeEventsRecordChange(false, true, false, false);
+    }
+
     public function testSubscribeEventsUpdateIgnore(): void
     {
         $this->subscribeEventsRecordChange(true, false);
@@ -173,6 +162,11 @@ class EntityHelperTest extends PlatineTestCase
     public function testSubscribeEventsUpdateNotIgnore(): void
     {
         $this->subscribeEventsRecordChange(false, false);
+    }
+
+    public function testSubscribeEventsUpdateNotIgnoreNotLogged(): void
+    {
+        $this->subscribeEventsRecordChange(false, false, false, false);
     }
 
     public function testSubscribeEventsDeleteIgnore(): void
@@ -185,7 +179,12 @@ class EntityHelperTest extends PlatineTestCase
         $this->subscribeEventsRecordChange(false, false, true);
     }
 
-    private function subscribeEventsRecordChange(bool $ignore, bool $create = true, bool $delete = false): void
+    public function testSubscribeEventsDeleteNotIgnoreNotLogged(): void
+    {
+        $this->subscribeEventsRecordChange(false, false, true, false);
+    }
+
+    private function subscribeEventsRecordChange(bool $ignore, bool $create = true, bool $delete = false, bool $isLogged = true): void
     {
         $resultSetFinal = $this->getMockInstance(ResultSet::class, [
             'get' => ['name' => 'foo', 'id' => 1],
@@ -218,13 +217,13 @@ class EntityHelperTest extends PlatineTestCase
 
         $auditor = $this->getMockInstance(Auditor::class);
         $authentication = $this->getMockInstance(SessionAuthentication::class, [
-            'isLogged' => true,
+            'isLogged' => $isLogged,
         ]);
 
         $o = new EntityHelper($auditor, $authentication);
         $o->setIgnore($ignore);
 
-        $this->expectMethodCallCount($auditor, 'setDetail', $ignore ? 0 : 1);
+        $this->expectMethodCallCount($auditor, 'setDetail', $ignore === false && $isLogged ? 1 : 0);
 
         $o->subscribeEvents($mapper);
 
