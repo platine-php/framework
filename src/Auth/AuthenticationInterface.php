@@ -77,6 +77,13 @@ interface AuthenticationInterface
     ): array;
 
     /**
+     * Re-authenticate the user
+     * @param IdentityInterface $identity
+     * @return array<string, mixed>
+     */
+    public function relogin(IdentityInterface $identity): array;
+
+    /**
      * Check if user is logged
      * @return bool
      */
@@ -111,4 +118,12 @@ interface AuthenticationInterface
      * @return string[]
      */
     public function getPermissions(): array;
+
+    /**
+     * Return the user authentication data
+     * @param string $key
+     * @param mixed $default
+     * @return mixed
+     */
+    public function getAuthAttribute(string $key, mixed $default = null): mixed;
 }

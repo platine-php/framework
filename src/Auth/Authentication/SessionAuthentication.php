@@ -48,8 +48,6 @@ declare(strict_types=1);
 namespace Platine\Framework\Auth\Authentication;
 
 use Platine\Framework\App\Application;
-use Platine\Framework\Auth\AuthenticationInterface;
-use Platine\Framework\Auth\Entity\User;
 use Platine\Framework\Auth\Enum\UserStatus;
 use Platine\Framework\Auth\Event\AuthInvalidPasswordEvent;
 use Platine\Framework\Auth\Event\AuthLoginEvent;
@@ -66,21 +64,22 @@ use Platine\Session\Session;
  * class SessionAuthentication
  * @package Platine\Framework\Auth\Authentication
  */
-class SessionAuthentication implements AuthenticationInterface
+class SessionAuthentication extends BaseAuthentication
 {
     /**
      * Create new instance
-     * @param Application $app
      * @param HashInterface $hash
-     * @param Session $session
      * @param UserRepository $userRepository
+     * @param Application $app
+     * @param Session $session
      */
     public function __construct(
-        protected Application $app,
-        protected HashInterface $hash,
+        HashInterface $hash,
+        UserRepository $userRepository,
+        Application $app,
         protected Session $session,
-        protected UserRepository $userRepository
     ) {
+        parent::__construct($hash, $userRepository, $app);
     }
 
     /**
@@ -88,11 +87,7 @@ class SessionAuthentication implements AuthenticationInterface
      */
     public function getUser(): IdentityInterface
     {
-        if ($this->isLogged() === false) {
-            throw new AccountNotFoundException('User not logged', 401);
-        }
-
-        $id = $this->session->get('auth.user.id');
+        $id = $this->getId();
         $user = $this->userRepository->find($id);
 
         if ($user === null) {
@@ -110,7 +105,7 @@ class SessionAuthentication implements AuthenticationInterface
      */
     public function getPermissions(): array
     {
-        return $this->session->get('auth.permissions', []);
+        return $this->getAuthAttribute('permissions', []);
     }
 
 
@@ -123,9 +118,7 @@ class SessionAuthentication implements AuthenticationInterface
             throw new AccountNotFoundException('User not logged', 401);
         }
 
-        $id = $this->session->get('auth.user.id');
-
-        return $id;
+        return $this->session->get('auth.user.id');
     }
 
     /**
@@ -186,33 +179,34 @@ class SessionAuthentication implements AuthenticationInterface
             );
         }
 
-        $permissions = [];
-        $roles = $user->roles;
-        foreach ($roles as $role) {
-            $rolePermissions = $role->permissions;
-            foreach ($rolePermissions as $permission) {
-                $permissions[] = $permission->code;
-            }
-        }
-
-        $data = [
-          'user' => [
-            'id' => $user->id,
-            'username' => $user->username,
-            'lastname' => $user->lastname,
-            'firstname' => $user->firstname,
-            'email' => $user->email,
-            'status' => $user->status,
-          ],
-          'permissions' => $permissions,
-        ];
-
-        $loginData = array_merge($data, $this->getUserData($user));
+        $loginData = $this->getLoginData($user);
 
         $this->session->set('auth', $loginData);
 
         // Inform the system that the user just login successfully
         $this->app->dispatch(new AuthLoginEvent($user));
+
+        return $loginData;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function relogin(IdentityInterface $identity): array
+    {
+        $id = $identity->getId();
+        $user = $this->userRepository->find($id);
+
+        if ($user === null) {
+            throw new AccountNotFoundException(
+                'Can not find the logged user information, may be data is corrupted',
+                401
+            );
+        }
+
+        $loginData = $this->getLoginData($user);
+
+        $this->session->set('auth', $loginData);
 
         return $loginData;
     }
@@ -241,28 +235,10 @@ class SessionAuthentication implements AuthenticationInterface
     }
 
     /**
-     * Return the user entity
-     * @param string $username
-     * @param string $password
-     * @param bool $withPassword wether to use password to login
-     * @return User|null
+     * {@inheritdoc}
      */
-    protected function getUserEntity(
-        string $username,
-        string $password,
-        bool $withPassword = true
-    ): ?User {
-        return $this->userRepository->with('roles.permissions')
-                                    ->findBy(['username' => $username]);
-    }
-
-    /**
-     * Return the user additional data
-     * @param User $user
-     * @return array<string, mixed>
-     */
-    protected function getUserData(User $user): array
+    public function getAuthAttribute(string $key, mixed $default = null): mixed
     {
-        return [];
+        return $this->session->get(sprintf('auth.%s', $key), $default);
     }
 }

@@ -34,7 +34,7 @@ class SessionAuthenticationTest extends PlatineTestCase
         ]);
         $userRepository = $this->getMockInstance(UserRepository::class);
 
-        $o = new SessionAuthentication($app, $hash, $session, $userRepository);
+        $o = new SessionAuthentication($hash, $userRepository, $app, $session);
         $this->expectException(AccountNotFoundException::class);
         $o->getUser();
     }
@@ -51,7 +51,7 @@ class SessionAuthenticationTest extends PlatineTestCase
             'find' => null
         ]);
 
-        $o = new SessionAuthentication($app, $hash, $session, $userRepository);
+        $o = new SessionAuthentication($hash, $userRepository, $app, $session);
         $this->expectException(AccountNotFoundException::class);
         $o->getUser();
     }
@@ -69,7 +69,7 @@ class SessionAuthenticationTest extends PlatineTestCase
             'find' => $user
         ]);
 
-        $o = new SessionAuthentication($app, $hash, $session, $userRepository);
+        $o = new SessionAuthentication($hash, $userRepository, $app, $session);
         $this->assertInstanceOf(User::class, $o->getUser());
     }
 
@@ -83,7 +83,7 @@ class SessionAuthenticationTest extends PlatineTestCase
         ]);
         $userRepository = $this->getMockInstance(UserRepository::class);
 
-        $o = new SessionAuthentication($app, $hash, $session, $userRepository);
+        $o = new SessionAuthentication($hash, $userRepository, $app, $session);
         $this->assertCount(2, $o->getPermissions());
     }
 
@@ -100,7 +100,7 @@ class SessionAuthenticationTest extends PlatineTestCase
             'find' => $user
         ]);
 
-        $o = new SessionAuthentication($app, $hash, $session, $userRepository);
+        $o = new SessionAuthentication($hash, $userRepository, $app, $session);
         $this->assertEquals(1, $o->getId());
     }
 
@@ -117,7 +117,7 @@ class SessionAuthenticationTest extends PlatineTestCase
             'find' => $user
         ]);
 
-        $o = new SessionAuthentication($app, $hash, $session, $userRepository);
+        $o = new SessionAuthentication($hash, $userRepository, $app, $session);
         $this->expectException(AccountNotFoundException::class);
         $o->getId();
     }
@@ -133,7 +133,7 @@ class SessionAuthenticationTest extends PlatineTestCase
             'find' => null
         ]);
 
-        $o = new SessionAuthentication($app, $hash, $session, $userRepository);
+        $o = new SessionAuthentication($hash, $userRepository, $app, $session);
         $this->expectException(MissingCredentialsException::class);
 
         $credentials = [
@@ -153,7 +153,7 @@ class SessionAuthenticationTest extends PlatineTestCase
             'find' => null
         ]);
 
-        $o = new SessionAuthentication($app, $hash, $session, $userRepository);
+        $o = new SessionAuthentication($hash, $userRepository, $app, $session);
         $this->expectException(MissingCredentialsException::class);
 
         $credentials = [
@@ -173,7 +173,7 @@ class SessionAuthenticationTest extends PlatineTestCase
             'findBy' => null
         ]);
 
-        $o = new SessionAuthentication($app, $hash, $session, $userRepository);
+        $o = new SessionAuthentication($hash, $userRepository, $app, $session);
         $this->expectException(AccountNotFoundException::class);
 
         $credentials = [
@@ -201,7 +201,7 @@ class SessionAuthenticationTest extends PlatineTestCase
             'with' => $middleRepository,
         ]);
 
-        $o = new SessionAuthentication($app, $hash, $session, $userRepository);
+        $o = new SessionAuthentication($hash, $userRepository, $app, $session);
         $this->expectException(AccountLockedException::class);
 
         $credentials = [
@@ -231,7 +231,7 @@ class SessionAuthenticationTest extends PlatineTestCase
             'with' => $middleRepository,
         ]);
 
-        $o = new SessionAuthentication($app, $hash, $session, $userRepository);
+        $o = new SessionAuthentication($hash, $userRepository, $app, $session);
         $this->expectException(InvalidCredentialsException::class);
 
         $credentials = [
@@ -276,12 +276,65 @@ class SessionAuthenticationTest extends PlatineTestCase
             'with' => $middleRepository,
         ]);
 
-        $o = new SessionAuthentication($app, $hash, $session, $userRepository);
+        $o = new SessionAuthentication($hash, $userRepository, $app, $session);
         $credentials = [
             'username' => 'foo',
             'password' => 'foo',
         ];
         $this->assertCount(2, $o->login($credentials));
+    }
+
+    public function testReloginUserNotFound(): void
+    {
+        $identity = $this->getMockInstance(User::class, [
+            'getId' => 1,
+        ]);
+        $app = $this->getMockInstance(Application::class);
+        $hash = $this->getMockInstance(BcryptHash::class);
+        $session = $this->getMockInstance(Session::class);
+        $userRepository = $this->getMockInstance(UserRepository::class, [
+            'find' => null
+        ]);
+
+        $o = new SessionAuthentication($hash, $userRepository, $app, $session);
+        $this->expectException(AccountNotFoundException::class);
+
+        $o->relogin($identity);
+    }
+
+    public function testReloginSuccess(): void
+    {
+        $identity = $this->getMockInstance(User::class, [
+            'getId' => 1,
+        ]);
+        $permission = $this->getMockInstanceMap(Permission::class, [
+            '__get' => [
+                ['code', 'foocode']
+            ]
+        ]);
+
+        $role = $this->getMockInstanceMap(Role::class, [
+            '__get' => [
+                ['permissions', [$permission]]
+            ]
+        ]);
+        $user = $this->getMockInstanceMap(User::class, [
+            '__get' => [
+                ['password', 'password'],
+                ['status', 'A'],
+                ['roles', [$role]]
+             ]
+        ]);
+
+        $app = $this->getMockInstance(Application::class);
+        $hash = $this->getMockInstance(BcryptHash::class);
+        $session = $this->getMockInstance(Session::class);
+        $userRepository = $this->getMockInstance(UserRepository::class, [
+            'find' => $user,
+        ]);
+
+        $o = new SessionAuthentication($hash, $userRepository, $app, $session);
+        $this->assertCount(2, $o->relogin($identity));
     }
 
     public function testLogout(): void
@@ -305,7 +358,7 @@ class SessionAuthenticationTest extends PlatineTestCase
         $userRepository = $this->getMockInstance(UserRepository::class, [
         ]);
 
-        $o = new SessionAuthentication($app, $hash, $session, $userRepository);
+        $o = new SessionAuthentication($hash, $userRepository, $app, $session);
         $o->logout();
     }
 }

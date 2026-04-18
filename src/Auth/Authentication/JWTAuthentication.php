@@ -50,11 +50,12 @@ namespace Platine\Framework\Auth\Authentication;
 use DateTime;
 use Platine\Config\Config;
 use Platine\Container\ContainerInterface;
-use Platine\Framework\Auth\AuthenticationInterface;
+use Platine\Framework\App\Application;
 use Platine\Framework\Auth\Authorization\PermissionCacheInterface;
 use Platine\Framework\Auth\Entity\Token;
 use Platine\Framework\Auth\Entity\User;
 use Platine\Framework\Auth\Enum\UserStatus;
+use Platine\Framework\Auth\Event\AuthLoginEvent;
 use Platine\Framework\Auth\Exception\AccountLockedException;
 use Platine\Framework\Auth\Exception\AccountNotFoundException;
 use Platine\Framework\Auth\Exception\InvalidCredentialsException;
@@ -75,29 +76,32 @@ use Platine\Stdlib\Helper\Str;
  * @package Platine\Framework\Auth\Authentication
  * @template T
  */
-class JWTAuthentication implements AuthenticationInterface
+class JWTAuthentication extends BaseAuthentication
 {
     /**
      * Create new instance
+     * @param HashInterface $hash
+     * @param UserRepository $userRepository
+     * @param Application $app
      * @param JWT $jwt
      * @param LoggerInterface $logger
      * @param Config<T> $config
-     * @param HashInterface $hash
-     * @param UserRepository $userRepository
      * @param TokenRepository $tokenRepository
      * @param ContainerInterface $container
      * @param PermissionCacheInterface $permissionCache
      */
     public function __construct(
+        HashInterface $hash,
+        UserRepository $userRepository,
+        Application $app,
         protected JWT $jwt,
         protected LoggerInterface $logger,
         protected Config $config,
-        protected HashInterface $hash,
-        protected UserRepository $userRepository,
         protected TokenRepository $tokenRepository,
         protected ContainerInterface $container,
         protected PermissionCacheInterface $permissionCache
     ) {
+        parent::__construct($hash, $userRepository, $app);
     }
 
     /**
@@ -105,10 +109,7 @@ class JWTAuthentication implements AuthenticationInterface
      */
     public function getUser(): IdentityInterface
     {
-        if ($this->isLogged() === false) {
-            throw new AccountNotFoundException('User not logged', 401);
-        }
-        $id = (int) $this->getJwtPayload('sub', -1);
+        $id = $this->getId();
 
         $user = $this->userRepository->find($id);
         if ($user === null) {
@@ -164,7 +165,7 @@ class JWTAuthentication implements AuthenticationInterface
             throw new AccountNotFoundException('User not logged', 401);
         }
 
-        $id = (int) $this->getJwtPayload('sub', -1);
+        $id = $this->getAuthAttribute('sub');
 
         return $id;
     }
@@ -186,7 +187,7 @@ class JWTAuthentication implements AuthenticationInterface
 
         $headerName = $this->config->get('api.auth.headers.name', 'Authorization');
         $tokenHeader = $request->getHeaderLine($headerName);
-        if (empty($tokenHeader)) {            
+        if (empty($tokenHeader)) {
             return false;
         }
         $tokenType = $this->config->get('api.auth.headers.token_type', 'Bearer');
@@ -256,37 +257,44 @@ class JWTAuthentication implements AuthenticationInterface
             );
         }
 
-        $permissions = $this->getUserPermissions($user);
-        $roles = Arr::getColumn($user->roles, 'id');
-        $secret = $this->config->get('api.sign.secret');
-        $expire = $this->config->get('api.auth.token_expire', 900);
-        $tokenExpire = time() + $expire;
-        $this->jwt->setSecret($secret)
-                  ->setPayload([
-                      'sub' => $user->id,
-                      'exp' => $tokenExpire,
-                      'roles' => $roles,
-                  ])
-                  ->sign();
+        // Generate the JWT token
+        $this->generateJwtToken($user);
 
-        $jwtToken = $this->jwt->getToken();
-        [$refreshToken, $token] = $this->generateRefreshToken($user->id);
+        // Inform the system that the user just login successfully
+        $this->app->dispatch(new AuthLoginEvent($user));
 
-        $data = [
-          'user' => [
-            'id' => $user->id,
-            'username' => $user->username,
-            'lastname' => $user->lastname,
-            'firstname' => $user->firstname,
-            'email' => $user->email,
-            'status' => $user->status,
-          ],
-          'permissions' => $permissions,
-          'token' => $jwtToken,
-          'refresh_token' => $refreshToken,
-        ];
+        return $this->getLoginData($user);
+    }
 
-        return array_merge($data, $this->getUserData($user, $token));
+    /**
+     * {@inheritdoc}
+     */
+    public function relogin(IdentityInterface $identity): array
+    {
+        $id = $identity->getId();
+        $user = $this->userRepository->find($id);
+
+        if ($user === null) {
+            throw new AccountNotFoundException(
+                'Can not find the logged user information, may be data is corrupted',
+                401
+            );
+        }
+
+        // Generate the JWT token
+        $this->generateJwtToken($user);
+
+        $loginData = $this->getLoginData($user);
+
+        return $loginData;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getAuthAttribute(string $key, mixed $default = null): mixed
+    {
+        return $this->getJwtPayload($key, $default);
     }
 
     /**
@@ -304,59 +312,37 @@ class JWTAuthentication implements AuthenticationInterface
     }
 
     /**
-     * Return the user entity
-     * @param string $username
-     * @param string $password
-     * @param bool $withPassword wether to use password to login
-     * @return User|null
-     */
-    protected function getUserEntity(
-        string $username,
-        string $password,
-        bool $withPassword = true
-    ): ?User {
-        return $this->userRepository->with('roles.permissions')
-                                    ->findBy(['username' => $username]);
-    }
-
-    /**
-     * Return the user additional data
+     * Generate the JWT token
      * @param User $user
-     * @param Token $token
-     * @return array<string, mixed>
+     * @return void
      */
-    protected function getUserData(User $user, Token $token): array
+    protected function generateJwtToken(User $user): void
     {
-        return [];
+        $roles = Arr::getColumn($user->roles, 'id');
+        $secret = $this->config->get('api.sign.secret');
+        $expire = $this->config->get('api.auth.token_expire', 900);
+        $tokenExpire = time() + $expire;
+        $payload = [
+            'sub' => $user->id,
+            'exp' => $tokenExpire,
+            'roles' => $roles,
+        ] + $this->getUserAttribute($user);
+        $this->jwt->setSecret($secret)
+                  ->setPayload($payload)
+                  ->sign();
     }
 
     /**
-     * Return the permission list of the given user
-     * @param User|int $user
-     * @return string[]
+     * {@inheritdoc}
      */
-    protected function getUserPermissions(User|int $user): array
+    protected function getLoginData(User $user): array
     {
-        $permissions = [];
-        if (is_int($user)) {
-            $user = $this->userRepository->with('roles.permissions')
-                                         ->find($user);
-            if ($user === null) {
-                return [];
-            }
-        }
+        $loginData = parent::getLoginData($user);
+        $jwtToken = $this->jwt->getToken();
+        [$refreshToken, ] = $this->generateRefreshToken($user->id);
 
-        $roles = $user->roles;
-        foreach ($roles as $role) {
-            $rolePermissions = $role->permissions;
-            foreach ($rolePermissions as $permission) {
-                if (in_array($permission->code, $permissions) === false) {
-                    $permissions[] = $permission->code;
-                }
-            }
-        }
-
-        return $permissions;
+        return $loginData  + ['token' => $jwtToken,
+          'refresh_token' => $refreshToken,];
     }
 
     /**
