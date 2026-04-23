@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Platine\Test\Framework\Http\Action;
 
+use Exception;
 use Platine\Config\Config;
 use Platine\Dev\PlatineTestCase;
 use Platine\Framework\Helper\ActionHelper;
@@ -201,5 +202,43 @@ class BaseActionTest extends PlatineTestCase
         } else {
             $this->assertNull($resp);
         }
+    }
+
+    public function testLogRequestException(): void
+    {
+        global $mock_app_httpaction_to_instance;
+        $mock_app_httpaction_to_instance = true;
+
+        $logger = $this->getMockInstance(Logger::class);
+        $routeHelper = $this->getMockInstance(RouteHelper::class, [
+            'generateUrl' => '/user/create',
+        ]);
+        $request = $this->getMockInstance(ServerRequest::class, [
+            'getHeaderLine' => 'X-Request-ID'
+        ]);
+
+        $config = $this->getMockInstanceMap(Config::class, [
+            'get' => [
+                ['pagination.max_per_page', 100, 100],
+                ['pagination.max_limit', 1000, 1000],
+            ],
+        ]);
+
+        $this->setClassCreateObjectMaps(ActionHelper::class, [
+            'config' => $config,
+            'logger' => $logger,
+            'routeHelper' => $routeHelper,
+        ]);
+
+        $actionHelper = $this->createObject(ActionHelper::class);
+
+        $o = new MyBaseAction($actionHelper);
+        $o->handle($request);
+
+        $ex = new Exception();
+
+        $this->expectMethodCallCount($logger, 'error');
+        $this->expectMethodCallCount($request, 'getHeaderLine');
+        $this->runPrivateProtectedMethod($o, 'logRequestException', [$ex]);
     }
 }

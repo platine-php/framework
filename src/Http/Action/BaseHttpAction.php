@@ -48,6 +48,7 @@ use Platine\Logger\LoggerInterface;
 use Platine\Pagination\Pagination;
 use Platine\Stdlib\Helper\Arr;
 use Platine\Stdlib\Helper\Str;
+use Throwable;
 
 /**
  * @class BaseHttpAction
@@ -304,6 +305,24 @@ abstract class BaseHttpAction implements RequestHandlerInterface
 
         $this->pagination->setItemsPerPage($this->limit);
         $this->pagination->setCurrentPage($this->page);
+    }
+
+    /**
+     * Log request exception
+     * @param Throwable $ex
+     * @return void
+     */
+    protected function logRequestException(Throwable $ex): void
+    {
+        $this->logger->error(
+            'An error occurred during the processing of the request: {error}, {file}:{line}, reference: {reference}',
+            [
+                'error' => $ex->getMessage(),
+                'file' => $ex->getFile(),
+                'line' => $ex->getLine(),
+                'reference' => $this->request->getHeaderLine('X-Request-ID'),
+            ]
+        );
     }
 
     /**
