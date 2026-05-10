@@ -318,14 +318,15 @@ class JWTAuthentication extends BaseAuthentication
      */
     protected function generateJwtToken(User $user): void
     {
-        $roles = Arr::getColumn($user->roles, 'id');
+        $roles = $this->getUserRoles($user);
+        $roleIds = Arr::getColumn($roles, 'id');
         $secret = $this->config->get('api.sign.secret');
         $expire = $this->config->get('api.auth.token_expire', 900);
         $tokenExpire = time() + $expire;
         $payload = [
             'sub' => $user->id,
             'exp' => $tokenExpire,
-            'roles' => $roles,
+            'roles' => $roleIds,
         ] + $this->getUserAttribute($user);
         $this->jwt->setSecret($secret)
                   ->setPayload($payload)

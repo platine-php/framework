@@ -49,6 +49,7 @@ namespace Platine\Framework\Auth\Authentication;
 
 use Platine\Framework\App\Application;
 use Platine\Framework\Auth\AuthenticationInterface;
+use Platine\Framework\Auth\Entity\Role;
 use Platine\Framework\Auth\Entity\User;
 use Platine\Framework\Auth\Repository\UserRepository;
 use Platine\Security\Hash\HashInterface;
@@ -147,7 +148,7 @@ abstract class BaseAuthentication implements AuthenticationInterface
             }
         }
 
-        $roles = $user->roles;
+        $roles = $this->getUserRoles($user);
         foreach ($roles as $role) {
             $rolePermissions = $role->permissions;
             foreach ($rolePermissions as $permission) {
@@ -158,5 +159,15 @@ abstract class BaseAuthentication implements AuthenticationInterface
         }
 
         return $permissions;
+    }
+
+    /**
+     * Return the role of the given user
+     * @param User $user
+     * @return Role[]
+     */
+    protected function getUserRoles(User $user): array
+    {
+        return $user->roles;
     }
 }
