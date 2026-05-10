@@ -49,6 +49,7 @@ namespace Platine\Framework\Config;
 
 use Platine\Database\Query\WhereStatement;
 use Platine\Framework\Config\Model\Configuration;
+use Platine\Framework\Enum\YesNoStatus;
 use Platine\Orm\Entity;
 
 /**
@@ -109,9 +110,9 @@ class DatabaseConfigLoader implements DatabaseConfigLoaderInterface
     {
         return $this->repository->all();
     }
-
+    
     /**
-     * Return the configuration
+     * Return the all configurations
      * @param string $group
      * @param string|null $env
      * @param array<string, mixed>  $filters the filters to use if any
@@ -126,10 +127,10 @@ class DatabaseConfigLoader implements DatabaseConfigLoaderInterface
         $query = $this->repository->filters($filters)
                                   ->query()
                                   ->where('module')->is($group)
-                                  ->where('status')->is('Y')
+                                  ->where('status')->is(YesNoStatus::YES)
                                   ->where(function (WhereStatement $where) use ($env) {
                                     $where->where('env')->is($env)
-                                    ->orWhere('env')->isNull();
+                                          ->orWhere('env')->isNull();
                                   });
         // @codeCoverageIgnoreEnd
 

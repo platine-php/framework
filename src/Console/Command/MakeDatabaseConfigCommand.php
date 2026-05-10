@@ -53,6 +53,13 @@ class MakeDatabaseConfigCommand extends MakeCommand
     protected string $type = 'database config';
 
     /**
+     * Cache keys to prevent duplicate
+     * @var array<string, array<string, bool>>
+     */
+    protected array $cacheKeys = [];
+
+
+    /**
      * Create new instance
      * @param Application $application
      * @param Filesystem $filesystem
@@ -118,6 +125,14 @@ class MakeDatabaseConfigCommand extends MakeCommand
      */
     protected function getConfigMethod(Entity $entity, ?string $module = null): string
     {
+        if (isset($this->cacheKeys[$entity->module][$entity->name])) {
+            return '';
+        }
+
+        if (isset($this->cacheKeys[$entity->module]) === false) {
+            $this->cacheKeys[$entity->module][$entity->name] = true;
+        }
+
         $types = $this->getDataTypeMaps();
         $methodTemplate = $this->getMethodTemplate();
 

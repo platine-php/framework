@@ -110,9 +110,17 @@ E;
                 ['type', 'string'],
             ]
         ]);
+        
+        $cfgEntityDuplicate = $this->getMockInstanceMap(Entity::class, [
+            '__get' => [
+                ['module', 'app'],
+                ['name', 'foo'],
+                ['type', 'string'],
+            ]
+        ]);
 
         $dbLoader = $this->getMockInstance(DatabaseConfigLoader::class, [
-            'all' => [$cfgEntity],
+            'all' => [$cfgEntity, $cfgEntityDuplicate],
         ]);
         $dbConfig = $this->getMockInstance(AppDatabaseConfig::class, [
             'getLoader' => $dbLoader,
