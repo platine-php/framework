@@ -126,6 +126,7 @@ class BaseParam implements JsonSerializable
      * Convert parameter to JSON array
      * @return array<string, mixed>
      */
+    #[\ReturnTypeWillChange]
     public function jsonSerialize()
     {
         return $this->data();

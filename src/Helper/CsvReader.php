@@ -195,7 +195,7 @@ class CsvReader
         }
 
         $i = 0;
-        while (($data = fgetcsv($fp, $this->limit, $this->delimiter)) !== false) {
+        while (($data = fgetcsv($fp, $this->limit, $this->delimiter, "\"", "\\")) !== false) {
             // skip all empty lines
             if ($data[0] !== null) {
                 if ($i === 0) {

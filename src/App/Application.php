@@ -400,7 +400,7 @@ class Application extends Container
      * @param  EventInterface|null $event  the instance of EventInterface or null
      * @return EventInterface
      */
-    public function dispatch($eventName, EventInterface $event = null): EventInterface
+    public function dispatch($eventName, ?EventInterface $event = null): EventInterface
     {
         return $this->dispatcher->dispatch($eventName, $event);
     }

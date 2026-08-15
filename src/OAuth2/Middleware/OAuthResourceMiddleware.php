@@ -71,7 +71,6 @@ class OAuthResourceMiddleware implements MiddlewareInterface
 
     /**
      * Create new instance
-     * 
      * @param ResourceServerInterface $resourceServer
      * @param Config<T> $config
      */
@@ -117,7 +116,6 @@ class OAuthResourceMiddleware implements MiddlewareInterface
     /**
      * Whether we can process this request
      * @param ServerRequestInterface $request
-     * 
      * @return bool
      */
     protected function shouldBeProcessed(ServerRequestInterface $request): bool
