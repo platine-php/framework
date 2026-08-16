@@ -16,7 +16,7 @@ use Platine\OAuth2\Exception\InvalidAccessTokenException;
 use Platine\OAuth2\ResourceServer;
 use Platine\Route\Route;
 
-/*
+/**
  * @group core
  * @group framework
  */
