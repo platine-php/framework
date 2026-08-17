@@ -72,7 +72,7 @@ class Application extends Container
     /**
      * The application version
      */
-    public const VERSION = '2.0.14-dev';
+    public const VERSION = '2.0.15-dev';
 
     /**
      * The event dispatcher instance
