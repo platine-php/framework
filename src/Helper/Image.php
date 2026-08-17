@@ -362,8 +362,6 @@ class Image
         } elseif ($extension === 'gif') {
             imagegif($this->image, $filePath);
         }
-
-        imagedestroy($this->image);
     }
 
     /**

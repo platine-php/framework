@@ -285,7 +285,9 @@ class BaseParam implements JsonSerializable
         foreach ($types as $attr => $val) {
             /** @var ReflectionProperty $property */
             $property = $val[2];
-            $property->setAccessible(true);
+            if (PHP_VERSION_ID < 80100) {
+                $property->setAccessible(true);
+            }
             if (isset($maps[$val[0]]) && $property->isInitialized($this) === false) {
                 $data[$attr] = $maps[$val[0]][1];
             }
