@@ -161,7 +161,6 @@ class Image
             $this->width,
             $this->height
         );
-        imagedestroy($oldImage);
         $this->width = $width;
         $this->height = $height;
     }

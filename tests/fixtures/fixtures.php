@@ -469,6 +469,10 @@ class MyNullMaillerConfig extends Config
 
     public function get(string $key, mixed $default = null): mixed
     {
+        if ($key === 'mail.provider'){
+            return 'null';
+        }
+        
         return null;
     }
 }
